@@ -3,7 +3,7 @@ package contactHandler
 import (
 	"encoding/json"
 	"net/http"
-	"sgt-server/database/contact"
+	"sgc-server/database/contact"
 	"strconv"
 )
 

@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"net/http"
-	"sgt-server/database/contact"
-	"sgt-server/models"
+	"sgc-server/database/contact"
+	"sgc-server/models"
 )
 
 // EditContact endpoint modificar contacto.

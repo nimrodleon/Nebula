@@ -3,8 +3,8 @@ package articleHandler
 import (
 	"github.com/gorilla/mux"
 	"net/http"
-	"sgt-server/database/article"
-	"sgt-server/routes/jwt"
+	"sgc-server/database/article"
+	"sgc-server/routes/jwt"
 )
 
 // DeleteArticle borra un artículo.

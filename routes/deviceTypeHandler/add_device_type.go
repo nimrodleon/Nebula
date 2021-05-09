@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"sgt-server/database/deviceType"
-	"sgt-server/models"
+	"sgc-server/database/deviceType"
+	"sgc-server/models"
 )
 
 // AddDeviceType agregar el tipo de equipo.

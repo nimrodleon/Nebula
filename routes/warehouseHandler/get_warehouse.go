@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"net/http"
-	"sgt-server/database/warehouse"
+	"sgc-server/database/warehouse"
 )
 
 // GetWarehouse retorna un almacén.

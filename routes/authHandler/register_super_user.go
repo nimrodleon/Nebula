@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"sgt-server/database/auth"
-	"sgt-server/models"
+	"sgc-server/database/auth"
+	"sgc-server/models"
 )
 
 // RegisterSuperUser crea el usuario super o actualiza su contraseña.

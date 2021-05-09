@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"net/http"
-	"sgt-server/database/contact"
+	"sgc-server/database/contact"
 )
 
 // GetContact devuelve un contacto por id.

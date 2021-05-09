@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"net/http"
-	"sgt-server/database/warehouse"
-	"sgt-server/models"
+	"sgc-server/database/warehouse"
+	"sgc-server/models"
 )
 
 // EditWarehouse editar almacén.

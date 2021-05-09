@@ -19,5 +19,6 @@ type OrderRepair struct {
 	PromisedDate    string             `bson:"promised_date" json:"promised_date"`
 	PromisedTime    string             `bson:"promised_time" json:"promised_time"`
 	TechnicalUserId string             `bson:"technical_user_id" json:"technical_user_id"`
+	IsDeleted       bool               `bson:"is_deleted" json:"is_deleted"`
 	CreatedAt       time.Time          `bson:"created_at" json:"created_at"`
 }

@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"sgt-server/database/article"
-	"sgt-server/models"
+	"sgc-server/database/article"
+	"sgc-server/models"
 )
 
 // AddArticle agrega un articulo.

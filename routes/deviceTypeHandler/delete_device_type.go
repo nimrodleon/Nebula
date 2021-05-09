@@ -3,8 +3,8 @@ package deviceTypeHandler
 import (
 	"github.com/gorilla/mux"
 	"net/http"
-	"sgt-server/database/deviceType"
-	"sgt-server/routes/jwt"
+	"sgc-server/database/deviceType"
+	"sgc-server/routes/jwt"
 )
 
 // DeleteDeviceType borra un tipo de equipo.

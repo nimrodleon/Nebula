@@ -1,4 +1,4 @@
-package warehouse
+package orderRepair
 
 import (
 	"context"
@@ -9,15 +9,15 @@ import (
 	"time"
 )
 
-// GetWarehouse retorna un almacén.
-func GetWarehouse(ID string) (models.Warehouse, error) {
+// GetOrderRepair retorna una orden de reparación.
+func GetOrderRepair(ID string) (models.OrderRepair, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	data := db.MongoConnect.Database(db.Database)
-	col := data.Collection(db.WarehouseCollection)
+	col := data.Collection(db.OrderRepairCollection)
 
-	var doc models.Warehouse
+	var doc models.OrderRepair
 	objID, _ := primitive.ObjectIDFromHex(ID)
 
 	filter := bson.M{

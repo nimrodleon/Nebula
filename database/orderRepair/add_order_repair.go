@@ -1,4 +1,4 @@
-package user
+package orderRepair
 
 import (
 	"context"
@@ -8,16 +8,16 @@ import (
 	"time"
 )
 
-// AddUser agregar usuario.
-func AddUser(doc models.User) (string, bool, error) {
+// AddOrderRepair agrega nueva orden de reparación.
+func AddOrderRepair(doc models.OrderRepair) (string, bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	data := db.MongoConnect.Database(db.Database)
-	col := data.Collection(db.UserCollection)
+	col := data.Collection(db.OrderRepairCollection)
 
-	doc.Suspended = false
 	doc.IsDeleted = false
+	doc.CreatedAt = time.Now()
 
 	result, err := col.InsertOne(ctx, doc)
 	if err != nil {

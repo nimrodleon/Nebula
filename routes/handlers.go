@@ -5,14 +5,14 @@ import (
 	"github.com/rs/cors"
 	"log"
 	"net/http"
-	"sgt-server/routes/articleHandler"
-	"sgt-server/routes/authHandler"
-	"sgt-server/routes/contactHandler"
-	"sgt-server/routes/deviceTypeHandler"
-	"sgt-server/routes/middlew"
-	"sgt-server/routes/taxesHandler"
-	"sgt-server/routes/userHandler"
-	"sgt-server/routes/warehouseHandler"
+	"sgc-server/routes/articleHandler"
+	"sgc-server/routes/authHandler"
+	"sgc-server/routes/contactHandler"
+	"sgc-server/routes/deviceTypeHandler"
+	"sgc-server/routes/middlew"
+	"sgc-server/routes/taxesHandler"
+	"sgc-server/routes/userHandler"
+	"sgc-server/routes/warehouseHandler"
 )
 
 func Handlers() {

@@ -2,8 +2,8 @@ package main
 
 import (
 	"log"
-	"sgt-server/database/db"
-	"sgt-server/routes"
+	"sgc-server/database/db"
+	"sgc-server/routes"
 )
 
 func main() {

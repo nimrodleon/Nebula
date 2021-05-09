@@ -2,7 +2,7 @@ package auth
 
 import (
 	"golang.org/x/crypto/bcrypt"
-	"sgt-server/models"
+	"sgc-server/models"
 )
 
 // LoginIntent realiza el chequeo de login a la BD.

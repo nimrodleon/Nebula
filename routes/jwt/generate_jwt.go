@@ -2,7 +2,7 @@ package jwt
 
 import (
 	"github.com/dgrijalva/jwt-go"
-	"sgt-server/models"
+	"sgc-server/models"
 	"time"
 )
 

@@ -3,9 +3,9 @@ package authHandler
 import (
 	"encoding/json"
 	"net/http"
-	"sgt-server/database/auth"
-	"sgt-server/models"
-	"sgt-server/routes/jwt"
+	"sgc-server/database/auth"
+	"sgc-server/models"
+	"sgc-server/routes/jwt"
 	"time"
 )
 

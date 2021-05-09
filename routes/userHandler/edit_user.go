@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"net/http"
-	"sgt-server/database/user"
-	"sgt-server/models"
-	"sgt-server/routes/jwt"
+	"sgc-server/database/user"
+	"sgc-server/models"
+	"sgc-server/routes/jwt"
 )
 
 // EditUser editar usuario

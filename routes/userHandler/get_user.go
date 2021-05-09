@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"net/http"
-	"sgt-server/database/user"
-	"sgt-server/routes/jwt"
+	"sgc-server/database/user"
+	"sgc-server/routes/jwt"
 )
 
 // GetUser retorna un usuario.

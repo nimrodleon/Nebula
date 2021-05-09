@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"net/http"
-	"sgt-server/database/article"
-	"sgt-server/models"
+	"sgc-server/database/article"
+	"sgc-server/models"
 )
 
 // EditArticle actualiza un articulo en la DB.

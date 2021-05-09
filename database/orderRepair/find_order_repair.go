@@ -1,4 +1,4 @@
-package contact
+package orderRepair
 
 import (
 	"context"
@@ -9,22 +9,22 @@ import (
 	"time"
 )
 
-// FindContacts busca contactos en la base de datos.
-func FindContacts(page int64, search string) ([]*models.Contact, bool) {
+// FindOrderRepairs busca las ordenes de reparación.
+func FindOrderRepairs(page int64, search string) ([]*models.OrderRepair, bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	data := db.MongoConnect.Database(db.Database)
-	col := data.Collection(db.ContactCollection)
+	col := data.Collection(db.OrderRepairCollection)
 
-	var results []*models.Contact
+	var results []*models.OrderRepair
 
 	findOptions := options.Find()
 	findOptions.SetSkip((page - 1) * 20)
 	findOptions.SetLimit(20)
 
 	query := bson.M{
-		"full_name":  bson.M{"$regex": `(?i)` + search},
+		"failure":    bson.M{"$regex": `(?i)` + search},
 		"is_deleted": false,
 	}
 
@@ -34,7 +34,7 @@ func FindContacts(page int64, search string) ([]*models.Contact, bool) {
 	}
 
 	for cursor.Next(ctx) {
-		var doc models.Contact
+		var doc models.OrderRepair
 		err := cursor.Decode(&doc)
 		if err != nil {
 			return results, false

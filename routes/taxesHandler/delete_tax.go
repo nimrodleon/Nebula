@@ -3,8 +3,8 @@ package taxesHandler
 import (
 	"github.com/gorilla/mux"
 	"net/http"
-	"sgt-server/database/taxes"
-	"sgt-server/routes/jwt"
+	"sgc-server/database/taxes"
+	"sgc-server/routes/jwt"
 )
 
 // DeleteTax borra un impuesto.

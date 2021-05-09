@@ -3,8 +3,8 @@ package userHandler
 import (
 	"encoding/json"
 	"net/http"
-	"sgt-server/database/user"
-	"sgt-server/models"
+	"sgc-server/database/user"
+	"sgc-server/models"
 )
 
 // FindUsersWithSelect2 buscar usuarios con select2.

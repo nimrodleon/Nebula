@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"sgt-server/database/contact"
-	"sgt-server/models"
+	"sgc-server/database/contact"
+	"sgc-server/models"
 )
 
 // AddContact endpoint registrar contacto.

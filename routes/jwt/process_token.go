@@ -4,8 +4,8 @@ import (
 	"errors"
 	"github.com/dgrijalva/jwt-go"
 	"log"
-	"sgt-server/database/auth"
-	"sgt-server/models"
+	"sgc-server/database/auth"
+	"sgc-server/models"
 	"strings"
 )
 

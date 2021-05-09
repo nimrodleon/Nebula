@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"net/http"
-	"sgt-server/database/taxes"
-	"sgt-server/models"
+	"sgc-server/database/taxes"
+	"sgc-server/models"
 )
 
 // EditTax editar impuesto.

@@ -3,8 +3,8 @@ package contactHandler
 import (
 	"encoding/json"
 	"net/http"
-	"sgt-server/database/contact"
-	"sgt-server/models"
+	"sgc-server/database/contact"
+	"sgc-server/models"
 )
 
 // FindContactWithSelect2 buscar contactos con select2.

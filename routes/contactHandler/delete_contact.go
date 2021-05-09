@@ -3,8 +3,8 @@ package contactHandler
 import (
 	"github.com/gorilla/mux"
 	"net/http"
-	"sgt-server/database/contact"
-	"sgt-server/routes/jwt"
+	"sgc-server/database/contact"
+	"sgc-server/routes/jwt"
 )
 
 // DeleteContact endpoint borrar contacto.

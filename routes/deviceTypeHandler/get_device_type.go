@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"net/http"
-	"sgt-server/database/deviceType"
+	"sgc-server/database/deviceType"
 )
 
 // GetDeviceType retorna un tipo de equipo.
