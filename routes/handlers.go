@@ -10,6 +10,7 @@ import (
 	"sgc-server/routes/contactHandler"
 	"sgc-server/routes/deviceTypeHandler"
 	"sgc-server/routes/middlew"
+	"sgc-server/routes/orderRepairHandler"
 	"sgc-server/routes/taxesHandler"
 	"sgc-server/routes/userHandler"
 	"sgc-server/routes/warehouseHandler"
@@ -67,6 +68,14 @@ func Handlers() {
 	router.HandleFunc("/api/device_types/{id}", middlew.CheckDb(middlew.ValidateJWT(deviceTypeHandler.EditDeviceType))).Methods("PUT")
 	router.HandleFunc("/api/device_types/{id}", middlew.CheckDb(middlew.ValidateJWT(deviceTypeHandler.DeleteDeviceType))).Methods("DELETE")
 	router.HandleFunc("/api/device_types/select2/q", middlew.CheckDb(middlew.ValidateJWT(deviceTypeHandler.FindDeviceTypeWithSelect2))).Methods("GET")
+
+	// OrderRepair Handlers.
+	// Módulo de Ordenes de Reparación.
+	router.HandleFunc("/api/order_repairs", middlew.CheckDb(middlew.ValidateJWT(orderRepairHandler.LoadOrderRepairs))).Methods("GET")
+	router.HandleFunc("/api/order_repairs/{id}", middlew.CheckDb(middlew.ValidateJWT(orderRepairHandler.GetOrderRepair))).Methods("GET")
+	router.HandleFunc("/api/order_repairs", middlew.CheckDb(middlew.ValidateJWT(orderRepairHandler.AddOrderRepair))).Methods("POST")
+	router.HandleFunc("/api/order_repairs/{id}", middlew.CheckDb(middlew.ValidateJWT(orderRepairHandler.EditOrderRepair))).Methods("PUT")
+	router.HandleFunc("/api/order_repairs/{id}", middlew.CheckDb(middlew.ValidateJWT(orderRepairHandler.DeleteOrderRepair))).Methods("DELETE")
 
 	// Run HTTP Server.
 	handler := cors.AllowAll().Handler(router)
