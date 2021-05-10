@@ -10,6 +10,18 @@ const initialState = {
 
 export default function orderRepairReducer(state = initialState, action) {
 	switch (action.type) {
+		case type.BTN_ADD_ORDER_REPAIR:
+			return {
+				...state,
+				currentOrderRepair: {},
+				typeOperation: 'ADD'
+			}
+		case type.EDIT_FORM_ORDER_REPAIR:
+			return {
+				...state,
+				currentOrderRepair: action.payload,
+				typeOperation: 'EDIT'
+			}
 		// Crud Tax Actions.
 		case type.LOAD_ORDER_REPAIRS:
 		case type.ADD_ORDER_REPAIR:

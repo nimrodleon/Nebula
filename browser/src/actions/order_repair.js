@@ -73,7 +73,7 @@ const dispatchAddOrderRepairError = () => ({
 // ==================================================
 export function EditOrderRepairAction(order) {
 	return async (dispatch) => {
-		dispatch(dispatchOrderRepairType())
+		dispatch(dispatchEditOrderRepairType())
 		try {
 			await axios.put(`order_repairs/${order.id}`, order)
 			dispatch(dispatchEditOrderRepairSuccessfully(order))
@@ -89,7 +89,7 @@ export function EditOrderRepairAction(order) {
 	}
 }
 
-const dispatchOrderRepairType = () => ({
+const dispatchEditOrderRepairType = () => ({
 	type: type.EDIT_ORDER_REPAIR
 })
 
@@ -133,4 +133,32 @@ const dispatchDeleteOrderRepairSuccessfully = (id) => ({
 
 const dispatchDeleteOrderRepairError = () => ({
 	type: type.DELETE_ORDER_REPAIR_ERROR
+})
+
+// Acciones de botones.
+// ==================================================
+
+// botón agregar orden de reparación.
+export function btnAddOrderRepair() {
+	return async (dispatch) => {
+		dispatch(dispatchBtnAddOrderRepair())
+	}
+}
+
+const dispatchBtnAddOrderRepair = () => ({
+	type: type.BTN_ADD_ORDER_REPAIR
+})
+
+// botón editar orden de reparación.
+export function editFormOrderRepair(id) {
+	return async (dispatch) => {
+		axios.get(`order_repairs/${id}`).then(({data}) => {
+			dispatch(dispatchEditFormOrderRepair(data))
+		})
+	}
+}
+
+const dispatchEditFormOrderRepair = (order) => ({
+	type: type.EDIT_FORM_ORDER_REPAIR,
+	payload: order
 })

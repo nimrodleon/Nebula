@@ -16,6 +16,7 @@ func AddOrderRepair(doc models.OrderRepair) (string, bool, error) {
 	data := db.MongoConnect.Database(db.Database)
 	col := data.Collection(db.OrderRepairCollection)
 
+	doc.Status = models.StatusOrderRepairSinRevisar
 	doc.IsDeleted = false
 	doc.CreatedAt = time.Now()
 
