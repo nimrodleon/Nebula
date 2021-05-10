@@ -223,7 +223,7 @@ const OrderRepair = () => {
 																placeholder="Detalle del Equipo..."/>
 								</Form.Group>
 								<Form.Group className="mb-0">
-									<Form.Label className="text-uppercase font-weight-bold">Falla del Equipo</Form.Label>
+									<Form.Label className="text-uppercase font-weight-bold">Falla del Equipo y/o Tarea</Form.Label>
 									<Form.Control as={'textarea'} {...register('failure', {required: true})}/>
 								</Form.Group>
 							</Card.Body>
