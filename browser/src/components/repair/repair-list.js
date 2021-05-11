@@ -78,7 +78,7 @@ const RepairList = ({history}) => {
 						</tr>
 						</thead>
 						<tbody>
-						{orderRepairs && orderRepairs.map(data => <OrderRepairItem key={data.id} data={data}/>)}
+						{orderRepairs && orderRepairs.map(data => <OrderRepairItem key={data.OrderRepair.id} data={data}/>)}
 						</tbody>
 					</Table>
 				</WrapBody>

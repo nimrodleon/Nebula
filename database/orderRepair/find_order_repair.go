@@ -15,61 +15,35 @@ func FindOrderRepairs(page int64, search string) ([]models.OrderRepairWithClient
 	defer cancel()
 
 	data := db.MongoConnect.Database(db.Database)
-	col := data.Collection(db.OrderRepairCollection)
+	col := data.Collection(db.ContactCollection)
 
-	//var results []*models.OrderRepair
 	var results []models.OrderRepairWithClient
-
-	//findOptions := options.Find()
-	//findOptions.SetSkip((page - 1) * 20)
-	//findOptions.SetLimit(20)
 
 	skip := (page - 1) * 20
 
-	//query := bson.M{
-	//	"failure":    bson.M{"$regex": `(?i)` + search},
-	//	"is_deleted": false,
-	//}
-	query := make([]bson.M, 0)
-	query = append(query, bson.M{
+	queries := make([]bson.M, 0)
+	queries = append(queries, bson.M{
 		"$lookup": bson.M{
-			"from":         db.ContactCollection,
-			"localField":   "client_id",
-			"foreignField": "_id",
-			"as":           "client",
+			"from":         db.OrderRepairCollection,
+			"localField":   "_id",
+			"foreignField": "client_id",
+			"as":           "OrderRepair",
 		}})
-	query = append(query, bson.M{"$unwind": "$client"})
-	query = append(query, bson.M{"$skip": skip})
-	query = append(query, bson.M{"$limit": 20})
+	queries = append(queries, bson.M{"$unwind": "$OrderRepair"})
+	queries = append(queries, bson.M{"$sort": bson.M{"OrderRepair.created_at": -1}})
+	queries = append(queries, bson.M{"$skip": skip})
+	queries = append(queries, bson.M{"$limit": 20})
 
-	// cursor, err := col.Find(ctx, query, findOptions)
-	cursor, err := col.Aggregate(ctx, query)
-	//goland:noinspection GoNilness
-	if err = cursor.All(ctx, &results); err != nil {
+	cursor, err := col.Aggregate(ctx, queries)
+
+	if err != nil {
 		return results, false
 	}
 
-	//err = cursor.All(ctx, &results)
-	//if err != nil {
-	//	return results, false
-	//}
-
-	log.Println("Test Results")
+	// Cargar los resultados del cursor.
+	if err = cursor.All(ctx, &results); err != nil {
+		return results, false
+	}
 	log.Println(results)
-
-	//for cursor.Next(ctx) {
-	//	var doc models.OrderRepair
-	//	err := cursor.Decode(&doc)
-	//	if err != nil {
-	//		return results, false
-	//	}
-	//	results = append(results, &doc)
-	//}
-
-	//err = cursor.Err()
-	//if err != nil {
-	//	return results, false
-	//}
-	//_ = cursor.Close(ctx)
 	return results, true
 }

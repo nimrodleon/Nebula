@@ -27,7 +27,7 @@ func UpdateOrderRepair(doc models.OrderRepair, ID string) (bool, error) {
 	if len(doc.MemberUserId) > 0 {
 		arrData["member_user_id"] = doc.MemberUserId
 	}
-	if len(doc.ClientId.Hex()) > 0 {
+	if len(doc.ClientId) > 0 {
 		arrData["client_id"] = doc.ClientId
 	}
 	if len(doc.DeviceTypeId) > 0 {

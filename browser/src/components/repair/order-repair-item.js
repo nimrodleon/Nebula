@@ -19,14 +19,14 @@ const OrderRepairItem = ({data}) => {
 
 	// Editar Orden de reparación.
 	const handleEdit = () => {
-		history.push(`/repair/form/${data.id}`)
+		history.push(`/repair/form/${data.OrderRepair.id}`)
 	}
 
 	// Borrar Orden de reparación.
 	const handleDelete = () => {
 		SwalConfirmDialog().then(result => {
 			if (result.isConfirmed) {
-				dispatch(DeleteOrderRepairAction(data.id))
+				dispatch(DeleteOrderRepairAction(data.OrderRepair.id))
 			}
 		})
 	}
@@ -35,11 +35,11 @@ const OrderRepairItem = ({data}) => {
 	return (
 		<Fragment>
 			<tr>
-				<td>{data.reception_date}</td>
-				<td>{data.client_id}</td>
-				<td>{data.device_info}</td>
-				<td>{data.status}</td>
-				<td>{data.promised_date}, {data.promised_time}</td>
+				<td>{data.OrderRepair.reception_date}</td>
+				<td>{data.full_name}</td>
+				<td>{data.OrderRepair.device_info}</td>
+				<td>{data.OrderRepair.status}</td>
+				<td>{data.OrderRepair.promised_date}, {data.OrderRepair.promised_time}</td>
 				<TdBtn>
 					<Button variant={'primary'} onClick={handleEdit} className="mr-2" size={'sm'}>
 						<FontAwesomeIcon icon={faEdit}/>
