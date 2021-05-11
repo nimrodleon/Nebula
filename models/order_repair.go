@@ -14,7 +14,7 @@ type OrderRepair struct {
 	ReceptionDate   string             `bson:"reception_date" json:"reception_date"`
 	ReceptionTime   string             `bson:"reception_time" json:"reception_time"`
 	MemberUserId    string             `bson:"member_user_id" json:"member_user_id"`
-	ClientId        string             `bson:"client_id" json:"client_id"`
+	ClientId        primitive.ObjectID `bson:"client_id" json:"client_id"`
 	DeviceTypeId    string             `bson:"device_type_id" json:"device_type_id"`
 	WarehouseId     string             `bson:"warehouse_id" json:"warehouse_id"`
 	DeviceInfo      string             `bson:"device_info" json:"device_info"`
@@ -25,4 +25,13 @@ type OrderRepair struct {
 	Status          string             `bson:"status" json:"status"`
 	IsDeleted       bool               `bson:"is_deleted" json:"is_deleted"`
 	CreatedAt       time.Time          `bson:"created_at" json:"created_at"`
+}
+
+// OrderRepairWithClient ordenes de reparación con datos del cliente.
+type OrderRepairWithClient struct {
+	OrderRepair
+	Client struct {
+		ID       string `bson:"_id" json:"id"`
+		FullName string `bson:"full_name" json:"full_name"`
+	}
 }
