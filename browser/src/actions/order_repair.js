@@ -60,9 +60,12 @@ const dispatchAddOrderRepair = () => ({
 	type: type.ADD_ORDER_REPAIR
 })
 
+// dispatchAddOrderRepairSuccessfully agregar una orden al la lista de estados.
+// el parámetro order es innecesario porque el formulario de registro se ejecuta en una ruta diferente a la lista de ordenes de reparación,
+// cada vez que se redirige a al lista de ordenes de reparación se ejecuta [LoadOrderRepairsAction] volviendo cargar todas las ordenes. 
 const dispatchAddOrderRepairSuccessfully = order => ({
 	type: type.ADD_ORDER_REPAIR_SUCCESSFULLY,
-	payload: order
+	payload: order // argumento innecesario.
 })
 
 const dispatchAddOrderRepairError = () => ({

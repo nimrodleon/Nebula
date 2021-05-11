@@ -42,7 +42,8 @@ export default function orderRepairReducer(state = initialState, action) {
 			return {
 				...state,
 				loading: false,
-				orderRepairs: [action.payload, ...state.orderRepairs]
+				// [orderRepairs] => argumento innecesario.
+				// orderRepairs: [action.payload, ...state.orderRepairs]
 			}
 		case type.EDIT_ORDER_REPAIR_SUCCESSFULLY:
 			return {
