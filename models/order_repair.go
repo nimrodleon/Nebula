@@ -7,6 +7,8 @@ import (
 
 // StatusOrderRepairSinRevisar estado inicial.
 const StatusOrderRepairSinRevisar string = "SIN REVISAR"
+const StatusOrderRepairInRepair string = "EN REPARACIÓN"
+const StatusOrderRepairCompleted string = "REPARACIÓN TERMINADA"
 
 // OrderRepair modelo orden de reparación.
 type OrderRepair struct {
@@ -23,6 +25,7 @@ type OrderRepair struct {
 	PromisedTime    string             `bson:"promised_time" json:"promised_time"`
 	TechnicalUserId primitive.ObjectID `bson:"technical_user_id" json:"technical_user_id"`
 	Status          string             `bson:"status" json:"status"`
+	EquipoEntregado string             `bson:"equipo_entregado" json:"equipo_entregado"`
 	IsDeleted       bool               `bson:"is_deleted" json:"is_deleted"`
 	CreatedAt       time.Time          `bson:"created_at" json:"created_at"`
 }

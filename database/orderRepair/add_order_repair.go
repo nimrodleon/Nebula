@@ -17,6 +17,7 @@ func AddOrderRepair(doc models.OrderRepair) (string, bool, error) {
 	col := data.Collection(db.OrderRepairCollection)
 
 	doc.Status = models.StatusOrderRepairSinRevisar
+	doc.EquipoEntregado = "N"
 	doc.IsDeleted = false
 	doc.CreatedAt = time.Now()
 

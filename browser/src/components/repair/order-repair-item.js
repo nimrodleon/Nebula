@@ -5,7 +5,7 @@ import {Button} from 'react-bootstrap'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faEdit, faTrashAlt} from '@fortawesome/free-solid-svg-icons'
 import {SwalConfirmDialog, TdBtn} from '../common/util'
-import {DeleteOrderRepairAction} from '../../actions/order_repair'
+import {DeleteOrderRepairAction, LoadOrderRepairsAction} from '../../actions/order_repair'
 
 /**
  * Item orden de reparación.
@@ -24,9 +24,10 @@ const OrderRepairItem = ({data}) => {
 
 	// Borrar Orden de reparación.
 	const handleDelete = () => {
-		SwalConfirmDialog().then(result => {
+		SwalConfirmDialog().then(async (result) => {
 			if (result.isConfirmed) {
-				dispatch(DeleteOrderRepairAction(data.OrderRepair.id))
+				await dispatch(DeleteOrderRepairAction(data.OrderRepair.id))
+				dispatch(LoadOrderRepairsAction(1, ''))
 			}
 		})
 	}

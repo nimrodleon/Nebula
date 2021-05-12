@@ -50,13 +50,15 @@ export default function orderRepairReducer(state = initialState, action) {
 				...state,
 				loading: false,
 				currentOrderRepair: {},
-				orderRepairs: state.orderRepairs.map(o => o.id === action.payload.id ? o = action.payload : o)
+				// [orderRepairs] => argumento innecesario.
+				// orderRepairs: state.orderRepairs.map(o => o.id === action.payload.id ? o = action.payload : o)
 			}
 		case type.DELETE_ORDER_REPAIR_SUCCESSFULLY:
 			return {
 				...state,
 				loading: false,
-				orderRepairs: state.orderRepairs.filter(o => o.id !== action.payload)
+				// [orderRepairs] => argumento innecesario.
+				// orderRepairs: state.orderRepairs.filter(o => o.id !== action.payload)
 			}
 		case type.LOAD_ORDER_REPAIRS_ERROR:
 		case type.ADD_ORDER_REPAIR_ERROR:

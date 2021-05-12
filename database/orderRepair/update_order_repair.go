@@ -24,16 +24,16 @@ func UpdateOrderRepair(doc models.OrderRepair, ID string) (bool, error) {
 	if len(doc.ReceptionTime) > 0 {
 		arrData["reception_time"] = doc.ReceptionTime
 	}
-	if len(doc.MemberUserId) > 0 {
+	if len(doc.MemberUserId.Hex()) > 0 {
 		arrData["member_user_id"] = doc.MemberUserId
 	}
-	if len(doc.ClientId) > 0 {
+	if len(doc.ClientId.Hex()) > 0 {
 		arrData["client_id"] = doc.ClientId
 	}
-	if len(doc.DeviceTypeId) > 0 {
+	if len(doc.DeviceTypeId.Hex()) > 0 {
 		arrData["device_type_id"] = doc.DeviceTypeId
 	}
-	if len(doc.WarehouseId) > 0 {
+	if len(doc.WarehouseId.Hex()) > 0 {
 		arrData["warehouse_id"] = doc.WarehouseId
 	}
 	if len(doc.DeviceInfo) > 0 {
@@ -48,7 +48,7 @@ func UpdateOrderRepair(doc models.OrderRepair, ID string) (bool, error) {
 	if len(doc.PromisedTime) > 0 {
 		arrData["promised_time"] = doc.PromisedTime
 	}
-	if len(doc.TechnicalUserId) > 0 {
+	if len(doc.TechnicalUserId.Hex()) > 0 {
 		arrData["technical_user_id"] = doc.TechnicalUserId
 	}
 

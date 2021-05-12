@@ -29,6 +29,19 @@ func FindOrderRepairs(page int64, search string) ([]models.OrderRepairWithClient
 			"foreignField": "client_id",
 			"as":           "OrderRepair",
 		}})
+	queries = append(queries, bson.M{
+		"$project": bson.M{
+			"full_name": true,
+			"OrderRepair": bson.M{
+				"$filter": bson.M{
+					"input": "$OrderRepair",
+					"as":    "rep",
+					"cond": bson.M{
+						"$eq": bson.A{"$$rep.is_deleted", false},
+					}},
+			},
+		},
+	})
 	queries = append(queries, bson.M{"$unwind": "$OrderRepair"})
 	queries = append(queries, bson.M{"$sort": bson.M{"OrderRepair.created_at": -1}})
 	queries = append(queries, bson.M{"$skip": skip})

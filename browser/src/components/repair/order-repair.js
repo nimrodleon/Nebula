@@ -106,9 +106,11 @@ const OrderRepair = () => {
 			console.log('[technical_user_id]', e.target.value)
 			setValue('technical_user_id', e.target.value)
 		})
+
 		// Cargar valores por defecto select2.
 		// ========================================
-		if (orderRepairID !== undefined && typeOperation === 'EDIT') {
+		// [currentOrderRepair] debe haber cargado primero para cargar los valores por defecto de los  select2.
+		if (currentOrderRepair.id !== undefined && typeOperation === 'EDIT') {
 			// Integrante que recepciona el equipo.
 			axios.get(`users/${currentOrderRepair.member_user_id}`).then(({data}) => {
 				userMemberSelect.append(new Option(data.full_name, data.id, true, true)).trigger('change')
