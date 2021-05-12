@@ -19,9 +19,14 @@ func FindOrderRepairs(page int64, search string) ([]models.OrderRepairWithClient
 
 	var results []models.OrderRepairWithClient
 
-	skip := (page - 1) * 20
+	//skip := (page - 1) * 20
 
 	queries := make([]bson.M, 0)
+	queries = append(queries, bson.M{
+		"$match": bson.M{
+			"full_name": bson.M{"$regex": `(?i)` + search},
+		},
+	})
 	queries = append(queries, bson.M{
 		"$lookup": bson.M{
 			"from":         db.OrderRepairCollection,
@@ -37,15 +42,19 @@ func FindOrderRepairs(page int64, search string) ([]models.OrderRepairWithClient
 					"input": "$OrderRepair",
 					"as":    "rep",
 					"cond": bson.M{
-						"$eq": bson.A{"$$rep.is_deleted", false},
+						//"$eq": bson.A{"$$rep.is_deleted", false},
+						"$and": bson.A{
+							bson.M{"$eq": bson.A{"$$rep.equipo_entregado", "N"}},
+							bson.M{"$eq": bson.A{"$$rep.is_deleted", false}},
+						},
 					}},
 			},
 		},
 	})
 	queries = append(queries, bson.M{"$unwind": "$OrderRepair"})
 	queries = append(queries, bson.M{"$sort": bson.M{"OrderRepair.created_at": -1}})
-	queries = append(queries, bson.M{"$skip": skip})
-	queries = append(queries, bson.M{"$limit": 20})
+	//queries = append(queries, bson.M{"$skip": skip})
+	//queries = append(queries, bson.M{"$limit": 20})
 
 	cursor, err := col.Aggregate(ctx, queries)
 
