@@ -151,6 +151,11 @@ const OrderRepair = () => {
 	const handleCancel = () => {
 		history.push('/repair')
 	}
+	
+	// Cargar valores para nuevo registro.
+	if (typeOperation === 'ADD') {
+		// Cargar fecha y hora de recepción actual.
+	}
 
 	// Cargar Valores por defecto.
 	if (orderRepairID !== undefined && typeOperation === 'EDIT') {
