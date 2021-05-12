@@ -5,6 +5,7 @@ import axios, {accessToken, baseURL} from '../../axios'
 import {useForm} from 'react-hook-form'
 import {useDispatch, useSelector} from 'react-redux'
 import {AddOrderRepairAction, editFormOrderRepair, EditOrderRepairAction} from '../../actions/order_repair'
+import moment from 'moment'
 
 /**
  * Orden de Reparación.
@@ -151,10 +152,12 @@ const OrderRepair = () => {
 	const handleCancel = () => {
 		history.push('/repair')
 	}
-	
+
 	// Cargar valores para nuevo registro.
 	if (typeOperation === 'ADD') {
 		// Cargar fecha y hora de recepción actual.
+		setValue('reception_date', moment().format('YYYY-MM-DD'))
+		setValue('reception_time', moment().format('HH:mm'))
 	}
 
 	// Cargar Valores por defecto.

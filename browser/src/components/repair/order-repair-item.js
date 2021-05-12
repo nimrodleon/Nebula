@@ -6,6 +6,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faEdit, faTrashAlt} from '@fortawesome/free-solid-svg-icons'
 import {SwalConfirmDialog, TdBtn} from '../common/util'
 import {DeleteOrderRepairAction, LoadOrderRepairsAction} from '../../actions/order_repair'
+import moment from 'moment-timezone'
 
 /**
  * Item orden de reparación.
@@ -32,15 +33,26 @@ const OrderRepairItem = ({data}) => {
 		})
 	}
 
+	// Detalle Orden de reparación.
+	const handleDetail = (e) => {
+		e.preventDefault()
+		console.log(data)
+	}
+
 	// Render Component.
 	return (
 		<Fragment>
 			<tr>
-				<td>{data.OrderRepair.reception_date}</td>
-				<td><a href="#">{data.full_name}</a></td>
+				<td>
+					{/*{data.OrderRepair.reception_date}*/}
+					{moment(data.OrderRepair.created_at).tz('America/Lima').fromNow(true)}
+				</td>
+				<td>
+					<a href={`!#${data.full_name}`} onClick={handleDetail}>{data.full_name}</a>
+				</td>
 				<td>{data.OrderRepair.device_info}</td>
 				<td>{data.OrderRepair.status}</td>
-				<td>{data.OrderRepair.promised_date}, {data.OrderRepair.promised_time}</td>
+				<td>{`${moment(data.OrderRepair.promised_date).format('YYYY-MM-DD')}, ${data.OrderRepair.promised_time}`}</td>
 				<TdBtn>
 					<Button variant={'primary'} onClick={handleEdit} className="mr-2" size={'sm'}>
 						<FontAwesomeIcon icon={faEdit}/>
