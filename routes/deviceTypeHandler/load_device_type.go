@@ -3,7 +3,7 @@ package deviceTypeHandler
 import (
 	"encoding/json"
 	"net/http"
-	"sgt-server/database/deviceType"
+	"sgc-server/database/deviceType"
 	"strconv"
 )
 

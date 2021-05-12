@@ -2,7 +2,7 @@ package middlew
 
 import (
 	"net/http"
-	"sgt-server/routes/jwt"
+	"sgc-server/routes/jwt"
 )
 
 // ValidateJWT permite validar el JWT que nos viene en la petición.

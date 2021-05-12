@@ -3,7 +3,7 @@ package taxesHandler
 import (
 	"encoding/json"
 	"net/http"
-	"sgt-server/database/taxes"
+	"sgc-server/database/taxes"
 	"strconv"
 )
 

@@ -117,7 +117,9 @@ const UserItem = (props) => {
 				<td>{data.permission}</td>
 				<td>
 					<Dropdown as={ButtonGroup}>
-						<Button variant="info" size={'sm'} onClick={handleChangePassword}>Contraseña</Button>
+						<Button variant="info" size={'sm'} onClick={handleChangePassword}>
+							<span className="text-uppercase">Contraseña</span>
+						</Button>
 						<Dropdown.Toggle split variant="info" id="dropdown-split-basic"/>
 						<Dropdown.Menu>
 							{

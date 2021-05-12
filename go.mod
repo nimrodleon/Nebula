@@ -1,4 +1,4 @@
-module sgt-server
+module sgc-server
 
 go 1.16
 

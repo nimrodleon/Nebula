@@ -3,8 +3,8 @@ package warehouseHandler
 import (
 	"github.com/gorilla/mux"
 	"net/http"
-	"sgt-server/database/warehouse"
-	"sgt-server/routes/jwt"
+	"sgc-server/database/warehouse"
+	"sgc-server/routes/jwt"
 )
 
 // DeleteWarehouse borrar almacenes.

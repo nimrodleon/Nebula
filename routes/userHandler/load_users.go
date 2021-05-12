@@ -3,8 +3,8 @@ package userHandler
 import (
 	"encoding/json"
 	"net/http"
-	"sgt-server/database/user"
-	"sgt-server/routes/jwt"
+	"sgc-server/database/user"
+	"sgc-server/routes/jwt"
 	"strconv"
 )
 

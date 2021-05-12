@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"net/http"
-	"sgt-server/database/taxes"
+	"sgc-server/database/taxes"
 )
 
 // GetTax retorna un impuesto en especifico.

@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"sgt-server/database/auth"
-	"sgt-server/database/user"
-	"sgt-server/models"
-	"sgt-server/routes/jwt"
+	"sgc-server/database/auth"
+	"sgc-server/database/user"
+	"sgc-server/models"
+	"sgc-server/routes/jwt"
 )
 
 // AddUser agregar usuarios.

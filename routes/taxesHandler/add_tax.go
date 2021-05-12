@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"sgt-server/database/taxes"
-	"sgt-server/models"
+	"sgc-server/database/taxes"
+	"sgc-server/models"
 )
 
 // AddTax agrega un registro a la DB.

@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"net/http"
-	"sgt-server/database/deviceType"
-	"sgt-server/models"
+	"sgc-server/database/deviceType"
+	"sgc-server/models"
 )
 
 // EditDeviceType editar tipo de equipo.

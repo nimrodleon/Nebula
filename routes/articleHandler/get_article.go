@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"net/http"
-	"sgt-server/database/article"
+	"sgc-server/database/article"
 )
 
 // GetArticle devuelve un artículo.

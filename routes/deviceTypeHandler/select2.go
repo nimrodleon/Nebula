@@ -3,8 +3,8 @@ package deviceTypeHandler
 import (
 	"encoding/json"
 	"net/http"
-	"sgt-server/database/deviceType"
-	"sgt-server/models"
+	"sgc-server/database/deviceType"
+	"sgc-server/models"
 )
 
 // FindDeviceTypeWithSelect2 buscar tipos de equipo con select2.

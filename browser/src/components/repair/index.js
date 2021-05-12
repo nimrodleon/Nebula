@@ -15,6 +15,7 @@ const Repair = () => {
 	return (
 		<Fragment>
 			<Switch>
+				<Route path={`${match.path}/form/:orderRepairID`} component={OrderRepair}/>
 				<Route path={`${match.path}/form`} component={OrderRepair}/>
 				{/* # System default. */}
 				<Route path={match.path} component={RepairList}/>

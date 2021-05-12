@@ -3,7 +3,7 @@ package warehouseHandler
 import (
 	"encoding/json"
 	"net/http"
-	"sgt-server/database/warehouse"
+	"sgc-server/database/warehouse"
 	"strconv"
 )
 

@@ -3,7 +3,7 @@ package articleHandler
 import (
 	"encoding/json"
 	"net/http"
-	"sgt-server/database/article"
+	"sgc-server/database/article"
 	"strconv"
 )
 

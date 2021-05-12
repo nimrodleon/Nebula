@@ -2,7 +2,7 @@ package middlew
 
 import (
 	"net/http"
-	"sgt-server/database/db"
+	"sgc-server/database/db"
 )
 
 // CheckDb middleware que permite conocer el estado de la BD.

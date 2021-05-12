@@ -3,8 +3,8 @@ package user
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
-	"sgt-server/database/db"
-	"sgt-server/models"
+	"sgc-server/database/db"
+	"sgc-server/models"
 	"time"
 )
 

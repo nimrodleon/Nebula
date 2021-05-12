@@ -4,8 +4,8 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"sgt-server/database/db"
-	"sgt-server/models"
+	"sgc-server/database/db"
+	"sgc-server/models"
 	"time"
 )
 
@@ -24,7 +24,7 @@ func UpdateTax(doc models.Tax, ID string) (bool, error) {
 	if doc.Value >= 0 {
 		arrData["value"] = doc.Value
 	}
-	
+
 	updateString := bson.M{
 		"$set": arrData,
 	}

@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"sgt-server/database/warehouse"
-	"sgt-server/models"
+	"sgc-server/database/warehouse"
+	"sgc-server/models"
 )
 
 // AddWarehouse agrega un almacén.

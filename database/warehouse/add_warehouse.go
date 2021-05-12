@@ -3,8 +3,8 @@ package warehouse
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"sgt-server/database/db"
-	"sgt-server/models"
+	"sgc-server/database/db"
+	"sgc-server/models"
 	"time"
 )
 

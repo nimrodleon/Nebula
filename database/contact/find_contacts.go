@@ -4,8 +4,8 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"sgt-server/database/db"
-	"sgt-server/models"
+	"sgc-server/database/db"
+	"sgc-server/models"
 	"time"
 )
 
