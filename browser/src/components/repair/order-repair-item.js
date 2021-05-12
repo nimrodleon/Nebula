@@ -37,7 +37,7 @@ const OrderRepairItem = ({data}) => {
 		<Fragment>
 			<tr>
 				<td>{data.OrderRepair.reception_date}</td>
-				<td>{data.full_name}</td>
+				<td><a href="#">{data.full_name}</a></td>
 				<td>{data.OrderRepair.device_info}</td>
 				<td>{data.OrderRepair.status}</td>
 				<td>{data.OrderRepair.promised_date}, {data.OrderRepair.promised_time}</td>
