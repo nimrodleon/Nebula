@@ -165,3 +165,28 @@ const dispatchEditFormOrderRepair = (order) => ({
 	type: type.EDIT_FORM_ORDER_REPAIR,
 	payload: order
 })
+
+// botón detalles orden de reparación.
+export function openModalOrderRepair(id) {
+	return async (dispatch) => {
+		axios.get(`order_repairs/${id}`).then(({data}) => {
+			dispatch(dispatchOpenModalOrderRepair(data))
+		})
+	}
+}
+
+const dispatchOpenModalOrderRepair = (order) => ({
+	type: type.OPEN_MODAL_ORDER_REPAIR,
+	payload: order
+})
+
+// Cerrar modal orden de reparación.
+export function closeModalOrderRepair() {
+	return async (dispatch) => {
+		dispatch(dispatchCloseModalOrderRepair())
+	}
+}
+
+const dispatchCloseModalOrderRepair = () => ({
+	type: type.CLOSE_MODAL_ORDER_REPAIR
+})

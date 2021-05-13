@@ -6,6 +6,7 @@ import {faPlus, faSearch} from '@fortawesome/free-solid-svg-icons'
 import {useDispatch, useSelector} from 'react-redux'
 import {btnAddOrderRepair, LoadOrderRepairsAction} from '../../actions/order_repair'
 import OrderRepairItem from './order-repair-item'
+import OrderRepairDetail from './order-repair-detail'
 
 /**
  * Lista de reparaciones.
@@ -83,6 +84,7 @@ const RepairList = ({history}) => {
 					</Table>
 				</WrapBody>
 			</WrapContainer>
+			<OrderRepairDetail/>
 		</Fragment>
 	)
 }

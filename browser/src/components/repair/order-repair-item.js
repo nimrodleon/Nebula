@@ -5,7 +5,7 @@ import {Button} from 'react-bootstrap'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faEdit, faTrashAlt} from '@fortawesome/free-solid-svg-icons'
 import {SwalConfirmDialog, TdBtn} from '../common/util'
-import {DeleteOrderRepairAction, LoadOrderRepairsAction} from '../../actions/order_repair'
+import {DeleteOrderRepairAction, LoadOrderRepairsAction, openModalOrderRepair} from '../../actions/order_repair'
 import moment from 'moment-timezone'
 
 /**
@@ -36,6 +36,7 @@ const OrderRepairItem = ({data}) => {
 	// Detalle Orden de reparación.
 	const handleDetail = (e) => {
 		e.preventDefault()
+		dispatch(openModalOrderRepair(data.OrderRepair.id))
 		console.log(data)
 	}
 
