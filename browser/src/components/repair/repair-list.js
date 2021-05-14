@@ -67,21 +67,23 @@ const RepairList = ({history}) => {
 					</WrapHeaderItem>
 				</WrapHeader>
 				<WrapBody>
-					<Table striped={true} size={'sm'} className="mb-0">
-						<thead className="thead-light">
-						<tr className="text-uppercase">
-							<th>Fecha</th>
-							<th>Cliente</th>
-							<th>Información Equipo</th>
-							<th>Estado</th>
-							<th>Prometido</th>
-							<th></th>
-						</tr>
-						</thead>
-						<tbody>
-						{orderRepairs && orderRepairs.map(data => <OrderRepairItem key={data.OrderRepair.id} data={data}/>)}
-						</tbody>
-					</Table>
+					<div className="table-responsive">
+						<Table striped={true} size={'sm'} className="mb-0">
+							<thead className="thead-light">
+							<tr className="text-uppercase">
+								<th>Fecha</th>
+								<th>Cliente</th>
+								<th>Información Equipo</th>
+								<th>Estado</th>
+								<th>Prometido</th>
+								<th></th>
+							</tr>
+							</thead>
+							<tbody>
+							{orderRepairs && orderRepairs.map(data => <OrderRepairItem key={data.OrderRepair.id} data={data}/>)}
+							</tbody>
+						</Table>
+					</div>
 				</WrapBody>
 			</WrapContainer>
 			<OrderRepairDetail/>

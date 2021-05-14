@@ -1,7 +1,7 @@
 import React, {Fragment} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {closeModalOrderRepair} from '../../actions/order_repair'
-import {Modal} from 'react-bootstrap'
+import {Col, Modal, Row} from 'react-bootstrap'
 
 /**
  * Detalle Orden de Reparación.
@@ -26,11 +26,14 @@ const OrderRepairDetail = () => {
 					<Modal.Title className="text-uppercase">Detalle Orden de Reparación</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					Woohoo, you're reading this text in a modal!
-					Woohoo, you're reading this text in a modal!
-					Woohoo, you're reading this text in a modal!
-					Woohoo, you're reading this text in a modal!
-					Woohoo, you're reading this text in a modal!
+					<Row>
+						<Col xs={8}>
+							hola
+						</Col>
+						<Col xs={4}>
+							como estas
+						</Col>
+					</Row>
 				</Modal.Body>
 				{/*<Modal.Footer>
 					<Button variant="secondary" onClick={handleClose}>
