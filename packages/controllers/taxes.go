@@ -8,16 +8,21 @@ import (
 	"sgc-server/packages/jwt"
 	"sgc-server/packages/middlew"
 	"sgc-server/packages/models"
-	"sgc-server/packages/repository"
+	"sgc-server/packages/services"
 	"strconv"
 )
 
 func TaxRouterHandler(router *mux.Router) {
-	router.HandleFunc("/api/taxes", middlew.CheckDb(middlew.ValidateJWT(GetTaxesHandler))).Methods("GET")
-	router.HandleFunc("/api/taxes/{id}", middlew.CheckDb(middlew.ValidateJWT(GetTaxHandler))).Methods("GET")
-	router.HandleFunc("/api/taxes", middlew.CheckDb(middlew.ValidateJWT(AddTaxHandler))).Methods("POST")
-	router.HandleFunc("/api/taxes/{id}", middlew.CheckDb(middlew.ValidateJWT(EditTaxHandler))).Methods("PUT")
-	router.HandleFunc("/api/taxes/{id}", middlew.CheckDb(middlew.ValidateJWT(DeleteTaxHandler))).Methods("DELETE")
+	router.HandleFunc("/api/taxes",
+		middlew.CheckDb(middlew.ValidateJWT(GetTaxesHandler))).Methods("GET")
+	router.HandleFunc("/api/taxes/{id}",
+		middlew.CheckDb(middlew.ValidateJWT(GetTaxHandler))).Methods("GET")
+	router.HandleFunc("/api/taxes",
+		middlew.CheckDb(middlew.ValidateJWT(AddTaxHandler))).Methods("POST")
+	router.HandleFunc("/api/taxes/{id}",
+		middlew.CheckDb(middlew.ValidateJWT(EditTaxHandler))).Methods("PUT")
+	router.HandleFunc("/api/taxes/{id}",
+		middlew.CheckDb(middlew.ValidateJWT(DeleteTaxHandler))).Methods("DELETE")
 }
 
 // GetTaxesHandler cargar los impuestos.
@@ -33,7 +38,7 @@ func GetTaxesHandler(w http.ResponseWriter, r *http.Request) {
 
 	pag := int64(pagTemp)
 
-	result, status := repository.GetTaxes(pag, search)
+	result, status := services.GetTaxes(pag, search)
 	if status == false {
 		http.Error(w, "Error al leer los impuestos", http.StatusBadRequest)
 		return
@@ -53,7 +58,7 @@ func GetTaxHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	doc, err := repository.GetTax(taxId)
+	doc, err := services.GetTax(taxId)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar buscar el registro, "+err.Error(), http.StatusBadRequest)
 		return
@@ -73,7 +78,7 @@ func AddTaxHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	objID, status, err := repository.AddTax(doc)
+	objID, status, err := services.AddTax(doc)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar realizar el registro "+err.Error(), http.StatusBadRequest)
 		return
@@ -99,7 +104,7 @@ func EditTaxHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	status, err := repository.UpdateTax(doc, taxId)
+	status, err := services.UpdateTax(doc, taxId)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar modificar el registro. "+err.Error(), http.StatusBadRequest)
 		return
@@ -126,7 +131,7 @@ func DeleteTaxHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := repository.DeleteTax(taxId)
+	_, err := services.DeleteTax(taxId)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar borrar, "+err.Error(), http.StatusBadRequest)
 		return

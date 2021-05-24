@@ -8,17 +8,23 @@ import (
 	"sgc-server/packages/jwt"
 	"sgc-server/packages/middlew"
 	"sgc-server/packages/models"
-	"sgc-server/packages/repository"
+	"sgc-server/packages/services"
 	"strconv"
 )
 
 func DeviceTypeRouterHandler(router *mux.Router) {
-	router.HandleFunc("/api/device_types", middlew.CheckDb(middlew.ValidateJWT(GetDeviceTypesHandler))).Methods("GET")
-	router.HandleFunc("/api/device_types/{id}", middlew.CheckDb(middlew.ValidateJWT(GetDeviceTypeHandler))).Methods("GET")
-	router.HandleFunc("/api/device_types", middlew.CheckDb(middlew.ValidateJWT(AddDeviceTypeHandler))).Methods("POST")
-	router.HandleFunc("/api/device_types/{id}", middlew.CheckDb(middlew.ValidateJWT(EditDeviceTypeHandler))).Methods("PUT")
-	router.HandleFunc("/api/device_types/{id}", middlew.CheckDb(middlew.ValidateJWT(DeleteDeviceTypeHandler))).Methods("DELETE")
-	router.HandleFunc("/api/device_types/select2/q", middlew.CheckDb(middlew.ValidateJWT(GetDeviceTypeWithSelect2Handler))).Methods("GET")
+	router.HandleFunc("/api/device_types",
+		middlew.CheckDb(middlew.ValidateJWT(GetDeviceTypesHandler))).Methods("GET")
+	router.HandleFunc("/api/device_types/{id}",
+		middlew.CheckDb(middlew.ValidateJWT(GetDeviceTypeHandler))).Methods("GET")
+	router.HandleFunc("/api/device_types",
+		middlew.CheckDb(middlew.ValidateJWT(AddDeviceTypeHandler))).Methods("POST")
+	router.HandleFunc("/api/device_types/{id}",
+		middlew.CheckDb(middlew.ValidateJWT(EditDeviceTypeHandler))).Methods("PUT")
+	router.HandleFunc("/api/device_types/{id}",
+		middlew.CheckDb(middlew.ValidateJWT(DeleteDeviceTypeHandler))).Methods("DELETE")
+	router.HandleFunc("/api/device_types/select2/q",
+		middlew.CheckDb(middlew.ValidateJWT(GetDeviceTypeWithSelect2Handler))).Methods("GET")
 }
 
 // GetDeviceTypesHandler cargar tipos de equipo.
@@ -34,7 +40,7 @@ func GetDeviceTypesHandler(w http.ResponseWriter, r *http.Request) {
 
 	pag := int64(pagTemp)
 
-	result, status := repository.GetDeviceTypes(pag, search)
+	result, status := services.GetDeviceTypes(pag, search)
 	if status == false {
 		http.Error(w, "Error al leer los impuestos", http.StatusBadRequest)
 		return
@@ -54,7 +60,7 @@ func GetDeviceTypeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	doc, err := repository.GetDeviceType(deviceTypeId)
+	doc, err := services.GetDeviceType(deviceTypeId)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar buscar el registro, "+err.Error(), http.StatusBadRequest)
 		return
@@ -74,7 +80,7 @@ func AddDeviceTypeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	objID, status, err := repository.AddDeviceType(doc)
+	objID, status, err := services.AddDeviceType(doc)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar realizar el registro "+err.Error(), http.StatusBadRequest)
 		return
@@ -100,7 +106,7 @@ func EditDeviceTypeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	status, err := repository.UpdateDeviceType(doc, deviceTypeId)
+	status, err := services.UpdateDeviceType(doc, deviceTypeId)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar modificar el registro. "+err.Error(), http.StatusBadRequest)
 		return
@@ -127,7 +133,7 @@ func DeleteDeviceTypeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := repository.DeleteDeviceType(deviceTypeId)
+	_, err := services.DeleteDeviceType(deviceTypeId)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar borrar, "+err.Error(), http.StatusBadRequest)
 		return
@@ -143,7 +149,7 @@ func GetDeviceTypeWithSelect2Handler(w http.ResponseWriter, r *http.Request) {
 
 	var data models.Select2
 
-	result, status := repository.GetDeviceTypes(1, search)
+	result, status := services.GetDeviceTypes(1, search)
 	if status == false {
 		http.Error(w, "Error al leer los contactos", http.StatusBadRequest)
 		return

@@ -8,16 +8,21 @@ import (
 	"sgc-server/packages/jwt"
 	"sgc-server/packages/middlew"
 	"sgc-server/packages/models"
-	"sgc-server/packages/repository"
+	"sgc-server/packages/services"
 	"strconv"
 )
 
 func OrderRepairRouterHandler(router *mux.Router) {
-	router.HandleFunc("/api/order_repairs", middlew.CheckDb(middlew.ValidateJWT(GetOrderRepairsHandler))).Methods("GET")
-	router.HandleFunc("/api/order_repairs/{id}", middlew.CheckDb(middlew.ValidateJWT(GetOrderRepairHandler))).Methods("GET")
-	router.HandleFunc("/api/order_repairs", middlew.CheckDb(middlew.ValidateJWT(AddOrderRepairHandler))).Methods("POST")
-	router.HandleFunc("/api/order_repairs/{id}", middlew.CheckDb(middlew.ValidateJWT(EditOrderRepairHandler))).Methods("PUT")
-	router.HandleFunc("/api/order_repairs/{id}", middlew.CheckDb(middlew.ValidateJWT(DeleteOrderRepairHandler))).Methods("DELETE")
+	router.HandleFunc("/api/order_repairs",
+		middlew.CheckDb(middlew.ValidateJWT(GetOrderRepairsHandler))).Methods("GET")
+	router.HandleFunc("/api/order_repairs/{id}",
+		middlew.CheckDb(middlew.ValidateJWT(GetOrderRepairHandler))).Methods("GET")
+	router.HandleFunc("/api/order_repairs",
+		middlew.CheckDb(middlew.ValidateJWT(AddOrderRepairHandler))).Methods("POST")
+	router.HandleFunc("/api/order_repairs/{id}",
+		middlew.CheckDb(middlew.ValidateJWT(EditOrderRepairHandler))).Methods("PUT")
+	router.HandleFunc("/api/order_repairs/{id}",
+		middlew.CheckDb(middlew.ValidateJWT(DeleteOrderRepairHandler))).Methods("DELETE")
 }
 
 // GetOrderRepairsHandler carga las ordenes de reparación.
@@ -33,7 +38,7 @@ func GetOrderRepairsHandler(w http.ResponseWriter, r *http.Request) {
 
 	pag := int64(pagTemp)
 
-	result, status := repository.GetOrderRepairs(pag, search)
+	result, status := services.GetOrderRepairs(pag, search)
 	if status == false {
 		http.Error(w, "Error al leer las ordenes de reparación", http.StatusBadRequest)
 		return
@@ -53,7 +58,7 @@ func GetOrderRepairHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	doc, err := repository.GetOrderRepair(orderRepairId)
+	doc, err := services.GetOrderRepair(orderRepairId)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar buscar el registro, "+err.Error(), http.StatusBadRequest)
 		return
@@ -73,7 +78,7 @@ func AddOrderRepairHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	objID, status, err := repository.AddOrderRepair(doc)
+	objID, status, err := services.AddOrderRepair(doc)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar realizar el registro "+err.Error(), http.StatusBadRequest)
 		return
@@ -99,7 +104,7 @@ func EditOrderRepairHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	status, err := repository.UpdateOrderRepair(doc, orderRepairId)
+	status, err := services.UpdateOrderRepair(doc, orderRepairId)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar modificar el registro. "+err.Error(), http.StatusBadRequest)
 		return
@@ -126,7 +131,7 @@ func DeleteOrderRepairHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := repository.DeleteOrderRepair(orderRepairId)
+	_, err := services.DeleteOrderRepair(orderRepairId)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar borrar, "+err.Error(), http.StatusBadRequest)
 		return

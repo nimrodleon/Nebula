@@ -1,4 +1,4 @@
-package repository
+package services
 
 import (
 	"context"
@@ -10,23 +10,27 @@ import (
 	"time"
 )
 
-// GetContacts busca contactos en la base de datos.
-func GetContacts(page int64, search string) ([]*models.Contact, bool) {
+// GetArticles buscar artículos.
+func GetArticles(page int64, search string) ([]*models.Article, bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	data := config.MongoConnect.Database(config.Database)
-	col := data.Collection(config.ContactCollection)
+	col := data.Collection(config.ArticleCollection)
 
-	var results []*models.Contact
+	var results []*models.Article
 
 	findOptions := options.Find()
 	findOptions.SetSkip((page - 1) * 20)
 	findOptions.SetLimit(20)
 
 	query := bson.M{
-		"full_name":  bson.M{"$regex": `(?i)` + search},
 		"is_deleted": false,
+		"$or": []interface{}{
+			bson.M{"name": bson.M{"$regex": `(?i)` + search}},
+			bson.M{"bar_code": bson.M{"$regex": `(?i)` + search}},
+		},
+		// "name": bson.M{"$regex": `(?i)` + search},
 	}
 
 	cursor, err := col.Find(ctx, query, findOptions)
@@ -35,7 +39,7 @@ func GetContacts(page int64, search string) ([]*models.Contact, bool) {
 	}
 
 	for cursor.Next(ctx) {
-		var doc models.Contact
+		var doc models.Article
 		err := cursor.Decode(&doc)
 		if err != nil {
 			return results, false
@@ -51,36 +55,36 @@ func GetContacts(page int64, search string) ([]*models.Contact, bool) {
 	return results, true
 }
 
-// GetContact busca un contacto en la BD.
-func GetContact(ID string) (models.Contact, error) {
+// GetArticle devuelve un artículo.
+func GetArticle(ID string) (models.Article, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	data := config.MongoConnect.Database(config.Database)
-	col := data.Collection(config.ContactCollection)
+	col := data.Collection(config.ArticleCollection)
 
-	var contact models.Contact
+	var doc models.Article
 	objID, _ := primitive.ObjectIDFromHex(ID)
 
 	filter := bson.M{
 		"_id": objID,
 	}
 
-	err := col.FindOne(ctx, filter).Decode(&contact)
+	err := col.FindOne(ctx, filter).Decode(&doc)
 
 	if err != nil {
-		return contact, err
+		return doc, err
 	}
-	return contact, nil
+	return doc, nil
 }
 
-// AddContact registra los datos de los contactos.
-func AddContact(doc models.Contact) (string, bool, error) {
+// AddArticle agrega un artículo.
+func AddArticle(doc models.Article) (string, bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	data := config.MongoConnect.Database(config.Database)
-	col := data.Collection(config.ContactCollection)
+	col := data.Collection(config.ArticleCollection)
 
 	doc.IsDeleted = false
 
@@ -92,32 +96,31 @@ func AddContact(doc models.Contact) (string, bool, error) {
 	return objID.Hex(), true, nil
 }
 
-// UpdateContact actualiza el registro de contactos..
-func UpdateContact(doc models.Contact, ID string) (bool, error) {
+// UpdateArticle actualizar artículo.
+func UpdateArticle(doc models.Article, ID string) (bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	data := config.MongoConnect.Database(config.Database)
-	col := data.Collection(config.ContactCollection)
+	col := data.Collection(config.ArticleCollection)
 
 	arrData := make(map[string]interface{})
-	if len(doc.TypeDoc) > 0 {
-		arrData["type_doc"] = doc.TypeDoc
+	if len(doc.Name) > 0 {
+		arrData["name"] = doc.Name
 	}
-	if len(doc.Document) > 0 {
-		arrData["document"] = doc.Document
+	if len(doc.Type) > 0 {
+		arrData["type"] = doc.Type
 	}
-	if len(doc.FullName) > 0 {
-		arrData["full_name"] = doc.FullName
+	if len(doc.BarCode) > 0 {
+		arrData["bar_code"] = doc.BarCode
 	}
-	if len(doc.Address) > 0 {
-		arrData["address"] = doc.Address
+	if len(doc.TaxID) > 0 {
+		arrData["tax_id"] = doc.TaxID
 	}
-	if len(doc.PhoneNumber) > 0 {
-		arrData["phone_number"] = doc.PhoneNumber
-	}
-	if len(doc.Email) > 0 {
-		arrData["email"] = doc.Email
+	arrData["price_0"] = doc.Price0
+	arrData["price_1"] = doc.Price1
+	if len(doc.Remark) > 0 {
+		arrData["remark"] = doc.Remark
 	}
 
 	updateString := bson.M{
@@ -134,13 +137,13 @@ func UpdateContact(doc models.Contact, ID string) (bool, error) {
 	return true, nil
 }
 
-// DeleteContact hace un borrado lógico del documento.
-func DeleteContact(ID string) (bool, error) {
+// DeleteArticle borrar artículo.
+func DeleteArticle(ID string) (bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	data := config.MongoConnect.Database(config.Database)
-	col := data.Collection(config.ContactCollection)
+	col := data.Collection(config.ArticleCollection)
 
 	arrData := make(map[string]interface{})
 	arrData["is_deleted"] = true

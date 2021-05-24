@@ -1,4 +1,4 @@
-package repository
+package services
 
 import (
 	"context"
@@ -10,15 +10,15 @@ import (
 	"time"
 )
 
-// GetDeviceTypes buscar tipos de equipos.
-func GetDeviceTypes(page int64, search string) ([]*models.DeviceType, bool) {
+// GetWarehouses carga la lista de almacenes.
+func GetWarehouses(page int64, search string) ([]*models.Warehouse, bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	data := config.MongoConnect.Database(config.Database)
-	col := data.Collection(config.DeviceTypeCollection)
+	col := data.Collection(config.WarehouseCollection)
 
-	var results []*models.DeviceType
+	var results []*models.Warehouse
 
 	findOptions := options.Find()
 	findOptions.SetSkip((page - 1) * 20)
@@ -35,7 +35,7 @@ func GetDeviceTypes(page int64, search string) ([]*models.DeviceType, bool) {
 	}
 
 	for cursor.Next(ctx) {
-		var doc models.DeviceType
+		var doc models.Warehouse
 		err := cursor.Decode(&doc)
 		if err != nil {
 			return results, false
@@ -51,15 +51,15 @@ func GetDeviceTypes(page int64, search string) ([]*models.DeviceType, bool) {
 	return results, true
 }
 
-// GetDeviceType retorna un tipo de equipo.
-func GetDeviceType(ID string) (models.DeviceType, error) {
+// GetWarehouse retorna un almacén.
+func GetWarehouse(ID string) (models.Warehouse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	data := config.MongoConnect.Database(config.Database)
-	col := data.Collection(config.DeviceTypeCollection)
+	col := data.Collection(config.WarehouseCollection)
 
-	var doc models.DeviceType
+	var doc models.Warehouse
 	objID, _ := primitive.ObjectIDFromHex(ID)
 
 	filter := bson.M{
@@ -74,13 +74,51 @@ func GetDeviceType(ID string) (models.DeviceType, error) {
 	return doc, nil
 }
 
-// AddDeviceType agregar tipo de servicio.
-func AddDeviceType(doc models.DeviceType) (string, bool, error) {
+// GetWarehousesWithType retorna la lista de almacenes filtrado por tipo.
+func GetWarehousesWithType(typeWarehouse string, search string) ([]*models.Warehouse, bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	data := config.MongoConnect.Database(config.Database)
-	col := data.Collection(config.DeviceTypeCollection)
+	col := data.Collection(config.WarehouseCollection)
+
+	var results []*models.Warehouse
+
+	query := bson.M{
+		"type":       typeWarehouse,
+		"name":       bson.M{"$regex": `(?i)` + search},
+		"is_deleted": false,
+	}
+
+	cursor, err := col.Find(ctx, query)
+	if err != nil {
+		return results, false
+	}
+
+	for cursor.Next(ctx) {
+		var doc models.Warehouse
+		err := cursor.Decode(&doc)
+		if err != nil {
+			return results, false
+		}
+		results = append(results, &doc)
+	}
+
+	err = cursor.Err()
+	if err != nil {
+		return results, false
+	}
+	_ = cursor.Close(ctx)
+	return results, true
+}
+
+// AddWarehouse agrega un nuevo almacén.
+func AddWarehouse(doc models.Warehouse) (string, bool, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	data := config.MongoConnect.Database(config.Database)
+	col := data.Collection(config.WarehouseCollection)
 
 	doc.IsDeleted = false
 
@@ -92,15 +130,18 @@ func AddDeviceType(doc models.DeviceType) (string, bool, error) {
 	return objID.Hex(), true, nil
 }
 
-// UpdateDeviceType actualiza el tipo de equipo.
-func UpdateDeviceType(doc models.DeviceType, ID string) (bool, error) {
+// UpdateWarehouse actualiza un almacén.
+func UpdateWarehouse(doc models.Warehouse, ID string) (bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	data := config.MongoConnect.Database(config.Database)
-	col := data.Collection(config.DeviceTypeCollection)
+	col := data.Collection(config.WarehouseCollection)
 
 	arrData := make(map[string]interface{})
+	if len(doc.Type) > 0 {
+		arrData["type"] = doc.Type
+	}
 	if len(doc.Name) > 0 {
 		arrData["name"] = doc.Name
 	}
@@ -119,13 +160,13 @@ func UpdateDeviceType(doc models.DeviceType, ID string) (bool, error) {
 	return true, nil
 }
 
-// DeleteDeviceType borrar tipo de equipo.
-func DeleteDeviceType(ID string) (bool, error) {
+// DeleteWarehouse borra un almacén.
+func DeleteWarehouse(ID string) (bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	data := config.MongoConnect.Database(config.Database)
-	col := data.Collection(config.DeviceTypeCollection)
+	col := data.Collection(config.WarehouseCollection)
 
 	arrData := make(map[string]interface{})
 	arrData["is_deleted"] = true

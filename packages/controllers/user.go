@@ -10,22 +10,32 @@ import (
 	"sgc-server/packages/jwt"
 	"sgc-server/packages/middlew"
 	"sgc-server/packages/models"
-	"sgc-server/packages/repository"
+	"sgc-server/packages/services"
 	"strconv"
 	"time"
 )
 
 func UserRouterHandler(router *mux.Router) {
-	router.HandleFunc("/api/auth/login", middlew.CheckDb(UserLoginHandler)).Methods("POST")
-	router.HandleFunc("/api/auth/register_super_user", middlew.CheckDb(RegisterSuperUserHandler)).Methods("POST")
-	router.HandleFunc("/api/users", middlew.CheckDb(middlew.ValidateJWT(GetUsersHandler))).Methods("GET")
-	router.HandleFunc("/api/users/{id}", middlew.CheckDb(middlew.ValidateJWT(GetUserHandler))).Methods("GET")
-	router.HandleFunc("/api/users", middlew.CheckDb(middlew.ValidateJWT(AddUserHandler))).Methods("POST")
-	router.HandleFunc("/api/users/{id}", middlew.CheckDb(middlew.ValidateJWT(EditUserHandler))).Methods("PUT")
-	router.HandleFunc("/api/users/{id}", middlew.CheckDb(middlew.ValidateJWT(DeleteUserHandler))).Methods("DELETE")
-	router.HandleFunc("/api/users/change_status/{id}/{status}", middlew.CheckDb(middlew.ValidateJWT(UserChangeStatusHandler))).Methods("PATCH")
-	router.HandleFunc("/api/users/password_change/{id}", middlew.CheckDb(middlew.ValidateJWT(UserPasswordChangeHandler))).Methods("PATCH")
-	router.HandleFunc("/api/users/select2/q", middlew.CheckDb(middlew.ValidateJWT(GetUsersWithSelect2Handler))).Methods("GET")
+	router.HandleFunc("/api/auth/login",
+		middlew.CheckDb(UserLoginHandler)).Methods("POST")
+	router.HandleFunc("/api/auth/register_super_user",
+		middlew.CheckDb(RegisterSuperUserHandler)).Methods("POST")
+	router.HandleFunc("/api/users",
+		middlew.CheckDb(middlew.ValidateJWT(GetUsersHandler))).Methods("GET")
+	router.HandleFunc("/api/users/{id}",
+		middlew.CheckDb(middlew.ValidateJWT(GetUserHandler))).Methods("GET")
+	router.HandleFunc("/api/users",
+		middlew.CheckDb(middlew.ValidateJWT(AddUserHandler))).Methods("POST")
+	router.HandleFunc("/api/users/{id}",
+		middlew.CheckDb(middlew.ValidateJWT(EditUserHandler))).Methods("PUT")
+	router.HandleFunc("/api/users/{id}",
+		middlew.CheckDb(middlew.ValidateJWT(DeleteUserHandler))).Methods("DELETE")
+	router.HandleFunc("/api/users/change_status/{id}/{status}",
+		middlew.CheckDb(middlew.ValidateJWT(UserChangeStatusHandler))).Methods("PATCH")
+	router.HandleFunc("/api/users/password_change/{id}",
+		middlew.CheckDb(middlew.ValidateJWT(UserPasswordChangeHandler))).Methods("PATCH")
+	router.HandleFunc("/api/users/select2/q",
+		middlew.CheckDb(middlew.ValidateJWT(GetUsersWithSelect2Handler))).Methods("GET")
 }
 
 // UserLoginHandler realiza el login.
@@ -44,7 +54,7 @@ func UserLoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	doc, exist := repository.UserLoginIntent(t.UserName, t.Password)
+	doc, exist := services.UserLoginIntent(t.UserName, t.Password)
 	if exist == false {
 		http.Error(w, "Usuario y/o Contraseña inválidos", http.StatusBadRequest)
 		return
@@ -90,16 +100,16 @@ func RegisterSuperUserHandler(w http.ResponseWriter, r *http.Request) {
 	doc.Permission = "ROLE_SUPER"
 	doc.Suspended = false
 
-	_, exist, userId := repository.CheckUserExist(doc.UserName)
+	_, exist, userId := services.CheckUserExist(doc.UserName)
 	if exist == true {
-		status, _ := repository.UserPasswordChange(doc.Password, userId)
+		status, _ := services.UserPasswordChange(doc.Password, userId)
 		if status == false {
 			http.Error(w, "No se ha logrado modificar la contraseña", http.StatusBadRequest)
 			return
 		}
 		w.WriteHeader(http.StatusOK)
 	} else {
-		_, status, _ := repository.CreateUser(doc)
+		_, status, _ := services.CreateUser(doc)
 		if status == false {
 			http.Error(w, "No se ha logrado insertar el usuario", http.StatusBadRequest)
 			return
@@ -126,7 +136,7 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, status := repository.GetUsers(pag, search)
+	result, status := services.GetUsers(pag, search)
 	if status == false {
 		http.Error(w, "Error al leer los usuarios", http.StatusBadRequest)
 		return
@@ -151,7 +161,7 @@ func GetUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	doc, err := repository.GetUser(userId)
+	doc, err := services.GetUser(userId)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar buscar el registro, "+err.Error(), http.StatusBadRequest)
 		return
@@ -176,13 +186,13 @@ func AddUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, exist, _ := repository.CheckUserExist(doc.UserName)
+	_, exist, _ := services.CheckUserExist(doc.UserName)
 	if exist == true {
 		http.Error(w, "No se ha logrado agregar usuario", http.StatusBadRequest)
 		return
 	}
 
-	objID, status, err := repository.AddUser(doc)
+	objID, status, err := services.AddUser(doc)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar realizar el registro "+err.Error(), http.StatusBadRequest)
 		return
@@ -213,7 +223,7 @@ func EditUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	status, err := repository.UpdateUser(doc, userId)
+	status, err := services.UpdateUser(doc, userId)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar modificar el registro. "+err.Error(), http.StatusBadRequest)
 		return
@@ -240,7 +250,7 @@ func DeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := repository.DeleteUser(userId)
+	_, err := services.DeleteUser(userId)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar borrar, "+err.Error(), http.StatusBadRequest)
 		return
@@ -261,7 +271,7 @@ func UserChangeStatusHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	status, err := repository.ChangeStatusUserAccount(userId, userStatus)
+	status, err := services.ChangeStatusUserAccount(userId, userStatus)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar modificar el registro. "+err.Error(), http.StatusBadRequest)
 		return
@@ -292,7 +302,7 @@ func UserPasswordChangeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	status, err := repository.UserPasswordChange(doc.Password, userId)
+	status, err := services.UserPasswordChange(doc.Password, userId)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar modificar el registro. "+err.Error(), http.StatusBadRequest)
 		return
@@ -311,7 +321,7 @@ func GetUsersWithSelect2Handler(w http.ResponseWriter, r *http.Request) {
 
 	var data models.Select2
 
-	result, status := repository.GetActiveUsers(search)
+	result, status := services.GetActiveUsers(search)
 	if status == false {
 		http.Error(w, "Error al leer los usuarios", http.StatusBadRequest)
 		return

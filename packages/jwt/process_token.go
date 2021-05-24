@@ -5,7 +5,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"log"
 	"sgc-server/packages/models"
-	"sgc-server/packages/repository"
+	"sgc-server/packages/services"
 	"strings"
 )
 
@@ -33,7 +33,7 @@ func ProcessToken(tk string) (*models.Claim, bool, string, error) {
 		return myKey, nil
 	})
 	if err == nil {
-		_, found, _ := repository.CheckUserExist(claims.UserName)
+		_, found, _ := services.CheckUserExist(claims.UserName)
 		if found == true {
 			UserName = claims.UserName
 			Permission = claims.Permission

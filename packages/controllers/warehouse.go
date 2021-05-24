@@ -8,17 +8,23 @@ import (
 	"sgc-server/packages/jwt"
 	"sgc-server/packages/middlew"
 	"sgc-server/packages/models"
-	"sgc-server/packages/repository"
+	"sgc-server/packages/services"
 	"strconv"
 )
 
 func WarehouseRouterHandler(router *mux.Router) {
-	router.HandleFunc("/api/warehouses", middlew.CheckDb(middlew.ValidateJWT(GetWarehousesHandler))).Methods("GET")
-	router.HandleFunc("/api/warehouses/{id}", middlew.CheckDb(middlew.ValidateJWT(GetWarehouseHandler))).Methods("GET")
-	router.HandleFunc("/api/warehouses", middlew.CheckDb(middlew.ValidateJWT(AddWarehouseHandler))).Methods("POST")
-	router.HandleFunc("/api/warehouses/{id}", middlew.CheckDb(middlew.ValidateJWT(EditWarehouseHandler))).Methods("PUT")
-	router.HandleFunc("/api/warehouses/{id}", middlew.CheckDb(middlew.ValidateJWT(DeleteWarehouseHandler))).Methods("DELETE")
-	router.HandleFunc("/api/warehouses/{type}/select2/q", middlew.CheckDb(middlew.ValidateJWT(GetWarehousesWithSelect2Handler))).Methods("GET")
+	router.HandleFunc("/api/warehouses",
+		middlew.CheckDb(middlew.ValidateJWT(GetWarehousesHandler))).Methods("GET")
+	router.HandleFunc("/api/warehouses/{id}",
+		middlew.CheckDb(middlew.ValidateJWT(GetWarehouseHandler))).Methods("GET")
+	router.HandleFunc("/api/warehouses",
+		middlew.CheckDb(middlew.ValidateJWT(AddWarehouseHandler))).Methods("POST")
+	router.HandleFunc("/api/warehouses/{id}",
+		middlew.CheckDb(middlew.ValidateJWT(EditWarehouseHandler))).Methods("PUT")
+	router.HandleFunc("/api/warehouses/{id}",
+		middlew.CheckDb(middlew.ValidateJWT(DeleteWarehouseHandler))).Methods("DELETE")
+	router.HandleFunc("/api/warehouses/{type}/select2/q",
+		middlew.CheckDb(middlew.ValidateJWT(GetWarehousesWithSelect2Handler))).Methods("GET")
 }
 
 // GetWarehousesHandler cargar almacenes.
@@ -34,7 +40,7 @@ func GetWarehousesHandler(w http.ResponseWriter, r *http.Request) {
 
 	pag := int64(pagTemp)
 
-	result, status := repository.GetWarehouses(pag, search)
+	result, status := services.GetWarehouses(pag, search)
 	if status == false {
 		http.Error(w, "Error al leer los almacenes", http.StatusBadRequest)
 		return
@@ -54,7 +60,7 @@ func GetWarehouseHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	doc, err := repository.GetWarehouse(warehouseId)
+	doc, err := services.GetWarehouse(warehouseId)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar buscar el registro, "+err.Error(), http.StatusBadRequest)
 		return
@@ -74,7 +80,7 @@ func AddWarehouseHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	objID, status, err := repository.AddWarehouse(doc)
+	objID, status, err := services.AddWarehouse(doc)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar realizar el registro "+err.Error(), http.StatusBadRequest)
 		return
@@ -100,7 +106,7 @@ func EditWarehouseHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	status, err := repository.UpdateWarehouse(doc, warehouseId)
+	status, err := services.UpdateWarehouse(doc, warehouseId)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar modificar el registro. "+err.Error(), http.StatusBadRequest)
 		return
@@ -127,7 +133,7 @@ func DeleteWarehouseHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := repository.DeleteWarehouse(warehouseId)
+	_, err := services.DeleteWarehouse(warehouseId)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar borrar, "+err.Error(), http.StatusBadRequest)
 		return
@@ -150,7 +156,7 @@ func GetWarehousesWithSelect2Handler(w http.ResponseWriter, r *http.Request) {
 
 	var data models.Select2
 
-	result, status := repository.GetWarehousesWithType(typeWarehouse, search)
+	result, status := services.GetWarehousesWithType(typeWarehouse, search)
 	if status == false {
 		http.Error(w, "Error al leer los contactos", http.StatusBadRequest)
 		return

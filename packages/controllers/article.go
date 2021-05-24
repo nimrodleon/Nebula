@@ -8,16 +8,21 @@ import (
 	"sgc-server/packages/jwt"
 	"sgc-server/packages/middlew"
 	"sgc-server/packages/models"
-	"sgc-server/packages/repository"
+	"sgc-server/packages/services"
 	"strconv"
 )
 
 func ArticleRouterHandler(router *mux.Router) {
-	router.HandleFunc("/api/articles", middlew.CheckDb(middlew.ValidateJWT(GetArticlesHandler))).Methods("GET")
-	router.HandleFunc("/api/articles/{id}", middlew.CheckDb(middlew.ValidateJWT(GetArticleHandler))).Methods("GET")
-	router.HandleFunc("/api/articles", middlew.CheckDb(middlew.ValidateJWT(AddArticleHandler))).Methods("POST")
-	router.HandleFunc("/api/articles/{id}", middlew.CheckDb(middlew.ValidateJWT(EditArticleHandler))).Methods("PUT")
-	router.HandleFunc("/api/articles/{id}", middlew.CheckDb(middlew.ValidateJWT(DeleteArticleHandler))).Methods("DELETE")
+	router.HandleFunc("/api/articles",
+		middlew.CheckDb(middlew.ValidateJWT(GetArticlesHandler))).Methods("GET")
+	router.HandleFunc("/api/articles/{id}",
+		middlew.CheckDb(middlew.ValidateJWT(GetArticleHandler))).Methods("GET")
+	router.HandleFunc("/api/articles",
+		middlew.CheckDb(middlew.ValidateJWT(AddArticleHandler))).Methods("POST")
+	router.HandleFunc("/api/articles/{id}",
+		middlew.CheckDb(middlew.ValidateJWT(EditArticleHandler))).Methods("PUT")
+	router.HandleFunc("/api/articles/{id}",
+		middlew.CheckDb(middlew.ValidateJWT(DeleteArticleHandler))).Methods("DELETE")
 }
 
 // GetArticlesHandler carga la lista de artículos.
@@ -33,7 +38,7 @@ func GetArticlesHandler(w http.ResponseWriter, r *http.Request) {
 
 	pag := int64(pagTemp)
 
-	result, status := repository.GetArticles(pag, search)
+	result, status := services.GetArticles(pag, search)
 	if status == false {
 		http.Error(w, "Error al leer los artículos", http.StatusBadRequest)
 		return
@@ -53,7 +58,7 @@ func GetArticleHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	doc, err := repository.GetArticle(articleId)
+	doc, err := services.GetArticle(articleId)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar buscar el registro, "+err.Error(), http.StatusBadRequest)
 		return
@@ -73,7 +78,7 @@ func AddArticleHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	objID, status, err := repository.AddArticle(doc)
+	objID, status, err := services.AddArticle(doc)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar realizar el registro "+err.Error(), http.StatusBadRequest)
 		return
@@ -99,7 +104,7 @@ func EditArticleHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	status, err := repository.UpdateArticle(doc, articleId)
+	status, err := services.UpdateArticle(doc, articleId)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar modificar el registro. "+err.Error(), http.StatusBadRequest)
 		return
@@ -126,7 +131,7 @@ func DeleteArticleHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := repository.DeleteArticle(articleId)
+	_, err := services.DeleteArticle(articleId)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar borrar, "+err.Error(), http.StatusBadRequest)
 		return

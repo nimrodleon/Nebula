@@ -1,4 +1,4 @@
-package repository
+package services
 
 import (
 	"context"
@@ -10,15 +10,15 @@ import (
 	"time"
 )
 
-// GetTaxes buscar impuestos.
-func GetTaxes(page int64, search string) ([]*models.Tax, bool) {
+// GetDeviceTypes buscar tipos de equipos.
+func GetDeviceTypes(page int64, search string) ([]*models.DeviceType, bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	data := config.MongoConnect.Database(config.Database)
-	col := data.Collection(config.TaxCollection)
+	col := data.Collection(config.DeviceTypeCollection)
 
-	var results []*models.Tax
+	var results []*models.DeviceType
 
 	findOptions := options.Find()
 	findOptions.SetSkip((page - 1) * 20)
@@ -35,7 +35,7 @@ func GetTaxes(page int64, search string) ([]*models.Tax, bool) {
 	}
 
 	for cursor.Next(ctx) {
-		var doc models.Tax
+		var doc models.DeviceType
 		err := cursor.Decode(&doc)
 		if err != nil {
 			return results, false
@@ -51,15 +51,15 @@ func GetTaxes(page int64, search string) ([]*models.Tax, bool) {
 	return results, true
 }
 
-// GetTax retorna un impuesto.
-func GetTax(ID string) (models.Tax, error) {
+// GetDeviceType retorna un tipo de equipo.
+func GetDeviceType(ID string) (models.DeviceType, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	data := config.MongoConnect.Database(config.Database)
-	col := data.Collection(config.TaxCollection)
+	col := data.Collection(config.DeviceTypeCollection)
 
-	var doc models.Tax
+	var doc models.DeviceType
 	objID, _ := primitive.ObjectIDFromHex(ID)
 
 	filter := bson.M{
@@ -74,13 +74,13 @@ func GetTax(ID string) (models.Tax, error) {
 	return doc, nil
 }
 
-// AddTax agrega nuevo impuesto.
-func AddTax(doc models.Tax) (string, bool, error) {
+// AddDeviceType agregar tipo de servicio.
+func AddDeviceType(doc models.DeviceType) (string, bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	data := config.MongoConnect.Database(config.Database)
-	col := data.Collection(config.TaxCollection)
+	col := data.Collection(config.DeviceTypeCollection)
 
 	doc.IsDeleted = false
 
@@ -92,20 +92,17 @@ func AddTax(doc models.Tax) (string, bool, error) {
 	return objID.Hex(), true, nil
 }
 
-// UpdateTax actualiza los datos del impuesto
-func UpdateTax(doc models.Tax, ID string) (bool, error) {
+// UpdateDeviceType actualiza el tipo de equipo.
+func UpdateDeviceType(doc models.DeviceType, ID string) (bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	data := config.MongoConnect.Database(config.Database)
-	col := data.Collection(config.TaxCollection)
+	col := data.Collection(config.DeviceTypeCollection)
 
 	arrData := make(map[string]interface{})
 	if len(doc.Name) > 0 {
 		arrData["name"] = doc.Name
-	}
-	if doc.Value >= 0 {
-		arrData["value"] = doc.Value
 	}
 
 	updateString := bson.M{
@@ -122,13 +119,13 @@ func UpdateTax(doc models.Tax, ID string) (bool, error) {
 	return true, nil
 }
 
-// DeleteTax borra un impuesto.
-func DeleteTax(ID string) (bool, error) {
+// DeleteDeviceType borrar tipo de equipo.
+func DeleteDeviceType(ID string) (bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	data := config.MongoConnect.Database(config.Database)
-	col := data.Collection(config.TaxCollection)
+	col := data.Collection(config.DeviceTypeCollection)
 
 	arrData := make(map[string]interface{})
 	arrData["is_deleted"] = true

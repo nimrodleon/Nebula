@@ -1,4 +1,4 @@
-package repository
+package services
 
 import (
 	"context"
@@ -10,27 +10,23 @@ import (
 	"time"
 )
 
-// GetArticles buscar artículos.
-func GetArticles(page int64, search string) ([]*models.Article, bool) {
+// GetTaxes buscar impuestos.
+func GetTaxes(page int64, search string) ([]*models.Tax, bool) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	data := config.MongoConnect.Database(config.Database)
-	col := data.Collection(config.ArticleCollection)
+	col := data.Collection(config.TaxCollection)
 
-	var results []*models.Article
+	var results []*models.Tax
 
 	findOptions := options.Find()
 	findOptions.SetSkip((page - 1) * 20)
 	findOptions.SetLimit(20)
 
 	query := bson.M{
+		"name":       bson.M{"$regex": `(?i)` + search},
 		"is_deleted": false,
-		"$or": []interface{}{
-			bson.M{"name": bson.M{"$regex": `(?i)` + search}},
-			bson.M{"bar_code": bson.M{"$regex": `(?i)` + search}},
-		},
-		// "name": bson.M{"$regex": `(?i)` + search},
 	}
 
 	cursor, err := col.Find(ctx, query, findOptions)
@@ -39,7 +35,7 @@ func GetArticles(page int64, search string) ([]*models.Article, bool) {
 	}
 
 	for cursor.Next(ctx) {
-		var doc models.Article
+		var doc models.Tax
 		err := cursor.Decode(&doc)
 		if err != nil {
 			return results, false
@@ -55,15 +51,15 @@ func GetArticles(page int64, search string) ([]*models.Article, bool) {
 	return results, true
 }
 
-// GetArticle devuelve un artículo.
-func GetArticle(ID string) (models.Article, error) {
+// GetTax retorna un impuesto.
+func GetTax(ID string) (models.Tax, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	data := config.MongoConnect.Database(config.Database)
-	col := data.Collection(config.ArticleCollection)
+	col := data.Collection(config.TaxCollection)
 
-	var doc models.Article
+	var doc models.Tax
 	objID, _ := primitive.ObjectIDFromHex(ID)
 
 	filter := bson.M{
@@ -78,13 +74,13 @@ func GetArticle(ID string) (models.Article, error) {
 	return doc, nil
 }
 
-// AddArticle agrega un artículo.
-func AddArticle(doc models.Article) (string, bool, error) {
+// AddTax agrega nuevo impuesto.
+func AddTax(doc models.Tax) (string, bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	data := config.MongoConnect.Database(config.Database)
-	col := data.Collection(config.ArticleCollection)
+	col := data.Collection(config.TaxCollection)
 
 	doc.IsDeleted = false
 
@@ -96,31 +92,20 @@ func AddArticle(doc models.Article) (string, bool, error) {
 	return objID.Hex(), true, nil
 }
 
-// UpdateArticle actualizar artículo.
-func UpdateArticle(doc models.Article, ID string) (bool, error) {
+// UpdateTax actualiza los datos del impuesto
+func UpdateTax(doc models.Tax, ID string) (bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	data := config.MongoConnect.Database(config.Database)
-	col := data.Collection(config.ArticleCollection)
+	col := data.Collection(config.TaxCollection)
 
 	arrData := make(map[string]interface{})
 	if len(doc.Name) > 0 {
 		arrData["name"] = doc.Name
 	}
-	if len(doc.Type) > 0 {
-		arrData["type"] = doc.Type
-	}
-	if len(doc.BarCode) > 0 {
-		arrData["bar_code"] = doc.BarCode
-	}
-	if len(doc.TaxID) > 0 {
-		arrData["tax_id"] = doc.TaxID
-	}
-	arrData["price_0"] = doc.Price0
-	arrData["price_1"] = doc.Price1
-	if len(doc.Remark) > 0 {
-		arrData["remark"] = doc.Remark
+	if doc.Value >= 0 {
+		arrData["value"] = doc.Value
 	}
 
 	updateString := bson.M{
@@ -137,13 +122,13 @@ func UpdateArticle(doc models.Article, ID string) (bool, error) {
 	return true, nil
 }
 
-// DeleteArticle borrar artículo.
-func DeleteArticle(ID string) (bool, error) {
+// DeleteTax borra un impuesto.
+func DeleteTax(ID string) (bool, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 
 	data := config.MongoConnect.Database(config.Database)
-	col := data.Collection(config.ArticleCollection)
+	col := data.Collection(config.TaxCollection)
 
 	arrData := make(map[string]interface{})
 	arrData["is_deleted"] = true

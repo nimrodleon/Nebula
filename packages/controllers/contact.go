@@ -8,17 +8,23 @@ import (
 	"sgc-server/packages/jwt"
 	"sgc-server/packages/middlew"
 	"sgc-server/packages/models"
-	"sgc-server/packages/repository"
+	"sgc-server/packages/services"
 	"strconv"
 )
 
 func ContactRouterHandler(router *mux.Router) {
-	router.HandleFunc("/api/contacts", middlew.CheckDb(middlew.ValidateJWT(GetContactsHandler))).Methods("GET")
-	router.HandleFunc("/api/contacts/{id}", middlew.CheckDb(middlew.ValidateJWT(GetContactHandler))).Methods("GET")
-	router.HandleFunc("/api/contacts", middlew.CheckDb(middlew.ValidateJWT(AddContactHandler))).Methods("POST")
-	router.HandleFunc("/api/contacts/{id}", middlew.CheckDb(middlew.ValidateJWT(EditContactHandler))).Methods("PUT")
-	router.HandleFunc("/api/contacts/{id}", middlew.CheckDb(middlew.ValidateJWT(DeleteContactHandler))).Methods("DELETE")
-	router.HandleFunc("/api/contacts/select2/q", middlew.CheckDb(middlew.ValidateJWT(GetContactWithSelect2Handler))).Methods("GET")
+	router.HandleFunc("/api/contacts",
+		middlew.CheckDb(middlew.ValidateJWT(GetContactsHandler))).Methods("GET")
+	router.HandleFunc("/api/contacts/{id}",
+		middlew.CheckDb(middlew.ValidateJWT(GetContactHandler))).Methods("GET")
+	router.HandleFunc("/api/contacts",
+		middlew.CheckDb(middlew.ValidateJWT(AddContactHandler))).Methods("POST")
+	router.HandleFunc("/api/contacts/{id}",
+		middlew.CheckDb(middlew.ValidateJWT(EditContactHandler))).Methods("PUT")
+	router.HandleFunc("/api/contacts/{id}",
+		middlew.CheckDb(middlew.ValidateJWT(DeleteContactHandler))).Methods("DELETE")
+	router.HandleFunc("/api/contacts/select2/q",
+		middlew.CheckDb(middlew.ValidateJWT(GetContactWithSelect2Handler))).Methods("GET")
 }
 
 // GetContactsHandler endpoint cargar contactos.
@@ -34,7 +40,7 @@ func GetContactsHandler(w http.ResponseWriter, r *http.Request) {
 
 	pag := int64(pagTemp)
 
-	result, status := repository.GetContacts(pag, search)
+	result, status := services.GetContacts(pag, search)
 	if status == false {
 		http.Error(w, "Error al leer los contactos", http.StatusBadRequest)
 		return
@@ -54,7 +60,7 @@ func GetContactHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	doc, err := repository.GetContact(contactId)
+	doc, err := services.GetContact(contactId)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar buscar el registro, "+err.Error(), http.StatusBadRequest)
 		return
@@ -74,7 +80,7 @@ func AddContactHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	objID, status, err := repository.AddContact(doc)
+	objID, status, err := services.AddContact(doc)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar realizar el registro "+err.Error(), http.StatusBadRequest)
 		return
@@ -100,7 +106,7 @@ func EditContactHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	status, err := repository.UpdateContact(doc, contactId)
+	status, err := services.UpdateContact(doc, contactId)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar modificar el registro. "+err.Error(), http.StatusBadRequest)
 		return
@@ -127,7 +133,7 @@ func DeleteContactHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := repository.DeleteContact(contactId)
+	_, err := services.DeleteContact(contactId)
 	if err != nil {
 		http.Error(w, "Ocurrió un error al intentar borrar, "+err.Error(), http.StatusBadRequest)
 		return
@@ -143,7 +149,7 @@ func GetContactWithSelect2Handler(w http.ResponseWriter, r *http.Request) {
 
 	var data models.Select2
 
-	result, status := repository.GetContacts(1, search)
+	result, status := services.GetContacts(1, search)
 	if status == false {
 		http.Error(w, "Error al leer los contactos", http.StatusBadRequest)
 		return
