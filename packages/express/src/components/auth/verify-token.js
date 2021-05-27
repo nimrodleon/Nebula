@@ -4,12 +4,12 @@ import {getUser} from './controller'
 
 // Middleware para verificar el Token de acceso.
 const verifyToken = (req, res = response, next) => {
-  if (!req.headers.Authorization) {
+  if (!req.headers.authorization) {
     return res.status(401).json({
       msg: 'Solicitud no autorizada'
     })
   }
-  const token = req.headers.Authorization.split(' ')[1]
+  const token = req.headers.authorization.split(' ')[1]
   if (token === null) {
     return res.status(401).json({
       msg: 'Solicitud no autorizada'
@@ -23,6 +23,12 @@ const verifyToken = (req, res = response, next) => {
           msg: 'Token invalido'
         })
       } else {
+        // verificar estado activo.
+        if (currentUser.suspended !== false) {
+          return res.status(401).json({
+            msg: 'Token invalido'
+          })
+        }
         req.currentUser = currentUser
         next()
       }

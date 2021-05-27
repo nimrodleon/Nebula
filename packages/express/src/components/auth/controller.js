@@ -1,7 +1,6 @@
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import * as store from './store'
-import {Error} from 'mongoose'
+import {UserStore} from './store'
 
 const saltRounds = 10
 
@@ -23,7 +22,18 @@ export function generatePassword(myTextPassword) {
 export function getUsers(query) {
   return new Promise((resolve, reject) => {
     try {
-      resolve(store.getUsers(query))
+      resolve(UserStore.getUsers(query))
+    } catch (err) {
+      reject(err)
+    }
+  })
+}
+
+// Lista de usuarios activos.
+export function getUsersActive(query) {
+  return new Promise((resolve, reject) => {
+    try {
+      resolve(UserStore.getUsersActive(query))
     } catch (err) {
       reject(err)
     }
@@ -34,7 +44,7 @@ export function getUsers(query) {
 export function getUser(userId) {
   return new Promise((resolve, reject) => {
     try {
-      resolve(store.getUser(userId))
+      resolve(UserStore.getUser(userId))
     } catch (err) {
       reject(err)
     }
@@ -47,7 +57,7 @@ export function createUser(data) {
     generatePassword(data.password).then(hash => {
       data.password = hash
       try {
-        resolve(store.createUser(data))
+        resolve(UserStore.createUser(data))
       } catch (err) {
         reject(err)
       }
@@ -59,7 +69,7 @@ export function createUser(data) {
 export function updateUser(id, data) {
   return new Promise((resolve, reject) => {
     try {
-      resolve(store.updateUser(id, data))
+      resolve(UserStore.updateUser(id, data))
     } catch (err) {
       reject(err)
     }
@@ -70,7 +80,7 @@ export function updateUser(id, data) {
 export function deleteUser(id) {
   return new Promise((resolve, reject) => {
     try {
-      resolve(store.deleteUser(id))
+      resolve(UserStore.deleteUser(id))
     } catch (err) {
       reject(err)
     }
@@ -80,7 +90,7 @@ export function deleteUser(id) {
 // Login de acceso => retorna un [token].
 export function userLogin(userName, password) {
   return new Promise(async (resolve, reject) => {
-    let _user = await store.checkUserExist(userName)
+    let _user = await UserStore.checkUserExist(userName)
     if (!_user) reject(new Error('El usuario no Existe'))
     if (_user.suspended) reject(new Error('Cuenta Suspendida'))
     bcrypt.compare(password, _user.password).then(result => {
@@ -106,7 +116,7 @@ export function passwordChange(userId, password) {
       generatePassword(password).then(hash => {
         currentUser.password = hash
         try {
-          resolve(store.updateUser(userId, currentUser))
+          resolve(UserStore.updateUser(userId, currentUser))
         } catch (err) {
           reject(err)
         }
@@ -119,15 +129,15 @@ export function passwordChange(userId, password) {
 export function createSuperUser() {
   return new Promise((resolve, reject) => {
     let userName = process.env.SUPER_USER_NAME
-    store.checkUserExist(userName).then(currentUser => {
+    UserStore.checkUserExist(userName).then(currentUser => {
       if (currentUser) {
         generatePassword(process.env.PASSWORD_SUPER_USER).then(hash => {
           currentUser.password = hash
-          resolve(store.updateUser(currentUser._id, currentUser))
+          resolve(UserStore.updateUser(currentUser._id, currentUser))
         }).catch(err => reject(err))
       } else {
         generatePassword(process.env.PASSWORD_SUPER_USER).then(hash => {
-          resolve(store.createSuperUser(userName, hash))
+          resolve(UserStore.createSuperUser(userName, hash))
         }).catch(err => reject(err))
       }
     })
@@ -137,10 +147,10 @@ export function createSuperUser() {
 // cambiar estado del usuario.
 export function changeStatusUserAccount(userId, status) {
   return new Promise((resolve, reject) => {
-    store.getUser(userId).then(currentUser => {
+    UserStore.getUser(userId).then(currentUser => {
       currentUser.suspended = status
       try {
-        resolve(store.updateUser(userId, currentUser))
+        resolve(UserStore.updateUser(userId, currentUser))
       } catch (err) {
         reject(err)
       }

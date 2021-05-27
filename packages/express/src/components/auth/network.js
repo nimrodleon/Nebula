@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import express, {response} from 'express'
 import * as controller from './controller'
 import verifyToken from './verify-token'
@@ -13,7 +14,7 @@ function loginAccess(req, res = response) {
   controller.userLogin(userName, password).then(token => {
     res.json({token: token})
   }).catch(err => {
-    res.status(500).json({err: err})
+    console.error('[loginAccess]', err)
   })
 }
 
@@ -23,9 +24,9 @@ router.post('/register_super_user', [], registerSuperUser)
 
 function registerSuperUser(req, res = response) {
   controller.createSuperUser().then(result => {
-    res.json({data: result})
+    res.json(result)
   }).catch(err => {
-    res.status(500).json({err: err})
+    console.error('[registerSuperUser]', err)
   })
 }
 
@@ -35,9 +36,9 @@ router.get('/', [verifyToken], getUsers)
 
 function getUsers(req, res = response) {
   controller.getUsers(req.query.search).then(result => {
-    res.json({data: result})
+    res.json(result)
   }).catch(err => {
-    res.status(500).json({err: err})
+    console.error('[getUsers]', err)
   })
 }
 
@@ -47,9 +48,9 @@ router.get('/:id', [verifyToken], getUser)
 
 function getUser(req, res = response) {
   controller.getUser(req.params.id).then(result => {
-    res.json({data: result})
+    res.json(result)
   }).catch(err => {
-    res.status(500).json({err: err})
+    console.error('[getUser]', err)
   })
 }
 
@@ -59,9 +60,9 @@ router.post('/', [verifyToken], createUser)
 
 function createUser(req, res = response) {
   controller.createUser(req.body).then(result => {
-    res.json({data: result})
+    res.status(201).json(result)
   }).catch(err => {
-    res.status(500).json({err: err})
+    console.error('[createUser]', err)
   })
 }
 
@@ -71,9 +72,9 @@ router.put('/:id', [verifyToken], updateUser)
 
 function updateUser(req, res = response) {
   controller.updateUser(req.params.id, req.body).then(result => {
-    res.json({data: result})
+    res.json(result)
   }).catch(err => {
-    res.status(500).json({err: err})
+    console.error('[updateUser]', err)
   })
 }
 
@@ -83,9 +84,9 @@ router.delete('/:id', [verifyToken], deleteUser)
 
 function deleteUser(req, res = response) {
   controller.deleteUser(req.params.id).then(result => {
-    res.json({data: result})
+    res.json(result)
   }).catch(err => {
-    res.status(500).json({err: err})
+    console.error('[deleteUser]', err)
   })
 }
 
@@ -94,10 +95,10 @@ function deleteUser(req, res = response) {
 router.patch('/change_status/:id/:status', [verifyToken], userChangeStatus)
 
 function userChangeStatus(req, res = response) {
-  controller.changeStatusUserAccount(req.params.id, req.params.status).then(result => {
-    res.json({data: result})
+  controller.changeStatusUserAccount(req.params.id, req.params.status).then(() => {
+    res.status(200).send()
   }).catch(err => {
-    res.status(500).json({err: err})
+    console.error('[userChangeStatus]', err)
   })
 }
 
@@ -106,7 +107,29 @@ function userChangeStatus(req, res = response) {
 router.patch('/password_change/:id', [verifyToken], userPasswordChange)
 
 function userPasswordChange(req, res = response) {
+  const {password} = req.body
+  controller.passwordChange(req.params.id, password).then(() => {
+    res.status(200).send()
+  }).catch(err => {
+    console.error('[userPasswordChange]', err)
+  })
+}
 
+// listar usuarios con select2.
+// http://<HOST>/api/users/select2/q
+router.get('/select2/q', [verifyToken], getUsersWithSelect2)
+
+function getUsersWithSelect2(req, res = response) {
+  let {term = ''} = req.query
+  controller.getUsersActive(term).then(async (result) => {
+    let data = {results: []}
+    await _.forEach(result, value => {
+      data.results.push({id: value._id, text: value.fullName})
+    })
+    res.json(data)
+  }).catch(err => {
+    console.error('[getUsersWithSelect2]', err)
+  })
 }
 
 export default router
