@@ -1,3 +1,4 @@
+import dotenv from 'dotenv'
 import express from 'express'
 import logger from 'morgan'
 import router from './network/routes'
@@ -7,6 +8,7 @@ import path from 'path'
 import http from 'http'
 
 const app = express()
+dotenv.config()
 
 app.use(logger('dev'))
 app.use(express.json())

@@ -1,6 +1,7 @@
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import * as store from './store'
+import {Error} from 'mongoose'
 
 const saltRounds = 10
 
@@ -19,10 +20,10 @@ export function generatePassword(myTextPassword) {
 }
 
 // Lista de usuarios.
-export function getUsers(status) {
+export function getUsers(query) {
   return new Promise((resolve, reject) => {
     try {
-      resolve(store.getUsers(status))
+      resolve(store.getUsers(query))
     } catch (err) {
       reject(err)
     }
@@ -79,20 +80,16 @@ export function deleteUser(id) {
 // Login de acceso => retorna un [token].
 export function userLogin(userName, password) {
   return new Promise(async (resolve, reject) => {
-    let _user = await store.getUserByUserName(userName)
+    let _user = await store.checkUserExist(userName)
     if (!_user) reject(new Error('El usuario no Existe'))
     if (_user.suspended) reject(new Error('Cuenta Suspendida'))
     bcrypt.compare(password, _user.password).then(result => {
       if (result === false) {
         reject(new Error('Contraseña Incorrecta'))
       } else {
-        let exp = _user.isAdmin || _user.redes ? '10m' : '4h'
         let token = jwt.sign({
           _id: _user._id,
-          isAdmin: _user.isAdmin,
-          redes: _user.redes,
-          caja: _user.caja,
-        }, 'ias0SH23FN47L0ZciKN204BFfWwj6vNY', {expiresIn: exp})
+        }, process.env.JWT_SECRET_KEY, {expiresIn: '24h'})
         resolve(token)
       }
     })
@@ -115,5 +112,38 @@ export function passwordChange(userId, password) {
         }
       }).catch(err => reject(err))
     })
+  })
+}
+
+// registrar cuenta super usuario.
+export function createSuperUser() {
+  return new Promise((resolve, reject) => {
+    let userName = process.env.SUPER_USER_NAME
+    store.checkUserExist(userName).then(currentUser => {
+      if (currentUser) {
+        generatePassword(process.env.PASSWORD_SUPER_USER).then(hash => {
+          currentUser.password = hash
+          resolve(store.updateUser(currentUser._id, currentUser))
+        }).catch(err => reject(err))
+      } else {
+        generatePassword(process.env.PASSWORD_SUPER_USER).then(hash => {
+          resolve(store.createSuperUser(userName, hash))
+        }).catch(err => reject(err))
+      }
+    })
+  })
+}
+
+// cambiar estado del usuario.
+export function changeStatusUserAccount(userId, status) {
+  return new Promise((resolve, reject) => {
+    store.getUser(userId).then(currentUser => {
+      currentUser.suspended = status
+      try {
+        resolve(store.updateUser(userId, currentUser))
+      } catch (err) {
+        reject(err)
+      }
+    }).catch(err => reject(err))
   })
 }
