@@ -18,7 +18,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(cors())
 const dbname = process.env.DB_NAME || 'sgc-server'
 mongoose.connect(`mongodb://127.0.0.1:27017/${dbname}`, {
-  useNewUrlParser: true, useUnifiedTopology: true
+  useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true
 }).then(() => {
   router(app)
   console.log('database connect success!')
