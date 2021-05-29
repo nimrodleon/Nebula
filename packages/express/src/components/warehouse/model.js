@@ -10,5 +10,5 @@ const warehouseSchema = new Schema({
   }
 })
 
-// definición del modelo usuario.
+// definición del modelo almacén.
 export const Warehouse = model('Warehouse', warehouseSchema)
