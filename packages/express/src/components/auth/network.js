@@ -1,14 +1,14 @@
 import _ from 'lodash'
 import express, {response} from 'express'
 import * as controller from './controller'
-import verifyToken from './verify-token'
+import verifyToken from '../middlewares/verify-token'
 
 const router = express.Router()
 
-// Login de acceso al sistema.
 // http://<HOST>/api/users/login
 router.post('/login', [], loginAccess)
 
+// Login de acceso al sistema.
 function loginAccess(req, res = response) {
   let {userName, password} = req.body
   controller.userLogin(userName, password).then(token => {
@@ -18,10 +18,10 @@ function loginAccess(req, res = response) {
   })
 }
 
-// registrar super usuario.
 // http://<HOST>/api/users/register_super_user
 router.post('/register_super_user', [], registerSuperUser)
 
+// registrar super usuario.
 function registerSuperUser(req, res = response) {
   controller.createSuperUser().then(result => {
     res.json(result)
@@ -30,10 +30,10 @@ function registerSuperUser(req, res = response) {
   })
 }
 
-// Lista de usuarios.
 // http://<HOST>/api/users/
 router.get('/', [verifyToken], getUsers)
 
+// Lista de usuarios.
 function getUsers(req, res = response) {
   controller.getUsers(req.query.search).then(result => {
     res.json(result)
@@ -42,10 +42,10 @@ function getUsers(req, res = response) {
   })
 }
 
-// obtener usuario por id.
 // http://<HOST>/api/users/:id
 router.get('/:id', [verifyToken], getUser)
 
+// obtener usuario por id.
 function getUser(req, res = response) {
   controller.getUser(req.params.id).then(result => {
     res.json(result)
@@ -54,10 +54,10 @@ function getUser(req, res = response) {
   })
 }
 
-// registrar usuario.
 // http://<HOST>/api/users/
 router.post('/', [verifyToken], createUser)
 
+// registrar usuario.
 function createUser(req, res = response) {
   controller.createUser(req.body).then(result => {
     res.status(201).json(result)
@@ -66,10 +66,10 @@ function createUser(req, res = response) {
   })
 }
 
-// editar usuario por id.
 // http://<HOST>/api/users/:id
 router.put('/:id', [verifyToken], updateUser)
 
+// editar usuario por id.
 function updateUser(req, res = response) {
   controller.updateUser(req.params.id, req.body).then(result => {
     res.json(result)
@@ -78,10 +78,10 @@ function updateUser(req, res = response) {
   })
 }
 
-// borrar usuario por id.
 // http://<HOST>/api/users/:id
 router.delete('/:id', [verifyToken], deleteUser)
 
+// borrar usuario por id.
 function deleteUser(req, res = response) {
   controller.deleteUser(req.params.id).then(result => {
     res.json(result)
@@ -90,10 +90,10 @@ function deleteUser(req, res = response) {
   })
 }
 
-// cambiar estado del usuario.
 // http://<HOST>/api/users/change_status/:id/:status
 router.patch('/change_status/:id/:status', [verifyToken], userChangeStatus)
 
+// cambiar estado del usuario.
 function userChangeStatus(req, res = response) {
   controller.changeStatusUserAccount(req.params.id, req.params.status).then(() => {
     res.status(200).send()
@@ -102,10 +102,10 @@ function userChangeStatus(req, res = response) {
   })
 }
 
-// cambiar contraseña del usuario.
 // http://<HOST>/api/users/password_change/:id
 router.patch('/password_change/:id', [verifyToken], userPasswordChange)
 
+// cambiar contraseña del usuario.
 function userPasswordChange(req, res = response) {
   const {password} = req.body
   controller.passwordChange(req.params.id, password).then(() => {
@@ -115,10 +115,10 @@ function userPasswordChange(req, res = response) {
   })
 }
 
-// listar usuarios con select2.
 // http://<HOST>/api/users/select2/q
 router.get('/select2/q', [verifyToken], getUsersWithSelect2)
 
+// listar usuarios con select2.
 function getUsersWithSelect2(req, res = response) {
   let {term = ''} = req.query
   controller.getUsersActive(term).then(async (result) => {
@@ -132,4 +132,5 @@ function getUsersWithSelect2(req, res = response) {
   })
 }
 
-export default router
+// exportar rutas auth.
+export const authRouter = router

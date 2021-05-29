@@ -1,7 +1,7 @@
-import authRouter from '../components/auth/network'
+import * as network from './network'
 
 const routes = (server) => {
-  server.use('/api/users', authRouter)
+  server.use('/api/users', network.authRouter)
 }
 
 export default routes

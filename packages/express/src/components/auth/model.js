@@ -30,5 +30,11 @@ const userSchema = new Schema({
   }
 })
 
+// quitar password de la serialización.
+userSchema.methods.toJSON = function () {
+  const {password, ...user} = this.toObject()
+  return user
+}
+
 // definición del modelo usuario.
 export const User = model('User', userSchema)
