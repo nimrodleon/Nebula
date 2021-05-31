@@ -6,6 +6,7 @@ const routes = (server) => {
   server.use('/api/taxes', network.taxRouter)
   server.use('/api/articles', network.articleRouter)
   server.use('/api/contacts', network.contactRouter)
+  server.use('/api/order_repairs', network.orderRepairRouter)
 }
 
 export default routes
