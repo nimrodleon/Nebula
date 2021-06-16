@@ -31,9 +31,16 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/select2/dist/css/select2.css",
+              "node_modules/@ttskch/select2-bootstrap4-theme/dist/select2-bootstrap4.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/jquery/dist/jquery.js",
+              "node_modules/@popperjs/core/dist/umd/popper.js",
+              "node_modules/bootstrap/dist/js/bootstrap.js",
+              "node_modules/select2/dist/js/select2.js"
+            ]
           },
           "configurations": {
             "production": {
