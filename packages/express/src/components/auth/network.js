@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import express, {response} from 'express'
 import * as controller from './controller'
-import verifyToken from '../middlewares/verify-token'
+import {verifyToken} from '../middlewares'
 
 const router = express.Router()
 
@@ -11,10 +11,15 @@ router.post('/login', [], loginAccess)
 // Login de acceso al sistema.
 function loginAccess(req, res = response) {
   let {userName, password} = req.body
+  console.log(userName, password)
   controller.userLogin(userName, password).then(token => {
     res.json({token: token})
   }).catch(err => {
-    console.error('[loginAccess]', err)
+    console.error('[loginAccess]', err.message)
+    res.status(400).json({
+      ok: false,
+      msg: 'Usuario y/o Contraseña Invalida!'
+    })
   })
 }
 
@@ -26,7 +31,8 @@ function registerSuperUser(req, res = response) {
   controller.createSuperUser().then(result => {
     res.json(result)
   }).catch(err => {
-    console.error('[registerSuperUser]', err)
+    console.error('[registerSuperUser]', err.message)
+    res.status(400).json({ok: false})
   })
 }
 
@@ -35,7 +41,8 @@ router.get('/', [verifyToken], getUsers)
 
 // Lista de usuarios.
 function getUsers(req, res = response) {
-  controller.getUsers(req.query.search).then(result => {
+  const {search = ''} = req.query
+  controller.getUsers(search).then(result => {
     res.json(result)
   }).catch(err => {
     console.error('[getUsers]', err)
@@ -55,14 +62,17 @@ function getUser(req, res = response) {
 }
 
 // http://<HOST>/api/users/
-router.post('/', [verifyToken], createUser)
+router.post('/', [
+  verifyToken
+
+], createUser)
 
 // registrar usuario.
 function createUser(req, res = response) {
   controller.createUser(req.body).then(result => {
     res.status(201).json(result)
   }).catch(err => {
-    console.error('[createUser]', err)
+    console.error('[createUser]', err.message)
   })
 }
 
@@ -74,7 +84,7 @@ function updateUser(req, res = response) {
   controller.updateUser(req.params.id, req.body).then(result => {
     res.json(result)
   }).catch(err => {
-    console.error('[updateUser]', err)
+    console.error('[updateUser]', err.message)
   })
 }
 

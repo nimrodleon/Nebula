@@ -57,6 +57,7 @@ export class UserStore {
       userName: userName,
       password: passwordHash,
       permission: 'ROLE_SUPER',
+      email: 'super@local.pe',
       suspended: false
     })
     return this.createUser(_user)

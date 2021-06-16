@@ -99,7 +99,7 @@ export function userLogin(userName, password) {
       } else {
         let token = jwt.sign({
           _id: _user._id,
-        }, process.env.JWT_SECRET_KEY, {expiresIn: '24h'})
+        }, process.env.JWT_SECRET_KEY, {expiresIn: '12h'})
         resolve(token)
       }
     })

@@ -1,5 +1,5 @@
 import express, {response} from 'express'
-import verifyToken from '../middlewares/verify-token'
+import {verifyToken} from '../middlewares'
 import {OrderRepairController} from './controller'
 
 const router = express.Router()
