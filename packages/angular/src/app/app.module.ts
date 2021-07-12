@@ -5,16 +5,20 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {LoginComponent} from './login/login.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import {HomeComponent} from './home/home.component';
+import {GlobalModule} from './global/global.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent
+    LoginComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    GlobalModule
   ],
   providers: [],
   bootstrap: [AppComponent]

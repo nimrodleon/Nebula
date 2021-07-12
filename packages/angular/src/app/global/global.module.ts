@@ -1,19 +1,18 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {NavbarComponent} from './navbar/navbar.component';
-import {SidebarComponent} from './sidebar/sidebar.component';
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
-    NavbarComponent,
-    SidebarComponent
+    NavbarComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    FontAwesomeModule
   ],
   exports: [
-    NavbarComponent,
-    SidebarComponent
+    NavbarComponent
   ]
 })
 export class GlobalModule {
