@@ -1,0 +1,37 @@
+.WrapLogin {
+  height: 100vh;
+  justify-content: space-between;
+
+  #background {
+    background-color: #f8f8f8;
+    background-image: url("../../assets/background.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    width: 100%;
+  }
+
+  .bgCover {
+    position: relative;
+    background: rgba(0, 0, 0, 0.3);
+    height: 100%;
+    width: 100%;
+  }
+
+  .Company {
+    background: rgba(#198754, 0.3);
+    color: white;
+    padding: 15px;
+    border-radius: 0 15px 0 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+
+  .LoginContent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    width: 650px;
+  }
+}
