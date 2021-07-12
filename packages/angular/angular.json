@@ -31,9 +31,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss",
-              "node_modules/select2/dist/css/select2.css",
-              "node_modules/@ttskch/select2-bootstrap4-theme/dist/select2-bootstrap4.css"
+              "src/styles.scss"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
