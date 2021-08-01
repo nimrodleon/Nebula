@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {faPlus, faSyncAlt, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {faPlus, faSignOutAlt, faSyncAlt, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-caja-diaria',
@@ -10,6 +10,7 @@ export class CajaDiariaComponent implements OnInit {
   faSyncAlt = faSyncAlt;
   faPlus = faPlus;
   faTrashAlt = faTrashAlt;
+  faSignOutAlt = faSignOutAlt;
 
   constructor() {
   }
