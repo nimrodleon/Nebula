@@ -1,0 +1,37 @@
+.SystemOption {
+  margin: 4px;
+
+  .routerLink {
+    display: flex;
+    text-decoration: none;
+
+    &:hover {
+      background-color: #f4f6f8;
+      border-radius: 4px;
+      text-decoration: none;
+    }
+  }
+
+  .SystemOptionIcon {
+    background-color: #919eab;
+    padding: 4px 8px;
+    border-radius: 2px;
+    margin: 10px;
+
+    .ng-fa-icon {
+      color: white;
+      font-size: 1.2rem;
+    }
+  }
+
+  .SystemOptionTitle {
+    color: #006fc6;
+    font-weight: bold;
+    display: block;
+  }
+
+  .SystemOptionDetail {
+    color: #637381;
+  }
+
+}

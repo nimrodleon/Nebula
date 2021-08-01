@@ -58,7 +58,26 @@
     <div class="col-12">
       <div class="card">
         <div class="card-body">
-          This is some text within a card body.
+          <div class="row">
+            <div class="col-4">
+              <app-system-option [iconLink]="faCog"
+                                 [hrefLink]="'#'" [titleLink]="'General'"
+                                 [detailLink]="'Información de la Empresa'">
+              </app-system-option>
+            </div>
+            <div class="col-4">
+              <app-system-option [iconLink]="faUserAlt"
+                                 [hrefLink]="'#'" [titleLink]="'Usuarios'"
+                                 [detailLink]="'Lista de Usuarios'">
+              </app-system-option>
+            </div>
+            <div class="col-4">
+              <app-system-option [iconLink]="faWarehouse"
+                                 [hrefLink]="'#'" [titleLink]="'Almacenes'"
+                                 [detailLink]="'Lista de Almacenes'">
+              </app-system-option>
+            </div>
+          </div>
         </div>
       </div>
     </div>
