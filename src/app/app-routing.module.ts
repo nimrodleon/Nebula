@@ -21,6 +21,10 @@ const routes: Routes = [
     path: 'sales',
     loadChildren: () => import('./sales/sales.module').then(m => m.SalesModule)
   },
+  {
+    path: 'inventory',
+    loadChildren: () => import('./inventory/inventory.module').then(m => m.InventoryModule)
+  },
   {path: '', component: HomeComponent, pathMatch: 'full'}
 ];
 
