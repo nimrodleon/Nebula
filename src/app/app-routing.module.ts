@@ -13,6 +13,10 @@ const routes: Routes = [
     path: 'point-of-sale',
     loadChildren: () => import('./point-of-sale/point-of-sale.module').then(m => m.PointOfSaleModule)
   },
+  {
+    path: 'shopping',
+    loadChildren: () => import('./shopping/shopping.module').then(m => m.ShoppingModule)
+  },
   {path: '', component: HomeComponent, pathMatch: 'full'}
 ];
 

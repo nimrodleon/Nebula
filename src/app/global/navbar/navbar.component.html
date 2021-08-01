@@ -23,12 +23,7 @@
           </a>
           <ul class="dropdown-menu">
             <li>
-              <a class="dropdown-item text-uppercase" href="#">
-                <fa-icon [icon]="faBox"></fa-icon>
-                <span class="ms-1">Almacén</span></a>
-            </li>
-            <li>
-              <a class="dropdown-item text-uppercase" href="#">
+              <a routerLink="/shopping" class="dropdown-item text-uppercase">
                 <fa-icon [icon]="faShoppingBasket"></fa-icon>
                 <span class="ms-1">Compras</span></a>
             </li>
@@ -36,6 +31,11 @@
               <a class="dropdown-item text-uppercase" href="#">
                 <fa-icon [icon]="faCashRegister"></fa-icon>
                 <span class="ms-1">Ventas</span></a>
+            </li>
+            <li>
+              <a class="dropdown-item text-uppercase" href="#">
+                <fa-icon [icon]="faBox"></fa-icon>
+                <span class="ms-1">Inventario</span></a>
             </li>
             <li>
               <hr class="dropdown-divider">

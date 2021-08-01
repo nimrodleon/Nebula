@@ -7,14 +7,26 @@
           <label class="col-form-label fw-bold">Filtrar por:</label>
         </div>
         <div class="col-auto">
+          <input type="number" step="1" value="2021" class="form-control">
+        </div>
+        <div class="col-auto">
           <select class="form-select">
-            <option value="Producto">Producto</option>
-            <option value="Servicio">Servicio</option>
-            <option value="Packs/Promo">Packs/Promo</option>
+            <option value="01">ENERO</option>
+            <option value="02">FEBRERO</option>
+            <option value="03">MARZO</option>
+            <option value="04">ABRIL</option>
+            <option value="05">MAYO</option>
+            <option value="06">JUNIO</option>
+            <option value="07">JULIO</option>
+            <option value="08">AGOSTO</option>
+            <option value="09">SEPTIEMBRE</option>
+            <option value="10">OCTUBRE</option>
+            <option value="11">NOVIEMBRE</option>
+            <option value="12">DICIEMBRE</option>
           </select>
         </div>
         <div class="col-auto">
-          <input type="search" class="form-control" placeholder="PROD/SERV...">
+          <input type="search" class="form-control" placeholder="PROVEEDOR...">
         </div>
         <div class="col-auto">
           <button type="submit" class="btn btn-success">
@@ -35,25 +47,25 @@
         <table class="table table-striped mb-0">
           <thead>
           <tr class="text-uppercase">
-            <th>Código</th>
-            <th>Unidad</th>
-            <th>Descripción</th>
-            <th>Stock</th>
-            <th>Precio</th>
+            <th>Numero</th>
+            <th>Proveedor</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+            <th>SubTotal</th>
+            <th>Impuesto</th>
+            <th>Total</th>
             <th></th>
           </tr>
           </thead>
           <tbody>
           <tr>
-            <td>4774</td>
-            <td>NUI</td>
-            <td>Impresora Epson TM-20II</td>
-            <td>
-              <button class="btn btn-info btn-sm">
-                <fa-icon [icon]="faSearch"></fa-icon>
-              </button>
-            </td>
+            <td>F001-4514</td>
+            <td class="text-uppercase">GRUPO MAXIMA INTERNACIONAL</td>
+            <td>2021-07-31</td>
+            <td><span class="badge bg-warning">CRÉDITO</span></td>
+            <td>10.00</td>
             <td>451.00</td>
+            <td>241.50</td>
             <td>
               <div class="actions ms-auto">
                 <button type="button" class="btn btn-secondary btn-sm me-2">
@@ -66,15 +78,13 @@
             </td>
           </tr>
           <tr>
-            <td>4074</td>
-            <td>NUI</td>
-            <td>Laptop Hp Core i3 RAM 8gb SSD 240GB - CP-K441</td>
-            <td>
-              <button class="btn btn-info btn-sm">
-                <fa-icon [icon]="faSearch"></fa-icon>
-              </button>
-            </td>
-            <td>2500.00</td>
+            <td>F001-4500</td>
+            <td class="text-uppercase">DELTRON S.A.C</td>
+            <td>2021-07-31</td>
+            <td><span class="badge bg-success">PAGADO</span></td>
+            <td>50.00</td>
+            <td>350.00</td>
+            <td>452.00</td>
             <td>
               <div class="actions ms-auto">
                 <button type="button" class="btn btn-secondary btn-sm me-2">
