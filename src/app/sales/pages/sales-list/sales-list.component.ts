@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {faEdit, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {faCog, faEdit, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-sales-list',
@@ -11,6 +11,7 @@ export class SalesListComponent implements OnInit {
   faPlus = faPlus;
   faEdit = faEdit;
   faTrashAlt = faTrashAlt;
+  faCog = faCog;
 
   constructor() {
   }

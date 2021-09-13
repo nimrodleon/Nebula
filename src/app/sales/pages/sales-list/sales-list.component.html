@@ -35,10 +35,15 @@
           </button>
         </div>
         <div class="col-auto">
-          <button type="button" class="btn btn-primary">
-            <fa-icon [icon]="faPlus"></fa-icon>
-            <span class="text-uppercase ms-1">Agregar</span>
-          </button>
+          <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+              <fa-icon [icon]="faCog"></fa-icon>
+              <span class="text-uppercase ms-1">Opciones</span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">Nota de Venta</a></li>
+            </ul>
+          </div>
         </div>
       </form>
     </div>
