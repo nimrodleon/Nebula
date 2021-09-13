@@ -1,0 +1,115 @@
+<app-navbar></app-navbar>
+<div class="container">
+  <div class="row">
+    <div class="col-12 bg-white my-2 py-3">
+      <form class="row row-cols-auto g-2">
+        <div class="col-auto">
+          <button type="button" class="btn btn-secondary">
+            <fa-icon [icon]="faPlus"></fa-icon>
+            <span class="text-uppercase ms-1">Entrada/Salida</span>
+          </button>
+        </div>
+        <div class="col-auto">
+          <button type="button" class="btn btn-primary">
+            <fa-icon [icon]="faPlus"></fa-icon>
+            <span class="text-uppercase ms-1">Operación</span>
+          </button>
+        </div>
+        <div class="col-auto">
+          <button type="button" class="btn btn-success">
+            <fa-icon [icon]="faPrint"></fa-icon>
+            <span class="text-uppercase ms-1">Resumen</span>
+          </button>
+        </div>
+        <div class="col-auto">
+          <button type="button" class="btn btn-danger">
+            <fa-icon [icon]="faLock"></fa-icon>
+            <span class="text-uppercase ms-1">Cerrar</span>
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="col-12 bg-white py-3">
+      <h5 class="fw-bold text-uppercase">Operaciones de Caja</h5>
+      <div class="table-responsive">
+        <table class="table table-striped mb-0">
+          <thead>
+          <tr class="text-uppercase">
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Tipo doc</th>
+            <th>Numero</th>
+            <th>Contacto</th>
+            <th>Glosa</th>
+            <th>F.Pago</th>
+            <th>Monto</th>
+            <td></td>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="text-success">
+            <td>2021-09-13</td>
+            <td>12:00</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>APERTURA DE CAJA</td>
+            <td>EFECTIVO</td>
+            <td>100.00</td>
+            <td class="text-end">
+              <button type="button" class="btn btn-danger btn-sm">
+                <fa-icon [icon]="faMinusCircle"></fa-icon>
+              </button>
+            </td>
+          </tr>
+          <tr class="text-success">
+            <td>2021-09-13</td>
+            <td>12:00</td>
+            <td>BOLETA</td>
+            <td>B001-0001</td>
+            <td>CLIENTE APELLIDOS</td>
+            <td>-</td>
+            <td>EFECTIVO</td>
+            <td>100.00</td>
+            <td class="text-end">
+              <button type="button" class="btn btn-danger btn-sm">
+                <fa-icon [icon]="faMinusCircle"></fa-icon>
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td>2021-09-13</td>
+            <td>12:00</td>
+            <td>FACTURA</td>
+            <td>F001-0001</td>
+            <td>DEMO S.A.C.</td>
+            <td>-</td>
+            <td>YAPE</td>
+            <td>100.00</td>
+            <td class="text-end">
+              <button type="button" class="btn btn-danger btn-sm">
+                <fa-icon [icon]="faMinusCircle"></fa-icon>
+              </button>
+            </td>
+          </tr>
+          <tr class="text-danger">
+            <td>2021-09-13</td>
+            <td>12:00</td>
+            <td>-</td>
+            <td>-</td>
+            <td>IVAN DOMINGUEZ</td>
+            <td>PAGO DE LUZ</td>
+            <td>EFECTIVO</td>
+            <td>100.00</td>
+            <td class="text-end">
+              <button type="button" class="btn btn-danger btn-sm">
+                <fa-icon [icon]="faMinusCircle"></fa-icon>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
