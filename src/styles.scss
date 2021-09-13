@@ -2,3 +2,11 @@
 // ============================================================
 @import "~select2/src/scss/core";
 @import "~select2-bootstrap-5-theme/src/include-all";
+
+body {
+  background-color: #f7fafc;
+}
+
+.actions {
+  width: 75px;
+}

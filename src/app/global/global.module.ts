@@ -1,18 +1,23 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {NavbarComponent} from './navbar/navbar.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import {RouterModule} from '@angular/router';
+import {NavbarComponent} from './navbar/navbar.component';
+import {SystemOptionComponent} from './system-option/system-option.component';
 
 @NgModule({
   declarations: [
-    NavbarComponent
+    NavbarComponent,
+    SystemOptionComponent
   ],
   imports: [
     CommonModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    RouterModule
   ],
   exports: [
-    NavbarComponent
+    NavbarComponent,
+    SystemOptionComponent
   ]
 })
 export class GlobalModule {

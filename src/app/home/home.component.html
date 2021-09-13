@@ -1,1 +1,85 @@
 <app-navbar></app-navbar>
+<div class="container">
+  <div class="row py-4 favorites">
+    <div class="col-3">
+      <div class="card" routerLink="/inventory">
+        <div class="card-body">
+          <div class="d-flex">
+            <div class="font-monospace">
+              <h5 class="text-uppercase">Contactos</h5>
+              <span class="text-uppercase">Lista de Contactos</span>
+            </div>
+            <fa-icon [icon]="faUserAlt"></fa-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="card" routerLink="/shopping">
+        <div class="card-body">
+          <div class="d-flex">
+            <div class="font-monospace">
+              <h5 class="text-uppercase">Compras</h5>
+              <span class="text-uppercase">Listado de Compras</span>
+            </div>
+            <fa-icon [icon]="faShoppingBasket"></fa-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="card" routerLink="/sales">
+        <div class="card-body">
+          <div class="d-flex">
+            <div class="font-monospace">
+              <h5 class="text-uppercase">Ventas</h5>
+              <span class="text-uppercase">Listado de Ventas</span>
+            </div>
+            <fa-icon [icon]="faCashRegister"></fa-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-3">
+      <div class="card" routerLink="/inventory">
+        <div class="card-body">
+          <div class="d-flex">
+            <div class="font-monospace">
+              <h5 class="text-uppercase">Inventario</h5>
+              <span class="text-uppercase">Listado de Inventario</span>
+            </div>
+            <fa-icon [icon]="faBox"></fa-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col-4">
+              <app-system-option [iconLink]="faCog"
+                                 [hrefLink]="'#'" [titleLink]="'General'"
+                                 [detailLink]="'Información de la Empresa'">
+              </app-system-option>
+            </div>
+            <div class="col-4">
+              <app-system-option [iconLink]="faUserAlt"
+                                 [hrefLink]="'#'" [titleLink]="'Usuarios'"
+                                 [detailLink]="'Lista de Usuarios'">
+              </app-system-option>
+            </div>
+            <div class="col-4">
+              <app-system-option [iconLink]="faWarehouse"
+                                 [hrefLink]="'#'" [titleLink]="'Almacenes'"
+                                 [detailLink]="'Lista de Almacenes'">
+              </app-system-option>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

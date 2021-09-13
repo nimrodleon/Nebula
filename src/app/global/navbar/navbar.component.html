@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">
+  <div class="container">
+    <a class="navbar-brand" routerLink="/">
       <fa-icon [icon]="faServer"></fa-icon>
       <span class="ms-2">DEMO S.A.C.</span>
     </a>
@@ -11,28 +11,36 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link text-uppercase" href="#">Artículos</a>
+          <a class="nav-link text-uppercase" routerLink="/products">Productos</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-uppercase" href="#">Contactos</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-uppercase" href="#">Facturación</a>
+          <a class="nav-link text-uppercase" routerLink="/point-of-sale">Punto de Venta</a>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle"
              href="#" role="button" data-bs-toggle="dropdown">
-            <span class="text-uppercase">Configuración</span>
+            <span class="text-uppercase">Procesos</span>
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item text-uppercase" href="#">Impuesto</a></li>
-            <li><a class="dropdown-item text-uppercase" href="#">Almacén</a></li>
-            <li><a class="dropdown-item text-uppercase" href="#">sunat.gob.pe</a></li>
             <li>
-              <hr class="dropdown-divider">
+              <a routerLink="/shopping" class="dropdown-item text-uppercase">
+                <fa-icon [icon]="faShoppingBasket"></fa-icon>
+                <span class="ms-1">Compras</span></a>
             </li>
-            <li><a class="dropdown-item text-uppercase" href="#">Ajustes Generales</a></li>
+            <li>
+              <a routerLink="/sales" class="dropdown-item text-uppercase">
+                <fa-icon [icon]="faCashRegister"></fa-icon>
+                <span class="ms-1">Ventas</span></a>
+            </li>
+            <li>
+              <a routerLink="/inventory" class="dropdown-item text-uppercase">
+                <fa-icon [icon]="faBox"></fa-icon>
+                <span class="ms-1">Inventario</span></a>
+            </li>
           </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-uppercase" href="#">Ayuda</a>
         </li>
       </ul>
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
@@ -49,8 +57,7 @@
             <span class="text-uppercase ms-1 d-lg-none">Aplicaciones</span>
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item text-uppercase" href="#">Facturación</a></li>
-            <li><a class="dropdown-item text-uppercase" href="#">Taller Informática</a></li>
+            <li><a class="dropdown-item text-uppercase" href="#">Taller</a></li>
           </ul>
         </li>
         <li class="nav-item">
