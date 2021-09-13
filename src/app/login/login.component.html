@@ -1,33 +1,25 @@
-<div class="d-flex WrapLogin">
-  <div id="background">
-    <div class="bgCover">
-      <div class="Company w-100">
-        <h4 class="text-uppercase text-center mb-0">Empresa demo s.a.c.</h4>
-      </div>
-    </div>
-  </div>
-  <div class="LoginContent">
-    <div class="LoginPage">
-      <h4 class="text-uppercase text-center">Bienvenido</h4>
-      <p class="text-center fw-bold">Ingresa a tu cuenta</p>
-      <form>
+<div class="WrapLogin">
+  <form class="FormLogin">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="text-uppercase text-center">Bienvenido</h5>
         <div class="mb-3">
           <div class="input-group input-group-lg">
             <span class="input-group-text"><fa-icon [icon]="faUser"></fa-icon></span>
             <input type="text" name="userName" class="form-control" placeholder="Username">
           </div>
         </div>
-        <div class="mb-3">
-          <div class="input-group input-group-lg">
-            <span class="input-group-text"><fa-icon [icon]="faLock"></fa-icon></span>
-            <input type="password" name="password" class="form-control" placeholder="Password">
-          </div>
+        <div class="input-group input-group-lg">
+          <span class="input-group-text"><fa-icon [icon]="faLock"></fa-icon></span>
+          <input type="password" name="password" class="form-control" placeholder="Password">
         </div>
-        <button type="submit" class="btn btn-success btn-lg w-100">
+      </div>
+      <div class="card-footer">
+        <button type="submit" class="btn btn-success btn-lg my-2 w-100">
           <fa-icon [icon]="faSignInAlt"></fa-icon>
           <span class="text-uppercase ms-1">Iniciar Sesión</span>
         </button>
-      </form>
+      </div>
     </div>
-  </div>
+  </form>
 </div>
