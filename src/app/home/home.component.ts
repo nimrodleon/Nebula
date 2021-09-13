@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {
+  faAddressBook,
   faBox,
   faCashRegister,
-  faCog,
+  faCog, faFileInvoiceDollar,
   faShoppingBasket,
   faUserAlt,
   faWarehouse
@@ -21,6 +22,8 @@ export class HomeComponent implements OnInit {
   // ============================================================
   faCog = faCog;
   faWarehouse = faWarehouse;
+  faFileInvoiceDollar = faFileInvoiceDollar;
+  faAddressBook = faAddressBook;
 
   constructor() {
   }
