@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {faEdit, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-contact-list',
@@ -6,8 +7,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./contact-list.component.scss']
 })
 export class ContactListComponent implements OnInit {
+  faSearch = faSearch;
+  faPlus = faPlus;
+  faTrashAlt = faTrashAlt;
+  faEdit = faEdit;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
   }
