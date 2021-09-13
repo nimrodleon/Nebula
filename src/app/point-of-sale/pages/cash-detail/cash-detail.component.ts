@@ -1,8 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {
+  faCog,
   faLock, faMinusCircle,
   faPlus,
-  faPrint,
+  faPrint, faSearch,
   faSignOutAlt,
   faSyncAlt,
   faTimes,
@@ -22,7 +23,9 @@ export class CashDetailComponent implements OnInit {
   faSignOutAlt = faSignOutAlt;
   faLock = faLock;
   faPrint = faPrint;
-  faMinusCircle= faMinusCircle;
+  faMinusCircle = faMinusCircle;
+  faSearch = faSearch;
+  faCog=faCog;
 
   constructor() {
   }

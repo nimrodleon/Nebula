@@ -4,22 +4,38 @@
     <div class="col-12 bg-white my-2 py-3">
       <form class="row row-cols-auto g-2">
         <div class="col-auto">
-          <button type="button" class="btn btn-secondary">
-            <fa-icon [icon]="faPlus"></fa-icon>
-            <span class="text-uppercase ms-1">Entrada/Salida</span>
+          <label class="col-form-label fw-bold">Filtrar por:</label>
+        </div>
+        <div class="col-auto">
+          <select class="form-select">
+            <option value="NUMERO">NÚMERO</option>
+            <option value="CONTACTO">CONTACTO</option>
+          </select>
+        </div>
+        <div class="col-auto">
+          <input type="search" class="form-control">
+        </div>
+        <div class="col-auto">
+          <button type="submit" class="btn btn-success">
+            <fa-icon [icon]="faSearch"></fa-icon>
+            <span class="text-uppercase ms-1">Buscar</span>
           </button>
         </div>
         <div class="col-auto">
-          <button type="button" class="btn btn-primary">
-            <fa-icon [icon]="faPlus"></fa-icon>
-            <span class="text-uppercase ms-1">Operación</span>
-          </button>
-        </div>
-        <div class="col-auto">
-          <button type="button" class="btn btn-success">
-            <fa-icon [icon]="faPrint"></fa-icon>
-            <span class="text-uppercase ms-1">Resumen</span>
-          </button>
+          <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+              <fa-icon [icon]="faCog"></fa-icon>
+              <span class="text-uppercase ms-1">Opciones</span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">Entrada/Salida</a></li>
+              <li><a class="dropdown-item" href="#">Nota de Venta</a></li>
+              <li>
+                <hr class="dropdown-divider">
+              </li>
+              <li><a class="dropdown-item" href="#">Resumen de Caja</a></li>
+            </ul>
+          </div>
         </div>
         <div class="col-auto">
           <button type="button" class="btn btn-danger">
@@ -38,7 +54,7 @@
             <th>Fecha</th>
             <th>Hora</th>
             <th>Tipo doc</th>
-            <th>Numero</th>
+            <th>Número</th>
             <th>Contacto</th>
             <th>Glosa</th>
             <th>F.Pago</th>
