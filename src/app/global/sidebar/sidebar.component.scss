@@ -1,10 +1,49 @@
 $mainMenuWidth: 230px;
 
-#MainMenu {
+#mainMenu {
   width: $mainMenuWidth;
   min-width: $mainMenuWidth;
   min-height: calc(100vh - 56px);
   overflow-x: hidden;
   border-right: 0 solid #eaeaea;
   background-color: #333739;
+
+  a {
+    text-decoration: none;
+    display: block;
+    line-height: 40px;
+    color: white;
+  }
+
+  fa-icon {
+    margin: 0 15px;
+  }
+}
+
+.menu-root {
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+
+  li {
+    display: list-item;
+  }
+}
+
+// menuItem class.
+.mainItemWrapper {
+  display: flex;
+  width: $mainMenuWidth;
+  min-width: $mainMenuWidth;
+  justify-content: space-between;
+
+  a {
+    &:hover {
+      background-color: #175a8e;
+      // hermano adyacente.
+      + .toggler {
+        background-color: #175a8e;
+      }
+    }
+  }
 }

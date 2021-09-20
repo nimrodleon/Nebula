@@ -1,130 +1,133 @@
 <app-navbar></app-navbar>
-<div class="container">
-  <div class="row">
-    <div class="col-12 bg-white my-2 py-3">
-      <form class="row row-cols-auto g-2">
-        <div class="col-auto">
-          <label class="col-form-label fw-bold">Filtrar por:</label>
-        </div>
-        <div class="col-auto">
-          <select class="form-select">
-            <option value="NUMERO">NÚMERO</option>
-            <option value="CONTACTO">CONTACTO</option>
-          </select>
-        </div>
-        <div class="col-auto">
-          <input type="search" class="form-control">
-        </div>
-        <div class="col-auto">
-          <button type="submit" class="btn btn-success">
-            <fa-icon [icon]="faSearch"></fa-icon>
-            <span class="text-uppercase ms-1">Buscar</span>
-          </button>
-        </div>
-        <div class="col-auto">
-          <div class="dropdown">
-            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-              <fa-icon [icon]="faCog"></fa-icon>
-              <span class="text-uppercase ms-1">Opciones</span>
-            </button>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" (click)="addCashInOut($event)" href="#">Entrada/Salida</a></li>
-              <li><a class="dropdown-item" href="#">Nota de Venta</a></li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-              <li><a class="dropdown-item" href="#">Resumen de Caja</a></li>
-            </ul>
+<div class="Wrapper">
+  <app-sidebar></app-sidebar>
+  <div class="container-fluid">
+    <div class="row px-2">
+      <div class="col-12 bg-white my-2 py-3">
+        <form class="row row-cols-auto g-2">
+          <div class="col-auto">
+            <label class="col-form-label fw-bold">Filtrar por:</label>
           </div>
+          <div class="col-auto">
+            <select class="form-select">
+              <option value="NUMERO">NÚMERO</option>
+              <option value="CONTACTO">CONTACTO</option>
+            </select>
+          </div>
+          <div class="col-auto">
+            <input type="search" class="form-control">
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-success">
+              <fa-icon [icon]="faSearch"></fa-icon>
+              <span class="text-uppercase ms-1">Buscar</span>
+            </button>
+          </div>
+          <div class="col-auto">
+            <div class="dropdown">
+              <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <fa-icon [icon]="faCog"></fa-icon>
+                <span class="text-uppercase ms-1">Opciones</span>
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" (click)="addCashInOut($event)" href="#">Entrada/Salida</a></li>
+                <li><a class="dropdown-item" href="#">Nota de Venta</a></li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item" href="#">Resumen de Caja</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-auto">
+            <button type="button" class="btn btn-danger">
+              <fa-icon [icon]="faLock"></fa-icon>
+              <span class="text-uppercase ms-1">Cerrar</span>
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="col-12 bg-white py-3">
+        <h5 class="fw-bold text-uppercase">Operaciones de Caja</h5>
+        <div class="table-responsive">
+          <table class="table table-striped mb-0">
+            <thead>
+            <tr class="text-uppercase">
+              <th>Fecha</th>
+              <th>Hora</th>
+              <th>Tipo doc</th>
+              <th>Número</th>
+              <th>Contacto</th>
+              <th>Glosa</th>
+              <th>F.Pago</th>
+              <th>Monto</th>
+              <td></td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="text-success">
+              <td>2021-09-13</td>
+              <td>12:00</td>
+              <td>-</td>
+              <td>-</td>
+              <td>-</td>
+              <td>APERTURA DE CAJA</td>
+              <td>EFECTIVO</td>
+              <td>100.00</td>
+              <td class="text-end">
+                <button type="button" class="btn btn-danger btn-sm">
+                  <fa-icon [icon]="faMinusCircle"></fa-icon>
+                </button>
+              </td>
+            </tr>
+            <tr class="text-success">
+              <td>2021-09-13</td>
+              <td>12:00</td>
+              <td>BOLETA</td>
+              <td>B001-0001</td>
+              <td>CLIENTE APELLIDOS</td>
+              <td>-</td>
+              <td>EFECTIVO</td>
+              <td>100.00</td>
+              <td class="text-end">
+                <button type="button" class="btn btn-danger btn-sm">
+                  <fa-icon [icon]="faMinusCircle"></fa-icon>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>2021-09-13</td>
+              <td>12:00</td>
+              <td>FACTURA</td>
+              <td>F001-0001</td>
+              <td>DEMO S.A.C.</td>
+              <td>-</td>
+              <td>YAPE</td>
+              <td>100.00</td>
+              <td class="text-end">
+                <button type="button" class="btn btn-danger btn-sm">
+                  <fa-icon [icon]="faMinusCircle"></fa-icon>
+                </button>
+              </td>
+            </tr>
+            <tr class="text-danger">
+              <td>2021-09-13</td>
+              <td>12:00</td>
+              <td>-</td>
+              <td>-</td>
+              <td>IVAN DOMINGUEZ</td>
+              <td>PAGO DE LUZ</td>
+              <td>EFECTIVO</td>
+              <td>100.00</td>
+              <td class="text-end">
+                <button type="button" class="btn btn-danger btn-sm">
+                  <fa-icon [icon]="faMinusCircle"></fa-icon>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
         </div>
-        <div class="col-auto">
-          <button type="button" class="btn btn-danger">
-            <fa-icon [icon]="faLock"></fa-icon>
-            <span class="text-uppercase ms-1">Cerrar</span>
-          </button>
-        </div>
-      </form>
-    </div>
-    <div class="col-12 bg-white py-3">
-      <h5 class="fw-bold text-uppercase">Operaciones de Caja</h5>
-      <div class="table-responsive">
-        <table class="table table-striped mb-0">
-          <thead>
-          <tr class="text-uppercase">
-            <th>Fecha</th>
-            <th>Hora</th>
-            <th>Tipo doc</th>
-            <th>Número</th>
-            <th>Contacto</th>
-            <th>Glosa</th>
-            <th>F.Pago</th>
-            <th>Monto</th>
-            <td></td>
-          </tr>
-          </thead>
-          <tbody>
-          <tr class="text-success">
-            <td>2021-09-13</td>
-            <td>12:00</td>
-            <td>-</td>
-            <td>-</td>
-            <td>-</td>
-            <td>APERTURA DE CAJA</td>
-            <td>EFECTIVO</td>
-            <td>100.00</td>
-            <td class="text-end">
-              <button type="button" class="btn btn-danger btn-sm">
-                <fa-icon [icon]="faMinusCircle"></fa-icon>
-              </button>
-            </td>
-          </tr>
-          <tr class="text-success">
-            <td>2021-09-13</td>
-            <td>12:00</td>
-            <td>BOLETA</td>
-            <td>B001-0001</td>
-            <td>CLIENTE APELLIDOS</td>
-            <td>-</td>
-            <td>EFECTIVO</td>
-            <td>100.00</td>
-            <td class="text-end">
-              <button type="button" class="btn btn-danger btn-sm">
-                <fa-icon [icon]="faMinusCircle"></fa-icon>
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>2021-09-13</td>
-            <td>12:00</td>
-            <td>FACTURA</td>
-            <td>F001-0001</td>
-            <td>DEMO S.A.C.</td>
-            <td>-</td>
-            <td>YAPE</td>
-            <td>100.00</td>
-            <td class="text-end">
-              <button type="button" class="btn btn-danger btn-sm">
-                <fa-icon [icon]="faMinusCircle"></fa-icon>
-              </button>
-            </td>
-          </tr>
-          <tr class="text-danger">
-            <td>2021-09-13</td>
-            <td>12:00</td>
-            <td>-</td>
-            <td>-</td>
-            <td>IVAN DOMINGUEZ</td>
-            <td>PAGO DE LUZ</td>
-            <td>EFECTIVO</td>
-            <td>100.00</td>
-            <td class="text-end">
-              <button type="button" class="btn btn-danger btn-sm">
-                <fa-icon [icon]="faMinusCircle"></fa-icon>
-              </button>
-            </td>
-          </tr>
-          </tbody>
-        </table>
       </div>
     </div>
   </div>

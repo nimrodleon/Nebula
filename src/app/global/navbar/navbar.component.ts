@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {
   faBars,
   faBox, faCashRegister,
-  faCog, faSignOutAlt, faTh,
+  faCog, faSignOutAlt,
   faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -18,7 +18,6 @@ export class NavbarComponent implements OnInit {
   faCashRegister = faCashRegister;
   faBars = faBars;
   faBox = faBox;
-  faTh = faTh;
 
   constructor() {
   }
@@ -29,7 +28,7 @@ export class NavbarComponent implements OnInit {
   // Toggle menu principal.
   mainMenuToggle(e: any) {
     e.preventDefault();
-    const mainMenu: any = document.getElementById('MainMenu');
+    const mainMenu: any = document.getElementById('mainMenu');
     if (mainMenu) {
       mainMenu.classList.toggle('hiddenNavigation');
       localStorage.setItem('classMainMenu', mainMenu.classList.value);
