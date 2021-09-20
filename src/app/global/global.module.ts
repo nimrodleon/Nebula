@@ -4,11 +4,13 @@ import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {RouterModule} from '@angular/router';
 import {NavbarComponent} from './navbar/navbar.component';
 import {SystemOptionComponent} from './system-option/system-option.component';
+import {SidebarComponent} from './sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
     NavbarComponent,
-    SystemOptionComponent
+    SystemOptionComponent,
+    SidebarComponent
   ],
   imports: [
     CommonModule,
