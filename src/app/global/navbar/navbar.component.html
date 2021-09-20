@@ -1,47 +1,16 @@
 <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #1a67a3;">
-  <div class="container">
+  <div class="container-fluid">
+    <a (click)="mainMenuToggle($event)" href="#" class="navbar-brand">
+      <fa-icon [icon]="faBars"></fa-icon>
+    </a>
     <a class="navbar-brand" routerLink="/">
-      <fa-icon [icon]="faServer"></fa-icon>
-      <span class="ms-2">DEMO S.A.C.</span>
+      <span class="text-uppercase">DEMO S.A.C.</span>
     </a>
     <button class="navbar-toggler" type="button"
             data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link text-uppercase" routerLink="/point-of-sale">Punto de Venta</a>
-        </li>
-        <!--
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle"
-             href="#" role="button" data-bs-toggle="dropdown">
-            <span class="text-uppercase">Procesos</span>
-          </a>
-          <ul class="dropdown-menu">
-            <li>
-              <a routerLink="/shopping" class="dropdown-item text-uppercase">
-                <fa-icon [icon]="faShoppingBasket"></fa-icon>
-                <span class="ms-1">Compras</span></a>
-            </li>
-            <li>
-              <a routerLink="/sales" class="dropdown-item text-uppercase">
-                <fa-icon [icon]="faCashRegister"></fa-icon>
-                <span class="ms-1">Ventas</span></a>
-            </li>
-            <li>
-              <a routerLink="/inventory" class="dropdown-item text-uppercase">
-                <fa-icon [icon]="faBox"></fa-icon>
-                <span class="ms-1">Inventario</span></a>
-            </li>
-          </ul>
-        </li>
-        -->
-        <li class="nav-item">
-          <a class="nav-link text-uppercase" href="#">Ayuda</a>
-        </li>
-      </ul>
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         <li class="nav-item">
           <a class="nav-link" href="#">
@@ -52,7 +21,7 @@
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle"
              href="#" role="button" data-bs-toggle="dropdown">
-            <fa-icon [icon]="faThLarge"></fa-icon>
+            <fa-icon [icon]="faTh"></fa-icon>
             <span class="text-uppercase ms-1 d-lg-none">Aplicaciones</span>
           </a>
           <ul class="dropdown-menu dropdown-menu-end">

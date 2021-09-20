@@ -19,7 +19,8 @@ import {SidebarComponent} from './sidebar/sidebar.component';
   ],
   exports: [
     NavbarComponent,
-    SystemOptionComponent
+    SystemOptionComponent,
+    SidebarComponent
   ]
 })
 export class GlobalModule {

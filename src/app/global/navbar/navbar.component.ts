@@ -1,10 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {
+  faBars,
   faBox, faCashRegister,
-  faCog, faServer,
-  faShoppingBasket,
-  faSignOutAlt,
-  faThLarge,
+  faCog, faSignOutAlt, faTh,
   faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -14,19 +12,28 @@ import {
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
-  faServer = faServer;
   faUserCircle = faUserCircle;
   faSignOutAlt = faSignOutAlt;
-  faThLarge = faThLarge;
   faCog = faCog;
   faCashRegister = faCashRegister;
-  faShoppingBasket = faShoppingBasket;
+  faBars = faBars;
   faBox = faBox;
+  faTh = faTh;
 
   constructor() {
   }
 
   ngOnInit(): void {
+  }
+
+  // Toggle menu principal.
+  mainMenuToggle(e: any) {
+    e.preventDefault();
+    const mainMenu: any = document.getElementById('MainMenu');
+    if (mainMenu) {
+      mainMenu.classList.toggle('hiddenNavigation');
+      localStorage.setItem('classMainMenu', mainMenu.classList.value);
+    }
   }
 
 }

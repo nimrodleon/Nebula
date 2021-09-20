@@ -1,0 +1,10 @@
+$mainMenuWidth: 230px;
+
+#MainMenu {
+  width: $mainMenuWidth;
+  min-width: $mainMenuWidth;
+  min-height: calc(100vh - 56px);
+  overflow-x: hidden;
+  border-right: 0 solid #eaeaea;
+  background-color: #333739;
+}
