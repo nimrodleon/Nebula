@@ -69,23 +69,27 @@ export class SidebarComponent implements OnInit {
   }
 
   // menu compras.
-  async mnShopping(e: any) {
+  async mnShopping(e: any, toggler: boolean = false) {
     e.preventDefault();
     this.mnRoot = Enum.false;
     this.mnChildShopping = Enum.true;
     localStorage.setItem('mnRoot', this.mnRoot);
     localStorage.setItem('mnChildShopping', this.mnChildShopping);
-    await this.router.navigate(['/shopping']);
+    if (!toggler) {
+      await this.router.navigate(['/shopping']);
+    }
   }
 
   // menu ventas.
-  async mnSales(e: any) {
+  async mnSales(e: any, toggler: boolean = false) {
     e.preventDefault();
     this.mnRoot = Enum.false;
     this.mnChildSales = Enum.true;
     localStorage.setItem('mnRoot', this.mnRoot);
     localStorage.setItem('mnChildSales', this.mnChildSales);
-    await this.router.navigate(['/sales']);
+    if (!toggler) {
+      await this.router.navigate(['/sales']);
+    }
   }
 
   // menu configuración.
