@@ -24,6 +24,7 @@ export class LoginComponent implements OnInit {
     localStorage.setItem('mnRoot', Enum.true);
     localStorage.setItem('mnChildShopping', Enum.false);
     localStorage.setItem('mnChildSales', Enum.false);
+    localStorage.setItem('mnChildConfig', Enum.false);
   }
 
 }

@@ -27,6 +27,14 @@
       </li>
       <li>
         <div class="mainItemWrapper">
+          <a routerLink="/inventory" class="w-100">
+            <fa-icon [icon]="faArchive"></fa-icon>
+            <span class="">Inventario</span>
+          </a>
+        </div>
+      </li>
+      <li>
+        <div class="mainItemWrapper">
           <a (click)="mnShopping($event)" href="#" class="w-100">
             <fa-icon [icon]="faShoppingBasket"></fa-icon>
             <span class="">Compras</span>
@@ -60,11 +68,11 @@
       </li>
       <li>
         <div class="mainItemWrapper">
-          <a href="#" class="w-100">
+          <a (click)="mnConfig($event)" href="#" class="w-100">
             <fa-icon [icon]="faCogs"></fa-icon>
             <span class="">Configuración</span>
           </a>
-          <a href="#" class="toggler">
+          <a (click)="mnConfig($event)" href="#" class="toggler">
             <fa-icon [icon]="faArrowRight"></fa-icon>
           </a>
         </div>
@@ -72,7 +80,7 @@
     </ul>
   </ng-container>
   <!-- SubMenu Compras -->
-  <ng-container *ngIf="checkMenuChildCompras()">
+  <ng-container *ngIf="checkMenuChildShopping()">
     <ul class="menuChildren">
       <li>
         <div class="header">
@@ -122,4 +130,35 @@
     </ul>
   </ng-container>
 
+
+  <!-- SubMenu Configuración -->
+  <ng-container *ngIf="checkMenuChildConfig()">
+    <ul class="menuChildren">
+      <li>
+        <div class="header">
+          <a (click)="mnBack($event)" href="#" class="toggler">
+            <fa-icon [icon]="faArrowLeft"></fa-icon>
+          </a>
+          <a routerLink="#" class="w-100">
+            <span class="">Configuración</span>
+          </a>
+        </div>
+      </li>
+      <li>
+        <a routerLink="#" class="w-100">
+          <span class="">General</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="#" class="w-100">
+          <span class="">Usuarios</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="#" class="w-100">
+          <span class="">Almacenes</span>
+        </a>
+      </li>
+    </ul>
+  </ng-container>
 </div>

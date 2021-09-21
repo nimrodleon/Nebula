@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {
-  faAddressBook, faArrowLeft,
+  faAddressBook, faArchive, faArrowLeft,
   faArrowRight,
   faBox, faCashRegister, faCogs,
   faPiggyBank, faShoppingBasket, faWallet
@@ -27,12 +27,14 @@ export class SidebarComponent implements OnInit {
   faPiggyBank = faPiggyBank;
   faCogs = faCogs;
   faWallet = faWallet;
+  faArchive = faArchive;
 
   // ====================================================================================================
 
   mnRoot: string | null = Enum.true;
   mnChildShopping: string | null = Enum.false;
   mnChildSales: string | null = Enum.false;
+  mnChildConfig: string | null = Enum.false;
 
   constructor(
     private router: Router) {
@@ -46,6 +48,7 @@ export class SidebarComponent implements OnInit {
     this.mnRoot = localStorage.getItem('mnRoot');
     this.mnChildShopping = localStorage.getItem('mnChildShopping');
     this.mnChildSales = localStorage.getItem('mnChildSales');
+    this.mnChildConfig = localStorage.getItem('mnChildConfig');
   }
 
   // Volver atrás.
@@ -59,6 +62,10 @@ export class SidebarComponent implements OnInit {
     // menu ventas.
     this.mnChildSales = Enum.false;
     localStorage.setItem('mnChildSales', this.mnChildSales);
+
+    // menu configuración.
+    this.mnChildConfig = Enum.false;
+    localStorage.setItem('mnChildConfig', this.mnChildConfig);
   }
 
   // menu compras.
@@ -81,6 +88,15 @@ export class SidebarComponent implements OnInit {
     await this.router.navigate(['/sales']);
   }
 
+  // menu configuración.
+  async mnConfig(e: any) {
+    e.preventDefault();
+    this.mnRoot = Enum.false;
+    this.mnChildConfig = Enum.true;
+    localStorage.setItem('mnRoot', this.mnRoot);
+    localStorage.setItem('mnChildConfig', this.mnChildConfig);
+  }
+
   // ====================================================================================================
 
   // verificar menu principal.
@@ -89,13 +105,18 @@ export class SidebarComponent implements OnInit {
   }
 
   // verificar submenu compras.
-  checkMenuChildCompras(): boolean {
+  checkMenuChildShopping(): boolean {
     return this.mnChildShopping === Enum.true;
   }
 
   // verificar submenu ventas.
   checkMenuChildSales(): boolean {
     return this.mnChildSales == Enum.true;
+  }
+
+  // verificar submenu ventas.
+  checkMenuChildConfig(): boolean {
+    return this.mnChildConfig == Enum.true;
   }
 
 }
