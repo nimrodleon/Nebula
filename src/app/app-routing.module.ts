@@ -1,7 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {LoginComponent} from './login/login.component';
-import {HomeComponent} from './home/home.component';
 
 const routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -29,7 +28,7 @@ const routes: Routes = [
     path: 'contacts',
     loadChildren: () => import('./contact/contact.module').then(m => m.ContactModule)
   },
-  {path: '', component: HomeComponent, pathMatch: 'full'}
+  {path: '', redirectTo: '/products', pathMatch: 'full'}
 ];
 
 @NgModule({
