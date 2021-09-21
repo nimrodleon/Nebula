@@ -27,22 +27,22 @@
       </li>
       <li>
         <div class="mainItemWrapper">
-          <a (click)="mnCompras($event)" href="#" class="w-100">
+          <a (click)="mnShopping($event)" href="#" class="w-100">
             <fa-icon [icon]="faShoppingBasket"></fa-icon>
             <span class="">Compras</span>
           </a>
-          <a (click)="mnCompras($event)" href="#" class="toggler">
+          <a (click)="mnShopping($event)" href="#" class="toggler">
             <fa-icon [icon]="faArrowRight"></fa-icon>
           </a>
         </div>
       </li>
       <li>
         <div class="mainItemWrapper">
-          <a href="#" class="w-100">
+          <a (click)="mnSales($event)" href="#" class="w-100">
             <fa-icon [icon]="faWallet"></fa-icon>
             <span class="">Ventas</span>
           </a>
-          <a href="#" class="toggler">
+          <a (click)="mnSales($event)" href="#" class="toggler">
             <fa-icon [icon]="faArrowRight"></fa-icon>
           </a>
         </div>
@@ -92,6 +92,31 @@
       <li>
         <a routerLink="#" class="w-100">
           <span class="">Ordenes de Compra</span>
+        </a>
+      </li>
+    </ul>
+  </ng-container>
+  <!-- SubMenu Ventas -->
+  <ng-container *ngIf="checkMenuChildSales()">
+    <ul class="menuChildren">
+      <li>
+        <div class="header">
+          <a (click)="mnBack($event)" href="#" class="toggler">
+            <fa-icon [icon]="faArrowLeft"></fa-icon>
+          </a>
+          <a routerLink="/sales" class="w-100">
+            <span class="">Ventas</span>
+          </a>
+        </div>
+      </li>
+      <li>
+        <a routerLink="/sales" class="w-100">
+          <span class="">Listado</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="#" class="w-100">
+          <span class="">Cotizaciones</span>
         </a>
       </li>
     </ul>

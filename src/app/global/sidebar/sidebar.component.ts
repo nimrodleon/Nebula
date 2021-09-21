@@ -31,7 +31,8 @@ export class SidebarComponent implements OnInit {
   // ====================================================================================================
 
   mnRoot: string | null = Enum.true;
-  mnChildCompras: string | null = Enum.false;
+  mnChildShopping: string | null = Enum.false;
+  mnChildSales: string | null = Enum.false;
 
   constructor(
     private router: Router) {
@@ -43,7 +44,8 @@ export class SidebarComponent implements OnInit {
     mainMenu.classList.value = localStorage.getItem('classMainMenu');
     // valores por defecto.
     this.mnRoot = localStorage.getItem('mnRoot');
-    this.mnChildCompras = localStorage.getItem('mnChildCompras');
+    this.mnChildShopping = localStorage.getItem('mnChildShopping');
+    this.mnChildSales = localStorage.getItem('mnChildSales');
   }
 
   // Volver atrás.
@@ -52,18 +54,31 @@ export class SidebarComponent implements OnInit {
     this.mnRoot = Enum.true;
     localStorage.setItem('mnRoot', this.mnRoot);
     // menu compras.
-    this.mnChildCompras = Enum.false;
-    localStorage.setItem('mnChildCompras', this.mnChildCompras);
+    this.mnChildShopping = Enum.false;
+    localStorage.setItem('mnChildShopping', this.mnChildShopping);
+    // menu ventas.
+    this.mnChildSales = Enum.false;
+    localStorage.setItem('mnChildSales', this.mnChildSales);
   }
 
   // menu compras.
-  async mnCompras(e: any) {
+  async mnShopping(e: any) {
     e.preventDefault();
     this.mnRoot = Enum.false;
-    this.mnChildCompras = Enum.true;
+    this.mnChildShopping = Enum.true;
     localStorage.setItem('mnRoot', this.mnRoot);
-    localStorage.setItem('mnChildCompras', this.mnChildCompras);
+    localStorage.setItem('mnChildShopping', this.mnChildShopping);
     await this.router.navigate(['/shopping']);
+  }
+
+  // menu ventas.
+  async mnSales(e: any) {
+    e.preventDefault();
+    this.mnRoot = Enum.false;
+    this.mnChildSales = Enum.true;
+    localStorage.setItem('mnRoot', this.mnRoot);
+    localStorage.setItem('mnChildSales', this.mnChildSales);
+    await this.router.navigate(['/sales']);
   }
 
   // ====================================================================================================
@@ -75,7 +90,12 @@ export class SidebarComponent implements OnInit {
 
   // verificar submenu compras.
   checkMenuChildCompras(): boolean {
-    return this.mnChildCompras === Enum.true;
+    return this.mnChildShopping === Enum.true;
+  }
+
+  // verificar submenu ventas.
+  checkMenuChildSales(): boolean {
+    return this.mnChildSales == Enum.true;
   }
 
 }
