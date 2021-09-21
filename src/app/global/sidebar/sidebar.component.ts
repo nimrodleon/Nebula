@@ -63,7 +63,7 @@ export class SidebarComponent implements OnInit {
     this.mnChildCompras = Enum.true;
     localStorage.setItem('mnRoot', this.mnRoot);
     localStorage.setItem('mnChildCompras', this.mnChildCompras);
-    await this.router.navigate(['/products']);
+    await this.router.navigate(['/shopping']);
   }
 
   // ====================================================================================================

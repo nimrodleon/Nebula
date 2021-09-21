@@ -71,7 +71,7 @@
       </li>
     </ul>
   </ng-container>
-  <!-- Child Menu -->
+  <!-- SubMenu Compras -->
   <ng-container *ngIf="checkMenuChildCompras()">
     <ul class="menuChildren">
       <li>
@@ -79,13 +79,13 @@
           <a (click)="mnBack($event)" href="#" class="toggler">
             <fa-icon [icon]="faArrowLeft"></fa-icon>
           </a>
-          <a routerLink="/products" class="w-100">
-            <span class="">Productos</span>
+          <a routerLink="/shopping" class="w-100">
+            <span class="">Compras</span>
           </a>
         </div>
       </li>
       <li>
-        <a routerLink="/products" class="w-100">
+        <a routerLink="/shopping" class="w-100">
           <span class="">Listado</span>
         </a>
       </li>
