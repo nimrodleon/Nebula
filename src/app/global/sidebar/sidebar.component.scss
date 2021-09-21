@@ -20,10 +20,15 @@ $mainMenuWidth: 230px;
   }
 }
 
-.menu-root {
+// reset ul classes.
+@mixin ul-class {
   padding-left: 0;
   margin-bottom: 0;
   list-style: none;
+}
+
+.menu-root {
+  @include ul-class;
 
   li {
     display: list-item;
@@ -44,6 +49,27 @@ $mainMenuWidth: 230px;
       + .toggler {
         background-color: #175a8e;
       }
+    }
+  }
+}
+
+// menu children.
+.menuChildren {
+  @include ul-class;
+  // cabecera menu children.
+  .header {
+    display: flex;
+    // icono flecha.
+    .toggler {
+      padding-left: 0;
+    }
+  }
+
+  a {
+    padding-left: 15px;
+
+    &:hover {
+      background-color: #175a8e;
     }
   }
 }

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {
-  faAddressBook,
+  faAddressBook, faArrowLeft,
   faArrowRight,
   faBox, faCashRegister, faCogs, faFileInvoice,
   faPiggyBank, faShoppingBasket, faWallet
@@ -14,6 +14,7 @@ import {
 export class SidebarComponent implements OnInit {
   faBox = faBox;
   faArrowRight = faArrowRight;
+  faArrowLeft = faArrowLeft;
   faAddressBook = faAddressBook;
   faCashRegister = faCashRegister;
   faShoppingBasket = faShoppingBasket;
