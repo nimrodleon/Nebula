@@ -5,11 +5,13 @@ import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {ContactRoutingModule} from './contact-routing.module';
 import {GlobalModule} from '../global/global.module';
 import {ContactListComponent} from './pages/contact-list/contact-list.component';
+import {ContactModalComponent} from './components/contact-modal/contact-modal.component';
 
 
 @NgModule({
   declarations: [
-    ContactListComponent
+    ContactListComponent,
+    ContactModalComponent
   ],
   imports: [
     CommonModule,

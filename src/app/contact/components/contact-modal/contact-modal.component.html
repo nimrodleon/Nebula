@@ -1,0 +1,69 @@
+<div class="modal fade" id="contact-modal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <fa-icon [icon]="faBars"></fa-icon>
+          <span class="text-uppercase ms-1">{{title}}</span>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="row">
+            <div class="col-6 pb-3">
+              <label class="col-form-label-sm text-uppercase fw-bold">Número (D.N.I/R.U.C/etc)</label>
+              <input type="text" class="form-control">
+              <div class="invalid-feedback">El D.N.I. es requerido.</div>
+            </div>
+            <div class="col-6 mb-3">
+              <label class="col-form-label-sm text-uppercase fw-bold">Tipo documento</label>
+              <select class="form-select">
+                <option value="0">0 - DOC.TRIB.NO.DOM.SIN.RUC</option>
+                <option value="1">1 - Documento Nacional de Identidad</option>
+                <option value="4">4 - Carnet de extranjería</option>
+                <option value="6">6 - Registro Unico de Contributentes</option>
+                <option value="7">7 - Pasaporte</option>
+                <option value="A">A - Cédula Diplomática de identidad</option>
+                <option value="B">B - DOC.IDENT.PAIS.RESIDENCIA-NO.D</option>
+                <option value="C">C - Tax Identification Number - TIN – Doc Trib PP.NN</option>
+                <option value="D">D - Identification Number - IN – Doc Trib PP. JJ</option>
+                <option value="E">E - TAM- Tarjeta Andina de Migración</option>
+              </select>
+              <div class="invalid-feedback">El tipo documento es requerido.</div>
+            </div>
+          </div>
+          <div class="pb-3">
+            <label class="col-form-label-sm text-uppercase fw-bold">Razón social o nombre completo</label>
+            <input type="text" class="form-control">
+            <div class="invalid-feedback">La razón social es requerido.</div>
+          </div>
+          <div class="pb-3">
+            <label class="col-form-label-sm text-uppercase fw-bold">Dirección completa</label>
+            <input type="text" class="form-control">
+            <div class="invalid-feedback">La dirección es requerido.</div>
+          </div>
+          <div class="row">
+            <div class="col-6 pb-3">
+              <label class="col-form-label-sm text-uppercase fw-bold">Teléfono 1</label>
+              <input type="text" class="form-control">
+              <div class="invalid-feedback">El Teléfono es requerido.</div>
+            </div>
+            <div class="col-6 pb-3">
+              <label class="col-form-label-sm text-uppercase fw-bold">Teléfono 2</label>
+              <input type="text" class="form-control">
+              <div class="invalid-feedback">El Teléfono es requerido.</div>
+            </div>
+          </div>
+          <label class="col-form-label-sm text-uppercase fw-bold">Correo electrónico</label>
+          <input type="text" class="form-control">
+          <div class="invalid-feedback">Ingrese un correo electrónico valido.</div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary text-uppercase" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary text-uppercase">Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+</div>

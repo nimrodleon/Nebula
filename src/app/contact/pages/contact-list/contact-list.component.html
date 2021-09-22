@@ -24,7 +24,7 @@
             </button>
           </div>
           <div class="col-auto">
-            <button type="button" class="btn btn-primary">
+            <button type="button" (click)="addContact()" class="btn btn-primary">
               <fa-icon [icon]="faPlus"></fa-icon>
               <span class="text-uppercase ms-1">Agregar</span>
             </button>
@@ -38,7 +38,7 @@
             <thead>
             <tr class="text-uppercase">
               <th>TipoDoc</th>
-              <th>Numero</th>
+              <th>Número</th>
               <th>Nombres</th>
               <th>Teléfono</th>
               <th></th>
@@ -84,3 +84,5 @@
     </div>
   </div>
 </div>
+
+<app-contact-modal [title]="title"></app-contact-modal>
