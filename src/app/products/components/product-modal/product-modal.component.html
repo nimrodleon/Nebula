@@ -1,1 +1,76 @@
-<p>product-modal works!</p>
+<div class="modal fade" id="product-modal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <fa-icon [icon]="faBars"></fa-icon>
+          <span class="text-uppercase ms-1">{{title}}</span>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pt-1">
+        <form>
+          <div class="pb-3">
+            <label class="col-form-label-sm text-uppercase">Nombre o descripción del producto</label>
+            <input type="text" class="form-control">
+            <div class="invalid-feedback">La descripción es requerido.</div>
+          </div>
+          <div class="row">
+            <div class="col-6 pb-3">
+              <label class="col-form-label-sm text-uppercase">Precio Total</label>
+              <input type="number" step="0.01" class="form-control">
+              <div class="invalid-feedback">El precio es requerido.</div>
+            </div>
+            <div class="col-6 mb-3">
+              <label class="col-form-label-sm text-uppercase">Impuesto</label>
+              <select class="form-select">
+                <option value="0">Ninguno (0%)</option>
+                <option value="1">IGV - (18%)</option>
+                <option value="4">Exonerado - (0%)</option>
+              </select>
+              <div class="invalid-feedback">El impuesto es requerido.</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label class="col-form-label-sm text-uppercase">Tipo de ítem</label>
+              <select class="form-select">
+                <option value="0">Ninguno</option>
+              </select>
+              <div class="invalid-feedback">El tipo de ítem es requerido.</div>
+            </div>
+            <div class="col-6 mb-3">
+              <label class="col-form-label-sm text-uppercase">Unidad de medida</label>
+              <select class="form-select">
+                <option value="0">Ninguno</option>
+              </select>
+              <div class="invalid-feedback">La unidad de medida es requerido.</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <label class="col-form-label-sm text-uppercase">Código producto SUNAT</label>
+              <select class="form-select">
+                <option value="0">Ninguno</option>
+              </select>
+              <div class="invalid-feedback">El código de producto es requerido.</div>
+            </div>
+            <div class="col-6">
+              <label class="col-form-label-sm text-uppercase">Categoría</label>
+              <select class="form-select">
+                <option value="0">Ninguno</option>
+              </select>
+              <div class="invalid-feedback">La categoría es requerido.</div>
+            </div>
+          </div>
+
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary text-uppercase" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary text-uppercase">Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+</div>
