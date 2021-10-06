@@ -3,8 +3,109 @@
   <app-sidebar></app-sidebar>
   <div class="container-fluid px-0">
 
+    <div class="d-flex justify-content-between">
+      <div class="container-fluid w-100">
+        <div class="row">
+          <div class="col-12 py-3">
+            <form class="row row-cols-auto g-2">
+              <div class="col-auto">
+                <label class="col-form-label text-uppercase fw-bold">Producto</label>
+              </div>
+              <div class="col-auto">
+                <div class="input-group">
+                  <div class="input-group-text">
+                    <fa-icon [icon]="faSearch"></fa-icon>
+                  </div>
+                  <input type="search" class="form-control">
+                </div>
+              </div>
+              <div class="col-auto">
+                <button type="button" class="btn btn-secondary">
+                  <fa-icon [icon]="faPlus"></fa-icon>
+                  <span class="text-uppercase ms-1">Nuevo</span>
+                </button>
+              </div>
+              <div class="col-auto">
+                <button type="button" class="btn btn-primary">
+                  <fa-icon [icon]="faCoins"></fa-icon>
+                  <span class="text-uppercase ms-1">E/S</span>
+                </button>
+              </div>
+              <div class="col-auto">
+                <button type="button" class="btn btn-danger">
+                  <fa-icon [icon]="faLock"></fa-icon>
+                  <span class="text-uppercase ms-1">Cerrar</span>
+                </button>
+              </div>
+            </form>
+          </div>
+          <div class="col-12">
+            <div class="table-responsive">
+              <table class="table table-striped mb-0">
+                <thead>
+                <tr class="text-uppercase">
+                  <th>Unidad</th>
+                  <th>Descripción</th>
+                  <th>Opción</th>
+                  <th>Precio</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td>NUI</td>
+                  <td>Impresora Epson TM-20II</td>
+                  <td>
+                    <button class="btn btn-primary btn-sm">
+                      <fa-icon [icon]="faCheck"></fa-icon>
+                      <span class="text-uppercase ms-1">Seleccionar</span>
+                    </button>
+                  </td>
+                  <td>451.00</td>
+                </tr>
+                <tr>
+                  <td>NUI</td>
+                  <td>Laptop Hp Core i3 RAM 8gb SSD 240GB - CP-K441</td>
+                  <td>
+                    <button class="btn btn-primary btn-sm">
+                      <fa-icon [icon]="faCheck"></fa-icon>
+                      <span class="text-uppercase ms-1">Seleccionar</span>
+                    </button>
+                  </td>
+                  <td>2500.00</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
 
+      <div class="Invoice">
+        <div class="InvoiceTitle">Terminal Punto de Venta</div>
+        <div class="ClientData border-bottom">
+          <div class="Icon">
+            <fa-icon [icon]="faUserCircle"></fa-icon>
+          </div>
+          <select class="form-select" id="Client">
+            <option value="0">PUBLICO GENERAL</option>
+          </select>
+          <button type="button" class="btn btn-success">
+            <span class="text-uppercase ms-1">Nuevo</span>
+          </button>
+        </div>
+        <div class="ContentData">
+          <div class="Items">
 
+          </div>
+          <div class="ProcessAction">
+            <button type="button" class="btn btn-success btn-lg">
+              <span class="text-uppercase">Vender</span>
+              <span>S/0.00</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
 </div>
