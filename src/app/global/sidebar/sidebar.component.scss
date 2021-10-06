@@ -1,4 +1,4 @@
-$mainMenuWidth: 230px;
+$mainMenuWidth: 270px;
 
 #mainMenu {
   width: $mainMenuWidth;
@@ -7,6 +7,7 @@ $mainMenuWidth: 230px;
   overflow-x: hidden;
   border-right: 0 solid #eaeaea;
   background-color: #333739;
+  font-size: 1.2rem;
 
   a {
     text-decoration: none;
