@@ -1,5 +1,14 @@
 import {Component, OnInit} from '@angular/core';
-import {faCheck, faCoins, faLock, faPlus, faSearch, faUserCircle} from '@fortawesome/free-solid-svg-icons';
+import {
+  faCheck,
+  faCoins,
+  faLock,
+  faMinus,
+  faPlus,
+  faSearch,
+  faTrashAlt,
+  faUserCircle
+} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-terminal',
@@ -13,6 +22,8 @@ export class TerminalComponent implements OnInit {
   faLock = faLock;
   faCoins = faCoins;
   faCheck = faCheck;
+  faTrashAlt = faTrashAlt;
+  faMinus = faMinus;
 
   constructor() {
   }
