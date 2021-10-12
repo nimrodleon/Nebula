@@ -28,8 +28,8 @@ module.exports = function (config) {
       dir: require('path').join(__dirname, './coverage/angular'),
       subdir: '.',
       reporters: [
-        { type: 'html' },
-        { type: 'text-summary' }
+        {type: 'html'},
+        {type: 'text-summary'}
       ]
     },
     reporters: ['progress', 'kjhtml'],
@@ -40,5 +40,5 @@ module.exports = function (config) {
     browsers: ['Chrome'],
     singleRun: false,
     restartOnFileChange: true
-  });
-};
+  })
+}
