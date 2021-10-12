@@ -4,6 +4,8 @@ import {
   faSearch, faTrashAlt, faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
 
+declare var bootstrap: any;
+
 @Component({
   selector: 'app-terminal',
   templateUrl: './terminal.component.html',
@@ -17,11 +19,20 @@ export class TerminalComponent implements OnInit {
   faCoins = faCoins;
   faTrashAlt = faTrashAlt;
   faMinus = faMinus;
+  // ====================================================================================================
+  cobrarModal: any;
 
   constructor() {
   }
 
   ngOnInit(): void {
+    // formulario modal cobrar.
+    this.cobrarModal = new bootstrap.Modal(document.querySelector('#cobrar-modal'));
+  }
+
+  // botón vender.
+  btnVenderClick(): void {
+    this.cobrarModal.show();
   }
 
 }
