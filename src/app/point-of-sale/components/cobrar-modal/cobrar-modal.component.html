@@ -21,13 +21,15 @@
                   <option value="3">TRANSFERENCIA</option>
                 </select>
               </div>
-              <label for="bank" class="form-label text-uppercase">Banco</label>
-              <select class="form-select" id="bank">
-                <option value="0">SIN DEFINIR</option>
-                <option value="1">BCP</option>
-                <option value="2">B.N</option>
-                <option value="3">BBVA</option>
-              </select>
+              <div class="mb-1">
+                <label for="bank" class="form-label text-uppercase">Banco</label>
+                <select class="form-select" id="bank">
+                  <option value="0">SIN DEFINIR</option>
+                  <option value="1">BCP</option>
+                  <option value="2">B.N</option>
+                  <option value="3">BBVA</option>
+                </select>
+              </div>
             </div>
             <div class="col-6">
               <div class="mb-1">
@@ -38,8 +40,14 @@
                   <option value="3">NOTA DE VENTA</option>
                 </select>
               </div>
-              <label for="amount" class="form-label text-uppercase">Monto</label>
-              <input type="number" step="0.01" class="form-control" id="amount">
+              <div class="mb-1">
+                <label for="amount" class="form-label text-uppercase">Monto</label>
+                <input type="number" step="0.01" class="form-control" id="amount">
+              </div>
+            </div>
+            <div class="col-12">
+              <label for="remark" class="form-label text-uppercase">Observaciones</label>
+              <textarea class="form-control" id="remark" rows="2"></textarea>
             </div>
           </div>
         </ng-container>
