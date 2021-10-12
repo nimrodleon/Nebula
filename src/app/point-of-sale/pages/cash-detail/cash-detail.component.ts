@@ -32,10 +32,10 @@ export class CashDetailComponent implements OnInit {
       document.querySelector('#app-cash-in-out-modal'));
   }
 
-  // Abrir modal entrada/salida de efectivo.
-  addCashInOut(e: any): void {
-    e.preventDefault();
-    this.cashInOutModal.show();
-  }
+  // // Abrir modal entrada/salida de efectivo.
+  // addCashInOut(e: any): void {
+  //   e.preventDefault();
+  //   this.cashInOutModal.show();
+  // }
 
 }

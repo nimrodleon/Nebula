@@ -21,6 +21,7 @@ export class TerminalComponent implements OnInit {
   faMinus = faMinus;
   // ====================================================================================================
   cobrarModal: any;
+  cashInOutModal: any;
 
   constructor() {
   }
@@ -28,6 +29,12 @@ export class TerminalComponent implements OnInit {
   ngOnInit(): void {
     // formulario modal cobrar.
     this.cobrarModal = new bootstrap.Modal(document.querySelector('#cobrar-modal'));
+    // formulario entrada/salida de efectivo.
+    this.cashInOutModal = new bootstrap.Modal(document.querySelector('#cash-in-out-modal'));
+  }
+
+  btnCashInOutClick(): void {
+    this.cashInOutModal.show();
   }
 
   // botón vender.
