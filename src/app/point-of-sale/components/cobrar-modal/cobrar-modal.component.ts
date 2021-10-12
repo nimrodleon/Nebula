@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {faBars, faMoneyBillAlt, faMoneyCheckAlt, faPiggyBank} from '@fortawesome/free-solid-svg-icons';
+import {faBars, faEnvelope} from '@fortawesome/free-solid-svg-icons';
+import {faCheckSquare} from '@fortawesome/free-regular-svg-icons';
 
 @Component({
   selector: 'app-cobrar-modal',
@@ -8,9 +9,8 @@ import {faBars, faMoneyBillAlt, faMoneyCheckAlt, faPiggyBank} from '@fortawesome
 })
 export class CobrarModalComponent implements OnInit {
   faBars = faBars;
-  faMoneyBillAlt = faMoneyBillAlt;
-  faMoneyCheckAlt = faMoneyCheckAlt;
-  faPiggyBank = faPiggyBank;
+  faCheckSquare = faCheckSquare;
+  faEnvelope = faEnvelope;
 
   constructor() {
   }
