@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {faBars} from '@fortawesome/free-solid-svg-icons';
+import {faBars, faSearch} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-product-modal',
@@ -8,6 +8,7 @@ import {faBars} from '@fortawesome/free-solid-svg-icons';
 })
 export class ProductModalComponent implements OnInit {
   faBars = faBars;
+  faSearch = faSearch;
   @Input()
   title: string = '';
 

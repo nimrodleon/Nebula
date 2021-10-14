@@ -11,9 +11,23 @@
       <div class="modal-body pt-1">
         <form>
           <div class="pb-1">
-            <label class="col-form-label-sm text-uppercase">Nombre o descripción del producto</label>
+            <label class="col-form-label-sm text-uppercase">Descripción producto</label>
             <input type="text" class="form-control">
             <div class="invalid-feedback">La descripción es requerido.</div>
+          </div>
+          <div class="row">
+            <div class="col-6 pb-1">
+              <label class="col-form-label-sm text-uppercase">Código barra</label>
+              <input type="text" class="form-control">
+            </div>
+            <div class="col-6 mb-1">
+              <label class="col-form-label-sm text-uppercase">IMPUESTO ICBPER</label>
+              <select class="form-select">
+                <option value="0">NO</option>
+                <option value="1">SI, IMPUESTO BOLSAS PLÁSTICAS</option>
+              </select>
+              <div class="invalid-feedback">El igv es requerido.</div>
+            </div>
           </div>
           <div class="row">
             <div class="col-6 pb-1">
@@ -22,20 +36,21 @@
               <div class="invalid-feedback">El precio es requerido.</div>
             </div>
             <div class="col-6 mb-1">
-              <label class="col-form-label-sm text-uppercase">Impuesto</label>
+              <label class="col-form-label-sm text-uppercase">IGV (18%)</label>
               <select class="form-select">
-                <option value="0">Ninguno (0%)</option>
-                <option value="1">IGV - (18%)</option>
-                <option value="4">Exonerado - (0%)</option>
+                <option value="0">GRAVADO</option>
+                <option value="1">EXONERADO</option>
+                <option value="2">INAFECTO</option>
               </select>
-              <div class="invalid-feedback">El impuesto es requerido.</div>
+              <div class="invalid-feedback">El igv es requerido.</div>
             </div>
           </div>
           <div class="row">
             <div class="col-6 mb-1">
-              <label class="col-form-label-sm text-uppercase">Tipo de ítem</label>
+              <label class="col-form-label-sm text-uppercase">Tipo ítem</label>
               <select class="form-select">
-                <option value="0">Ninguno</option>
+                <option value="0">BIEN</option>
+                <option value="1">SERVICIO</option>
               </select>
               <div class="invalid-feedback">El tipo de ítem es requerido.</div>
             </div>
@@ -50,10 +65,12 @@
           <div class="row">
             <div class="col-6">
               <label class="col-form-label-sm text-uppercase">Código producto SUNAT</label>
-              <select class="form-select">
-                <option value="0">Ninguno</option>
-              </select>
-              <div class="invalid-feedback">El código de producto es requerido.</div>
+              <div class="d-flex">
+                <input type="text" class="form-control me-2" disabled>
+                <button type="button" class="btn btn-outline-secondary" disabled>
+                  <fa-icon [icon]="faSearch"></fa-icon>
+                </button>
+              </div>
             </div>
             <div class="col-6">
               <label class="col-form-label-sm text-uppercase">Categoría</label>
