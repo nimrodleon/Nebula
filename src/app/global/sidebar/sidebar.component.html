@@ -27,9 +27,12 @@
       </li>
       <li>
         <div class="mainItemWrapper">
-          <a routerLink="/inventory" class="w-100">
+          <a (click)="mnInventory($event)" href="#" class="w-100">
             <fa-icon [icon]="faArchive"></fa-icon>
             <span class="">Inventario</span>
+          </a>
+          <a (click)="mnInventory($event, true)" href="#" class="toggler">
+            <fa-icon [icon]="faArrowRight"></fa-icon>
           </a>
         </div>
       </li>
@@ -65,6 +68,41 @@
             <fa-icon [icon]="faArrowRight"></fa-icon>
           </a>
         </div>
+      </li>
+    </ul>
+  </ng-container>
+  <!-- SubMenu Inventario -->
+  <ng-container *ngIf="checkMenuChildInventory()">
+    <ul class="menuChildren">
+      <li>
+        <div class="header">
+          <a (click)="mnBack($event)" href="#" class="toggler">
+            <fa-icon [icon]="faArrowLeft"></fa-icon>
+          </a>
+          <a routerLink="/inventory" class="w-100">
+            <span class="">Inventario</span>
+          </a>
+        </div>
+      </li>
+      <li>
+        <a routerLink="#" class="w-100">
+          <span class="">Movimientos</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="#" class="w-100">
+          <span class="">Traslados</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="#" class="w-100">
+          <span class="">Devoluciones</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="#" class="w-100">
+          <span class="">Reporte Kardex</span>
+        </a>
       </li>
     </ul>
   </ng-container>
@@ -118,7 +156,6 @@
       </li>
     </ul>
   </ng-container>
-
 
   <!-- SubMenu Configuración -->
   <ng-container *ngIf="checkMenuChildConfig()">
