@@ -10,7 +10,7 @@
           </div>
           <div class="col-auto">
             <select class="form-select">
-              <option value="NUMERO">NÚMERO</option>
+              <option value="DOCUMENTO">DOCUMENTO</option>
               <option value="CONTACTO">CONTACTO</option>
             </select>
           </div>
@@ -24,20 +24,10 @@
             </button>
           </div>
           <div class="col-auto">
-            <div class="dropdown">
-              <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                <fa-icon [icon]="faCog"></fa-icon>
-                <span class="text-uppercase ms-1">Opciones</span>
-              </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Entrada/Salida</a></li>
-                <li><a class="dropdown-item" href="#">Nota de Venta</a></li>
-                <li>
-                  <hr class="dropdown-divider">
-                </li>
-                <li><a class="dropdown-item" href="#">Resumen de Caja</a></li>
-              </ul>
-            </div>
+            <a routerLink="/point-of-sale/terminal" class="btn btn-primary">
+              <fa-icon [icon]="faCashRegister"></fa-icon>
+              <span class="text-uppercase ms-1">Terminal</span>
+            </a>
           </div>
           <div class="col-auto">
             <button type="button" class="btn btn-danger">
@@ -54,9 +44,7 @@
             <thead>
             <tr class="text-uppercase">
               <th>Fecha</th>
-              <th>Hora</th>
-              <th>Tipo doc</th>
-              <th>Número</th>
+              <th>Documento</th>
               <th>Contacto</th>
               <th>Glosa</th>
               <th>F.Pago</th>
@@ -65,29 +53,14 @@
             </tr>
             </thead>
             <tbody>
-            <tr class="text-success">
+            <tr>
               <td>2021-09-13</td>
-              <td>12:00</td>
-              <td>-</td>
               <td>-</td>
               <td>-</td>
               <td>APERTURA DE CAJA</td>
-              <td>EFECTIVO</td>
-              <td>100.00</td>
-              <td class="text-end">
-                <button type="button" class="btn btn-danger btn-sm">
-                  <fa-icon [icon]="faMinusCircle"></fa-icon>
-                </button>
+              <td class="text-uppercase">
+                <span class="badge bg-danger">Credito</span>
               </td>
-            </tr>
-            <tr class="text-success">
-              <td>2021-09-13</td>
-              <td>12:00</td>
-              <td>BOLETA</td>
-              <td>B001-0001</td>
-              <td>CLIENTE APELLIDOS</td>
-              <td>-</td>
-              <td>EFECTIVO</td>
               <td>100.00</td>
               <td class="text-end">
                 <button type="button" class="btn btn-danger btn-sm">
@@ -97,12 +70,12 @@
             </tr>
             <tr>
               <td>2021-09-13</td>
-              <td>12:00</td>
-              <td>FACTURA</td>
-              <td>F001-0001</td>
-              <td>DEMO S.A.C.</td>
+              <td>B001-0001</td>
+              <td>CLIENTE APELLIDOS</td>
               <td>-</td>
-              <td>YAPE</td>
+              <td class="text-uppercase">
+                <span class="badge bg-success">Contado</span>
+              </td>
               <td>100.00</td>
               <td class="text-end">
                 <button type="button" class="btn btn-danger btn-sm">
@@ -110,14 +83,29 @@
                 </button>
               </td>
             </tr>
-            <tr class="text-danger">
+            <tr>
               <td>2021-09-13</td>
-              <td>12:00</td>
+              <td>F001-0001</td>
+              <td>DEMO S.A.C.</td>
               <td>-</td>
+              <td class="text-uppercase">
+                <span class="badge bg-danger">Credito</span>
+              </td>
+              <td>100.00</td>
+              <td class="text-end">
+                <button type="button" class="btn btn-danger btn-sm">
+                  <fa-icon [icon]="faMinusCircle"></fa-icon>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>2021-09-13</td>
               <td>-</td>
               <td>IVAN DOMINGUEZ</td>
               <td>PAGO DE LUZ</td>
-              <td>EFECTIVO</td>
+              <td class="text-uppercase">
+                <span class="badge bg-success">Contado</span>
+              </td>
               <td>100.00</td>
               <td class="text-end">
                 <button type="button" class="btn btn-danger btn-sm">

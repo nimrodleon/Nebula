@@ -12,16 +12,14 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body pt-1">
-        <ng-container *ngIf="false else success">
-          <h4 class="text-center pb-1 border-bottom">TOTAL 1.00</h4>
+        <ng-container *ngIf="true else success">
           <div class="row">
             <div class="col-6">
               <div class="mb-1">
-                <label for="method" class="form-label text-uppercase">Método de Pago</label>
+                <label for="method" class="form-label text-uppercase">Forma de pago</label>
                 <select class="form-select" id="method">
-                  <option value="1">EFECTIVO</option>
-                  <option value="3">DEPOSITO</option>
-                  <option value="3">TRANSFERENCIA</option>
+                  <option value="Credito">CRÉDITO</option>
+                  <option value="Contado">CONTADO</option>
                 </select>
               </div>
               <div class="mb-1">
@@ -76,7 +74,7 @@
         <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">
           <span class="text-uppercase">Cerrar</span>
         </button>
-        <ng-container *ngIf="false else print">
+        <ng-container *ngIf="true else print">
           <button type="button" class="btn btn-primary btn-lg">
             <span class="text-uppercase">Cobrar</span>
           </button>

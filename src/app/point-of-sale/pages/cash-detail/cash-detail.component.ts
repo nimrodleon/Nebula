@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {
+  faCashRegister,
   faCog,
   faLock, faMinusCircle,
   faPlus, faSearch,
@@ -19,6 +20,7 @@ export class CashDetailComponent implements OnInit {
   faLock = faLock;
   faMinusCircle = faMinusCircle;
   faSearch = faSearch;
+  faCashRegister = faCashRegister;
   faCog = faCog;
   // ========================================
   // cashInOutModal: any;

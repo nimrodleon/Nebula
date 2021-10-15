@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {
-  faCoins, faLock, faMinus, faPlus,
+  faCoins, faLock, faMinus, faPlus, faPuzzlePiece,
   faSearch, faTrashAlt, faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -19,6 +19,7 @@ export class TerminalComponent implements OnInit {
   faCoins = faCoins;
   faTrashAlt = faTrashAlt;
   faMinus = faMinus;
+  faPuzzlePiece=faPuzzlePiece;
   // ====================================================================================================
   cobrarModal: any;
   cashInOutModal: any;
