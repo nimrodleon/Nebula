@@ -6,7 +6,7 @@ import {
   faTrashAlt
 } from '@fortawesome/free-solid-svg-icons';
 
-declare var bootstrap: any;
+// declare var bootstrap: any;
 
 @Component({
   selector: 'app-cash-detail',
@@ -21,15 +21,15 @@ export class CashDetailComponent implements OnInit {
   faSearch = faSearch;
   faCog = faCog;
   // ========================================
-  cashInOutModal: any;
+  // cashInOutModal: any;
 
   constructor() {
   }
 
   ngOnInit(): void {
-    // modal entrada/salida de efectivo.
-    this.cashInOutModal = new bootstrap.Modal(
-      document.querySelector('#app-cash-in-out-modal'));
+    // // modal entrada/salida de efectivo.
+    // this.cashInOutModal = new bootstrap.Modal(
+    //   document.querySelector('#cash-in-out-modal'));
   }
 
   // // Abrir modal entrada/salida de efectivo.
