@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 
-import {PointOfSaleRoutingModule} from './point-of-sale-routing.module';
+import {CashierRoutingModule} from './cashier-routing.module';
 import {GlobalModule} from '../global/global.module';
 import {CashDetailComponent} from './pages/cash-detail/cash-detail.component';
 import {CajaDiariaComponent} from './pages/caja-diaria/caja-diaria.component';
@@ -22,10 +22,10 @@ import {OffcanvasComponent} from './components/offcanvas/offcanvas.component';
   ],
   imports: [
     CommonModule,
-    PointOfSaleRoutingModule,
+    CashierRoutingModule,
     GlobalModule,
     FontAwesomeModule
   ]
 })
-export class PointOfSaleModule {
+export class CashierModule {
 }
