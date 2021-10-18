@@ -1,0 +1,69 @@
+<app-navbar></app-navbar>
+<div class="Wrapper">
+  <app-sidebar></app-sidebar>
+  <div class="container-fluid">
+    <div class="row py-4 favorites">
+      <div class="col-3">
+        <div class="card" routerLink="/products">
+          <div class="card-body">
+            <div class="d-flex">
+              <div class="font-monospace">
+                <h5 class="text-uppercase">Productos</h5>
+                <span class="text-uppercase">Lista de Productos</span>
+              </div>
+              <fa-icon [icon]="faBox"></fa-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="card" routerLink="/point-of-sale">
+          <div class="card-body">
+            <div class="d-flex">
+              <div class="font-monospace">
+                <h5 class="text-uppercase">Punto de Venta</h5>
+                <span class="text-uppercase">Registro de Caja diaria</span>
+              </div>
+              <fa-icon [icon]="faCashRegister"></fa-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="card" routerLink="/sales">
+          <div class="card-body">
+            <div class="d-flex">
+              <div class="font-monospace">
+                <h5 class="text-uppercase">Ventas</h5>
+                <span class="text-uppercase">Listado de Ventas</span>
+              </div>
+              <fa-icon [icon]="faFileInvoiceDollar"></fa-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-3">
+        <div class="card" routerLink="/contacts">
+          <div class="card-body">
+            <div class="d-flex">
+              <div class="font-monospace">
+                <h5 class="text-uppercase">Contactos</h5>
+                <span class="text-uppercase">Lista de Contactos</span>
+              </div>
+              <fa-icon [icon]="faAddressBook"></fa-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

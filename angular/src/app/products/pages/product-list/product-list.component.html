@@ -1,0 +1,99 @@
+<app-navbar></app-navbar>
+<div class="Wrapper">
+  <app-sidebar></app-sidebar>
+  <div class="container-fluid">
+    <div class="row px-2">
+      <div class="col-12 bg-white my-2 py-3">
+        <form class="row row-cols-auto g-2">
+          <div class="col-auto">
+            <label class="col-form-label fw-bold">Filtrar por:</label>
+          </div>
+          <div class="col-auto">
+            <select class="form-select">
+              <option value="0">BIEN</option>
+              <option value="1">SERVICIO</option>
+            </select>
+          </div>
+          <div class="col-auto">
+            <input type="search" class="form-control" placeholder="BIEN/SERVICIO">
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-success">
+              <fa-icon [icon]="faSearch"></fa-icon>
+              <span class="text-uppercase ms-1">Buscar</span>
+            </button>
+          </div>
+          <div class="col-auto">
+            <button type="button" (click)="addProduct()" class="btn btn-primary">
+              <fa-icon [icon]="faPlus"></fa-icon>
+              <span class="text-uppercase ms-1">Agregar</span>
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="col-12 bg-white py-3">
+        <h5 class="fw-bold text-uppercase">Lista de Productos</h5>
+        <div class="table-responsive">
+          <table class="table table-striped mb-0">
+            <thead>
+            <tr class="text-uppercase">
+              <th>Código</th>
+              <th>Unidad</th>
+              <th>Descripción</th>
+              <th>Stock</th>
+              <th>Precio</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>4774</td>
+              <td>NUI</td>
+              <td>Impresora Epson TM-20II</td>
+              <td>
+                <button class="btn btn-info btn-sm">
+                  <fa-icon [icon]="faSearch"></fa-icon>
+                </button>
+              </td>
+              <td>451.00</td>
+              <td>
+                <div class="actions ms-auto">
+                  <button type="button" class="btn btn-secondary btn-sm me-2">
+                    <fa-icon [icon]="faEdit"></fa-icon>
+                  </button>
+                  <button type="button" class="btn btn-danger btn-sm">
+                    <fa-icon [icon]="faTrashAlt"></fa-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>4074</td>
+              <td>NUI</td>
+              <td>Laptop Hp Core i3 RAM 8gb SSD 240GB - CP-K441</td>
+              <td>
+                <button class="btn btn-info btn-sm">
+                  <fa-icon [icon]="faSearch"></fa-icon>
+                </button>
+              </td>
+              <td>2500.00</td>
+              <td>
+                <div class="actions ms-auto">
+                  <button type="button" class="btn btn-secondary btn-sm me-2">
+                    <fa-icon [icon]="faEdit"></fa-icon>
+                  </button>
+                  <button type="button" class="btn btn-danger btn-sm">
+                    <fa-icon [icon]="faTrashAlt"></fa-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-product-modal [title]="title"></app-product-modal>

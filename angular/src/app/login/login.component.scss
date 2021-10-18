@@ -1,0 +1,10 @@
+.WrapLogin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  // Formulario de Login.
+  .FormLogin {
+    max-width: 450px;
+  }
+}

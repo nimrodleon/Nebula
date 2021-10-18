@@ -1,0 +1,92 @@
+.Invoice {
+  background-color: white;
+  height: calc(100vh - 56px);
+  overflow: hidden;
+  min-width: 450px;
+  width: 450px;
+
+  // Título del terminal.
+  .InvoiceTitle {
+    background-color: #809bb6;
+    text-align: center;
+    text-transform: uppercase;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    font-size: 1.2rem;
+    color: white;
+  }
+
+  // Datos del cliente.
+  .ClientData {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    gap: 15px;
+
+    .Icon {
+      font-size: 1.7rem;
+      color: #333739;
+    }
+  }
+
+  // Wrapper principal.
+  .ContentData {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: calc(100vh - 147px);
+
+    .ItemVenta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #dee2e6;
+      padding: 4px;
+
+      .ItemDesc {
+        width: 230px;
+        max-width: 230px;
+        text-transform: uppercase;
+      }
+
+      .ItemCantidad {
+        display: flex;
+        justify-content: space-between;
+        min-width: 97px;
+        width: 97px;
+      }
+
+      .ItemTotal {
+        display: flex;
+        justify-content: space-between;
+        min-width: 100px;
+        width: 100px;
+      }
+    }
+
+    // botón vender
+    .Vender {
+      padding: 8px;
+      background-color: #f2f2f2;
+
+      .SubTotal {
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 2px;
+        border-bottom: 1px solid #dee2e6;
+        text-transform: uppercase;
+        padding-left: 15px;
+        padding-right: 15px;
+      }
+
+      button {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 8px;
+        width: 100%;
+      }
+    }
+  }
+
+}

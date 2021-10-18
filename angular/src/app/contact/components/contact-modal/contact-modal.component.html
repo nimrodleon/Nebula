@@ -1,0 +1,62 @@
+<div class="modal fade" id="contact-modal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <fa-icon [icon]="faBars"></fa-icon>
+          <span class="text-uppercase ms-1">{{title}}</span>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pt-1">
+        <form>
+          <div class="row">
+            <div class="col-6 pb-1">
+              <label class="col-form-label-sm text-uppercase">Número (D.N.I/R.U.C/etc)</label>
+              <input type="text" class="form-control">
+              <div class="invalid-feedback">El D.N.I. es requerido.</div>
+            </div>
+            <div class="col-6 mb-1">
+              <label class="col-form-label-sm text-uppercase">Tipo documento</label>
+              <select class="form-select">
+                <option value="1">1 - D.N.I</option>
+                <option value="6">6 - R.U.C</option>
+                <option value="7">7 - Pasaporte</option>
+              </select>
+              <div class="invalid-feedback">El tipo documento es requerido.</div>
+            </div>
+          </div>
+          <div class="pb-1">
+            <label class="col-form-label-sm text-uppercase">Razón social o nombre completo</label>
+            <input type="text" class="form-control">
+            <div class="invalid-feedback">La razón social es requerido.</div>
+          </div>
+          <div class="pb-1">
+            <label class="col-form-label-sm text-uppercase">Dirección completa</label>
+            <input type="text" class="form-control">
+            <div class="invalid-feedback">La dirección es requerido.</div>
+          </div>
+          <div class="row">
+            <div class="col-6 pb-1">
+              <label class="col-form-label-sm text-uppercase">Teléfono 1</label>
+              <input type="text" class="form-control">
+              <div class="invalid-feedback">El Teléfono es requerido.</div>
+            </div>
+            <div class="col-6 pb-1">
+              <label class="col-form-label-sm text-uppercase">Teléfono 2</label>
+              <input type="text" class="form-control">
+              <div class="invalid-feedback">El Teléfono es requerido.</div>
+            </div>
+          </div>
+          <label class="col-form-label-sm text-uppercase">Correo electrónico</label>
+          <input type="text" class="form-control">
+          <div class="invalid-feedback">Ingrese un correo electrónico valido.</div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary text-uppercase" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-primary text-uppercase">Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+</div>

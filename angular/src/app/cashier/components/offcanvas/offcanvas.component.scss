@@ -1,0 +1,18 @@
+// ancho menú.
+#offcanvas {
+  max-width: 270px;
+}
+
+.nav-item {
+  a {
+    color: black;
+  }
+
+  &:hover {
+    a {
+      color: white;
+    }
+
+    background-color: #175a8e;
+  }
+}
