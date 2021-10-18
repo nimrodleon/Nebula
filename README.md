@@ -1,2 +1,2 @@
 # Nebula
-ApiREST Software de Gestión Comercial.
+Software de Gestión Comercial.
