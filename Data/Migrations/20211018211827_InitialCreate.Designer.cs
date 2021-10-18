@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Nebula.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace Nebula.Migrations
+namespace Nebula.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211018211034_InitialCreate")]
+    [Migration("20211018211827_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

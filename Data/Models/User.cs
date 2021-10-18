@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Nebula.Data.Models
 {
@@ -10,7 +11,7 @@ namespace Nebula.Data.Models
         [MaxLength(250)] public string Password { get; set; }
         [MaxLength(250)] public string Role { get; set; }
         [MaxLength(250)] public string Email { get; set; }
-        public bool Suspended { get; set; }
-        public bool SoftDeleted { get; set; }
+        [DefaultValue(false)] public bool Suspended { get; set; }
+        [DefaultValue(false)] public bool SoftDeleted { get; set; }
     }
 }

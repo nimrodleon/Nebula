@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
-namespace Nebula.Migrations
+namespace Nebula.Data.Migrations
 {
     public partial class InitialCreate : Migration
     {
