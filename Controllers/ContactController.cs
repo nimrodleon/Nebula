@@ -37,13 +37,6 @@ namespace Nebula.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] Contact model)
         {
-            if (!ModelState.IsValid)
-            {
-                ModelState.AddModelError("", "No se puede guardar los cambios." +
-                                             "Vuelve a intentarlo y si el problema persiste, consulte con el administrador del sistema");
-                return NotFound(new { Ok = false, Contact = model });
-            }
-
             model.SoftDeleted = false;
             _context.Add(model);
             await _context.SaveChangesAsync();
@@ -54,13 +47,6 @@ namespace Nebula.Controllers
         public async Task<IActionResult> Edit(int? id, [FromBody] Contact model)
         {
             if (id != model.Id) return BadRequest();
-            if (!ModelState.IsValid)
-            {
-                ModelState.AddModelError("", "No se puede guardar los cambios." +
-                                             "Vuelve a intentarlo y si el problema persiste, consulte con el administrador del sistema");
-                return NotFound(new { Ok = false, Contact = model });
-            }
-
             model.SoftDeleted = false;
             _context.Update(model);
             await _context.SaveChangesAsync();
