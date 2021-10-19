@@ -10,10 +10,12 @@ namespace Nebula.Data
         }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Contact> Contacts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().HasQueryFilter(m => !m.SoftDeleted);
+            modelBuilder.Entity<Contact>().HasQueryFilter(m => !m.SoftDeleted);
             base.OnModelCreating(modelBuilder);
         }
     }
