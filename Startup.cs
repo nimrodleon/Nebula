@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +11,7 @@ using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Nebula.Data;
+using Nebula.Data.Services;
 
 namespace Nebula
 {
@@ -49,6 +51,19 @@ namespace Nebula
             });
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddHttpContextAccessor();
+            services.AddSingleton<IUriService>(o =>
+            {
+                var accessor = o.GetRequiredService<IHttpContextAccessor>();
+                if (accessor.HttpContext != null)
+                {
+                    var request = accessor.HttpContext.Request;
+                    var uri = string.Concat(request.Scheme, "://", request.Host.ToUriComponent());
+                    return new UriService(uri);
+                }
+
+                return null;
+            });
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
