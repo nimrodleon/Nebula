@@ -1,7 +1,6 @@
-using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Nebula.Data;
 using Nebula.Data.Models;
 using Nebula.Data.ViewModels;
 
@@ -11,40 +10,21 @@ namespace Nebula.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
-        private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public UserController(IConfiguration configuration, ApplicationDbContext context)
+        public UserController(UserManager<IdentityUser> userManager)
         {
-            _configuration = configuration;
-            _context = context;
+            _userManager = userManager;
         }
 
-        [HttpPost("UserAdminRegister")]
-        public IActionResult UserAdminRegister([FromBody] UserRegister model)
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create([FromBody] UserRegister model)
         {
-            if (!_configuration.GetValue<bool>("UserAdminRegister"))
-            {
-                return NotFound(new { Ok = false, Msg = "Operación no valida!" });
-            }
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            // validar nombre del usuario.
-            if (_context.Users.Any(m =>
-                m.UserName.Equals(model.UserName) && m.SoftDeleted.Equals(false)))
-                return NotFound(new { Ok = false, Msg = "El nombre del usuario ya existe!" });
-
-            var user = new User()
-            {
-                Name = model.Name,
-                UserName = model.UserName,
-                Password = BCrypt.Net.BCrypt.HashPassword(model.Password),
-                Role = "ROLE_ADMIN",
-                Email = model.Email,
-                Suspended = false,
-                SoftDeleted = false
-            };
-            _context.Users.Add(user);
-            _context.SaveChanges();
+            var user = new IdentityUser() { UserName = model.UserName, Email = model.Email };
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded) return BadRequest("Username or password invalid");
             return Ok(new { Ok = true, User = user });
         }
     }

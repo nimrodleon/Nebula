@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nebula.Data;
@@ -9,6 +10,7 @@ using Nebula.Data.Services;
 
 namespace Nebula.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ContactController : ControllerBase
@@ -34,8 +36,8 @@ namespace Nebula.Controllers
                 select c;
             var pagedData = await contacts.AsNoTracking().Skip(skip).Take(validFilter.PageSize).ToListAsync();
             var totalRecords = await contacts.CountAsync();
-            var pagedResponse = PaginationHelper.CreatePagedResponse<Contact>
-                (pagedData, validFilter, totalRecords, _uriService, route);
+            var pagedResponse =
+                PaginationHelper.CreatePagedResponse(pagedData, validFilter, totalRecords, _uriService, route);
             return Ok(pagedResponse);
         }
 
