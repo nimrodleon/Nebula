@@ -28,10 +28,12 @@ namespace Nebula.Controllers
             var route = Request.Path.Value;
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.Query);
             var skip = (validFilter.PageNumber - 1) * validFilter.PageSize;
-            var pagedData = await _context.Contacts.Where(m =>
-                    m.Document.Contains(filter.Query) || m.Name.ToLower().Contains(filter.Query.ToLower()))
-                .OrderByDescending(m => m.Id).Skip(skip).Take(validFilter.PageSize).ToListAsync();
-            var totalRecords = await _context.Contacts.CountAsync();
+            var contacts = from c in _context.Contacts.Where(m =>
+                        m.Document.Contains(filter.Query) || m.Name.ToLower().Contains(filter.Query.ToLower()))
+                    .OrderByDescending(m => m.Id)
+                select c;
+            var pagedData = await contacts.AsNoTracking().Skip(skip).Take(validFilter.PageSize).ToListAsync();
+            var totalRecords = await contacts.CountAsync();
             var pagedResponse = PaginationHelper.CreatePagedResponse<Contact>
                 (pagedData, validFilter, totalRecords, _uriService, route);
             return Ok(pagedResponse);
