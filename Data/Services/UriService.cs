@@ -19,6 +19,7 @@ namespace Nebula.Data.Services
             var modifiedUri =
                 QueryHelpers.AddQueryString(endpointUri.ToString(), "pageNumber", filter.PageNumber.ToString());
             modifiedUri = QueryHelpers.AddQueryString(modifiedUri, "pageSize", filter.PageSize.ToString());
+            modifiedUri = QueryHelpers.AddQueryString(modifiedUri, "query", filter.Query);
             return new Uri(modifiedUri);
         }
     }

@@ -26,9 +26,11 @@ namespace Nebula.Controllers
         public async Task<IActionResult> Index([FromQuery] PaginationFilter filter)
         {
             var route = Request.Path.Value;
-            var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize);
-            var pagedData = await _context.Contacts.Skip((validFilter.PageNumber - 1) * validFilter.PageSize)
-                .Take(validFilter.PageSize).ToListAsync();
+            var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.Query);
+            var skip = (validFilter.PageNumber - 1) * validFilter.PageSize;
+            var pagedData = await _context.Contacts.Where(m =>
+                    m.Document.Contains(filter.Query) || m.Name.ToLower().Contains(filter.Query.ToLower()))
+                .OrderByDescending(m => m.Id).Skip(skip).Take(validFilter.PageSize).ToListAsync();
             var totalRecords = await _context.Contacts.CountAsync();
             var pagedResponse = PaginationHelper.CreatePagedResponse<Contact>
                 (pagedData, validFilter, totalRecords, _uriService, route);
