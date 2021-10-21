@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {faEdit, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {faEdit, faFilter, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 
 declare var bootstrap: any;
 
@@ -13,6 +13,7 @@ export class ContactListComponent implements OnInit {
   faPlus = faPlus;
   faTrashAlt = faTrashAlt;
   faEdit = faEdit;
+  faFilter = faFilter;
   // ====================================================================================================
   contactModal: any;
   title: string = '';
