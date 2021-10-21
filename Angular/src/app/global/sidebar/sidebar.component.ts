@@ -6,11 +6,7 @@ import {
   /* faShoppingBasket, faWallet */
 } from '@fortawesome/free-solid-svg-icons';
 import {Router} from '@angular/router';
-
-enum Enum {
-  true = '4365290483627856',
-  false = '0363176613952597',
-}
+import {EnumBoolean, EnumMenu} from '../interfaces';
 
 @Component({
   selector: 'app-sidebar',
@@ -30,11 +26,11 @@ export class SidebarComponent implements OnInit {
 
   // ====================================================================================================
 
-  mnRoot: string | null = Enum.true;
+  rootMenu: string | null = EnumBoolean.true;
   // mnChildInventory: string | null = Enum.false;
   // mnChildShopping: string | null = Enum.false;
   // mnChildSales: string | null = Enum.false;
-  mnChildConfig: string | null = Enum.false;
+  childMenuConfiguration: string | null = EnumBoolean.false;
 
   constructor(
     private router: Router) {
@@ -45,18 +41,18 @@ export class SidebarComponent implements OnInit {
     const mainMenu: any = document.getElementById('mainMenu');
     mainMenu.classList.value = localStorage.getItem('classMainMenu');
     // valores por defecto.
-    this.mnRoot = localStorage.getItem('mnRoot');
+    this.rootMenu = localStorage.getItem(EnumMenu.rootMenu);
     // this.mnChildInventory = localStorage.getItem('mnChildInventory');
     // this.mnChildShopping = localStorage.getItem('mnChildShopping');
     // this.mnChildSales = localStorage.getItem('mnChildSales');
-    this.mnChildConfig = localStorage.getItem('mnChildConfig');
+    this.childMenuConfiguration = localStorage.getItem(EnumMenu.childMenuConfiguration);
   }
 
   // Volver atrás.
   mnBack(e: any): void {
     e.preventDefault();
-    this.mnRoot = Enum.true;
-    localStorage.setItem('mnRoot', this.mnRoot);
+    this.rootMenu = EnumBoolean.true;
+    localStorage.setItem(EnumMenu.rootMenu, this.rootMenu);
     // // menu inventario.
     // this.mnChildInventory = Enum.false;
     // localStorage.setItem('mnChildInventory', this.mnChildInventory);
@@ -67,8 +63,8 @@ export class SidebarComponent implements OnInit {
     // this.mnChildSales = Enum.false;
     // localStorage.setItem('mnChildSales', this.mnChildSales);
     // menu configuración.
-    this.mnChildConfig = Enum.false;
-    localStorage.setItem('mnChildConfig', this.mnChildConfig);
+    this.childMenuConfiguration = EnumBoolean.false;
+    localStorage.setItem(EnumMenu.childMenuConfiguration, this.childMenuConfiguration);
   }
 
   // // menu inventario.
@@ -110,17 +106,17 @@ export class SidebarComponent implements OnInit {
   // menu configuración.
   async mnConfig(e: any) {
     e.preventDefault();
-    this.mnRoot = Enum.false;
-    this.mnChildConfig = Enum.true;
-    localStorage.setItem('mnRoot', this.mnRoot);
-    localStorage.setItem('mnChildConfig', this.mnChildConfig);
+    this.rootMenu = EnumBoolean.false;
+    this.childMenuConfiguration = EnumBoolean.true;
+    localStorage.setItem(EnumMenu.rootMenu, this.rootMenu);
+    localStorage.setItem(EnumMenu.childMenuConfiguration, this.childMenuConfiguration);
   }
 
   // ====================================================================================================
 
   // verificar menu principal.
   checkMenuRoot(): boolean {
-    return this.mnRoot === Enum.true;
+    return this.rootMenu === EnumBoolean.true;
   }
 
   // // verificar submenu inventario.
@@ -140,7 +136,7 @@ export class SidebarComponent implements OnInit {
 
   // verificar submenu ventas.
   checkMenuChildConfig(): boolean {
-    return this.mnChildConfig == Enum.true;
+    return this.childMenuConfiguration == EnumBoolean.true;
   }
 
 }

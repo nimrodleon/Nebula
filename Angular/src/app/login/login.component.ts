@@ -1,10 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {faLock, faSignInAlt, faUser} from '@fortawesome/free-solid-svg-icons';
-
-enum Enum {
-  true = '4365290483627856',
-  false = '0363176613952597',
-}
+import {EnumBoolean, EnumMenu} from '../global/interfaces';
 
 @Component({
   selector: 'app-login',
@@ -21,11 +17,11 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     // inicializar valores del menu principal.
-    localStorage.setItem('mnRoot', Enum.true);
-    // localStorage.setItem('mnChildInventory', Enum.false);
-    // localStorage.setItem('mnChildShopping', Enum.false);
-    // localStorage.setItem('mnChildSales', Enum.false);
-    localStorage.setItem('mnChildConfig', Enum.false);
+    localStorage.setItem(EnumMenu.rootMenu, EnumBoolean.true);
+    // localStorage.setItem(EnumMenu.childMenuInventory, EnumBoolean.false);
+    // localStorage.setItem(EnumMenu.childMenuShopping, EnumBoolean.false);
+    // localStorage.setItem(EnumMenu.childMenuSales, EnumBoolean.false);
+    localStorage.setItem(EnumMenu.childMenuConfiguration, EnumBoolean.false);
   }
 
 }
