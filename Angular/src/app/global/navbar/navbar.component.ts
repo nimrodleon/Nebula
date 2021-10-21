@@ -5,6 +5,7 @@ import {
   faCog, faSignOutAlt,
   faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
+import {AuthService} from '../../user/services';
 
 declare var bootstrap: any;
 
@@ -23,7 +24,7 @@ export class NavbarComponent implements OnInit {
   // ========================================
   bsOffcanvas: any;
 
-  constructor() {
+  constructor(private authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -34,7 +35,7 @@ export class NavbarComponent implements OnInit {
   }
 
   // Toggle menu principal.
-  mainMenuToggle(e: any) {
+  public mainMenuToggle(e: any) {
     e.preventDefault();
     const mainMenu: any = document.getElementById('mainMenu');
     if (mainMenu) {
@@ -46,5 +47,10 @@ export class NavbarComponent implements OnInit {
       this.bsOffcanvas.show();
     }
   }
+
+  public logout(): void {
+    this.authService.logout();
+  }
+
 
 }
