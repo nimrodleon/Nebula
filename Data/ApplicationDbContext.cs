@@ -14,6 +14,7 @@ namespace Nebula.Data
         }
 
         public DbSet<Contact> Contacts { get; set; }
+        public DbSet<PeopleDocType> PeopleDocTypes { get; set; }
 
         /// <summary>
         /// Configurar SoftDelete.
