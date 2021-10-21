@@ -1,17 +1,18 @@
 <div class="WrapLogin">
-  <form class="FormLogin">
+  <form class="FormLogin" (submit)="authLogin()">
     <div class="card">
       <div class="card-body">
         <h5 class="text-uppercase text-center">Bienvenido</h5>
         <div class="mb-3">
           <div class="input-group input-group-lg">
             <span class="input-group-text"><fa-icon [icon]="faUser"></fa-icon></span>
-            <input type="text" name="userName" class="form-control" placeholder="Username">
+            <input type="text" name="userName" [(ngModel)]="user.userName" class="form-control" placeholder="Username">
           </div>
         </div>
         <div class="input-group input-group-lg">
           <span class="input-group-text"><fa-icon [icon]="faLock"></fa-icon></span>
-          <input type="password" name="password" class="form-control" placeholder="Password">
+          <input type="password" name="password" [(ngModel)]="user.password" class="form-control"
+                 placeholder="Password">
         </div>
       </div>
       <div class="card-footer">

@@ -59,7 +59,7 @@ namespace Nebula
             services.AddCors(options =>
             {
                 options.AddPolicy(name: "MyPolicy",
-                    builder => { builder.AllowAnyOrigin().AllowAnyMethod(); });
+                    builder => { builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); });
             });
 
             services.AddHttpContextAccessor();
@@ -126,7 +126,7 @@ namespace Nebula
 
             app.UseRouting();
 
-            app.UseCors();
+            app.UseCors("MyPolicy");
 
             app.UseAuthentication();
 
