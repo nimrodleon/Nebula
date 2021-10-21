@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Nebula.Data.Models
 {
@@ -14,6 +12,5 @@ namespace Nebula.Data.Models
         [MaxLength(250)] public string PhoneNumber1 { get; set; }
         [MaxLength(250)] public string PhoneNumber2 { get; set; }
         [MaxLength(250)] public string Email { get; set; }
-        [JsonIgnore] [DefaultValue(false)] public bool SoftDeleted { get; set; }
     }
 }

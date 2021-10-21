@@ -53,7 +53,6 @@ namespace Nebula.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] Contact model)
         {
-            model.SoftDeleted = false;
             _context.Add(model);
             await _context.SaveChangesAsync();
             return Ok(new { Ok = true, Contact = model });
@@ -63,7 +62,6 @@ namespace Nebula.Controllers
         public async Task<IActionResult> Edit(int? id, [FromBody] Contact model)
         {
             if (id != model.Id) return BadRequest();
-            model.SoftDeleted = false;
             _context.Update(model);
             await _context.SaveChangesAsync();
             return Ok(new { Ok = true, Contact = model });
@@ -74,8 +72,7 @@ namespace Nebula.Controllers
         {
             var contact = await _context.Contacts.FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (contact == null) return NotFound();
-            contact.SoftDeleted = true;
-            _context.Update(contact);
+            _context.Contacts.Remove(contact);
             await _context.SaveChangesAsync();
             return Ok(new { Ok = true, Msg = "Contacto borrado!" });
         }
