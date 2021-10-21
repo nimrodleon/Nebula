@@ -45,7 +45,8 @@ namespace Nebula.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
-            var contact = await _context.Contacts.FirstOrDefaultAsync(m => m.Id.Equals(id));
+            var contact = await _context.Contacts.IgnoreQueryFilters()
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (contact == null) return NotFound();
             return Ok(contact);
         }
