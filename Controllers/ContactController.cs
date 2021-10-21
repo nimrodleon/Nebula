@@ -44,17 +44,17 @@ namespace Nebula.Controllers
         [HttpGet("Details/{id}")]
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null) return NotFound();
+            if (id == null) return BadRequest();
             var contact = await _context.Contacts.IgnoreQueryFilters()
                 .FirstOrDefaultAsync(m => m.Id.Equals(id));
-            if (contact == null) return NotFound();
+            if (contact == null) return BadRequest();
             return Ok(contact);
         }
 
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] Contact model)
         {
-            _context.Add(model);
+            _context.Contacts.Add(model);
             await _context.SaveChangesAsync();
             return Ok(new { Ok = true, Contact = model });
         }
@@ -63,7 +63,7 @@ namespace Nebula.Controllers
         public async Task<IActionResult> Edit(int? id, [FromBody] Contact model)
         {
             if (id != model.Id) return BadRequest();
-            _context.Update(model);
+            _context.Contacts.Update(model);
             await _context.SaveChangesAsync();
             return Ok(new { Ok = true, Contact = model });
         }
@@ -72,7 +72,7 @@ namespace Nebula.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             var contact = await _context.Contacts.FirstOrDefaultAsync(m => m.Id.Equals(id));
-            if (contact == null) return NotFound();
+            if (contact == null) return BadRequest();
             _context.Contacts.Remove(contact);
             await _context.SaveChangesAsync();
             return Ok(new { Ok = true, Msg = "Contacto borrado!" });

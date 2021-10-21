@@ -66,6 +66,8 @@ namespace Nebula.Data
         {
             modelBuilder.Entity<Contact>().Property<bool>("SoftDeleted");
             modelBuilder.Entity<Contact>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
+            modelBuilder.Entity<PeopleDocType>().Property<bool>("SoftDeleted");
+            modelBuilder.Entity<PeopleDocType>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             base.OnModelCreating(modelBuilder);
         }
     }
