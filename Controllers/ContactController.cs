@@ -30,12 +30,12 @@ namespace Nebula.Controllers
             var route = Request.Path.Value;
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.Query);
             var skip = (validFilter.PageNumber - 1) * validFilter.PageSize;
-            var contacts = from c in _context.Contacts.Where(m =>
+            var result = from c in _context.Contacts.Where(m =>
                         m.Document.Contains(filter.Query) || m.Name.ToLower().Contains(filter.Query.ToLower()))
                     .OrderByDescending(m => m.Id)
                 select c;
-            var pagedData = await contacts.AsNoTracking().Skip(skip).Take(validFilter.PageSize).ToListAsync();
-            var totalRecords = await contacts.CountAsync();
+            var pagedData = await result.AsNoTracking().Skip(skip).Take(validFilter.PageSize).ToListAsync();
+            var totalRecords = await result.CountAsync();
             var pagedResponse =
                 PaginationHelper.CreatePagedResponse(pagedData, validFilter, totalRecords, _uriService, route);
             return Ok(pagedResponse);
@@ -45,10 +45,10 @@ namespace Nebula.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return BadRequest();
-            var contact = await _context.Contacts.IgnoreQueryFilters()
+            var result = await _context.Contacts.IgnoreQueryFilters()
                 .FirstOrDefaultAsync(m => m.Id.Equals(id));
-            if (contact == null) return BadRequest();
-            return Ok(contact);
+            if (result == null) return BadRequest();
+            return Ok(result);
         }
 
         [HttpPost("Create")]
@@ -71,9 +71,9 @@ namespace Nebula.Controllers
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(int? id)
         {
-            var contact = await _context.Contacts.FirstOrDefaultAsync(m => m.Id.Equals(id));
-            if (contact == null) return BadRequest();
-            _context.Contacts.Remove(contact);
+            var result = await _context.Contacts.FirstOrDefaultAsync(m => m.Id.Equals(id));
+            if (result == null) return BadRequest();
+            _context.Contacts.Remove(result);
             await _context.SaveChangesAsync();
             return Ok(new { Ok = true, Msg = "Contacto borrado!" });
         }
