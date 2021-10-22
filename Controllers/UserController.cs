@@ -17,8 +17,8 @@ namespace Nebula.Controllers
             _userManager = userManager;
         }
 
-        [HttpPost("Create")]
-        public async Task<IActionResult> Create([FromBody] UserRegister model)
+        [HttpPost("Store")]
+        public async Task<IActionResult> Store([FromBody] UserRegister model)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 

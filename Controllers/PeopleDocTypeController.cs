@@ -26,8 +26,8 @@ namespace Nebula.Controllers
             return Ok(result);
         }
 
-        [HttpGet("Details/{id}")]
-        public async Task<IActionResult> Details(string id)
+        [HttpGet("Show/{id}")]
+        public async Task<IActionResult> Show(string id)
         {
             if (id == null) return BadRequest();
             var result = await _context.PeopleDocTypes.IgnoreQueryFilters()
@@ -36,16 +36,16 @@ namespace Nebula.Controllers
             return Ok(result);
         }
 
-        [HttpPost("Create")]
-        public async Task<IActionResult> Create([FromBody] PeopleDocType model)
+        [HttpPost("Store")]
+        public async Task<IActionResult> Store([FromBody] PeopleDocType model)
         {
             _context.PeopleDocTypes.Add(model);
             await _context.SaveChangesAsync();
             return Ok(new { Ok = true, PeopleDocType = model });
         }
 
-        [HttpPut("Edit/{id}")]
-        public async Task<IActionResult> Edit(string id, [FromBody] PeopleDocType model)
+        [HttpPut("Update/{id}")]
+        public async Task<IActionResult> Update(string id, [FromBody] PeopleDocType model)
         {
             if (id != model.Id.ToString()) return BadRequest();
             _context.PeopleDocTypes.Update(model);
@@ -53,8 +53,8 @@ namespace Nebula.Controllers
             return Ok(new { Ok = true, PeopleDocType = model });
         }
 
-        [HttpDelete("Delete/{id}")]
-        public async Task<IActionResult> Delete(string id)
+        [HttpDelete("Destroy/{id}")]
+        public async Task<IActionResult> Destroy(string id)
         {
             var result = await _context.PeopleDocTypes
                 .FirstOrDefaultAsync(m => m.Id.ToString().Equals(id));

@@ -41,8 +41,8 @@ namespace Nebula.Controllers
             return Ok(pagedResponse);
         }
 
-        [HttpGet("Details/{id}")]
-        public async Task<IActionResult> Details(int? id)
+        [HttpGet("Show/{id}")]
+        public async Task<IActionResult> Show(int? id)
         {
             if (id == null) return BadRequest();
             var result = await _context.Contacts.IgnoreQueryFilters()
@@ -51,16 +51,16 @@ namespace Nebula.Controllers
             return Ok(result);
         }
 
-        [HttpPost("Create")]
-        public async Task<IActionResult> Create([FromBody] Contact model)
+        [HttpPost("Store")]
+        public async Task<IActionResult> Store([FromBody] Contact model)
         {
             _context.Contacts.Add(model);
             await _context.SaveChangesAsync();
             return Ok(new { Ok = true, Contact = model });
         }
 
-        [HttpPut("Edit/{id}")]
-        public async Task<IActionResult> Edit(int? id, [FromBody] Contact model)
+        [HttpPut("Update/{id}")]
+        public async Task<IActionResult> Update(int? id, [FromBody] Contact model)
         {
             if (id != model.Id) return BadRequest();
             _context.Contacts.Update(model);
@@ -68,8 +68,8 @@ namespace Nebula.Controllers
             return Ok(new { Ok = true, Contact = model });
         }
 
-        [HttpDelete("Delete/{id}")]
-        public async Task<IActionResult> Delete(int? id)
+        [HttpDelete("Destroy/{id}")]
+        public async Task<IActionResult> Destroy(int? id)
         {
             var result = await _context.Contacts.FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (result == null) return BadRequest();
