@@ -41,7 +41,11 @@ namespace Nebula.Controllers
         {
             _context.PeopleDocTypes.Add(model);
             await _context.SaveChangesAsync();
-            return Ok(new { Ok = true, PeopleDocType = model });
+            return Ok(new
+            {
+                Ok = true, Data = model,
+                Msg = $"{model.Description} ha sido registrado!"
+            });
         }
 
         [HttpPut("Update/{id}")]
@@ -50,7 +54,11 @@ namespace Nebula.Controllers
             if (id != model.Id.ToString()) return BadRequest();
             _context.PeopleDocTypes.Update(model);
             await _context.SaveChangesAsync();
-            return Ok(new { Ok = true, PeopleDocType = model });
+            return Ok(new
+            {
+                Ok = true, Data = model,
+                Msg = $"{model.Description} ha sido actualizado!"
+            });
         }
 
         [HttpDelete("Destroy/{id}")]
@@ -61,7 +69,7 @@ namespace Nebula.Controllers
             if (result == null) return BadRequest();
             _context.PeopleDocTypes.Remove(result);
             await _context.SaveChangesAsync();
-            return Ok(new { Ok = true, Msg = "Tipo documento borrado!" });
+            return Ok(new { Ok = true, Data = result, Msg = "El tipo documento ha sido borrado!" });
         }
     }
 }

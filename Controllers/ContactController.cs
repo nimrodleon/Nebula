@@ -56,7 +56,11 @@ namespace Nebula.Controllers
         {
             _context.Contacts.Add(model);
             await _context.SaveChangesAsync();
-            return Ok(new { Ok = true, Contact = model });
+            return Ok(new
+            {
+                Ok = true, Data = model,
+                Msg = $"{model.Document} - {model.Name} ha sido registrado!"
+            });
         }
 
         [HttpPut("Update/{id}")]
@@ -65,7 +69,11 @@ namespace Nebula.Controllers
             if (id != model.Id) return BadRequest();
             _context.Contacts.Update(model);
             await _context.SaveChangesAsync();
-            return Ok(new { Ok = true, Contact = model });
+            return Ok(new
+            {
+                Ok = true, Data = model,
+                Msg = $"{model.Document} - {model.Name} ha sido actualizado!"
+            });
         }
 
         [HttpDelete("Destroy/{id}")]
@@ -75,7 +83,7 @@ namespace Nebula.Controllers
             if (result == null) return BadRequest();
             _context.Contacts.Remove(result);
             await _context.SaveChangesAsync();
-            return Ok(new { Ok = true, Msg = "Contacto borrado!" });
+            return Ok(new { Ok = true, Data = result, Msg = "El contacto ha sido borrado!" });
         }
     }
 }
