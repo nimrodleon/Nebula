@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Data.Models;
 using Nebula.Data.ViewModels;
 
 namespace Nebula.Controllers

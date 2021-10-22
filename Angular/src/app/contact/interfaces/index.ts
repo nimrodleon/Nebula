@@ -1,1 +1,2 @@
-export * from './PeopleDocType';
+export * from './people-doc-type';
+export * from './contact';
