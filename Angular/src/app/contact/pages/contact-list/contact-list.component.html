@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="row px-2">
       <div class="col-12 bg-white my-2 py-3">
-        <form class="row row-cols-auto g-2">
+        <form (submit)="submitSearch($event)" class="row row-cols-auto g-2">
           <div class="col-auto">
             <label class="col-form-label fw-bold">Filtrar por:</label>
           </div>
@@ -13,7 +13,7 @@
               <span class="input-group-text">
                 <fa-icon [icon]="faFilter"></fa-icon>
               </span>
-              <input type="search" class="form-control" placeholder="CONTACTO">
+              <input type="search" [formControl]="query" class="form-control" placeholder="CONTACTO">
             </div>
           </div>
           <div class="col-auto">
@@ -81,6 +81,10 @@
         </div>
       </div>
     </div>
+
+    <pre>{{query.value|json}}</pre>
+    <pre>{{contacts|json}}</pre>
+
   </div>
 </div>
 

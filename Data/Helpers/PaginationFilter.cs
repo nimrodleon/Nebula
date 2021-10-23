@@ -17,7 +17,7 @@
         {
             PageNumber = pageNumber < 1 ? 1 : pageNumber;
             PageSize = pageSize > 100 ? 100 : pageSize;
-            Query = query;
+            Query = query ?? string.Empty;
         }
     }
 }
