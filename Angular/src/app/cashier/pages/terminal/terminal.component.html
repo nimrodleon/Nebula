@@ -1,7 +1,44 @@
-<app-navbar></app-navbar>
+<nav class="navbar navbar-expand navbar-dark" style="background-color: #323e72;">
+  <div class="container-fluid">
+    <a href="#" (click)="showMenuCanvas($event)" class="navbar-brand">
+      <fa-icon [icon]="faBars"></fa-icon>
+    </a>
+    <a class="navbar-brand" routerLink="/cashier">
+      <span class="text-uppercase">Principal</span>
+    </a>
+    <div class="collapse navbar-collapse">
+      <form class="d-flex">
+        <div class="input-group">
+          <span class="input-group-text">
+            <fa-icon [icon]="faBarcode"></fa-icon>
+          </span>
+          <input class="form-control" type="search" placeholder="Código de barra">
+        </div>
+      </form>
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="#">
+            <fa-icon [icon]="faUserCircle"></fa-icon>
+            <span class="ms-1">ADMIN</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link btn btn-danger btn-sm px-sm-4 px-lg-3">
+            <fa-icon [icon]="faSignOutAlt"></fa-icon>
+            <span class="text-uppercase ms-1">Salir</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- ## Main Content -->
 <div class="Wrapper">
   <app-offcanvas></app-offcanvas>
   <div class="container-fluid px-0">
+
+
+    <!--
     <div class="d-flex justify-content-between">
       <div class="container-fluid w-100">
         <div class="row">
@@ -110,7 +147,7 @@
                   <fa-icon [icon]="faTrashAlt"></fa-icon>
                 </button>
               </div>
-            </div><!-- // .ItemVenta -->
+            </div>
             <div class="ItemVenta">
               <div class="ItemDesc">
                 <strong class="d-block">Acceso a red DIRECOM correspondiente al mes de octubre 2021 </strong>
@@ -131,7 +168,7 @@
                   <fa-icon [icon]="faTrashAlt"></fa-icon>
                 </button>
               </div>
-            </div><!-- // .ItemVenta -->
+            </div>
             <div class="ItemVenta">
               <div class="ItemDesc">
                 <strong class="d-block">MONITOR micronics 18.5" Negro</strong>
@@ -152,7 +189,7 @@
                   <fa-icon [icon]="faTrashAlt"></fa-icon>
                 </button>
               </div>
-            </div><!-- // .ItemVenta -->
+            </div>
           </div>
           <div class="Vender">
             <div class="SubTotal">
@@ -171,6 +208,7 @@
         </div>
       </div>
     </div>
+    -->
   </div>
 </div>
 

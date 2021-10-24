@@ -1,7 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {
+  faBarcode, faBars,
+  faCashRegister,
   faCoins, faLock, faMinus, faPlus, faPuzzlePiece,
-  faSearch, faTrashAlt, faUserCircle
+  faSearch, faSignOutAlt, faTrashAlt, faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
 
 declare var bootstrap: any;
@@ -19,8 +21,13 @@ export class TerminalComponent implements OnInit {
   faCoins = faCoins;
   faTrashAlt = faTrashAlt;
   faMinus = faMinus;
-  faPuzzlePiece=faPuzzlePiece;
+  faPuzzlePiece = faPuzzlePiece;
+  faSignOutAlt = faSignOutAlt;
+  faCashRegister = faCashRegister;
+  faBarcode = faBarcode;
+  faBars = faBars;
   // ====================================================================================================
+  bsOffcanvas: any;
   cobrarModal: any;
   cashInOutModal: any;
 
@@ -32,15 +39,28 @@ export class TerminalComponent implements OnInit {
     this.cobrarModal = new bootstrap.Modal(document.querySelector('#cobrar-modal'));
     // formulario entrada/salida de efectivo.
     this.cashInOutModal = new bootstrap.Modal(document.querySelector('#cash-in-out-modal'));
+    // menu principal del punto de venta.
+    if (document.getElementById('offcanvas')) {
+      this.bsOffcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvas'));
+    }
   }
 
-  btnCashInOutClick(): void {
-    this.cashInOutModal.show();
+  // mostrar menu principal.
+  public showMenuCanvas(e: any) {
+    e.preventDefault();
+    // mostrar menu principal del terminal.
+    if (document.getElementById('offcanvas')) {
+      this.bsOffcanvas.show();
+    }
   }
 
-  // botón vender.
-  btnVenderClick(): void {
-    this.cobrarModal.show();
-  }
+  // btnCashInOutClick(): void {
+  //   this.cashInOutModal.show();
+  // }
+  //
+  // // botón vender.
+  // btnVenderClick(): void {
+  //   this.cobrarModal.show();
+  // }
 
 }
