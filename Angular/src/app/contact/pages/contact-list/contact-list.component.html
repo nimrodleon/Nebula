@@ -44,27 +44,11 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-              <td>R.U.C</td>
-              <td>20201245124</td>
-              <td class="text-uppercase">GRUPO MAXIMA INTERNACIONAL</td>
-              <td>954-454-441</td>
-              <td>
-                <div class="actions ms-auto">
-                  <button type="button" class="btn btn-secondary btn-sm me-2">
-                    <fa-icon [icon]="faEdit"></fa-icon>
-                  </button>
-                  <button type="button" class="btn btn-danger btn-sm">
-                    <fa-icon [icon]="faTrashAlt"></fa-icon>
-                  </button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>R.U.C</td>
-              <td>20201245124</td>
-              <td class="text-uppercase">Deltron S.A.C</td>
-              <td>954-411-441</td>
+            <tr *ngFor="let item of contacts.data">
+              <td>{{item.typeDoc}}</td>
+              <td>{{item.document}}</td>
+              <td class="text-uppercase">{{item.name}}</td>
+              <td>{{item.phoneNumber1}}</td>
               <td>
                 <div class="actions ms-auto">
                   <button type="button" class="btn btn-secondary btn-sm me-2">
@@ -81,10 +65,6 @@
         </div>
       </div>
     </div>
-
-    <pre>{{query.value|json}}</pre>
-    <pre>{{contacts|json}}</pre>
-
   </div>
 </div>
 

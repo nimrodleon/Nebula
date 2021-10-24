@@ -4,6 +4,7 @@ $mainMenuWidth: 270px;
   width: $mainMenuWidth;
   min-width: $mainMenuWidth;
   min-height: calc(100vh - 56px);
+  height: 100%;
   overflow-x: hidden;
   border-right: 0 solid #eaeaea;
   background-color: #333739;

@@ -9,7 +9,7 @@
         public PaginationFilter()
         {
             PageNumber = 1;
-            PageSize = 50;
+            PageSize = 25;
             Query = string.Empty;
         }
 

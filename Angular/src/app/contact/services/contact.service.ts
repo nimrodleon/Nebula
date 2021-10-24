@@ -14,12 +14,12 @@ export class ContactService {
   constructor(private http: HttpClient) {
   }
 
-  public index(pageNumber: number, pageSize: number, query: string): Observable<PagedResponse<Contact[]>> {
+  public index(pageNumber: number, pageSize: number, query: string): Observable<PagedResponse<Contact>> {
     let params = new HttpParams();
     params = params.append('pageNumber', pageNumber);
     params = params.append('pageSize', pageSize);
     params = params.append('query', query);
-    return this.http.get<PagedResponse<Contact[]>>(`${this.appURL}/Index`, {params: params});
+    return this.http.get<PagedResponse<Contact>>(`${this.appURL}/Index`, {params: params});
   }
 
   public show(id: number): Observable<Contact> {
