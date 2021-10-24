@@ -1,98 +1,97 @@
-//.navbar-brand {
-//  span {
-//    font-size: 0.9rem;
-//  }
-//}
-
 .navbar-collapse {
   input[type="search"] {
-    min-width: 350px;
+    min-width: 300px;
   }
 }
 
-.Invoice {
-  background-color: white;
-  height: calc(100vh - 56px);
-  overflow: hidden;
-  min-width: 450px;
-  width: 450px;
+.store-body {
+  display: flex;
+  justify-content: space-between;
 
-  // Datos del cliente.
-  .ClientData {
+  .store-main {
+    margin: 8px;
+    border: 1px solid #323E72;
+    height: calc(100vh - 72px);
+    width: 65%;
+
+    input[type="search"] {
+      min-width: 350px;
+    }
+
+    table {
+      input[type=number] {
+        max-width: 120px;
+      }
+    }
+
+    .card-footer {
+      color: white;
+      font-size: 1.5rem;
+      border-top: 1px solid #323E72;
+      background-color: #323E72;
+
+      .text-lg {
+        font-size: 2rem;
+      }
+
+      .total, .cajero {
+        text-transform: uppercase;
+        color: #ea6333;
+      }
+
+      th {
+        text-align: right;
+        padding-right: 8px;
+        color: #ea6333;
+      }
+
+      .user {
+        color: #2d353d;
+        padding: 4px 15px;
+        font-size: 1rem;
+        text-transform: uppercase;
+        background-color: whitesmoke;
+        border-radius: 4px;
+        min-width: 200px;
+      }
+    }
+  }
+
+  .product-picker-res {
+    border: 5px solid #323E72;
+    margin: 8px 8px 8px 0;
+    height: calc(100vh - 72px);
+    width: 35%;
+  }
+
+  .item-product {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px;
-    gap: 15px;
+    border-bottom: 1px solid #dee2e6;
+    padding: 4px 0;
+    color: #2d353d;
 
-    .Icon {
-      font-size: 1.7rem;
-      color: #333739;
+    img {
+      padding: 0.25rem;
+      background-color: #fff;
+      border: 1px solid #dee2e6;
+      border-radius: 0.25rem;
+      height: auto;
+      max-width: 55px;
+      width: 55px;
     }
 
-    select, button {
-      border-radius: 0;
-    }
-  }
+    table {
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      width: 100%;
 
-  // Wrapper principal.
-  .ContentData {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: calc(100vh - 113px);
-
-    .ItemVenta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #dee2e6;
-      padding: 4px;
-
-      .ItemDesc {
-        width: 230px;
-        max-width: 230px;
-        text-transform: uppercase;
-      }
-
-      .ItemCantidad {
-        display: flex;
-        justify-content: space-between;
-        min-width: 97px;
-        width: 97px;
-      }
-
-      .ItemTotal {
-        display: flex;
-        justify-content: space-between;
-        min-width: 100px;
-        width: 100px;
-      }
-    }
-
-    // botón vender
-    .Vender {
-      padding: 8px;
-      background-color: #f2f2f2;
-
-      .SubTotal {
-        display: flex;
-        justify-content: space-between;
-        padding-bottom: 2px;
-        border-bottom: 1px solid #dee2e6;
-        text-transform: uppercase;
-        padding-left: 15px;
-        padding-right: 15px;
-      }
-
-      button {
-        display: flex;
-        justify-content: space-between;
-        border-radius: 0;
-        margin-top: 8px;
-        width: 100%;
+      th {
+        text-align: right;
+        max-width: 70px;
+        width: 70px;
       }
     }
   }
-
 }
