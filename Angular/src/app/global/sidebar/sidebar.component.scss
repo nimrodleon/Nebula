@@ -46,10 +46,12 @@ $mainMenuWidth: 270px;
 
   a {
     &:hover {
-      background-color: #175a8e;
+      // background-color: #175a8e;
+      background-color: #EA6333;
       // hermano adyacente.
       + .toggler {
-        background-color: #175a8e;
+        // background-color: #175a8e;
+        background-color: #EA6333;
       }
     }
   }
@@ -71,7 +73,8 @@ $mainMenuWidth: 270px;
     padding-left: 15px;
 
     &:hover {
-      background-color: #175a8e;
+      // background-color: #175a8e;
+      background-color: #EA6333;
     }
   }
 }
