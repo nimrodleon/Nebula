@@ -9,13 +9,12 @@
             <label class="col-form-label fw-bold">Filtrar por:</label>
           </div>
           <div class="col-auto">
-            <select class="form-select">
-              <option value="DOCUMENTO">DOCUMENTO</option>
-              <option value="CONTACTO">CONTACTO</option>
-            </select>
-          </div>
-          <div class="col-auto">
-            <input type="search" class="form-control">
+            <div class="input-group">
+              <span class="input-group-text">
+                <fa-icon [icon]="faFilter"></fa-icon>
+              </span>
+              <input type="search" class="form-control" placeholder="DOC/CONTACTO">
+            </div>
           </div>
           <div class="col-auto">
             <button type="submit" class="btn btn-success">
