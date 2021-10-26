@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {faBars, faPlus, faSignOutAlt, faSyncAlt, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {CajaService} from '../../services';
+import {Caja} from '../../interfaces';
 
 declare var bootstrap: any;
 
@@ -16,13 +18,16 @@ export class CajaDiariaComponent implements OnInit {
   faSignOutAlt = faSignOutAlt;
   // ====================================================================================================
   aperturaCajaModal: any;
+  listaDeCajas: Array<Caja> = new Array<Caja>();
 
-  constructor() {
+  constructor(private cajaService: CajaService) {
   }
 
   ngOnInit(): void {
     // seleccionar modal apertura de caja.
     this.aperturaCajaModal = new bootstrap.Modal(document.querySelector('#aperturaCaja'));
+    // cargar lista de cajas.
+    this.cajaService.index().subscribe(result => this.listaDeCajas = result);
   }
 
   // botón apertura caja.
