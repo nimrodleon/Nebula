@@ -2,10 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {
   faBarcode, faBars,
   faCashRegister, faCogs,
-  faCoins, faIdCardAlt, faMinus, faPlus,
+  faCoins, faIdCardAlt, faMinus, faPlus, faQrcode,
   faSearch, faSignOutAlt, faTags, faTimes, faTrashAlt, faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
-import {faIntercom} from '@fortawesome/free-brands-svg-icons';
 
 declare var bootstrap: any;
 
@@ -26,10 +25,10 @@ export class TerminalComponent implements OnInit {
   faBarcode = faBarcode;
   faBars = faBars;
   faTags = faTags;
-  faIntercom = faIntercom;
   faIdCardAlt = faIdCardAlt;
   faTimes = faTimes;
   faCogs = faCogs;
+  faQrcode = faQrcode;
   // ====================================================================================================
   cobrarModal: any;
   cashInOutModal: any;
