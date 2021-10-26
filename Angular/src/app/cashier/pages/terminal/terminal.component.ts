@@ -5,6 +5,7 @@ import {
   faCoins, faIdCardAlt, faMinus, faPlus, faQrcode,
   faSearch, faSignOutAlt, faTags, faTimes, faTrashAlt, faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
+import {ActivatedRoute} from '@angular/router';
 
 declare var bootstrap: any;
 
@@ -30,13 +31,18 @@ export class TerminalComponent implements OnInit {
   faCogs = faCogs;
   faQrcode = faQrcode;
   // ====================================================================================================
+  cajaDiariaId: string = '';
   cobrarModal: any;
   cashInOutModal: any;
 
-  constructor() {
+  constructor(
+    private activatedRoute: ActivatedRoute) {
   }
 
   ngOnInit(): void {
+    this.activatedRoute.paramMap.subscribe(params => {
+      this.cajaDiariaId = params.get('id') || '';
+    });
     // formulario modal cobrar.
     this.cobrarModal = new bootstrap.Modal(document.querySelector('#cobrar-modal'));
     // formulario entrada/salida de efectivo.

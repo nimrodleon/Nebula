@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand navbar-dark" style="background-color: #323e72;">
   <div class="container-fluid">
-    <a class="navbar-brand" routerLink="/cashier">
+    <a class="navbar-brand" [routerLink]="['/cashier/detail', cajaDiariaId]">
       <fa-icon [icon]="faQrcode" class="me-1"></fa-icon>
       <span class="text-uppercase">Terminal-1</span>
     </a>
