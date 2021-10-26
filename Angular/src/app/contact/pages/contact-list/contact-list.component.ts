@@ -19,10 +19,10 @@ export class ContactListComponent implements OnInit {
   faEdit = faEdit;
   faFilter = faFilter;
   // ====================================================================================================
-  contacts: PagedResponse<Contact[]> = new PagedResponse<Contact[]>();
+  contacts: PagedResponse<Contact> = new PagedResponse<Contact>();
   query: FormControl = this.fb.control('');
   pageNumber: number = 1;
-  pageSize: number = 50;
+  pageSize: number = 25;
   contactModal: any;
   title: string = '';
 

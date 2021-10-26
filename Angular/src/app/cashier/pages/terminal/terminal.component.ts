@@ -1,8 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {
-  faCoins, faLock, faMinus, faPlus, faPuzzlePiece,
-  faSearch, faTrashAlt, faUserCircle
+  faBarcode, faBars,
+  faCashRegister, faCogs,
+  faCoins, faIdCardAlt, faMinus, faPlus,
+  faSearch, faSignOutAlt, faTags, faTimes, faTrashAlt, faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
+import {faIntercom} from '@fortawesome/free-brands-svg-icons';
 
 declare var bootstrap: any;
 
@@ -15,11 +18,18 @@ export class TerminalComponent implements OnInit {
   faUserCircle = faUserCircle;
   faPlus = faPlus;
   faSearch = faSearch;
-  faLock = faLock;
   faCoins = faCoins;
   faTrashAlt = faTrashAlt;
   faMinus = faMinus;
-  faPuzzlePiece=faPuzzlePiece;
+  faSignOutAlt = faSignOutAlt;
+  faCashRegister = faCashRegister;
+  faBarcode = faBarcode;
+  faBars = faBars;
+  faTags = faTags;
+  faIntercom = faIntercom;
+  faIdCardAlt = faIdCardAlt;
+  faTimes = faTimes;
+  faCogs = faCogs;
   // ====================================================================================================
   cobrarModal: any;
   cashInOutModal: any;
@@ -34,6 +44,7 @@ export class TerminalComponent implements OnInit {
     this.cashInOutModal = new bootstrap.Modal(document.querySelector('#cash-in-out-modal'));
   }
 
+  // movimientos de efectivo.
   btnCashInOutClick(): void {
     this.cashInOutModal.show();
   }

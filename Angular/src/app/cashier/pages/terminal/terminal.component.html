@@ -1,173 +1,286 @@
-<app-navbar></app-navbar>
-<div class="Wrapper">
-  <app-offcanvas></app-offcanvas>
-  <div class="container-fluid px-0">
-    <div class="d-flex justify-content-between">
-      <div class="container-fluid w-100">
-        <div class="row">
-          <div class="col-12 py-3">
-            <form class="row row-cols-auto g-2">
-              <div class="col-auto">
-                <label class="col-form-label fw-bold">Filtrar por:</label>
-              </div>
-              <div class="col-auto">
-                <div class="input-group">
-                  <div class="input-group-text">
-                    <fa-icon [icon]="faSearch"></fa-icon>
-                  </div>
-                  <input type="search" class="form-control" placeholder="BIEN/SERVICIO">
-                </div>
-              </div>
-              <div class="col-auto">
-                <button type="button" class="btn btn-success">
-                  <fa-icon [icon]="faSearch"></fa-icon>
-                  <span class="text-uppercase ms-1">Buscar</span>
-                </button>
-              </div>
-              <div class="col-auto">
-                <button type="button" (click)="btnCashInOutClick()" class="btn btn-primary">
-                  <fa-icon [icon]="faCoins"></fa-icon>
-                  <span class="text-uppercase ms-1">E/S</span>
-                </button>
-              </div>
-              <div class="col-auto">
-                <button type="button" class="btn btn-danger">
-                  <fa-icon [icon]="faLock"></fa-icon>
-                  <span class="text-uppercase ms-1">Cerrar</span>
-                </button>
-              </div>
-            </form>
-          </div>
-          <div class="col-12">
-            <div class="table-responsive">
-              <table class="table table-striped mb-0">
-                <thead>
-                <tr class="text-uppercase">
-                  <th>Unidad</th>
-                  <th>Descripción</th>
-                  <th>Seleccionar</th>
-                  <th>Precio</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                  <td>NUI</td>
-                  <td>Impresora Epson TM-20II</td>
-                  <td>
-                    <button class="btn btn-primary btn-sm">
-                      <span class="text-uppercase">Seleccionar</span>
-                    </button>
-                  </td>
-                  <td>451.00</td>
-                </tr>
-                <tr>
-                  <td>NUI</td>
-                  <td>Laptop Hp Core i3 RAM 8gb SSD 240GB - CP-K441</td>
-                  <td>
-                    <button class="btn btn-primary btn-sm">
-                      <span class="text-uppercase">Seleccionar</span>
-                    </button>
-                  </td>
-                  <td>2500.00</td>
-                </tr>
-                </tbody>
-              </table>
+<nav class="navbar navbar-expand navbar-dark" style="background-color: #323e72;">
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/cashier">
+      <fa-icon [icon]="faIntercom" class="me-1"></fa-icon>
+      <span class="text-uppercase">Terminal-1</span>
+    </a>
+    <div class="collapse navbar-collapse">
+      <form class="d-none d-sm-block">
+        <div class="input-group">
+          <span class="input-group-text">
+            <fa-icon [icon]="faBarcode"></fa-icon>
+          </span>
+          <input class="form-control" type="search" placeholder="Código de barra">
+        </div>
+      </form>
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="#">
+            <fa-icon [icon]="faUserCircle"></fa-icon>
+            <span class="ms-1">ADMIN</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link btn btn-danger btn-sm px-4">
+            <fa-icon [icon]="faSignOutAlt"></fa-icon>
+            <span class="text-uppercase ms-1">Salir</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- ## Main Content -->
+<div class="container-fluid px-0">
+  <div class="store-body">
+    <div class="card store-main">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <div class="d-flex">
+            <div class="input-group me-1">
+              <span class="input-group-text">
+                <fa-icon [icon]="faIdCardAlt"></fa-icon>
+              </span>
+              <input type="search" class="form-control" placeholder="CLIENTE">
             </div>
+            <button class="btn btn-outline-success">
+              <span class="text-uppercase">Nuevo</span>
+            </button>
+          </div>
+          <div class="d-flex">
+            <div class="dropdown me-1">
+              <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <fa-icon [icon]="faBars" class="me-1"></fa-icon>
+                <span class="text-uppercase">Menú</span>
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Lista de Ventas</a></li>
+                <li><a class="dropdown-item" href="#">Gestión de efectivo</a></li>
+                <li><a class="dropdown-item" href="#">Reportes</a></li>
+              </ul>
+            </div>
+            <button class="btn btn-danger">
+              <fa-icon [icon]="faTimes"></fa-icon>
+            </button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+            <tr class="text-uppercase">
+              <th>Descripción</th>
+              <th>Precio</th>
+              <th>Cantidad</th>
+              <th>Descuento</th>
+              <th>Importe</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>Vanilla Milkshake (sample)</td>
+              <td>200.00</td>
+              <td><input type="number" class="form-control form-control-sm"></td>
+              <td><input type="number" step="0.5" class="form-control form-control-sm"></td>
+              <td>200.00</td>
+              <td class="text-end">
+                <button class="btn btn-danger btn-sm">
+                  <fa-icon [icon]="faTrashAlt"></fa-icon>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>Hamburger (sample)</td>
+              <td>200.00</td>
+              <td><input type="number" class="form-control form-control-sm"></td>
+              <td><input type="number" step="0.5" class="form-control form-control-sm"></td>
+              <td>200.00</td>
+              <td class="text-end">
+                <button class="btn btn-danger btn-sm">
+                  <fa-icon [icon]="faTrashAlt"></fa-icon>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>French Fries (sample)</td>
+              <td>200.00</td>
+              <td><input type="number" class="form-control form-control-sm"></td>
+              <td><input type="number" step="0.5" class="form-control form-control-sm"></td>
+              <td>200.00</td>
+              <td class="text-end">
+                <button class="btn btn-danger btn-sm">
+                  <fa-icon [icon]="faTrashAlt"></fa-icon>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="d-flex justify-content-between">
+          <div>
+            <span class="d-block cajero">Cajero</span>
+            <span class="d-block user">Admin</span>
+          </div>
+          <table>
+            <tbody>
+            <tr>
+              <th>Sub-Total:</th>
+              <td>241.00</td>
+            </tr>
+            <tr>
+              <th>IGV(18%):</th>
+              <td>4.00</td>
+            </tr>
+            <tr>
+              <th>ICBPER:</th>
+              <td>0.00</td>
+            </tr>
+            </tbody>
+          </table>
+          <span class="text-uppercase text-lg total">Total</span>
+          <div>
+            <span class="d-block fw-bold text-lg text-center">200.00</span>
+            <button (click)="btnVenderClick()" class="btn btn-success btn-lg">
+              <span class="text-uppercase px-5">Cobrar</span>
+            </button>
           </div>
         </div>
       </div>
-      <div class="Invoice">
-        <div class="ClientData border-bottom">
-          <div class="Icon">
-            <fa-icon [icon]="faUserCircle"></fa-icon>
+    </div>
+    <div class="card product-picker-res">
+      <div class="card-body">
+        <div class="d-flex pb-2 border-bottom">
+          <div class="input-group me-2">
+              <span class="input-group-text">
+                <fa-icon [icon]="faSearch"></fa-icon>
+              </span>
+            <input type="text" class="form-control" placeholder="BIEN/SERVICIO">
           </div>
-          <select class="form-select" id="Client">
-            <option value="0">PUBLICO GENERAL</option>
-          </select>
-          <button type="button" class="btn btn-success">
-            <span class="text-uppercase ms-1">Nuevo</span>
+          <button class="btn btn-success">
+            <span class="text-uppercase">Nuevo</span>
           </button>
         </div>
-        <div class="ContentData">
-          <div class="Items">
-            <div class="ItemVenta">
-              <div class="ItemDesc">
-                <strong class="d-block">Mouse gamer 54244</strong>
-                <span>150.00</span>
-              </div>
-              <div class="ItemCantidad">
-                <button type="button" class="btn btn-outline-secondary btn-sm">
-                  <fa-icon [icon]="faMinus"></fa-icon>
-                </button>
-                <span class="fw-bold mx-2">10</span>
-                <button type="button" class="btn btn-outline-secondary btn-sm">
-                  <fa-icon [icon]="faPlus"></fa-icon>
-                </button>
-              </div>
-              <div class="ItemTotal">
-                <span class="fw-bold me-2">150.00</span>
-                <button type="button" class="btn btn-danger btn-sm">
-                  <fa-icon [icon]="faTrashAlt"></fa-icon>
-                </button>
-              </div>
-            </div><!-- // .ItemVenta -->
-            <div class="ItemVenta">
-              <div class="ItemDesc">
-                <strong class="d-block">Acceso a red DIRECOM correspondiente al mes de octubre 2021 </strong>
-                <span>1600.00</span>
-              </div>
-              <div class="ItemCantidad">
-                <button type="button" class="btn btn-outline-secondary btn-sm">
-                  <fa-icon [icon]="faMinus"></fa-icon>
-                </button>
-                <span class="fw-bold mx-2">10</span>
-                <button type="button" class="btn btn-outline-secondary btn-sm">
-                  <fa-icon [icon]="faPlus"></fa-icon>
-                </button>
-              </div>
-              <div class="ItemTotal">
-                <span class="fw-bold me-2">1600.00</span>
-                <button type="button" class="btn btn-danger btn-sm">
-                  <fa-icon [icon]="faTrashAlt"></fa-icon>
-                </button>
-              </div>
-            </div><!-- // .ItemVenta -->
-            <div class="ItemVenta">
-              <div class="ItemDesc">
-                <strong class="d-block">MONITOR micronics 18.5" Negro</strong>
-                <span>450.00</span>
-              </div>
-              <div class="ItemCantidad">
-                <button type="button" class="btn btn-outline-secondary btn-sm">
-                  <fa-icon [icon]="faMinus"></fa-icon>
-                </button>
-                <span class="fw-bold mx-2">2</span>
-                <button type="button" class="btn btn-outline-secondary btn-sm">
-                  <fa-icon [icon]="faPlus"></fa-icon>
-                </button>
-              </div>
-              <div class="ItemTotal">
-                <span class="fw-bold me-2">900.00</span>
-                <button type="button" class="btn btn-danger btn-sm">
-                  <fa-icon [icon]="faTrashAlt"></fa-icon>
-                </button>
-              </div>
-            </div><!-- // .ItemVenta -->
-          </div>
-          <div class="Vender">
-            <div class="SubTotal">
-              <span class="fw-bold">SubTotal:</span>
-              <span>1541.00</span>
-            </div>
-            <div class="SubTotal">
-              <span class="fw-bold">IGV (18%):</span>
-              <span>400.00</span>
-            </div>
-            <button type="button" (click)="btnVenderClick()" class="btn btn-success btn-lg">
-              <span class="text-uppercase">Vender</span>
-              <span>1800.00</span>
-            </button>
-          </div>
+        <div class="item-product">
+          <img
+            src="https://freshbox.com.pe/media/catalog/product/cache/eee634b682a13411f4a5714b23f9b391/f/l/florida-filete-de-atun170.jpg"
+            alt="">
+          <table>
+            <tbody>
+            <tr>
+              <th>Nombre:</th>
+              <td>Atun florida</td>
+            </tr>
+            <tr>
+              <th>Precio:</th>
+              <td>4.00</td>
+            </tr>
+            <tr>
+              <th>Stock:</th>
+              <td>10</td>
+            </tr>
+            </tbody>
+          </table>
+          <button class="btn btn-primary btn-sm">
+            <span class="text-uppercase">Seleccionar</span>
+          </button>
+        </div>
+        <div class="item-product">
+          <img
+            src="https://freshbox.com.pe/media/catalog/product/cache/eee634b682a13411f4a5714b23f9b391/f/l/florida-filete-de-atun170.jpg"
+            alt="">
+          <table>
+            <tbody>
+            <tr>
+              <th>Nombre:</th>
+              <td>Atun florida</td>
+            </tr>
+            <tr>
+              <th>Precio:</th>
+              <td>4.00</td>
+            </tr>
+            <tr>
+              <th>Stock:</th>
+              <td>10</td>
+            </tr>
+            </tbody>
+          </table>
+          <button class="btn btn-primary btn-sm">
+            <span class="text-uppercase">Seleccionar</span>
+          </button>
+        </div>
+        <div class="item-product">
+          <img
+            src="https://freshbox.com.pe/media/catalog/product/cache/eee634b682a13411f4a5714b23f9b391/f/l/florida-filete-de-atun170.jpg"
+            alt="">
+          <table>
+            <tbody>
+            <tr>
+              <th>Nombre:</th>
+              <td>Atun florida</td>
+            </tr>
+            <tr>
+              <th>Precio:</th>
+              <td>4.00</td>
+            </tr>
+            <tr>
+              <th>Stock:</th>
+              <td>10</td>
+            </tr>
+            </tbody>
+          </table>
+          <button class="btn btn-primary btn-sm">
+            <span class="text-uppercase">Seleccionar</span>
+          </button>
+        </div>
+        <div class="item-product">
+          <img
+            src="https://freshbox.com.pe/media/catalog/product/cache/eee634b682a13411f4a5714b23f9b391/f/l/florida-filete-de-atun170.jpg"
+            alt="">
+          <table>
+            <tbody>
+            <tr>
+              <th>Nombre:</th>
+              <td>Atun florida</td>
+            </tr>
+            <tr>
+              <th>Precio:</th>
+              <td>4.00</td>
+            </tr>
+            <tr>
+              <th>Stock:</th>
+              <td>10</td>
+            </tr>
+            </tbody>
+          </table>
+          <button class="btn btn-primary btn-sm">
+            <span class="text-uppercase">Seleccionar</span>
+          </button>
+        </div>
+        <div class="item-product">
+          <img
+            src="https://freshbox.com.pe/media/catalog/product/cache/eee634b682a13411f4a5714b23f9b391/f/l/florida-filete-de-atun170.jpg"
+            alt="">
+          <table>
+            <tbody>
+            <tr>
+              <th>Nombre:</th>
+              <td>Atun florida</td>
+            </tr>
+            <tr>
+              <th>Precio:</th>
+              <td>4.00</td>
+            </tr>
+            <tr>
+              <th>Stock:</th>
+              <td>10</td>
+            </tr>
+            </tbody>
+          </table>
+          <button class="btn btn-primary btn-sm">
+            <span class="text-uppercase">Seleccionar</span>
+          </button>
         </div>
       </div>
     </div>
