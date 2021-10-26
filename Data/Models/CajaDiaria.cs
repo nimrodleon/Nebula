@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Nebula.Data.Models
 {
@@ -8,7 +9,7 @@ namespace Nebula.Data.Models
     {
         public int Id { get; set; }
         public Guid? CajaId { get; set; }
-        [ForeignKey("CajaId")] public Caja Caja { get; set; }
+        [JsonIgnore] [ForeignKey("CajaId")] public Caja Caja { get; set; }
         [MaxLength(250)] public string Name { get; set; }
         [DataType(DataType.Date)] public DateTime StartDate { get; set; }
         [MaxLength(250)] public string State { get; set; }
