@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {faBars, faPlus, faSignOutAlt, faSyncAlt, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {faBars, faPlus, faSyncAlt, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import * as moment from 'moment';
 import {CajaDiariaService, CajaService} from '../../services';
-import {Caja, CajaDiaria} from '../../interfaces';
+import {AperturaCaja, Caja, CajaDiaria} from '../../interfaces';
 
 declare var bootstrap: any;
 
@@ -17,7 +17,6 @@ export class CajaDiariaComponent implements OnInit {
   faPlus = faPlus;
   faBars = faBars;
   faTrashAlt = faTrashAlt;
-  faSignOutAlt = faSignOutAlt;
   // ====================================================================================================
   aperturaCajaModal: any;
   listaDeCajas: Array<Caja> = new Array<Caja>();
@@ -30,6 +29,13 @@ export class CajaDiariaComponent implements OnInit {
     year: moment().format('YYYY'),
     month: moment().format('MM'),
   };
+  // ====================================================================================================
+  aperturaForm: FormGroup = this.fb.group({
+    cajaId: [''], total: 0
+  });
+  aperturaData: AperturaCaja = {
+    cajaId: '', total: 0
+  };
 
   constructor(
     private fb: FormBuilder,
@@ -39,10 +45,19 @@ export class CajaDiariaComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarCajasDiarias();
-    // suscribir formGroup con queryData.
+    // suscribir queryForm con queryData.
     this.queryForm.valueChanges.subscribe(value => this.queryData = value);
+    // suscribir aperturaForm con aperturaData.
+    this.aperturaForm.valueChanges.subscribe(value => this.aperturaData = value);
     // seleccionar modal apertura de caja.
     this.aperturaCajaModal = new bootstrap.Modal(document.querySelector('#aperturaCaja'));
+    // reset aperturaForm al iniciar el modal.
+    if (document.querySelector('#aperturaCaja')) {
+      let myModalEl: any = document.querySelector('#aperturaCaja');
+      myModalEl.addEventListener('shown.bs.modal', () => {
+        this.aperturaForm.reset({cajaId: '', total: 0});
+      });
+    }
     // cargar lista de cajas.
     this.cajaService.index().subscribe(result => this.listaDeCajas = result);
   }
@@ -56,6 +71,17 @@ export class CajaDiariaComponent implements OnInit {
   // botón apertura caja.
   public aperturaCajaClick(): void {
     this.aperturaCajaModal.show();
+  }
+
+  // guardar apertura de caja.
+  public guardarAperturaCaja(): void {
+    this.cajaDiariaService.store(this.aperturaData)
+      .subscribe(result => {
+        if (result.ok) {
+          this.aperturaCajaModal.hide();
+          this.cargarCajasDiarias();
+        }
+      });
   }
 
 }

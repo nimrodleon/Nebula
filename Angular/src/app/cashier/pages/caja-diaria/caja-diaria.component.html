@@ -96,11 +96,11 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <form>
+            <form [formGroup]="aperturaForm">
               <div class="row mb-3">
                 <label class="col-3 col-form-label fw-bold text-uppercase text-end">Caja</label>
                 <div class="col-6">
-                  <select class="form-select">
+                  <select formControlName="cajaId" class="form-select">
                     <option *ngFor="let item of listaDeCajas" [value]="item.id">{{item.name}}</option>
                   </select>
                 </div>
@@ -108,7 +108,7 @@
               <div class="row mb-0">
                 <label class="col-3 col-form-label fw-bold text-uppercase text-end">Monto</label>
                 <div class="col-6">
-                  <input type="number" step="0.01" class="form-control w-100">
+                  <input type="number" formControlName="total" step="0.01" class="form-control w-100">
                 </div>
               </div>
             </form>
@@ -117,7 +117,7 @@
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
               <span class="text-uppercase">Cerrar</span>
             </button>
-            <button type="button" class="btn btn-primary">
+            <button type="button" (click)="guardarAperturaCaja()" class="btn btn-primary">
               <span class="text-uppercase">Guardar Cambios</span>
             </button>
           </div>
@@ -125,5 +125,7 @@
       </div>
     </div>
     <!-- # MODAL APERTURA DE CAJA -->
+    <pre>{{aperturaForm.value|json}}</pre>
+    <pre>{{aperturaData|json}}</pre>
   </div>
 </div>
