@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
+import {ReactiveFormsModule} from '@angular/forms';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 
 import {CashierRoutingModule} from './cashier-routing.module';
@@ -21,6 +22,7 @@ import {CobrarModalComponent} from './components/cobrar-modal/cobrar-modal.compo
   imports: [
     CommonModule,
     CashierRoutingModule,
+    ReactiveFormsModule,
     GlobalModule,
     FontAwesomeModule
   ]

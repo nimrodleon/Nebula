@@ -24,7 +24,8 @@ namespace Nebula.Controllers
         public async Task<IActionResult> Index([FromQuery] DateQuery model)
         {
             var result = await _context.CajasDiaria.Where(m =>
-                m.Year.Equals(model.Year) && m.Month.Equals(model.Month)).ToListAsync();
+                    m.Year.Equals(model.Year) && m.Month.Equals(model.Month))
+                .OrderByDescending(m => m.Id).ToListAsync();
             return Ok(result);
         }
 

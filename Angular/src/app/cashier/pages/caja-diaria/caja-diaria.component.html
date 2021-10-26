@@ -4,15 +4,16 @@
   <div class="container-fluid">
     <div class="row px-2">
       <div class="col-12 bg-white my-2 py-3">
-        <form class="row row-cols-auto g-2">
+        <form (ngSubmit)="cargarCajasDiarias()"
+              [formGroup]="queryForm" class="row row-cols-auto g-2">
           <div class="col-auto">
             <label class="col-form-label fw-bold">Filtrar por:</label>
           </div>
           <div class="col-auto">
-            <input type="number" step="1" value="2021" class="form-control">
+            <input type="number" formControlName="year" step="1" value="2021" class="form-control">
           </div>
           <div class="col-auto">
-            <select class="form-select">
+            <select formControlName="month" class="form-select">
               <option value="01">ENERO</option>
               <option value="02">FEBRERO</option>
               <option value="03">MARZO</option>
@@ -50,48 +51,28 @@
               <th>Punto de Venta</th>
               <th>Fecha</th>
               <th>Estado</th>
-              <th>Monto Apertura</th>
-              <th>Cierre Caja</th>
+              <th>Total Apertura</th>
+              <th>Total Contabilizado</th>
+              <th>Total Cierre</th>
               <th></th>
             </tr>
             </thead>
             <tbody>
-            <tr>
+            <tr *ngFor="let item of cajasDiarias">
               <td>
-                <a [routerLink]="['/cashier/detail', '13-09-2021']" class="text-decoration-none">
-                  <span class="text-uppercase">Caja Principal</span>
+                <a [routerLink]="['/cashier/detail', item.id]" class="text-decoration-none">
+                  <span class="text-uppercase">{{item.name}}</span>
                 </a>
               </td>
-              <td>2021-07-31</td>
-              <td><span class="badge bg-success">ABIERTO</span></td>
-              <td>10.00</td>
-              <td>451.00</td>
+              <td>{{item.startDate|date}}</td>
               <td>
-                <div class="actions ms-auto">
-                  <button type="button" class="btn btn-secondary btn-sm me-2">
-                    <fa-icon [icon]="faSignOutAlt"></fa-icon>
-                  </button>
-                  <button type="button" class="btn btn-danger btn-sm">
-                    <fa-icon [icon]="faTrashAlt"></fa-icon>
-                  </button>
-                </div>
+                <span class="badge bg-success">{{item.state}}</span>
               </td>
-            </tr>
-            <tr>
+              <td>{{item.totalApertura}}</td>
+              <td>{{item.totalContabilizado}}</td>
+              <td>{{item.totalCierre}}</td>
               <td>
-                <a [routerLink]="['/cashier/detail', '13-09-2021']" class="text-decoration-none">
-                  <span class="text-uppercase">Caja Principal</span>
-                </a>
-              </td>
-              <td>2021-07-31</td>
-              <td><span class="badge bg-secondary">CERRADO</span></td>
-              <td>50.00</td>
-              <td>350.00</td>
-              <td>
-                <div class="actions ms-auto">
-                  <button type="button" class="btn btn-secondary btn-sm me-2">
-                    <fa-icon [icon]="faSignOutAlt"></fa-icon>
-                  </button>
+                <div class="text-end">
                   <button type="button" class="btn btn-danger btn-sm">
                     <fa-icon [icon]="faTrashAlt"></fa-icon>
                   </button>
