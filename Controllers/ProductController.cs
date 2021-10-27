@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -22,15 +23,26 @@ namespace Nebula.Controllers
         }
 
         [HttpPost("Store")]
-        public async Task<IActionResult> Store([FromBody] Product model)
+        public async Task<IActionResult> Store([FromForm] Product model)
         {
             if (model.File?.Length > 0)
             {
-
+                var dirPath = Path.Combine(Environment
+                    .GetFolderPath(Environment.SpecialFolder.UserProfile), "StaticFiles");
+                var fileName = Guid.NewGuid() + model.File.FileName;
+                var filePath = Path.Combine(dirPath, fileName);
+                await using var stream = System.IO.File.Create(filePath);
+                await model.File.CopyToAsync(stream);
+                model.PathImage = fileName;
             }
 
-
-            return Ok(new {Path="-"});
+            _context.Products.Add(model);
+            await _context.SaveChangesAsync();
+            return Ok(new
+            {
+                Ok = true, Data = model,
+                Msg = $"{model.Description} ha sido registrado!"
+            });
         }
     }
 }
