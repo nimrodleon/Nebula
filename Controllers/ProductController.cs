@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Nebula.Data;
 using Nebula.Data.Models;
 
@@ -42,6 +44,38 @@ namespace Nebula.Controllers
             {
                 Ok = true, Data = model,
                 Msg = $"{model.Description} ha sido registrado!"
+            });
+        }
+
+        [HttpPut("Update/{id}")]
+        public async Task<IActionResult> Update(int? id, [FromForm] Product model)
+        {
+            if (id != model.Id) return BadRequest();
+            if (model.File?.Length > 0)
+            {
+                var product = await _context.Products
+                    .AsNoTracking().SingleAsync(m => m.Id.Equals(id));
+                if (product == null) return BadRequest();
+                // directorio principal.
+                var dirPath = Path.Combine(Environment
+                    .GetFolderPath(Environment.SpecialFolder.UserProfile), "StaticFiles");
+                // borrar archivo antiguo si existe.
+                var oldFile = Path.Combine(dirPath, product.PathImage);
+                if (System.IO.File.Exists(oldFile)) System.IO.File.Delete(oldFile);
+                // copiar nuevo archivo.
+                var fileName = Guid.NewGuid() + model.File.FileName;
+                var filePath = Path.Combine(dirPath, fileName);
+                await using var stream = System.IO.File.Create(filePath);
+                await model.File.CopyToAsync(stream);
+                model.PathImage = fileName;
+            }
+
+            _context.Products.Update(model);
+            await _context.SaveChangesAsync();
+            return Ok(new
+            {
+                Ok = true, Data = model,
+                Msg = $"{model.Description} ha sido actualizado!"
             });
         }
     }
