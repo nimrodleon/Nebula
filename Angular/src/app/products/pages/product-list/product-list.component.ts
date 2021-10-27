@@ -1,5 +1,9 @@
 import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormControl} from '@angular/forms';
 import {faEdit, faFilter, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {ProductService} from '../../services';
+import {PagedResponse} from '../../../global/interfaces';
+import {Product} from '../../interfaces';
 
 declare var bootstrap: any;
 
@@ -15,19 +19,39 @@ export class ProductListComponent implements OnInit {
   faPlus = faPlus;
   faFilter = faFilter;
   // ====================================================================================================
+  products: PagedResponse<Product> = new PagedResponse<Product>();
+  query: FormControl = this.fb.control('');
+  pageNumber: number = 1;
+  pageSize: number = 25;
   productModal: any;
   title: string = '';
 
-  constructor() {
+  constructor(
+    private fb: FormBuilder,
+    private productService: ProductService) {
   }
 
   ngOnInit(): void {
     // modal formulario de productos.
     this.productModal = new bootstrap.Modal(document.querySelector('#product-modal'));
+    // cargar lista de productos.
+    this.cargarListaDeProductos();
+  }
+
+  // lista de productos.
+  private cargarListaDeProductos(): void {
+    this.productService.index(this.pageNumber, this.pageSize, this.query.value)
+      .subscribe(result => this.products = result);
+  }
+
+  // botón buscar productos.
+  public submitSearch(e: any): void {
+    e.preventDefault();
+    this.cargarListaDeProductos();
   }
 
   // agregar nuevo producto.
-  addProduct(): void {
+  public addProduct(): void {
     this.title = 'Agregar Producto';
     this.productModal.show();
   }

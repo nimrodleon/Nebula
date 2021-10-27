@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="row px-2">
       <div class="col-12 bg-white my-2 py-3">
-        <form class="row row-cols-auto g-2">
+        <form (submit)="submitSearch($event)" class="row row-cols-auto g-2">
           <div class="col-auto">
             <label class="col-form-label fw-bold">Filtrar por:</label>
           </div>
@@ -13,7 +13,7 @@
               <span class="input-group-text">
                 <fa-icon [icon]="faFilter"></fa-icon>
               </span>
-              <input type="search" class="form-control" placeholder="BIEN/SERVICIO">
+              <input type="search" [formControl]="query" class="form-control" placeholder="BIEN/SERVICIO">
             </div>
           </div>
           <div class="col-auto">
@@ -37,7 +37,7 @@
             <thead>
             <tr class="text-uppercase">
               <th>GS1/GTIN</th>
-              <th>Unidad</th>
+              <th>Tipo</th>
               <th>Descripción</th>
               <th>Stock</th>
               <th>Precio</th>
@@ -45,37 +45,16 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-              <td>4774</td>
-              <td>NUI</td>
-              <td>Impresora Epson TM-20II</td>
+            <tr *ngFor="let item of products.data">
+              <td>{{item.barcode}}</td>
+              <td>{{item.type}}</td>
+              <td>{{item.description}}</td>
               <td>
                 <button class="btn btn-info btn-sm">
                   <fa-icon [icon]="faSearch"></fa-icon>
                 </button>
               </td>
-              <td>451.00</td>
-              <td>
-                <div class="actions ms-auto">
-                  <button type="button" class="btn btn-secondary btn-sm me-2">
-                    <fa-icon [icon]="faEdit"></fa-icon>
-                  </button>
-                  <button type="button" class="btn btn-danger btn-sm">
-                    <fa-icon [icon]="faTrashAlt"></fa-icon>
-                  </button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>4074</td>
-              <td>NUI</td>
-              <td>Laptop Hp Core i3 RAM 8gb SSD 240GB - CP-K441</td>
-              <td>
-                <button class="btn btn-info btn-sm">
-                  <fa-icon [icon]="faSearch"></fa-icon>
-                </button>
-              </td>
-              <td>2500.00</td>
+              <td>{{item.price}}</td>
               <td>
                 <div class="actions ms-auto">
                   <button type="button" class="btn btn-secondary btn-sm me-2">
