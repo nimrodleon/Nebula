@@ -1,15 +1,13 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nebula.Data;
+using Nebula.Data.Helpers;
 using Nebula.Data.Models;
+using Nebula.Data.Services;
 
 namespace Nebula.Controllers
 {
@@ -18,10 +16,30 @@ namespace Nebula.Controllers
     public class ProductController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IUriService _uriService;
 
-        public ProductController(ApplicationDbContext context)
+        public ProductController(ApplicationDbContext context, IUriService uriService)
         {
             _context = context;
+            _uriService = uriService;
+        }
+
+        [HttpGet("Index")]
+        public async Task<IActionResult> Index([FromQuery] PaginationFilter filter)
+        {
+            var route = Request.Path.Value;
+            var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.Query);
+            var skip = (validFilter.PageNumber - 1) * validFilter.PageSize;
+            var result = from p in _context.Products select p;
+            if (!string.IsNullOrWhiteSpace(filter.Query))
+                result = result.Where(m => m.Barcode.Contains(filter.Query)
+                                           || m.Description.ToLower().Contains(filter.Query.ToLower()));
+            result = result.OrderByDescending(m => m.Id);
+            var pagedData = await result.AsNoTracking().Skip(skip).Take(validFilter.PageSize).ToListAsync();
+            var totalRecords = await result.CountAsync();
+            var pagedResponse =
+                PaginationHelper.CreatePagedResponse(pagedData, validFilter, totalRecords, _uriService, route);
+            return Ok(pagedResponse);
         }
 
         [HttpGet("Show/{id}")]
