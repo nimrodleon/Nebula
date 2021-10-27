@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Http;
 
 namespace Nebula.Data.Models
 {
@@ -21,5 +22,6 @@ namespace Nebula.Data.Models
         public UndMedida UndMedida { get; set; }
 
         [MaxLength(250)] public string PathImage { get; set; }
+        [JsonIgnore] [NotMapped] public IFormFile File { get; set; }
     }
 }
