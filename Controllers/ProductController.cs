@@ -24,6 +24,16 @@ namespace Nebula.Controllers
             _context = context;
         }
 
+        [HttpGet("Show/{id}")]
+        public async Task<IActionResult> Show(int? id)
+        {
+            if (id == null) return BadRequest();
+            var result = await _context.Products.IgnoreQueryFilters()
+                .AsNoTracking().FirstOrDefaultAsync(m => m.Id.Equals(id));
+            if (result == null) return BadRequest();
+            return Ok(result);
+        }
+
         [HttpPost("Store")]
         public async Task<IActionResult> Store([FromForm] Product model)
         {
@@ -77,6 +87,24 @@ namespace Nebula.Controllers
                 Ok = true, Data = model,
                 Msg = $"{model.Description} ha sido actualizado!"
             });
+        }
+
+        [HttpDelete("Destroy/{id}")]
+        public async Task<IActionResult> Destroy(int? id)
+        {
+            var result = await _context.Products
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
+            if (result == null) return BadRequest();
+            // directorio principal.
+            var dirPath = Path.Combine(Environment
+                .GetFolderPath(Environment.SpecialFolder.UserProfile), "StaticFiles");
+            // borrar archivo si existe.
+            var file = Path.Combine(dirPath, result.PathImage);
+            if (System.IO.File.Exists(file)) System.IO.File.Delete(file);
+            // borrar registro.
+            _context.Products.Remove(result);
+            await _context.SaveChangesAsync();
+            return Ok(new { Ok = true, Data = result, Msg = "El producto ha sido borrado!" });
         }
     }
 }

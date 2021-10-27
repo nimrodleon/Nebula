@@ -47,7 +47,7 @@ namespace Nebula.Controllers
         {
             if (id == null) return BadRequest();
             var result = await _context.Contacts.IgnoreQueryFilters()
-                .FirstOrDefaultAsync(m => m.Id.Equals(id));
+                .AsNoTracking().FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (result == null) return BadRequest();
             return Ok(result);
         }

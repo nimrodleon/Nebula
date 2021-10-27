@@ -25,7 +25,7 @@ namespace Nebula.Controllers
         {
             var result = await _context.CajasDiaria.Where(m =>
                     m.Year.Equals(model.Year) && m.Month.Equals(model.Month))
-                .OrderByDescending(m => m.Id).ToListAsync();
+                .OrderByDescending(m => m.Id).AsNoTracking().ToListAsync();
             return Ok(result);
         }
 

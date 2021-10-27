@@ -20,7 +20,7 @@ namespace Nebula.Controllers
         [HttpGet("Index")]
         public async Task<IActionResult> Index()
         {
-            var result = await _context.UndMedida.ToListAsync();
+            var result = await _context.UndMedida.AsNoTracking().ToListAsync();
             return Ok(result);
         }
 
@@ -29,7 +29,7 @@ namespace Nebula.Controllers
         {
             if (id == null) return BadRequest();
             var result = await _context.UndMedida.IgnoreQueryFilters()
-                .FirstOrDefaultAsync(m => m.Id.ToString().Equals(id));
+                .AsNoTracking().FirstOrDefaultAsync(m => m.Id.ToString().Equals(id));
             if (result == null) return BadRequest();
             return Ok(result);
         }
@@ -67,7 +67,7 @@ namespace Nebula.Controllers
             if (result == null) return BadRequest();
             _context.UndMedida.Remove(result);
             await _context.SaveChangesAsync();
-            return Ok(new {Ok = true, Data = result, Msg = "La UndMedida ha sido borrado!"});
+            return Ok(new { Ok = true, Data = result, Msg = "La UndMedida ha sido borrado!" });
         }
     }
 }

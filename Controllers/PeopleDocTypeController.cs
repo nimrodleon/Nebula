@@ -22,7 +22,7 @@ namespace Nebula.Controllers
         [HttpGet("Index")]
         public async Task<IActionResult> Index()
         {
-            var result = await _context.PeopleDocTypes.ToListAsync();
+            var result = await _context.PeopleDocTypes.AsNoTracking().ToListAsync();
             return Ok(result);
         }
 
@@ -31,7 +31,7 @@ namespace Nebula.Controllers
         {
             if (id == null) return BadRequest();
             var result = await _context.PeopleDocTypes.IgnoreQueryFilters()
-                .FirstOrDefaultAsync(m => m.Id.ToString().Equals(id));
+                .AsNoTracking().FirstOrDefaultAsync(m => m.Id.ToString().Equals(id));
             if (result == null) return BadRequest();
             return Ok(result);
         }
