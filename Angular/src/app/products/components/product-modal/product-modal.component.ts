@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {faBars, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {ProductService, UndMedidaService} from '../../services';
@@ -27,13 +27,13 @@ export class ProductModalComponent implements OnInit {
     undMedidaId: [null]
   });
   fileImage: any;
-
+  @ViewChild('inputFile')
+  inputFile: ElementRef | undefined;
+  // ====================================================================================================
   @Input()
   title: string = '';
-
   @Input()
   product: Product = new Product();
-
   @Output()
   responseData = new EventEmitter<ResponseData<Product>>();
 
@@ -53,6 +53,9 @@ export class ProductModalComponent implements OnInit {
       const myModal: any = document.querySelector('#product-modal');
       myModal.addEventListener('shown.bs.modal', () => {
         this.productForm.reset({...this.product});
+        // @ts-ignore
+        this.inputFile?.nativeElement.value = null;
+        this.fileImage = null;
       });
     }
   }
