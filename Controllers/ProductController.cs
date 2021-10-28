@@ -79,12 +79,12 @@ namespace Nebula.Controllers
         public async Task<IActionResult> Update(int? id, [FromForm] Product model)
         {
             if (id != model.Id) return BadRequest();
+            var product = await _context.Products
+                .AsNoTracking().SingleAsync(m => m.Id.Equals(id));
+            if (product == null) return BadRequest();
+
             if (model.File?.Length > 0)
             {
-                var product = await _context.Products
-                    .AsNoTracking().SingleAsync(m => m.Id.Equals(id));
-                if (product == null) return BadRequest();
-                // directorio principal.
                 var dirPath = Path.Combine(Environment
                     .GetFolderPath(Environment.SpecialFolder.UserProfile), "StaticFiles");
                 // borrar archivo antiguo si existe.
@@ -96,6 +96,10 @@ namespace Nebula.Controllers
                 await using var stream = System.IO.File.Create(filePath);
                 await model.File.CopyToAsync(stream);
                 model.PathImage = fileName;
+            }
+            else
+            {
+                model.PathImage = product.PathImage;
             }
 
             _context.Products.Update(model);
@@ -122,7 +126,7 @@ namespace Nebula.Controllers
             // borrar registro.
             _context.Products.Remove(result);
             await _context.SaveChangesAsync();
-            return Ok(new {Ok = true, Data = result, Msg = "El producto ha sido borrado!"});
+            return Ok(new { Ok = true, Data = result, Msg = "El producto ha sido borrado!" });
         }
     }
 }
