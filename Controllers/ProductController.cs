@@ -104,7 +104,9 @@ namespace Nebula.Controllers
                     .GetFolderPath(Environment.SpecialFolder.UserProfile), "StaticFiles");
                 // borrar archivo antiguo si existe.
                 var oldFile = Path.Combine(dirPath, product.PathImage ?? string.Empty);
-                if (System.IO.File.Exists(oldFile)) System.IO.File.Delete(oldFile);
+                if (product.PathImage != null && !product.PathImage.Equals("default.png"))
+                    if (System.IO.File.Exists(oldFile))
+                        System.IO.File.Delete(oldFile);
                 // copiar nuevo archivo.
                 var fileName = Guid.NewGuid() + model.File.FileName;
                 var filePath = Path.Combine(dirPath, fileName);
