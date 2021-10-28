@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl} from '@angular/forms';
 import {faEdit, faFilter, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {ContactService} from '../../services';
-import {PagedResponse} from '../../../global/interfaces';
+import {PagedResponse, ResponseData} from '../../../global/interfaces';
 import {Contact} from '../../interfaces';
 
 declare var bootstrap: any;
@@ -19,6 +19,7 @@ export class ContactListComponent implements OnInit {
   faEdit = faEdit;
   faFilter = faFilter;
   // ====================================================================================================
+  currentContact: Contact = new Contact();
   contacts: PagedResponse<Contact> = new PagedResponse<Contact>();
   query: FormControl = this.fb.control('');
   pageNumber: number = 1;
@@ -51,9 +52,27 @@ export class ContactListComponent implements OnInit {
   }
 
   // botón agregar contacto.
-  addContact(): void {
+  public addContactModal(): void {
     this.title = 'Agregar Contacto';
+    this.currentContact = new Contact();
     this.contactModal.show();
+  }
+
+  // botón editar contacto.
+  public editContactModal(id: any): void {
+    this.title = 'Editar Contacto';
+    this.contactService.show(id).subscribe(result => {
+      this.currentContact = result;
+      this.contactModal.show();
+    });
+  }
+
+  // ocultar modal contacto.
+  public hideContactModal(data: ResponseData<Contact>): void {
+    if (data.ok) {
+      this.contactModal.hide();
+      this.loadContactList();
+    }
   }
 
 }

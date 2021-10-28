@@ -23,7 +23,7 @@
             </button>
           </div>
           <div class="col-auto">
-            <button type="button" (click)="addContact()" class="btn btn-primary">
+            <button type="button" (click)="addContactModal()" class="btn btn-primary">
               <fa-icon [icon]="faPlus"></fa-icon>
               <span class="text-uppercase ms-1">Agregar</span>
             </button>
@@ -51,7 +51,8 @@
               <td>{{item.phoneNumber1}}</td>
               <td>
                 <div class="actions ms-auto">
-                  <button type="button" class="btn btn-secondary btn-sm me-2">
+                  <button type="button" (click)="editContactModal(item.id)"
+                          class="btn btn-secondary btn-sm me-2">
                     <fa-icon [icon]="faEdit"></fa-icon>
                   </button>
                   <button type="button" class="btn btn-danger btn-sm">
@@ -68,4 +69,8 @@
   </div>
 </div>
 
-<app-contact-modal [title]="title"></app-contact-modal>
+<app-contact-modal
+  [title]="title"
+  [contact]="currentContact"
+  (responseData)="hideContactModal($event)">
+</app-contact-modal>

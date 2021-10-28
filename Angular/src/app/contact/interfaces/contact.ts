@@ -1,5 +1,5 @@
-﻿export interface Contact {
-  id: number | null;
+﻿export class Contact {
+  id: number | null | undefined;
   document: string;
   typeDoc: string;
   name: string;
@@ -7,17 +7,15 @@
   phoneNumber1: string;
   phoneNumber2: string;
   email: string;
-}
 
-export function ContactDefaultValues(): Contact {
-  return {
-    id: null,
-    document: '',
-    typeDoc: '',
-    name: '',
-    address: '',
-    phoneNumber1: '',
-    phoneNumber2: '',
-    email: ''
-  };
+  constructor() {
+    this.id = null;
+    this.document = '';
+    this.typeDoc = '';
+    this.name = '';
+    this.address = '';
+    this.phoneNumber1 = '';
+    this.phoneNumber2 = '';
+    this.email = '';
+  }
 }
