@@ -23,7 +23,7 @@
             </button>
           </div>
           <div class="col-auto">
-            <button type="button" (click)="addProduct()" class="btn btn-primary">
+            <button type="button" (click)="addProductModal()" class="btn btn-primary">
               <fa-icon [icon]="faPlus"></fa-icon>
               <span class="text-uppercase ms-1">Agregar</span>
             </button>
@@ -74,4 +74,6 @@
   </div>
 </div>
 
-<app-product-modal [title]="title"></app-product-modal>
+<app-product-modal
+  [title]="title" (responseData)="hideProductModal($event)">
+</app-product-modal>

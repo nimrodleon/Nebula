@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl} from '@angular/forms';
 import {faEdit, faFilter, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {ProductService} from '../../services';
-import {PagedResponse} from '../../../global/interfaces';
+import {PagedResponse, ResponseData} from '../../../global/interfaces';
 import {Product} from '../../interfaces';
 
 declare var bootstrap: any;
@@ -51,9 +51,17 @@ export class ProductListComponent implements OnInit {
   }
 
   // agregar nuevo producto.
-  public addProduct(): void {
+  public addProductModal(): void {
     this.title = 'Agregar Producto';
     this.productModal.show();
+  }
+
+  // cerrar modal producto.
+  public hideProductModal(data: ResponseData<Product>): void {
+    if (data.ok){
+      this.productModal.hide();
+      this.cargarListaDeProductos();
+    }
   }
 
 }
