@@ -46,8 +46,8 @@ namespace Nebula.Controllers
         public async Task<IActionResult> Show(int? id)
         {
             if (id == null) return BadRequest();
-            var result = await _context.Products.IgnoreQueryFilters()
-                .AsNoTracking().FirstOrDefaultAsync(m => m.Id.Equals(id));
+            var result = await _context.Products.AsNoTracking()
+                .IgnoreQueryFilters().FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (result == null) return BadRequest();
             return Ok(result);
         }
@@ -88,7 +88,7 @@ namespace Nebula.Controllers
                 var dirPath = Path.Combine(Environment
                     .GetFolderPath(Environment.SpecialFolder.UserProfile), "StaticFiles");
                 // borrar archivo antiguo si existe.
-                var oldFile = Path.Combine(dirPath, product.PathImage);
+                var oldFile = Path.Combine(dirPath, product.PathImage ?? string.Empty);
                 if (System.IO.File.Exists(oldFile)) System.IO.File.Delete(oldFile);
                 // copiar nuevo archivo.
                 var fileName = Guid.NewGuid() + model.File.FileName;
@@ -122,7 +122,7 @@ namespace Nebula.Controllers
             // borrar registro.
             _context.Products.Remove(result);
             await _context.SaveChangesAsync();
-            return Ok(new { Ok = true, Data = result, Msg = "El producto ha sido borrado!" });
+            return Ok(new {Ok = true, Data = result, Msg = "El producto ha sido borrado!"});
         }
     }
 }

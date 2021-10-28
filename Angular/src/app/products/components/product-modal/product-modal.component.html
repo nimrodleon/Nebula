@@ -64,11 +64,9 @@
           </div>
           <div class="mb-0">
             <label class="col-form-label-sm text-uppercase">Imagen del producto</label>
-            <input class="form-control" type="file" (change)="uploadFile($event)">
+            <input class="form-control" type="file" (change)="selectedImage($event)">
           </div>
         </form>
-        <pre>{{productForm.value|json}}</pre>
-        <pre>{{undMedidas|json}}</pre>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary text-uppercase" data-bs-dismiss="modal">Cerrar</button>

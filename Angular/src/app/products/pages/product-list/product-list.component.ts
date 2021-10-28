@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl} from '@angular/forms';
 import {faEdit, faFilter, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {ProductService} from '../../services';
-import {PagedResponse} from '../../../global/interfaces';
+import {PagedResponse, ResponseData} from '../../../global/interfaces';
 import {Product} from '../../interfaces';
 
 declare var bootstrap: any;
@@ -19,6 +19,7 @@ export class ProductListComponent implements OnInit {
   faPlus = faPlus;
   faFilter = faFilter;
   // ====================================================================================================
+  currentProduct: Product = new Product();
   products: PagedResponse<Product> = new PagedResponse<Product>();
   query: FormControl = this.fb.control('');
   pageNumber: number = 1;
@@ -51,9 +52,27 @@ export class ProductListComponent implements OnInit {
   }
 
   // agregar nuevo producto.
-  public addProduct(): void {
+  public addProductModal(): void {
     this.title = 'Agregar Producto';
+    this.currentProduct = new Product();
     this.productModal.show();
+  }
+
+  // editar producto seleccionado.
+  public editProductModal(id: any): void {
+    this.title = 'Editar Producto';
+    this.productService.show(id).subscribe(result => {
+      this.currentProduct = result;
+      this.productModal.show();
+    });
+  }
+
+  // cerrar modal producto.
+  public hideProductModal(data: ResponseData<Product>): void {
+    if (data.ok) {
+      this.productModal.hide();
+      this.cargarListaDeProductos();
+    }
   }
 
 }

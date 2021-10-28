@@ -23,7 +23,7 @@
             </button>
           </div>
           <div class="col-auto">
-            <button type="button" (click)="addProduct()" class="btn btn-primary">
+            <button type="button" (click)="addProductModal()" class="btn btn-primary">
               <fa-icon [icon]="faPlus"></fa-icon>
               <span class="text-uppercase ms-1">Agregar</span>
             </button>
@@ -57,7 +57,8 @@
               <td>{{item.price}}</td>
               <td>
                 <div class="actions ms-auto">
-                  <button type="button" class="btn btn-secondary btn-sm me-2">
+                  <button type="button" (click)="editProductModal(item.id)"
+                          class="btn btn-secondary btn-sm me-2">
                     <fa-icon [icon]="faEdit"></fa-icon>
                   </button>
                   <button type="button" class="btn btn-danger btn-sm">
@@ -74,4 +75,8 @@
   </div>
 </div>
 
-<app-product-modal [title]="title"></app-product-modal>
+<app-product-modal
+  [title]="title"
+  [product]="currentProduct"
+  (responseData)="hideProductModal($event)">
+</app-product-modal>
