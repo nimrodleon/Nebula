@@ -9,68 +9,70 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body pt-1">
-        <form>
+        <form [formGroup]="productForm">
           <div class="pb-1">
             <label class="col-form-label-sm text-uppercase">Descripción producto</label>
-            <input type="text" class="form-control">
+            <input type="text" formControlName="description" class="form-control">
             <div class="invalid-feedback">La descripción es requerido.</div>
           </div>
           <div class="row">
             <div class="col-6 pb-1">
               <label class="col-form-label-sm text-uppercase">GS1/GTIN-13 (EAN-13)</label>
-              <input type="text" class="form-control">
+              <input type="text" formControlName="barcode" class="form-control">
             </div>
             <div class="col-6 mb-1">
               <label class="col-form-label-sm text-uppercase">IMPUESTO ICBPER</label>
-              <select class="form-select">
-                <option value="0">NO</option>
-                <option value="1">SI, IMPUESTO BOLSAS PLÁSTICAS</option>
+              <select formControlName="icbper" class="form-select">
+                <option value="NO">NO</option>
+                <option value="SI">SI, IMPUESTO BOLSAS PLÁSTICAS</option>
               </select>
-              <div class="invalid-feedback">El igv es requerido.</div>
+              <div class="invalid-feedback">El impuesto de bolsas es requerido.</div>
             </div>
           </div>
           <div class="row">
             <div class="col-6 pb-1">
               <label class="col-form-label-sm text-uppercase">Precio Total</label>
-              <input type="number" step="0.01" class="form-control">
+              <input type="number" formControlName="price" step="0.01" class="form-control">
               <div class="invalid-feedback">El precio es requerido.</div>
             </div>
             <div class="col-6 mb-1">
               <label class="col-form-label-sm text-uppercase">IGV (18%)</label>
-              <select class="form-select">
-                <option value="0">GRAVADO</option>
-                <option value="1">EXONERADO</option>
-                <option value="2">INAFECTO</option>
+              <select formControlName="igvSunat" class="form-select">
+                <option value="GRAVADO">GRAVADO</option>
+                <option value="EXONERADO">EXONERADO</option>
+                <option value="INAFECTO">INAFECTO</option>
               </select>
-              <div class="invalid-feedback">El igv es requerido.</div>
+              <div class="invalid-feedback">El IGV es requerido.</div>
             </div>
           </div>
           <div class="row">
             <div class="col-6 mb-1">
               <label class="col-form-label-sm text-uppercase">Tipo ítem</label>
-              <select class="form-select">
-                <option value="0">BIEN</option>
-                <option value="1">SERVICIO</option>
+              <select formControlName="type" class="form-select">
+                <option value="BIEN">BIEN</option>
+                <option value="SERVICIO">SERVICIO</option>
               </select>
               <div class="invalid-feedback">El tipo de ítem es requerido.</div>
             </div>
             <div class="col-6 mb-1">
               <label class="col-form-label-sm text-uppercase">Unidad de medida</label>
-              <select class="form-select">
-                <option value="0">Ninguno</option>
+              <select formControlName="undMedidaId" class="form-select">
+                <option *ngFor="let item of undMedidas" [value]="item.id">{{item.name}}</option>
               </select>
               <div class="invalid-feedback">La unidad de medida es requerido.</div>
             </div>
           </div>
           <div class="mb-0">
-            <label for="formFile" class="col-form-label-sm text-uppercase">Imagen del producto</label>
-            <input class="form-control" type="file" id="formFile">
+            <label class="col-form-label-sm text-uppercase">Imagen del producto</label>
+            <input class="form-control" type="file" (change)="uploadFile($event)">
           </div>
         </form>
+        <pre>{{productForm.value|json}}</pre>
+        <pre>{{undMedidas|json}}</pre>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary text-uppercase" data-bs-dismiss="modal">Cerrar</button>
-        <button type="button" class="btn btn-primary text-uppercase">Guardar cambios</button>
+        <button type="button" (click)="saveChanges()" class="btn btn-primary text-uppercase">Guardar cambios</button>
       </div>
     </div>
   </div>

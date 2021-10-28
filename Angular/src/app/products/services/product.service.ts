@@ -11,7 +11,8 @@ import {Product} from '../interfaces';
 export class ProductService {
   private appURL: string = environment.applicationUrl + 'Product';
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient) {
   }
 
   public index(pageNumber: number, pageSize: number, query: string): Observable<PagedResponse<Product>> {
