@@ -42,6 +42,17 @@ namespace Nebula.Controllers
             return Ok(pagedResponse);
         }
 
+        [HttpGet("Terminal")]
+        public async Task<IActionResult> Terminal([FromQuery] string query)
+        {
+            var result = from p in _context.Products select p;
+            if (!string.IsNullOrWhiteSpace(query))
+                result = result.Where(m => m.Description.ToLower().Contains(query.ToLower()));
+            result = result.OrderByDescending(m => m.Id);
+            var responseData = await result.AsNoTracking().Take(25).ToListAsync();
+            return Ok(responseData);
+        }
+
         [HttpGet("Show/{id}")]
         public async Task<IActionResult> Show(int? id)
         {
@@ -64,6 +75,10 @@ namespace Nebula.Controllers
                 await using var stream = System.IO.File.Create(filePath);
                 await model.File.CopyToAsync(stream);
                 model.PathImage = fileName;
+            }
+            else
+            {
+                model.PathImage = "default.png";
             }
 
             _context.Products.Add(model);

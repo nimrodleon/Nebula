@@ -23,6 +23,13 @@ export class ProductService {
     return this.http.get<PagedResponse<Product>>(`${this.appURL}/Index`, {params: params});
   }
 
+  // buscador de productos para la terminal.
+  public terminal(query: string): Observable<Product[]> {
+    let params = new HttpParams();
+    params = params.append('query', query);
+    return this.http.get<Product[]>(`${this.appURL}/Terminal`, {params: params});
+  }
+
   public show(id: number): Observable<Product> {
     return this.http.get<Product>(`${this.appURL}/Show/${id}`);
   }

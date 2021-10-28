@@ -156,125 +156,28 @@
               <span class="input-group-text">
                 <fa-icon [icon]="faSearch"></fa-icon>
               </span>
-            <input type="text" class="form-control" placeholder="BIEN/SERVICIO">
+            <input type="search" [formControl]="queryProduct" (change)="searchProducts()"
+                   class="form-control" placeholder="BIEN/SERVICIO">
           </div>
           <button class="btn btn-success">
             <span class="text-uppercase">Nuevo</span>
           </button>
         </div>
-        <div class="item-product">
+        <div *ngFor="let item of products" class="item-product">
           <img
-            src="https://freshbox.com.pe/media/catalog/product/cache/eee634b682a13411f4a5714b23f9b391/f/l/florida-filete-de-atun170.jpg"
-            alt="">
+            src="http://localhost:5000/StaticFiles/{{item.pathImage}}" alt="">
           <table>
             <tbody>
             <tr>
-              <th>Nombre:</th>
-              <td>Atun florida</td>
+              <td colspan="2" class="text-start">{{item.description}}</td>
             </tr>
             <tr>
-              <th>Precio:</th>
-              <td>4.00</td>
+              <th class="fw-normal">Precio:</th>
+              <td class="fw-bold">{{item.price|currency}}</td>
             </tr>
             <tr>
-              <th>Stock:</th>
-              <td>10</td>
-            </tr>
-            </tbody>
-          </table>
-          <button class="btn btn-primary btn-sm">
-            <span class="text-uppercase">Seleccionar</span>
-          </button>
-        </div>
-        <div class="item-product">
-          <img
-            src="https://freshbox.com.pe/media/catalog/product/cache/eee634b682a13411f4a5714b23f9b391/f/l/florida-filete-de-atun170.jpg"
-            alt="">
-          <table>
-            <tbody>
-            <tr>
-              <th>Nombre:</th>
-              <td>Atun florida</td>
-            </tr>
-            <tr>
-              <th>Precio:</th>
-              <td>4.00</td>
-            </tr>
-            <tr>
-              <th>Stock:</th>
-              <td>10</td>
-            </tr>
-            </tbody>
-          </table>
-          <button class="btn btn-primary btn-sm">
-            <span class="text-uppercase">Seleccionar</span>
-          </button>
-        </div>
-        <div class="item-product">
-          <img
-            src="https://freshbox.com.pe/media/catalog/product/cache/eee634b682a13411f4a5714b23f9b391/f/l/florida-filete-de-atun170.jpg"
-            alt="">
-          <table>
-            <tbody>
-            <tr>
-              <th>Nombre:</th>
-              <td>Atun florida</td>
-            </tr>
-            <tr>
-              <th>Precio:</th>
-              <td>4.00</td>
-            </tr>
-            <tr>
-              <th>Stock:</th>
-              <td>10</td>
-            </tr>
-            </tbody>
-          </table>
-          <button class="btn btn-primary btn-sm">
-            <span class="text-uppercase">Seleccionar</span>
-          </button>
-        </div>
-        <div class="item-product">
-          <img
-            src="https://freshbox.com.pe/media/catalog/product/cache/eee634b682a13411f4a5714b23f9b391/f/l/florida-filete-de-atun170.jpg"
-            alt="">
-          <table>
-            <tbody>
-            <tr>
-              <th>Nombre:</th>
-              <td>Atun florida</td>
-            </tr>
-            <tr>
-              <th>Precio:</th>
-              <td>4.00</td>
-            </tr>
-            <tr>
-              <th>Stock:</th>
-              <td>10</td>
-            </tr>
-            </tbody>
-          </table>
-          <button class="btn btn-primary btn-sm">
-            <span class="text-uppercase">Seleccionar</span>
-          </button>
-        </div>
-        <div class="item-product">
-          <img
-            src="https://freshbox.com.pe/media/catalog/product/cache/eee634b682a13411f4a5714b23f9b391/f/l/florida-filete-de-atun170.jpg"
-            alt="">
-          <table>
-            <tbody>
-            <tr>
-              <th>Nombre:</th>
-              <td>Atun florida</td>
-            </tr>
-            <tr>
-              <th>Precio:</th>
-              <td>4.00</td>
-            </tr>
-            <tr>
-              <th>Stock:</th>
-              <td>10</td>
+              <th class="fw-normal">Stock:</th>
+              <td>0</td>
             </tr>
             </tbody>
           </table>

@@ -61,6 +61,7 @@
     border: 5px solid #323E72;
     margin: 8px 8px 8px 0;
     height: calc(100vh - 72px);
+    overflow-y: scroll;
     width: 35%;
   }
 
@@ -78,19 +79,20 @@
       border: 1px solid #dee2e6;
       border-radius: 0.25rem;
       height: auto;
-      max-width: 55px;
-      width: 55px;
+      max-width: 65px;
+      width: 65px;
     }
 
     table {
+      margin-left: 4px;
       text-transform: uppercase;
-      font-size: 0.75rem;
+      font-size: 0.85rem;
       width: 100%;
 
       th {
         text-align: right;
-        max-width: 70px;
-        width: 70px;
+        max-width: 60px;
+        width: 60px;
       }
     }
   }
