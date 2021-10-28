@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Nebula.Data.Models
 {
@@ -6,7 +9,12 @@ namespace Nebula.Data.Models
     {
         public int Id { get; set; }
         [MaxLength(250)] public string Document { get; set; }
-        [MaxLength(250)] public string TypeDoc { get; set; }
+        public Guid? PeopleDocTypeId { get; set; }
+
+        [JsonIgnore]
+        [ForeignKey("PeopleDocTypeId")]
+        public PeopleDocType PeopleDocType { get; set; }
+
         [MaxLength(250)] public string Name { get; set; }
         [MaxLength(250)] public string Address { get; set; }
         [MaxLength(250)] public string PhoneNumber1 { get; set; }
