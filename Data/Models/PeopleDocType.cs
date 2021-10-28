@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -13,7 +12,5 @@ namespace Nebula.Data.Models
 
         [MaxLength(250)] public string Description { get; set; }
         [MaxLength(250)] public string SunatCode { get; set; }
-
-        public List<Contact> Contacts { get; set; }
     }
 }

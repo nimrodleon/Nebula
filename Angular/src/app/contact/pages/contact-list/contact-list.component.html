@@ -45,7 +45,7 @@
             </thead>
             <tbody>
             <tr *ngFor="let item of contacts.data">
-              <td>{{item.typeDoc}}</td>
+              <td>{{item.peopleDocType?.description}}</td>
               <td>{{item.document}}</td>
               <td class="text-uppercase">{{item.name}}</td>
               <td>{{item.phoneNumber1}}</td>
@@ -66,9 +66,6 @@
         </div>
       </div>
     </div>
-
-    <pre>{{contacts|json}}</pre>
-
   </div>
 </div>
 

@@ -1,7 +1,8 @@
 ﻿export class Contact {
   id: number | null | undefined;
   document: string;
-  typeDoc: string;
+  peopleDocTypeId: string;
+  peopleDocType: undefined | any;
   name: string;
   address: string;
   phoneNumber1: string;
@@ -11,7 +12,8 @@
   constructor() {
     this.id = null;
     this.document = '';
-    this.typeDoc = '';
+    this.peopleDocTypeId = '';
+    this.peopleDocType = undefined;
     this.name = '';
     this.address = '';
     this.phoneNumber1 = '';

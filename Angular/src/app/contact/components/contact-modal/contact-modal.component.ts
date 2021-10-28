@@ -24,7 +24,7 @@ export class ContactModalComponent implements OnInit {
   contactForm: FormGroup = this.fb.group({
     id: [null],
     document: [''],
-    typeDoc: [''],
+    peopleDocTypeId: [''],
     name: [''],
     address: [''],
     phoneNumber1: [''],
