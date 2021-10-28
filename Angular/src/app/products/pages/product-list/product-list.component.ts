@@ -19,6 +19,7 @@ export class ProductListComponent implements OnInit {
   faPlus = faPlus;
   faFilter = faFilter;
   // ====================================================================================================
+  currentProduct: Product = new Product();
   products: PagedResponse<Product> = new PagedResponse<Product>();
   query: FormControl = this.fb.control('');
   pageNumber: number = 1;
@@ -53,12 +54,22 @@ export class ProductListComponent implements OnInit {
   // agregar nuevo producto.
   public addProductModal(): void {
     this.title = 'Agregar Producto';
+    this.currentProduct = new Product();
     this.productModal.show();
+  }
+
+  // editar producto seleccionado.
+  public editProductModal(id: any): void {
+    this.title = 'Editar Producto';
+    this.productService.show(id).subscribe(result => {
+      this.currentProduct = result;
+      this.productModal.show();
+    });
   }
 
   // cerrar modal producto.
   public hideProductModal(data: ResponseData<Product>): void {
-    if (data.ok){
+    if (data.ok) {
       this.productModal.hide();
       this.cargarListaDeProductos();
     }

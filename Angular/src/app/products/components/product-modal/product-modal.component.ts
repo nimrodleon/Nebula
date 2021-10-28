@@ -29,10 +29,10 @@ export class ProductModalComponent implements OnInit {
   fileImage: any;
 
   @Input()
-  product: Product = new Product();
+  title: string = '';
 
   @Input()
-  title: string = '';
+  product: Product = new Product();
 
   @Output()
   responseData = new EventEmitter<ResponseData<Product>>();
@@ -48,6 +48,13 @@ export class ProductModalComponent implements OnInit {
     this.undMedidaService.index().subscribe(result => this.undMedidas = result);
     // suscribir formGroup.
     this.productForm.valueChanges.subscribe(value => this.product = value);
+    // cargar valores por defecto.
+    if (document.querySelector('#product-modal')) {
+      const myModal: any = document.querySelector('#product-modal');
+      myModal.addEventListener('shown.bs.modal', () => {
+        this.productForm.reset({...this.product});
+      });
+    }
   }
 
   // seleccionar imagen.
@@ -67,11 +74,16 @@ export class ProductModalComponent implements OnInit {
     formData.append('undMedidaId', this.product.undMedidaId);
     if (this.fileImage) formData.append('file', this.fileImage);
     if (this.productForm.get('id')?.value == null) {
-      this.productService.store(formData).subscribe(result => {
-        this.responseData.emit(result);
-      });
+      this.productService.store(formData)
+        .subscribe(result => {
+          this.responseData.emit(result);
+        });
     } else {
-
+      formData.append('id', <any>this.product.id);
+      this.productService.update(<any>this.product.id, formData)
+        .subscribe(result => {
+          this.responseData.emit(result);
+        });
     }
   }
 
