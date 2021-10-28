@@ -7,10 +7,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, FormControl} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
+import {environment} from 'src/environments/environment';
 import {ProductService} from '../../../products/services';
 import {ResponseData} from '../../../global/interfaces';
 import {Product} from '../../../products/interfaces';
 
+declare var jQuery: any;
 declare var bootstrap: any;
 
 @Component({
@@ -39,6 +41,7 @@ export class TerminalComponent implements OnInit {
   cobrarModal: any;
   cashInOutModal: any;
   // ====================================================================================================
+  private appURL: string = environment.applicationUrl;
   queryProduct: FormControl = this.fb.control('');
   currentProduct: Product = new Product();
   products: Array<Product> = new Array<Product>();
@@ -53,6 +56,17 @@ export class TerminalComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe(params => {
       this.cajaDiariaId = params.get('id') || '';
+    });
+    // buscador de clientes.
+    jQuery('#clientId').select2({
+      theme: 'bootstrap-5',
+      placeholder: 'BUSCAR CLIENTE',
+      ajax: {
+        url: this.appURL + 'Contact/Select2',
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }
     });
     // cargar lista de productos.
     this.searchProducts();

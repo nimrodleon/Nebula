@@ -1,16 +1,16 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nebula.Data;
 using Nebula.Data.Helpers;
 using Nebula.Data.Models;
 using Nebula.Data.Services;
+using Nebula.Data.ViewModels;
 
 namespace Nebula.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ContactController : ControllerBase
@@ -50,6 +50,23 @@ namespace Nebula.Controllers
                 .AsNoTracking().FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (result == null) return BadRequest();
             return Ok(result);
+        }
+
+        [HttpGet("Select2")]
+        public async Task<IActionResult> Select2([FromQuery] string term)
+        {
+            var result = from c in _context.Contacts select c;
+            if (!string.IsNullOrWhiteSpace(term))
+                result = result.Where(m =>
+                    m.Document.Contains(term) || m.Name.ToLower().Contains(term.ToLower()));
+            result = result.OrderByDescending(m => m.Id);
+            var responseData = await result.AsNoTracking().Take(10).ToListAsync();
+            var data = new List<Select2>();
+            responseData.ForEach(item =>
+            {
+                data.Add(new Select2() { Id = item.Id, Text = $"{item.Document} - {item.Name}" });
+            });
+            return Ok(new { Results = data });
         }
 
         [HttpPost("Store")]
