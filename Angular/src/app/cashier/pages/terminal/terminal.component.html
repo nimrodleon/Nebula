@@ -43,7 +43,7 @@
               </span>
               <select id="clientId" class="form-select"></select>
             </div>
-            <button class="btn btn-success">
+            <button type="button" (click)="addContactModal()" class="btn btn-success">
               <span class="text-uppercase">Nuevo</span>
             </button>
           </div>
@@ -195,6 +195,12 @@
   [product]="currentProduct"
   (responseData)="hideProductModal($event)">
 </app-product-modal>
+
+<app-contact-modal
+  [title]="'Agregar Contacto'"
+  [contact]="currentContact"
+  (responseData)="hideContactModal($event)">
+</app-contact-modal>
 
 <app-cobrar-modal></app-cobrar-modal>
 <app-cash-in-out-modal></app-cash-in-out-modal>

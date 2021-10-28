@@ -11,6 +11,7 @@ import {environment} from 'src/environments/environment';
 import {ProductService} from '../../../products/services';
 import {ResponseData} from '../../../global/interfaces';
 import {Product} from '../../../products/interfaces';
+import {Contact} from '../../../contact/interfaces';
 
 declare var jQuery: any;
 declare var bootstrap: any;
@@ -44,8 +45,10 @@ export class TerminalComponent implements OnInit {
   private appURL: string = environment.applicationUrl;
   queryProduct: FormControl = this.fb.control('');
   currentProduct: Product = new Product();
+  currentContact: Contact = new Contact();
   products: Array<Product> = new Array<Product>();
   productModal: any;
+  contactModal: any;
 
   constructor(
     private fb: FormBuilder,
@@ -72,6 +75,8 @@ export class TerminalComponent implements OnInit {
     this.searchProducts();
     // modal formulario de productos.
     this.productModal = new bootstrap.Modal(document.querySelector('#product-modal'));
+    // modal formulario de contactos.
+    this.contactModal = new bootstrap.Modal(document.querySelector('#contact-modal'));
     // formulario modal cobrar.
     this.cobrarModal = new bootstrap.Modal(document.querySelector('#cobrar-modal'));
     // formulario entrada/salida de efectivo.
@@ -95,6 +100,20 @@ export class TerminalComponent implements OnInit {
     if (data.ok) {
       this.productModal.hide();
       this.searchProducts();
+    }
+  }
+
+  // agregar contacto.
+  public addContactModal(): void {
+    this.currentContact = new Contact();
+    this.contactModal.show();
+  }
+
+  // cerrar modal contacto.
+  public hideContactModal(data: ResponseData<Contact>): void {
+    if (data.ok) {
+      this.contactModal.hide();
+      // TODO: seleccionar contacto.
     }
   }
 
