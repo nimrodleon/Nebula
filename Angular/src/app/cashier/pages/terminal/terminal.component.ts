@@ -8,6 +8,7 @@ import {
 import {FormBuilder, FormControl} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {ProductService} from '../../../products/services';
+import {ResponseData} from '../../../global/interfaces';
 import {Product} from '../../../products/interfaces';
 
 declare var bootstrap: any;
@@ -39,7 +40,9 @@ export class TerminalComponent implements OnInit {
   cashInOutModal: any;
   // ====================================================================================================
   queryProduct: FormControl = this.fb.control('');
+  currentProduct: Product = new Product();
   products: Array<Product> = new Array<Product>();
+  productModal: any;
 
   constructor(
     private fb: FormBuilder,
@@ -53,6 +56,8 @@ export class TerminalComponent implements OnInit {
     });
     // cargar lista de productos.
     this.searchProducts();
+    // modal formulario de productos.
+    this.productModal = new bootstrap.Modal(document.querySelector('#product-modal'));
     // formulario modal cobrar.
     this.cobrarModal = new bootstrap.Modal(document.querySelector('#cobrar-modal'));
     // formulario entrada/salida de efectivo.
@@ -65,10 +70,24 @@ export class TerminalComponent implements OnInit {
       .subscribe(result => this.products = result);
   }
 
-  // movimientos de efectivo.
-  btnCashInOutClick(): void {
-    this.cashInOutModal.show();
+  // agregar nuevo producto.
+  public addProductModal(): void {
+    this.currentProduct = new Product();
+    this.productModal.show();
   }
+
+  // cerrar modal producto.
+  public hideProductModal(data: ResponseData<Product>): void {
+    if (data.ok) {
+      this.productModal.hide();
+      this.searchProducts();
+    }
+  }
+
+  // // movimientos de efectivo.
+  // btnCashInOutClick(): void {
+  //   this.cashInOutModal.show();
+  // }
 
   // botón vender.
   btnVenderClick(): void {

@@ -10,6 +10,7 @@ import {CajaDiariaComponent} from './pages/caja-diaria/caja-diaria.component';
 import {CashInOutModalComponent} from './components/cash-in-out-modal/cash-in-out-modal.component';
 import {TerminalComponent} from './pages/terminal/terminal.component';
 import {CobrarModalComponent} from './components/cobrar-modal/cobrar-modal.component';
+import {ProductsModule} from '../products/products.module';
 
 @NgModule({
   declarations: [
@@ -19,13 +20,14 @@ import {CobrarModalComponent} from './components/cobrar-modal/cobrar-modal.compo
     TerminalComponent,
     CobrarModalComponent,
   ],
-  imports: [
-    CommonModule,
-    CashierRoutingModule,
-    ReactiveFormsModule,
-    GlobalModule,
-    FontAwesomeModule
-  ]
+    imports: [
+        CommonModule,
+        CashierRoutingModule,
+        ReactiveFormsModule,
+        GlobalModule,
+        FontAwesomeModule,
+        ProductsModule
+    ]
 })
 export class CashierModule {
 }

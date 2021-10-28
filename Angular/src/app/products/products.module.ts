@@ -9,17 +9,20 @@ import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {ProductModalComponent} from './components/product-modal/product-modal.component';
 
 @NgModule({
-  declarations: [
-    ProductListComponent,
-    ProductModalComponent
-  ],
-  imports: [
-    CommonModule,
-    ProductsRoutingModule,
-    FontAwesomeModule,
-    ReactiveFormsModule,
-    GlobalModule
-  ]
+    declarations: [
+        ProductListComponent,
+        ProductModalComponent
+    ],
+    exports: [
+        ProductModalComponent
+    ],
+    imports: [
+        CommonModule,
+        ProductsRoutingModule,
+        FontAwesomeModule,
+        ReactiveFormsModule,
+        GlobalModule
+    ]
 })
 export class ProductsModule {
 }

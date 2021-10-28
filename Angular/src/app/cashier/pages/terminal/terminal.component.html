@@ -159,7 +159,7 @@
             <input type="search" [formControl]="queryProduct" (change)="searchProducts()"
                    class="form-control" placeholder="BIEN/SERVICIO">
           </div>
-          <button class="btn btn-success">
+          <button type="button" (click)="addProductModal()" class="btn btn-success">
             <span class="text-uppercase">Nuevo</span>
           </button>
         </div>
@@ -189,6 +189,12 @@
     </div>
   </div>
 </div>
+
+<app-product-modal
+  [title]="'Agregar Producto'"
+  [product]="currentProduct"
+  (responseData)="hideProductModal($event)">
+</app-product-modal>
 
 <app-cobrar-modal></app-cobrar-modal>
 <app-cash-in-out-modal></app-cash-in-out-modal>
