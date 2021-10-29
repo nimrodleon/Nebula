@@ -49,6 +49,21 @@ namespace Nebula.Controllers
             };
             _context.CajasDiaria.Add(cajaDiaria);
             await _context.SaveChangesAsync();
+
+            // registrar apertura de caja en detalle de caja diaria.
+            var detalleCaja = new CashierDetail()
+            {
+                CajaDiaria = cajaDiaria,
+                StartDate = DateTime.Now,
+                Document = "-",
+                Contact = "-",
+                Glosa = "APERTURA DE CAJA",
+                PaymentType = "CONTADO",
+                Total = model.Total
+            };
+            _context.CashierDetails.Add(detalleCaja);
+            await _context.SaveChangesAsync();
+
             return Ok(new
             {
                 Ok = true, Data = cajaDiaria,
