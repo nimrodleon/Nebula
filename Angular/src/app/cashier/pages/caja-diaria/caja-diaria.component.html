@@ -59,7 +59,7 @@
             </thead>
             <tbody>
             <tr *ngFor="let item of cajasDiarias">
-              <td>
+              <td class="fw-bold">
                 <a [routerLink]="['/cashier/detail', item.id]" class="text-decoration-none">
                   <span class="text-uppercase">{{item.name}}</span>
                 </a>
