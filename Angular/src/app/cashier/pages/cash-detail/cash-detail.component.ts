@@ -5,6 +5,9 @@ import {
   faPlus, faSearch, faTrashAlt
 } from '@fortawesome/free-solid-svg-icons';
 import {ActivatedRoute} from '@angular/router';
+import {CashierDetail} from '../../interfaces';
+import {CashierDetailService} from '../../services';
+import {FormBuilder, FormControl} from '@angular/forms';
 
 // declare var bootstrap: any;
 
@@ -23,26 +26,35 @@ export class CashDetailComponent implements OnInit {
   faCog = faCog;
   faFilter = faFilter;
   // ====================================================================================================
-  // cashInOutModal: any;
   cajaDiariaId: string = '';
+  query: FormControl = this.fb.control('');
+  cashierDetails: Array<CashierDetail> = new Array<CashierDetail>();
 
   constructor(
-    private activatedRoute: ActivatedRoute) {
+    private fb: FormBuilder,
+    private activatedRoute: ActivatedRoute,
+    private cashierDetailService: CashierDetailService) {
   }
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe(params => {
       this.cajaDiariaId = params.get('id') || '';
+      // cargar detalle de caja.
+      this.loadCashierDetails();
     });
-    // // modal entrada/salida de efectivo.
-    // this.cashInOutModal = new bootstrap.Modal(
-    //   document.querySelector('#cash-in-out-modal'));
   }
 
-  // // Abrir modal entrada/salida de efectivo.
-  // addCashInOut(e: any): void {
-  //   e.preventDefault();
-  //   this.cashInOutModal.show();
-  // }
+  // cargar detalle de caja.
+  private loadCashierDetails(): void {
+    this.cashierDetailService.index(<any>this.cajaDiariaId, this.query.value)
+      .subscribe(result => this.cashierDetails = result);
+  }
+
+  // buscar documentos.
+  public submitSearch(e: any): void {
+    e.preventDefault();
+    this.loadCashierDetails();
+  }
+
 
 }

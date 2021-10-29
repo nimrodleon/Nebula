@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="row px-2">
       <div class="col-12 bg-white my-2 py-3">
-        <form class="row row-cols-auto g-2">
+        <form (submit)="submitSearch($event)" class="row row-cols-auto g-2">
           <div class="col-auto">
             <label class="col-form-label fw-bold">Filtrar por:</label>
           </div>
@@ -13,7 +13,7 @@
               <span class="input-group-text">
                 <fa-icon [icon]="faFilter"></fa-icon>
               </span>
-              <input type="search" class="form-control" placeholder="DOC/CONTACTO">
+              <input type="search" [formControl]="query" class="form-control" placeholder="DOC/CONTACTO">
             </div>
           </div>
           <div class="col-auto">
@@ -52,60 +52,16 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-              <td>2021-09-13</td>
-              <td>-</td>
-              <td>-</td>
-              <td>APERTURA DE CAJA</td>
+            <tr *ngFor="let item of cashierDetails">
+              <td>{{item.startDate|date}}</td>
+              <td>{{item.document}}</td>
+              <td>{{item.contact}}</td>
+              <td>{{item.glosa}}</td>
               <td class="text-uppercase">
-                <span class="badge bg-danger">Credito</span>
+                <span *ngIf="item.paymentType === 'Contado'" class="badge bg-success">{{item.paymentType}}</span>
+                <span *ngIf="item.paymentType === 'Credito'" class="badge bg-danger">{{item.paymentType}}</span>
               </td>
-              <td>100.00</td>
-              <td class="text-end">
-                <button type="button" class="btn btn-danger btn-sm">
-                  <fa-icon [icon]="faMinusCircle"></fa-icon>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>2021-09-13</td>
-              <td>B001-0001</td>
-              <td>CLIENTE APELLIDOS</td>
-              <td>-</td>
-              <td class="text-uppercase">
-                <span class="badge bg-success">Contado</span>
-              </td>
-              <td>100.00</td>
-              <td class="text-end">
-                <button type="button" class="btn btn-danger btn-sm">
-                  <fa-icon [icon]="faMinusCircle"></fa-icon>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>2021-09-13</td>
-              <td>F001-0001</td>
-              <td>DEMO S.A.C.</td>
-              <td>-</td>
-              <td class="text-uppercase">
-                <span class="badge bg-danger">Credito</span>
-              </td>
-              <td>100.00</td>
-              <td class="text-end">
-                <button type="button" class="btn btn-danger btn-sm">
-                  <fa-icon [icon]="faMinusCircle"></fa-icon>
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>2021-09-13</td>
-              <td>-</td>
-              <td>IVAN DOMINGUEZ</td>
-              <td>PAGO DE LUZ</td>
-              <td class="text-uppercase">
-                <span class="badge bg-success">Contado</span>
-              </td>
-              <td>100.00</td>
+              <td>{{item.total|currency}}</td>
               <td class="text-end">
                 <button type="button" class="btn btn-danger btn-sm">
                   <fa-icon [icon]="faMinusCircle"></fa-icon>
