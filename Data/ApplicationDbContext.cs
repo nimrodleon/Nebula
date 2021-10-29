@@ -19,6 +19,7 @@ namespace Nebula.Data
         public DbSet<CajaDiaria> CajasDiaria { get; set; }
         public DbSet<UndMedida> UndMedida { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<CashierDetail> CashierDetails { get; set; }
 
         /// <summary>
         /// Configurar SoftDelete.
@@ -80,6 +81,8 @@ namespace Nebula.Data
             modelBuilder.Entity<UndMedida>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<Product>().Property<bool>("SoftDeleted");
             modelBuilder.Entity<Product>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
+            modelBuilder.Entity<CashierDetail>().Property<bool>("SoftDeleted");
+            modelBuilder.Entity<CashierDetail>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             base.OnModelCreating(modelBuilder);
         }
     }
