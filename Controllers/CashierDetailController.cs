@@ -1,8 +1,10 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nebula.Data;
+using Nebula.Data.Models;
 
 namespace Nebula.Controllers
 {
@@ -25,9 +27,26 @@ namespace Nebula.Controllers
                 where m.CajaDiariaId.Equals(id)
                 select m;
             if (!string.IsNullOrWhiteSpace(query))
-                result = result.Where(m => m.Document.Contains(query) || m.Contact.ToLower().Contains(query));
+                result = result.Where(m =>
+                    m.Document.Contains(query) || m.Contact.ToLower().Contains(query) ||
+                    m.Glosa.ToLower().Contains(query));
             var responseData = await result.AsNoTracking().ToListAsync();
             return Ok(responseData);
+        }
+
+        [HttpPost("Store")]
+        public async Task<IActionResult> Store([FromBody] CashierDetail model)
+        {
+            if (model.Type.Equals("Egreso"))
+                model.Total = model.Total * (0 - 1);
+            model.StartDate = DateTime.Now;
+            _context.CashierDetails.Add(model);
+            await _context.SaveChangesAsync();
+            return Ok(new
+            {
+                Ok = true, Data = model,
+                Msg = "La operación ha sido registrado!"
+            });
         }
     }
 }

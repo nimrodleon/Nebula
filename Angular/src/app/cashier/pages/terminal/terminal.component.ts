@@ -12,6 +12,7 @@ import {ProductService} from '../../../products/services';
 import {ResponseData} from '../../../global/interfaces';
 import {Product} from '../../../products/interfaces';
 import {Contact} from '../../../contact/interfaces';
+import {CashierDetail} from '../../interfaces';
 
 declare var jQuery: any;
 declare var bootstrap: any;
@@ -117,10 +118,17 @@ export class TerminalComponent implements OnInit {
     }
   }
 
-  // // movimientos de efectivo.
-  // btnCashInOutClick(): void {
-  //   this.cashInOutModal.show();
-  // }
+  // movimientos de efectivo.
+  public btnCashInOutClick(): void {
+    this.cashInOutModal.show();
+  }
+
+  // cerrar modal movimientos de efectivo.
+  public hideCashInOutModal(data:ResponseData<CashierDetail>): void {
+    if(data.ok) {
+      this.cashInOutModal.hide();
+    }
+  }
 
   // botón vender.
   btnVenderClick(): void {
