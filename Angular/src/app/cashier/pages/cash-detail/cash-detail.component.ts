@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {
   faCashRegister,
-  faCog, faFilter, faLock, faMinusCircle,
+  faCog, faFilter, faLock,
   faPlus, faSearch, faTrashAlt
 } from '@fortawesome/free-solid-svg-icons';
 import {ActivatedRoute} from '@angular/router';
@@ -20,7 +20,6 @@ export class CashDetailComponent implements OnInit {
   faPlus = faPlus;
   faTrashAlt = faTrashAlt;
   faLock = faLock;
-  faMinusCircle = faMinusCircle;
   faSearch = faSearch;
   faCashRegister = faCashRegister;
   faCog = faCog;

@@ -58,7 +58,7 @@ namespace Nebula.Controllers
                 Document = "-",
                 Contact = "-",
                 Glosa = "APERTURA DE CAJA",
-                PaymentType = "Contado",
+                Type = "Ingreso",
                 Total = model.Total
             };
             _context.CashierDetails.Add(detalleCaja);

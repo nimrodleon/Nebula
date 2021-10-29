@@ -5,7 +5,7 @@ export class CashierDetail {
   document: string;
   contact: string;
   glosa: string;
-  paymentType: string;
+  type: string;
   total: number;
 
   constructor() {
@@ -14,7 +14,7 @@ export class CashierDetail {
     this.document = '';
     this.contact = '';
     this.glosa = '';
-    this.paymentType = '';
+    this.type = '';
     this.total = 0;
   }
 }

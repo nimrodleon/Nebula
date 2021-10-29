@@ -46,7 +46,7 @@
               <th>Documento</th>
               <th>Contacto</th>
               <th>Glosa</th>
-              <th>F.Pago</th>
+              <th>Tipo</th>
               <th>Monto</th>
               <td></td>
             </tr>
@@ -58,13 +58,13 @@
               <td>{{item.contact}}</td>
               <td>{{item.glosa}}</td>
               <td class="text-uppercase">
-                <span *ngIf="item.paymentType === 'Contado'" class="badge bg-success">{{item.paymentType}}</span>
-                <span *ngIf="item.paymentType === 'Credito'" class="badge bg-danger">{{item.paymentType}}</span>
+                <span *ngIf="item.type === 'Ingreso'" class="badge bg-success">{{item.type}}</span>
+                <span *ngIf="item.type === 'Egreso'" class="badge bg-danger">{{item.type}}</span>
               </td>
               <td>{{item.total|currency}}</td>
               <td class="text-end">
                 <button type="button" class="btn btn-danger btn-sm">
-                  <fa-icon [icon]="faMinusCircle"></fa-icon>
+                  <fa-icon [icon]="faTrashAlt"></fa-icon>
                 </button>
               </td>
             </tr>

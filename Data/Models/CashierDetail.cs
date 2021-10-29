@@ -16,7 +16,7 @@ namespace Nebula.Data.Models
         [MaxLength(250)] public string Document { get; set; }
         [MaxLength(250)] public string Contact { get; set; }
         [MaxLength(250)] public string Glosa { get; set; }
-        [MaxLength(250)] public string PaymentType { get; set; }
+        [MaxLength(250)] public string Type { get; set; }
         public decimal? Total { get; set; }
     }
 }
