@@ -28,8 +28,8 @@ namespace Nebula.Controllers
                 select m;
             if (!string.IsNullOrWhiteSpace(query))
                 result = result.Where(m =>
-                    m.Document.Contains(query) || m.Contact.ToLower().Contains(query) ||
-                    m.Glosa.ToLower().Contains(query));
+                    m.Document.Contains(query) || m.Contact.ToLower().Contains(query.ToLower()) ||
+                    m.Glosa.ToLower().Contains(query.ToLower()));
             var responseData = await result.AsNoTracking().ToListAsync();
             return Ok(responseData);
         }
