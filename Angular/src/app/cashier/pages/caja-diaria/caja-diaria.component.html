@@ -65,8 +65,9 @@
                 </a>
               </td>
               <td>{{item.startDate|date}}</td>
-              <td>
-                <span class="badge bg-success">{{item.state}}</span>
+              <td class="text-uppercase">
+                <span *ngIf="item.state === 'ABIERTO'" class="badge bg-success">{{item.state}}</span>
+                <span *ngIf="item.state === 'CERRADO'" class="badge bg-danger">{{item.state}}</span>
               </td>
               <td>{{item.totalApertura|currency}}</td>
               <td>{{item.totalContabilizado|currency}}</td>

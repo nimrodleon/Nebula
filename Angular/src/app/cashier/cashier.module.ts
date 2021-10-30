@@ -12,6 +12,7 @@ import {CajaDiariaComponent} from './pages/caja-diaria/caja-diaria.component';
 import {CashInOutModalComponent} from './components/cash-in-out-modal/cash-in-out-modal.component';
 import {TerminalComponent} from './pages/terminal/terminal.component';
 import {CobrarModalComponent} from './components/cobrar-modal/cobrar-modal.component';
+import {CerrarCajaComponent} from './components/cerrar-caja/cerrar-caja.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import {CobrarModalComponent} from './components/cobrar-modal/cobrar-modal.compo
     CashInOutModalComponent,
     TerminalComponent,
     CobrarModalComponent,
+    CerrarCajaComponent,
   ],
   imports: [
     CommonModule,

@@ -29,6 +29,16 @@ namespace Nebula.Controllers
             return Ok(result);
         }
 
+        [HttpGet("Show/{id}")]
+        public async Task<IActionResult> Show(int? id)
+        {
+            if (id == null) return BadRequest();
+            var result = await _context.CajasDiaria.AsNoTracking()
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
+            if (result == null) return BadRequest();
+            return Ok(result);
+        }
+
         [HttpPost("Store")]
         public async Task<IActionResult> Store([FromBody] AperturaCaja model)
         {
@@ -68,6 +78,25 @@ namespace Nebula.Controllers
             {
                 Ok = true, Data = cajaDiaria,
                 Msg = "La apertura de caja ha sido registrado!"
+            });
+        }
+
+        [HttpPut("Update/{id}")]
+        public async Task<IActionResult> Update(int? id, [FromBody] CerrarCaja model)
+        {
+            if (id == null) return BadRequest();
+            var result = await _context.CajasDiaria
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
+            if (result == null) return BadRequest();
+            result.TotalContabilizado = model.TotalContabilizado;
+            result.TotalCierre = model.TotalCierre;
+            result.State = "CERRADO";
+            _context.CajasDiaria.Update(result);
+            await _context.SaveChangesAsync();
+            return Ok(new
+            {
+                Ok = true, Data = model,
+                Msg = "El cierre de caja ha sido registrado!"
             });
         }
     }

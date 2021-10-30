@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from 'src/environments/environment';
-import {AperturaCaja, CajaDiaria} from '../interfaces';
+import {AperturaCaja, CajaDiaria, CerrarCaja} from '../interfaces';
 import {ResponseData} from '../../global/interfaces';
 
 @Injectable({
@@ -21,8 +21,16 @@ export class CajaDiariaService {
     return this.http.get<CajaDiaria[]>(`${this.appURL}/Index`, {params: params});
   }
 
+  public show(id: number): Observable<CajaDiaria> {
+    return this.http.get<CajaDiaria>(`${this.appURL}/Show/${id}`);
+  }
+
   public store(data: AperturaCaja): Observable<ResponseData<CajaDiaria>> {
     return this.http.post<ResponseData<CajaDiaria>>(`${this.appURL}/Store`, data);
+  }
+
+  public update(id: number, data: CerrarCaja): Observable<ResponseData<CajaDiaria>> {
+    return this.http.put<ResponseData<CajaDiaria>>(`${this.appURL}/Update/${id}`, data);
   }
 
 }

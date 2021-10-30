@@ -23,13 +23,13 @@
             </button>
           </div>
           <div class="col-auto">
-            <a [routerLink]="['/cashier/terminal', cajaDiariaId]" class="btn btn-primary">
+            <button type="button" (click)="openTerminal()" class="btn btn-primary">
               <fa-icon [icon]="faCashRegister"></fa-icon>
               <span class="text-uppercase ms-1">Terminal</span>
-            </a>
+            </button>
           </div>
           <div class="col-auto">
-            <button type="button" class="btn btn-danger">
+            <button type="button" (click)="showCerrarCajaModal()" class="btn btn-danger">
               <fa-icon [icon]="faLock"></fa-icon>
               <span class="text-uppercase ms-1">Cerrar</span>
             </button>
@@ -75,3 +75,8 @@
     </div>
   </div>
 </div>
+
+<app-cerrar-caja
+  [cajaDiariaId]="cajaDiariaId"
+  (responseData)="hideCerrarCajaModal($event)">
+</app-cerrar-caja>
