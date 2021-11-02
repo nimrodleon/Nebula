@@ -52,7 +52,7 @@
               <fa-icon [icon]="faCoins" class="me-1"></fa-icon>
               <span class="text-uppercase">Movimiento</span>
             </button>
-            <button class="btn btn-danger">
+            <button type="button" (click)="deleteSale()" class="btn btn-danger">
               <fa-icon [icon]="faTimes"></fa-icon>
             </button>
           </div>
@@ -78,7 +78,11 @@
                        (change)="changeQuantity(item.productId, $event.target)"
                        class="form-control form-control-sm">
               </td>
-              <td><input type="number" [value]="item.discount" step="0.5" class="form-control form-control-sm"></td>
+              <td>
+                <input type="number" [value]="item.discount"
+                       (change)="calcDiscount(item.productId, $event.target)"
+                       step="0.1" class="form-control form-control-sm">
+              </td>
               <td>{{item.amount|currency}}</td>
               <td class="text-end">
                 <button type="button" (click)="deleteItem(item.productId)" class="btn btn-danger btn-sm">

@@ -16,6 +16,10 @@ export class TerminalService {
     return this._sale;
   }
 
+  public deleteSale(): void {
+    this._sale = new Sale();
+  }
+
   public addItem(prodId: any): void {
     this.productService.show(prodId).subscribe(result => {
       if (this._sale.details.length <= 0) {
@@ -44,6 +48,16 @@ export class TerminalService {
       if (item.productId === prodId) {
         item.quantity = value;
         item.amount = item.quantity * item.price;
+      }
+    });
+  }
+
+  public calcDiscount(prodId: any, value: number): void {
+    this._sale.details.forEach(item => {
+      if (item.productId === prodId) {
+        item.discount = value;
+        const amount = item.quantity * item.price;
+        item.amount = amount - ((item.discount / 100) * amount);
       }
     });
   }

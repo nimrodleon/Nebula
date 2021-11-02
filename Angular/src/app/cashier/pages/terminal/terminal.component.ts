@@ -8,8 +8,8 @@ import {
 import {FormBuilder, FormControl} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {environment} from 'src/environments/environment';
-import {ProductService} from '../../../products/services';
-import {ResponseData} from '../../../global/interfaces';
+import {ProductService} from 'src/app/products/services';
+import {deleteConfirm, ResponseData} from 'src/app/global/interfaces';
 import {Product} from '../../../products/interfaces';
 import {Contact} from '../../../contact/interfaces';
 import {CashierDetail} from '../../interfaces';
@@ -142,6 +142,15 @@ export class TerminalComponent implements OnInit {
     this.cobrarModal.show();
   }
 
+  // borrar venta.
+  public deleteSale(): void {
+    deleteConfirm().then(result => {
+      if (result.isConfirmed) {
+        this.terminalService.deleteSale();
+      }
+    });
+  }
+
   // agregar producto a la tabla.
   public addItem(prodId: any): void {
     this.terminalService.addItem(prodId);
@@ -151,6 +160,12 @@ export class TerminalComponent implements OnInit {
   public changeQuantity(prodId: any, target: any): void {
     const value: number = Number(target.value);
     this.terminalService.changeQuantity(prodId, value);
+  }
+
+  // calcular el descuento por item.
+  public calcDiscount(prodId: any, target: any): void {
+    const value: number = Number(target.value);
+    this.terminalService.calcDiscount(prodId, value);
   }
 
   // borrar item de la tabla.

@@ -2,19 +2,19 @@ import {SaleDetail} from './sale-detail';
 
 export class Sale {
   clientId: number | null;
-  sumTotTributos: number;
+  // subTotal.
   sumTotValVenta: number;
-  sumPrecioVenta: number;
-  sumDescTotal: number;
+  // IGV(18%).
+  sumTotTributos: number;
+  // importe total.
   sumImpVenta: number;
+  // detalle de venta.
   details: Array<SaleDetail>;
 
   constructor() {
     this.clientId = null;
-    this.sumTotTributos = 0;
     this.sumTotValVenta = 0;
-    this.sumPrecioVenta = 0;
-    this.sumDescTotal = 0;
+    this.sumTotTributos = 0;
     this.sumImpVenta = 0;
     this.details = new Array<SaleDetail>();
   }
