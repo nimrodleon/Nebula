@@ -13,6 +13,7 @@ import {ResponseData} from '../../../global/interfaces';
 import {Product} from '../../../products/interfaces';
 import {Contact} from '../../../contact/interfaces';
 import {CashierDetail} from '../../interfaces';
+import {TerminalService} from '../../services';
 
 declare var jQuery: any;
 declare var bootstrap: any;
@@ -54,7 +55,8 @@ export class TerminalComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private productService: ProductService) {
+    private productService: ProductService,
+    private terminalService: TerminalService) {
   }
 
   ngOnInit(): void {
@@ -82,6 +84,11 @@ export class TerminalComponent implements OnInit {
     this.cobrarModal = new bootstrap.Modal(document.querySelector('#cobrar-modal'));
     // formulario entrada/salida de efectivo.
     this.cashInOutModal = new bootstrap.Modal(document.querySelector('#cash-in-out-modal'));
+  }
+
+  // información de la venta.
+  public get sale() {
+    return this.terminalService.sale;
   }
 
   // buscar productos.
@@ -124,15 +131,31 @@ export class TerminalComponent implements OnInit {
   }
 
   // cerrar modal movimientos de efectivo.
-  public hideCashInOutModal(data:ResponseData<CashierDetail>): void {
-    if(data.ok) {
+  public hideCashInOutModal(data: ResponseData<CashierDetail>): void {
+    if (data.ok) {
       this.cashInOutModal.hide();
     }
   }
 
   // botón vender.
-  btnVenderClick(): void {
+  public btnVenderClick(): void {
     this.cobrarModal.show();
+  }
+
+  // agregar producto a la tabla.
+  public addItem(prodId: any): void {
+    this.terminalService.addItem(prodId);
+  }
+
+  // cambiar la cantidad del item de la tabla.
+  public changeQuantity(prodId: any, target: any): void {
+    const value: number = Number(target.value);
+    this.terminalService.changeQuantity(prodId, value);
+  }
+
+  // borrar item de la tabla.
+  public deleteItem(prodId: any): void {
+    this.terminalService.deleteItem(prodId);
   }
 
 }
