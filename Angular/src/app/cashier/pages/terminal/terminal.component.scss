@@ -16,6 +16,7 @@
     margin: 8px;
     border: 1px solid #323E72;
     height: calc(100vh - 72px);
+    overflow-y: auto;
     width: 65%;
 
     input[type="search"] {
