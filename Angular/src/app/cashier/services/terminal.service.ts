@@ -81,9 +81,16 @@ export class TerminalService {
     this._sale.details.forEach(item => {
       total = total + item.amount;
     });
-    this._sale.sumImpVenta = total;
-    this._sale.sumTotValVenta = total / 1.18;
-    this._sale.sumTotTributos = total - this._sale.sumTotValVenta;
+    const precioConIgv: boolean = false;
+    if (precioConIgv) {
+      this._sale.sumImpVenta = total;
+      this._sale.sumTotValVenta = total / 1.18;
+      this._sale.sumTotTributos = total - this._sale.sumTotValVenta;
+    } else {
+      this._sale.sumTotValVenta = total;
+      this._sale.sumTotTributos = total * 0.18;
+      this._sale.sumImpVenta = this._sale.sumTotValVenta + this._sale.sumTotTributos;
+    }
   }
 
 }
