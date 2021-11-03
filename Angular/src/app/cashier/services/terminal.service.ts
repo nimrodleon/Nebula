@@ -25,6 +25,7 @@ export class TerminalService {
       if (this._sale.details.length <= 0) {
         this.sale.details.push(new SaleDetail(result.id, result.description,
           result.price, 1, 0, result.price));
+        this.calcImporteVenta();
       } else {
         let changeQuantity: boolean = false;
         this._sale.details.forEach(item => {
@@ -32,12 +33,14 @@ export class TerminalService {
             item.price = result.price;
             item.quantity = item.quantity + 1;
             item.amount = item.quantity * result.price;
+            this.calcImporteVenta();
             changeQuantity = true;
           }
         });
         if (!changeQuantity) {
           this.sale.details.push(new SaleDetail(result.id, result.description,
             result.price, 1, 0, result.price));
+          this.calcImporteVenta();
         }
       }
     });
@@ -48,6 +51,7 @@ export class TerminalService {
       if (item.productId === prodId) {
         item.quantity = value;
         item.amount = item.quantity * item.price;
+        this.calcImporteVenta();
       }
     });
   }
@@ -58,17 +62,28 @@ export class TerminalService {
         item.discount = value;
         const amount = item.quantity * item.price;
         item.amount = amount - ((item.discount / 100) * amount);
+        this.calcImporteVenta();
       }
     });
   }
 
   public deleteItem(prodId: any): void {
-    console.log(prodId);
     this._sale.details.forEach((value, index, array) => {
       if (value.productId === prodId) {
         array.splice(index, 1);
+        this.calcImporteVenta();
       }
     });
+  }
+
+  public calcImporteVenta(): void {
+    let total = 0;
+    this._sale.details.forEach(item => {
+      total = total + item.amount;
+    });
+    this._sale.sumImpVenta = total;
+    this._sale.sumTotValVenta = total / 1.18;
+    this._sale.sumTotTributos = total - this._sale.sumTotValVenta;
   }
 
 }

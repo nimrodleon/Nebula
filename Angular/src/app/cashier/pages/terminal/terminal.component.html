@@ -104,11 +104,11 @@
             <tbody>
             <tr>
               <th>Sub-Total:</th>
-              <td>241.00</td>
+              <td>{{sale.sumTotValVenta|currency}}</td>
             </tr>
             <tr>
               <th>IGV(18%):</th>
-              <td>4.00</td>
+              <td>{{sale.sumTotTributos|currency}}</td>
             </tr>
             <tr>
               <th>ICBPER:</th>
@@ -118,7 +118,7 @@
           </table>
           <span class="text-uppercase text-lg total">Total</span>
           <div>
-            <span class="d-block fw-bold text-lg text-center">200.00</span>
+            <span class="d-block fw-bold text-lg text-center">{{sale.sumImpVenta|currency}}</span>
             <button (click)="btnVenderClick()" class="btn btn-success btn-lg">
               <span class="text-uppercase fw-bold px-5">Cobrar</span>
             </button>
