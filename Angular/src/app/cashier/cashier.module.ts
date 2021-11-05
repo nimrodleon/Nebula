@@ -14,6 +14,7 @@ import {TerminalComponent} from './pages/terminal/terminal.component';
 import {CobrarModalComponent} from './components/cobrar-modal/cobrar-modal.component';
 import {CerrarCajaComponent} from './components/cerrar-caja/cerrar-caja.component';
 import {CuotaModalComponent} from './components/cuota-modal/cuota-modal.component';
+import {InvoiceComponent} from './pages/invoice/invoice.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import {CuotaModalComponent} from './components/cuota-modal/cuota-modal.componen
     CobrarModalComponent,
     CerrarCajaComponent,
     CuotaModalComponent,
+    InvoiceComponent,
   ],
   imports: [
     CommonModule,
