@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {faBars, faEnvelope} from '@fortawesome/free-solid-svg-icons';
+import {faBars, faEnvelope, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {faCheckSquare} from '@fortawesome/free-regular-svg-icons';
 
 @Component({
@@ -11,6 +11,7 @@ export class CobrarModalComponent implements OnInit {
   faBars = faBars;
   faCheckSquare = faCheckSquare;
   faEnvelope = faEnvelope;
+  faTrashAlt = faTrashAlt;
 
   constructor() {
   }
