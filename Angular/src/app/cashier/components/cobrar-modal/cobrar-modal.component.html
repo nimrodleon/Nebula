@@ -31,9 +31,9 @@
               <div class="mb-1">
                 <label for="invoice" class="form-label text-uppercase">Numeración</label>
                 <select class="form-select" id="invoice">
-                  <option value="0">BOLETA</option>
-                  <option value="1">FACTURA</option>
-                  <option value="2">NOTA DE VENTA</option>
+                  <option value="BL">BOLETA</option>
+                  <option value="FT">FACTURA</option>
+                  <option value="NV">NOTA DE VENTA</option>
                 </select>
               </div>
               <div class="mb-1">
@@ -69,7 +69,7 @@
                     </tbody>
                   </table>
                 </div>
-                <a href="#" class="text-uppercase">Agregar Cuota</a>
+                <a (click)="addCuotaModal($event)" href="#" class="text-uppercase">Agregar Cuota</a>
               </div>
             </ng-container>
             <div class="col-12">
@@ -114,3 +114,5 @@
     </div>
   </div>
 </div>
+
+<app-cuota-modal></app-cuota-modal>

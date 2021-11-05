@@ -14,7 +14,7 @@
 
   .store-main {
     margin: 8px;
-    border: 1px solid #323E72;
+    border: 1px solid #333739;
     height: calc(100vh - 72px);
     overflow-y: auto;
     width: 65%;
@@ -32,8 +32,8 @@
     .card-footer {
       color: white;
       font-size: 1.5rem;
-      border-top: 1px solid #323E72;
-      background-color: #323E72;
+      border-top: 1px solid #333739;
+      background-color: #333739;
 
       .text-lg {
         font-size: 2rem;
@@ -63,7 +63,7 @@
   }
 
   .product-picker-res {
-    border: 5px solid #323E72;
+    border: 5px solid #333739;
     margin: 8px 8px 8px 0;
     height: calc(100vh - 72px);
     overflow-y: scroll;
