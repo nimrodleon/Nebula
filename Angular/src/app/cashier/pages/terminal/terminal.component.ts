@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {
-  faBarcode, faBars,
-  faCashRegister, faCogs,
+  faBarcode, faCashRegister, faCogs,
   faCoins, faIdCardAlt, faMinus, faPlus,
-  faSearch, faSignOutAlt, faTags, faTimes, faTrashAlt, faUserCircle
+  faSearch, faSignOutAlt, faTags, faThLarge,
+  faTimes, faTrashAlt, faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, FormControl} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
@@ -33,11 +33,11 @@ export class TerminalComponent implements OnInit {
   faSignOutAlt = faSignOutAlt;
   faCashRegister = faCashRegister;
   faBarcode = faBarcode;
-  faBars = faBars;
   faTags = faTags;
   faIdCardAlt = faIdCardAlt;
   faTimes = faTimes;
   faCogs = faCogs;
+  faThLarge = faThLarge;
   // ====================================================================================================
   cajaDiariaId: string = '';
   cobrarModal: any;
