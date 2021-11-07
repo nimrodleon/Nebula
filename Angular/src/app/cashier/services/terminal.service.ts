@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ProductService} from '../../products/services';
-import {Sale, SaleDetail} from '../interfaces';
+import {Cuota, Sale, SaleDetail} from '../interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +18,10 @@ export class TerminalService {
 
   public deleteSale(): void {
     this._sale = new Sale();
+  }
+
+  public setClientId(id: number): void {
+    this._sale.clientId = id;
   }
 
   public addItem(prodId: any): void {
@@ -91,6 +95,14 @@ export class TerminalService {
       this._sale.sumTotTributos = total * 0.18;
       this._sale.sumImpVenta = this._sale.sumTotValVenta + this._sale.sumTotTributos;
     }
+  }
+
+  public addInfo(data: any): void {
+    this._sale = {...this._sale, ...data};
+  }
+
+  public addCuotas(cuotas: Array<Cuota>): void {
+    this._sale.cuotas = cuotas;
   }
 
 }

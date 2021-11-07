@@ -72,6 +72,9 @@ export class TerminalComponent implements OnInit {
           Authorization: 'Bearer ' + localStorage.getItem('token')
         }
       }
+    }).on('select2:select', (e: any) => {
+      const data = e.params.data;
+      this.terminalService.setClientId(data.id);
     });
     // cargar lista de productos.
     this.searchProducts();

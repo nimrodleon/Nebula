@@ -5,23 +5,23 @@
   <div class="modal-dialog modal-sm modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title text-uppercase">Cuota</h5>
+        <h5 class="modal-title text-uppercase">Agregar Cuota</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form [formGroup]="cuotaForm">
           <div class="mb-3">
             <label class="form-label text-uppercase">Fecha de Vencimiento</label>
-            <input type="date" class="form-control">
+            <input type="date" formControlName="endDate" class="form-control">
           </div>
           <div class="mb-0">
             <label class="form-label text-uppercase">Monto de la cuota</label>
-            <input type="number" step="0.1" class="form-control">
+            <input type="number" formControlName="amount" step="0.1" class="form-control">
           </div>
         </form>
       </div>
       <div class="modal-footer justify-content-center bg-light">
-        <button type="button" class="btn btn-primary text-uppercase">Guardar Cambios</button>
+        <button type="button" (click)="saveChanges()" class="btn btn-dark text-uppercase">Guardar Cambios</button>
       </div>
     </div>
   </div>
