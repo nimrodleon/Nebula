@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Nebula.Data.Models
 {
@@ -14,6 +15,6 @@ namespace Nebula.Data.Models
         [MaxLength(250)] public string Name { get; set; }
         [MaxLength(250)] public string SunatCode { get; set; }
 
-        public List<Product> Products { get; set; }
+        [JsonIgnore] public List<Product> Products { get; set; }
     }
 }

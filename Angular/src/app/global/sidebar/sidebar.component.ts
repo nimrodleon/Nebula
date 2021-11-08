@@ -3,7 +3,7 @@ import {
   faAddressBook, faArchive, faArrowLeft,
   faArrowRight,
   faBox, faCashRegister, faCogs,
-  faShoppingBasket,  faWallet
+  faShoppingBasket, faWallet
 } from '@fortawesome/free-solid-svg-icons';
 import {Router} from '@angular/router';
 import {EnumBoolean, EnumMenu} from '../interfaces';
@@ -58,10 +58,10 @@ export class SidebarComponent implements OnInit {
     // localStorage.setItem('mnChildInventory', this.mnChildInventory);
     // menu compras.
     this.mnChildShopping = EnumBoolean.false;
-    localStorage.setItem('mnChildShopping', this.mnChildShopping);
+    localStorage.setItem(EnumMenu.childMenuShopping, this.mnChildShopping);
     // menu ventas.
     this.mnChildSales = EnumBoolean.false;
-    localStorage.setItem('mnChildSales', this.mnChildSales);
+    localStorage.setItem(EnumMenu.childMenuSales, this.mnChildSales);
     // menu configuración.
     this.childMenuConfiguration = EnumBoolean.false;
     localStorage.setItem(EnumMenu.childMenuConfiguration, this.childMenuConfiguration);
@@ -84,8 +84,8 @@ export class SidebarComponent implements OnInit {
     e.preventDefault();
     this.rootMenu = EnumBoolean.false;
     this.mnChildShopping = EnumBoolean.true;
-    localStorage.setItem('mnRoot', this.rootMenu);
-    localStorage.setItem('mnChildShopping', this.mnChildShopping);
+    localStorage.setItem(EnumMenu.rootMenu, this.rootMenu);
+    localStorage.setItem(EnumMenu.childMenuShopping, this.mnChildShopping);
     if (!toggler) {
       await this.router.navigate(['/shopping']);
     }
@@ -96,8 +96,8 @@ export class SidebarComponent implements OnInit {
     e.preventDefault();
     this.rootMenu = EnumBoolean.false;
     this.mnChildSales = EnumBoolean.true;
-    localStorage.setItem('mnRoot', this.rootMenu);
-    localStorage.setItem('mnChildSales', this.mnChildSales);
+    localStorage.setItem(EnumMenu.rootMenu, this.rootMenu);
+    localStorage.setItem(EnumMenu.childMenuSales, this.mnChildSales);
     if (!toggler) {
       await this.router.navigate(['/sales']);
     }

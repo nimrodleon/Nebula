@@ -17,7 +17,9 @@ namespace Nebula.Data.Models
         [MaxLength(250)] public string Type { get; set; }
         public Guid? UndMedidaId { get; set; }
 
-        [JsonIgnore]
+        /// <summary>
+        /// unidad de medida.
+        /// </summary>
         [ForeignKey("UndMedidaId")]
         public UndMedida UndMedida { get; set; }
 
