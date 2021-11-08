@@ -119,7 +119,6 @@ namespace Nebula.Controllers
             // guardar en la base de datos.
             await using (var transaction = await _context.Database.BeginTransactionAsync())
             {
-
             }
 
             return Ok();
