@@ -1,6 +1,9 @@
 import {Injectable} from '@angular/core';
 import {ProductService} from '../../products/services';
 import {Cuota, Sale, SaleDetail} from '../interfaces';
+import {InvoiceService} from '../../invoice/services';
+import {Observable} from 'rxjs';
+import {ResponseData} from '../../global/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -9,11 +12,16 @@ export class TerminalService {
   private _sale: Sale = new Sale();
 
   constructor(
-    private productService: ProductService) {
+    private productService: ProductService,
+    private invoiceService: InvoiceService,) {
   }
 
   public get sale(): Sale {
     return this._sale;
+  }
+
+  public set sale(value: Sale) {
+    this._sale = value;
   }
 
   public deleteSale(): void {
@@ -104,5 +112,11 @@ export class TerminalService {
   public addCuotas(cuotas: Array<Cuota>): void {
     this._sale.cuotas = cuotas;
   }
+
+  public saveChanges(id: number): Observable<ResponseData<Sale>> {
+    if (this._sale.paymentType === 'Contado') this._sale.endDate = '1992-04-05';
+    return this.invoiceService.salePos(id, this._sale);
+  }
+
 
 }

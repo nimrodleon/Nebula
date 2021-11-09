@@ -7,6 +7,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, FormControl} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
+import Swal from 'sweetalert2';
 import {environment} from 'src/environments/environment';
 import {ProductService} from 'src/app/products/services';
 import {deleteConfirm, ResponseData} from 'src/app/global/interfaces';
@@ -39,7 +40,7 @@ export class TerminalComponent implements OnInit {
   faCogs = faCogs;
   faThLarge = faThLarge;
   // ====================================================================================================
-  cajaDiariaId: string = '';
+  cajaDiariaId: number = 0;
   cobrarModal: any;
   cashInOutModal: any;
   // ====================================================================================================
@@ -60,7 +61,7 @@ export class TerminalComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe(params => {
-      this.cajaDiariaId = params.get('id') || '';
+      this.cajaDiariaId = Number(params.get('id'));
     });
     // buscador de clientes.
     jQuery('#clientId').select2({
@@ -75,6 +76,13 @@ export class TerminalComponent implements OnInit {
     }).on('select2:select', (e: any) => {
       const data = e.params.data;
       this.terminalService.setClientId(data.id);
+    });
+    // limpiar el cliente seleccionado.
+    const myModal: any = document.querySelector('#cobrar-modal');
+    myModal.addEventListener('hidden.bs.modal', () => {
+      if (this.sale.clientId === null) {
+        jQuery('#clientId').val(null).trigger('change');
+      }
     });
     // cargar lista de productos.
     this.searchProducts();
@@ -139,9 +147,25 @@ export class TerminalComponent implements OnInit {
     }
   }
 
-  // botón vender.
-  public btnVenderClick(): void {
-    this.cobrarModal.show();
+  // botón cobrar.
+  public async btnCobrarClick() {
+    if (this.sale.clientId === null) {
+      await Swal.fire(
+        'Información',
+        'La información del cliente es requerida!',
+        'info'
+      );
+    } else {
+      if (this.sale.details.length <= 0) {
+        await Swal.fire(
+          'Información',
+          'Debe existir al menos un Item para facturar!',
+          'info'
+        );
+      } else {
+        this.cobrarModal.show();
+      }
+    }
   }
 
   // borrar venta.

@@ -9,7 +9,7 @@ namespace Nebula.Data.Models
         public int Id { get; set; }
         [MaxLength(250)] public string Prefix { get; set; }
         public int? Counter { get; set; }
-        [MaxLength(250)] public string TypeDoc { get; set; }
+        [MaxLength(250)] public string DocType { get; set; }
         public Guid? CajaId { get; set; }
         [ForeignKey("CajaId")] public Caja Caja { get; set; }
     }

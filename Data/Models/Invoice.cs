@@ -15,6 +15,18 @@ namespace Nebula.Data.Models
         public string TypeDoc { get; set; }
 
         /// <summary>
+        /// Serie comprobante.
+        /// </summary>
+        [MaxLength(250)]
+        public string Serie { get; set; }
+
+        /// <summary>
+        /// Número comprobante.
+        /// </summary>
+        [MaxLength(250)]
+        public string Number { get; set; }
+
+        /// <summary>
         /// Tipo de operación Catálogo: 51, n4
         /// </summary>
         [MaxLength(250)]

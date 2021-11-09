@@ -119,7 +119,7 @@
           <span class="text-uppercase text-lg total">Total</span>
           <div>
             <span class="d-block fw-bold text-lg text-center">{{sale.sumImpVenta|currency}}</span>
-            <button (click)="btnVenderClick()" class="btn btn-success btn-lg">
+            <button (click)="btnCobrarClick()" class="btn btn-success btn-lg">
               <span class="text-uppercase fw-bold px-5">Cobrar</span>
             </button>
           </div>
@@ -184,6 +184,8 @@
   (responseData)="hideCashInOutModal($event)">
 </app-cash-in-out-modal>
 
-<app-cobrar-modal></app-cobrar-modal>
+<app-cobrar-modal
+  [cajaDiariaId]="cajaDiariaId">
+</app-cobrar-modal>
 
 <pre>{{sale|json}}</pre>

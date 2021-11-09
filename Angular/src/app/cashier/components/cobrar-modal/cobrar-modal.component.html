@@ -13,7 +13,7 @@
       </div>
       <div class="modal-body">
         <form [formGroup]="cobrarForm">
-          <ng-container *ngIf="true else success">
+          <ng-container *ngIf="formReg else successTpl">
             <div class="row">
               <div class="col-6">
                 <div class="mb-2">
@@ -85,11 +85,11 @@
               </div>
             </div>
           </ng-container>
-          <ng-template #success>
+          <ng-template #successTpl>
             <div class="div-success">
               <fa-icon [icon]="faCheckSquare"></fa-icon>
-              <span class="d-block">TOTAL: 122.00</span>
-              <span class="d-block text-danger">VUELTO: 20.00</span>
+              <span class="d-block">TOTAL: {{sale.sumImpVenta|currency}}</span>
+              <span class="d-block text-danger">VUELTO: {{sale.vuelto|currency}}</span>
             </div>
             <div class="sendEmail">
               <label class="form-label fw-bold">ENVIAR POR CORREO</label>
@@ -110,7 +110,7 @@
         <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">
           <span class="text-uppercase">Cerrar</span>
         </button>
-        <ng-container *ngIf="true else print">
+        <ng-container *ngIf="formReg else print">
           <button type="button" (click)="cobrarVenta()" class="btn btn-primary btn-lg">
             <span class="text-uppercase">Cobrar</span>
           </button>

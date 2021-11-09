@@ -18,7 +18,7 @@ export class CashInOutModalComponent implements OnInit {
   private appURL: string = environment.applicationUrl;
   faBars = faBars;
   @Input()
-  cajaDiariaId: string = '';
+  cajaDiariaId: number = 0;
   @Output()
   responseData = new EventEmitter<ResponseData<CashierDetail>>();
   cashierDetail: CashierDetail = new CashierDetail();

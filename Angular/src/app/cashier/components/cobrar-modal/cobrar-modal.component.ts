@@ -1,10 +1,10 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {faBars, faEnvelope, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {faCheckSquare} from '@fortawesome/free-regular-svg-icons';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {Cuota} from '../../interfaces';
-import {deleteConfirm} from '../../../global/interfaces';
+import {deleteConfirm} from 'src/app/global/interfaces';
 import {TerminalService} from '../../services';
+import {Cuota} from '../../interfaces';
 
 declare var bootstrap: any;
 
@@ -19,6 +19,8 @@ export class CobrarModalComponent implements OnInit {
   faEnvelope = faEnvelope;
   faTrashAlt = faTrashAlt;
   // ====================================================================================================
+  @Input()
+  cajaDiariaId: number = 0;
   cuotaModal: any;
   cobrarForm: FormGroup = this.fb.group({
     paymentType: ['Contado'],
@@ -29,6 +31,7 @@ export class CobrarModalComponent implements OnInit {
     remark: ['']
   });
   listaDeCuotas: Array<Cuota> = new Array<Cuota>();
+  formReg: boolean = true;
 
   constructor(
     private fb: FormBuilder,
@@ -37,6 +40,17 @@ export class CobrarModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.cuotaModal = new bootstrap.Modal(document.querySelector('#cuota-modal'));
+    const myModal: any = document.querySelector('#cobrar-modal');
+    myModal.addEventListener('hide.bs.modal', () => {
+      if (!this.formReg) {
+        this.terminalService.deleteSale();
+        this.formReg = true;
+      }
+    });
+  }
+
+  public get sale() {
+    return this.terminalService.sale;
   }
 
   // agregar cuota.
@@ -78,7 +92,16 @@ export class CobrarModalComponent implements OnInit {
   public cobrarVenta(): void {
     this.terminalService.addInfo(this.cobrarForm.value);
     this.terminalService.addCuotas(this.listaDeCuotas);
-    console.log(JSON.stringify(this.cobrarForm.value));
+    this.terminalService.saveChanges(this.cajaDiariaId).subscribe(result => {
+      if (result.ok) {
+        if (result.data) {
+          this.terminalService.sale = result.data;
+        }
+        this.formReg = false;
+      }
+    }, ({error}) => {
+      console.error(error);
+    });
   }
 
 }

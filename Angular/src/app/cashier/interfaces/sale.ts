@@ -8,7 +8,7 @@ export class Sale {
   // tipo documento.
   docType: string;
   // fecha vencimiento.
-  endDate: string;
+  endDate: string|undefined;
   // monto caja.
   montoCaja: boolean;
   // monto entregado.
