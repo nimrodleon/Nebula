@@ -39,6 +39,7 @@ namespace Nebula.Controllers
         {
             if (model.Type.Equals("Egreso"))
                 model.Total = model.Total * (0 - 1);
+            model.TypeOperation = TypeOperation.CajaChica;
             model.StartDate = DateTime.Now;
             _context.CashierDetails.Add(model);
             await _context.SaveChangesAsync();

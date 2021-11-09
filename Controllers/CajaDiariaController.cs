@@ -64,6 +64,7 @@ namespace Nebula.Controllers
             var detalleCaja = new CashierDetail()
             {
                 CajaDiaria = cajaDiaria,
+                TypeOperation = TypeOperation.CajaChica,
                 StartDate = DateTime.Now,
                 Document = "-",
                 Contact = "-",

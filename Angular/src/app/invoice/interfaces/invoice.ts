@@ -3,6 +3,8 @@ import {InvoiceDetail} from './invoice-detail';
 export class Invoice {
   id: null | undefined;
   typeDoc: string;
+  serie: string;
+  number: string;
   tipOperacion: string;
   fecEmision: string;
   horEmision: string;
@@ -24,6 +26,8 @@ export class Invoice {
   constructor() {
     this.id = null;
     this.typeDoc = '';
+    this.serie = '';
+    this.number = '';
     this.tipOperacion = '';
     this.fecEmision = '';
     this.horEmision = '';

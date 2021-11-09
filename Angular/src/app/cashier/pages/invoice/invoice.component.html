@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="row px-2">
       <div class="d-flex align-items-center justify-content-between bg-white my-2 py-3">
-        <h5 class="text-uppercase mb-0">Factura: F001-000012</h5>
+        <h5 class="text-uppercase mb-0">{{getNameInvoice(invoice.typeDoc)}}: {{invoice.serie}}-{{invoice.number}}</h5>
         <div class="d-flex d-print-none">
           <button type="button" class="btn btn-danger me-2">
             <fa-icon [icon]="faTimes" class="me-1"></fa-icon>
@@ -30,17 +30,16 @@
             </tr>
             <tr>
               <th class="text-uppercase">Cliente</th>
-              <td>Cliente varios</td>
+              <td>{{invoice.numDocUsuario}}-{{invoice.rznSocialUsuario}}</td>
             </tr>
             <tr>
-              <th class="text-uppercase">Creación</th>
-              <td>2021-11-05 18:10 PM</td>
+              <th class="text-uppercase">Fecha de emisión</th>
+              <td>{{invoice.fecEmision|date}}</td>
             </tr>
             <tr>
               <th class="text-uppercase">Almacén</th>
               <td>Almacén Principal</td>
             </tr>
-
             </tbody>
           </table>
         </div>
@@ -48,22 +47,24 @@
           <table class="table">
             <thead>
             <tr class="text-uppercase">
+              <th>Cantidad</th>
+              <th>Und. Med</th>
               <th>Producto</th>
               <th>Precio</th>
-              <th>Descuento</th>
               <th>Impuestos</th>
-              <th>Cantidad</th>
-              <th>Total</th>
+              <th>V. Item</th>
+              <th>ICBPER</th>
             </tr>
             </thead>
             <tbody>
-            <tr>
-              <td>MONITOR DELL 21" NEGRO</td>
-              <td>381.36</td>
-              <td>0%</td>
-              <td>IVG(18%)</td>
-              <td>1</td>
-              <td>450.00</td>
+            <tr *ngFor="let item of invoice.invoiceDetails">
+              <td>{{item.ctdUnidadItem}}</td>
+              <td>{{item.codUnidadMedida}}</td>
+              <td>{{item.desItem}}</td>
+              <td>{{item.mtoValorUnitario|currency}}</td>
+              <td>{{item.nomTributoIgvItem}}({{item.porIgvItem|number}}%)</td>
+              <td>{{item.mtoValorVentaItem|currency}}</td>
+              <td>{{item.mtoTriIcbperItem|currency}}</td>
             </tr>
             </tbody>
           </table>
@@ -79,20 +80,16 @@
               </thead>
               <tbody>
               <tr>
-                <td>Efectivo</td>
-                <td>450.00</td>
-              </tr>
-              <tr>
                 <td>Total</td>
-                <td>450.00</td>
+                <td>{{invoice.sumImpVenta|currency}}</td>
               </tr>
               <tr>
                 <td>Total recibido</td>
-                <td>500.00</td>
+                <td>0</td>
               </tr>
               <tr>
                 <td>Cambio</td>
-                <td>50.00</td>
+                <td>0</td>
               </tr>
               </tbody>
             </table>
@@ -102,15 +99,15 @@
               <tbody>
               <tr>
                 <th class="bg-white">Subtotal</th>
-                <td class="bg-white">381.36</td>
+                <td class="bg-white">{{invoice.sumTotValVenta|currency}}</td>
               </tr>
               <tr>
                 <th class="bg-white">IGV (18%)</th>
-                <td class="bg-white">68.64</td>
+                <td class="bg-white">{{invoice.sumTotTributos|currency}}</td>
               </tr>
               <tr>
                 <th class="bg-white">Total</th>
-                <td class="bg-white">450.00</td>
+                <td class="bg-white">{{invoice.sumImpVenta|currency}}</td>
               </tr>
               </tbody>
             </table>
@@ -118,6 +115,9 @@
         </div>
       </div>
     </div>
+
+    <pre>{{invoice|json}}</pre>
+
   </div>
 </div>
 

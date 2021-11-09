@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Nebula.Data.Models
 {
@@ -120,5 +121,11 @@ namespace Nebula.Data.Models
         /// Lista de items de la factura.
         /// </summary>
         public List<InvoiceDetail> InvoiceDetails { get; set; }
+
+        /// <summary>
+        /// Lista de operaciones de caja diaria.
+        /// </summary>
+        [JsonIgnore]
+        public List<CashierDetail> CashierDetails { get; set; }
     }
 }

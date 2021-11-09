@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Nebula.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -9,9 +10,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Nebula.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211109144651_addTypeOperationCashierDetailColumn")]
+    partial class addTypeOperationCashierDetailColumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -299,9 +301,6 @@ namespace Nebula.Data.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<int?>("InvoiceId")
-                        .HasColumnType("integer");
-
                     b.Property<bool>("SoftDeleted")
                         .HasColumnType("boolean");
 
@@ -321,8 +320,6 @@ namespace Nebula.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CajaDiariaId");
-
-                    b.HasIndex("InvoiceId");
 
                     b.ToTable("CashierDetails");
                 });
@@ -744,13 +741,7 @@ namespace Nebula.Data.Migrations
                         .WithMany()
                         .HasForeignKey("CajaDiariaId");
 
-                    b.HasOne("Nebula.Data.Models.Invoice", "Invoice")
-                        .WithMany("CashierDetails")
-                        .HasForeignKey("InvoiceId");
-
                     b.Navigation("CajaDiaria");
-
-                    b.Navigation("Invoice");
                 });
 
             modelBuilder.Entity("Nebula.Data.Models.Contact", b =>
@@ -798,8 +789,6 @@ namespace Nebula.Data.Migrations
 
             modelBuilder.Entity("Nebula.Data.Models.Invoice", b =>
                 {
-                    b.Navigation("CashierDetails");
-
                     b.Navigation("InvoiceDetails");
                 });
 

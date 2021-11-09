@@ -25,6 +25,17 @@ namespace Nebula.Controllers
             _context = context;
         }
 
+        [HttpGet("Show/{id}")]
+        public async Task<IActionResult> Show(int? id)
+        {
+            if (id == null) return BadRequest();
+            var result = await _context.Invoices.AsNoTracking()
+                .Include(m => m.InvoiceDetails)
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
+            if (result == null) return BadRequest();
+            return Ok(result);
+        }
+
         [HttpPost("Store")]
         public async Task<IActionResult> Store([FromBody] Invoice model)
         {
@@ -66,7 +77,7 @@ namespace Nebula.Controllers
                 TipOperacion = "0101",
                 FecEmision = DateTime.Now.ToString("yyyy-MM-dd"),
                 HorEmision = DateTime.Now.ToString("HH:mm:ss"),
-                FecVencimiento = model.PaymentType != "Credito" ? model.EndDate.ToString("yyyy-MM-dd") : "-",
+                FecVencimiento = model.PaymentType.Equals("Credito") ? model.EndDate.ToString("yyyy-MM-dd") : "-",
                 CodLocalEmisor = "0000",
                 TipDocUsuario = client.PeopleDocType.SunatCode,
                 NumDocUsuario = client.Document,
@@ -163,10 +174,12 @@ namespace Nebula.Controllers
                     var cashierDetail = new CashierDetail()
                     {
                         CajaDiariaId = cajaDiaria.Id,
+                        InvoiceId = invoice.Id,
+                        TypeOperation = TypeOperation.Comprobante,
                         StartDate = DateTime.Now,
                         Document = string.Format($"{invoice.Serie}-{invoice.Number}"),
                         Contact = invoice.RznSocialUsuario,
-                        Glosa = "-",
+                        Glosa = model.Remark,
                         Type = "Ingreso",
                         Total = invoice.SumImpVenta
                     };

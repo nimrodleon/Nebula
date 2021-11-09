@@ -54,7 +54,14 @@
             <tbody>
             <tr *ngFor="let item of cashierDetails">
               <td>{{item.startDate|date}}</td>
-              <td>{{item.document}}</td>
+              <td>
+                <ng-container *ngIf="item.typeOperation === 0 else comprobante">
+                  {{item.document}}
+                </ng-container>
+                <ng-template #comprobante>
+                  <a [routerLink]="['/cashier/invoice', item.invoiceId]">{{item.document}}</a>
+                </ng-template>
+              </td>
               <td>{{item.contact}}</td>
               <td>{{item.glosa}}</td>
               <td class="text-uppercase">
