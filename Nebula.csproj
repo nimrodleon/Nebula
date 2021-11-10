@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Angular\src\app\invoice\pages" />
     <Folder Include="Data\Migrations" />
   </ItemGroup>
 
