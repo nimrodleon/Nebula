@@ -13,6 +13,7 @@ import {CajaService} from 'src/app/cashier/services';
 import {SunatService} from '../../services';
 
 declare var jQuery: any;
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-invoice',
@@ -47,6 +48,7 @@ export class InvoiceComponent implements OnInit {
     sumImpVenta: [0],
     remark: [''],
   });
+  itemComprobanteModal: any;
 
   constructor(
     private fb: FormBuilder,
@@ -88,10 +90,17 @@ export class InvoiceComponent implements OnInit {
     this.cajaService.index().subscribe(result => this.listaDeCajas = result);
     // cargar lista tipos de operación.
     this.sunatService.typeOperation().subscribe(result => this.typeOperation = result);
+    // modal item comprobante.
+    this.itemComprobanteModal = new bootstrap.Modal(document.querySelector('#item-comprobante'));
   }
 
   public checkCreditoFormaPago(): boolean {
     return this.comprobanteForm.get('formaPago')?.value === 'Credito';
+  }
+
+  // abrir modal item-comprobante.
+  public showItemComprobanteModal(): void {
+    this.itemComprobanteModal.show();
   }
 
 }

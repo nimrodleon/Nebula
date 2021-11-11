@@ -135,7 +135,7 @@
                     <td class="bg-white"><input type="number" class="text-end" formControlName="icbper" readonly></td>
                   </tr>
                   <tr>
-                    <th class="bg-white">Total</th>
+                    <th class="bg-white">TOTAL</th>
                     <td class="bg-white"><input type="number" class="text-end" formControlName="sumImpVenta" readonly>
                     </td>
                   </tr>
@@ -145,7 +145,7 @@
             </div>
           </div>
         </form>
-        <button type="button" class="btn btn-dark">
+        <button type="button" (click)="showItemComprobanteModal()" class="btn btn-dark">
           <fa-icon [icon]="faPlus"></fa-icon>
           <span class="text-uppercase ms-1">Agregar Item Comprobante</span>
         </button>
@@ -200,3 +200,5 @@
 
   </div>
 </div>
+
+<app-item-comprobante></app-item-comprobante>
