@@ -6,7 +6,6 @@ import {ResponseData} from '../../global/interfaces';
 import {Invoice} from '../interfaces';
 import {Sale} from '../../cashier/interfaces';
 
-
 @Injectable({
   providedIn: 'root'
 })

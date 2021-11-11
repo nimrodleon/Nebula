@@ -23,6 +23,7 @@ namespace Nebula.Data
         public DbSet<Invoice> Invoices { get; set; }
         public DbSet<InvoiceDetail> InvoiceDetails { get; set; }
         public DbSet<SerieInvoice> SerieInvoices { get; set; }
+        public DbSet<TypeOperationSunat> TypeOperationSunat { get; set; }
 
         /// <summary>
         /// Configurar SoftDelete.
