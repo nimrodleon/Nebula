@@ -1,10 +1,16 @@
 import {Component, OnInit} from '@angular/core';
-import {faArrowLeft, faIdCardAlt, faPlus, faSave, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {
+  faArrowLeft, faIdCardAlt, faPlus,
+  faSave, faSearch, faTrashAlt
+} from '@fortawesome/free-solid-svg-icons';
+import * as moment from 'moment';
 import {environment} from 'src/environments/environment';
 import {Caja} from 'src/app/cashier/interfaces';
+import {TypeOperationSunat} from '../../interfaces';
 import {CajaService} from 'src/app/cashier/services';
 import {SunatService} from '../../services';
-import {TypeOperationSunat} from '../../interfaces';
 
 declare var jQuery: any;
 
@@ -20,31 +26,72 @@ export class InvoiceComponent implements OnInit {
   faPlus = faPlus;
   faArrowLeft = faArrowLeft;
   faIdCardAlt = faIdCardAlt;
+  docType: string = '';
+  nomComprobante: string = '';
   private appURL: string = environment.applicationUrl;
   listaDeCajas: Array<Caja> = new Array<Caja>();
   typeOperation: Array<TypeOperationSunat> = new Array<TypeOperationSunat>();
+  comprobanteForm: FormGroup = this.fb.group({
+    contactId: [null],
+    startDate: [moment().format('YYYY-MM-DD')],
+    docType: [''],
+    cajaId: [''],
+    formaPago: ['Contado'],
+    typeOperation: [''],
+    serie: [''],
+    numero: [''],
+    endDate: [null],
+    sumTotValVenta: [0],
+    sumTotTributos: [0],
+    icbper: [0],
+    sumImpVenta: [0],
+    remark: [''],
+  });
 
   constructor(
+    private fb: FormBuilder,
+    private activatedRoute: ActivatedRoute,
     private cajaService: CajaService,
     private sunatService: SunatService) {
   }
 
   ngOnInit(): void {
+    this.activatedRoute.paramMap.subscribe(params => {
+      this.docType = params.get('type') || '';
+      //  título del comprobante.
+      switch (params.get('type')) {
+        case 'purchase':
+          this.nomComprobante = 'Compra';
+          // deshabilitar caja si es un comprobante de compras.
+          this.comprobanteForm.controls['cajaId'].disable();
+          break;
+        case 'sale':
+          this.nomComprobante = 'Venta';
+          break;
+      }
+    });
     // buscador de contactos.
     jQuery('#clientId').select2({
       theme: 'bootstrap-5',
-      placeholder: 'Buscar contacto',
+      placeholder: 'BUSCAR CONTACTO',
       ajax: {
         url: this.appURL + 'Contact/Select2',
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('token')
         }
       }
+    }).on('select2:select', (e: any) => {
+      const data = e.params.data;
+      this.comprobanteForm.controls['contactId'].setValue(data.id);
     });
     // cargar lista de cajas.
     this.cajaService.index().subscribe(result => this.listaDeCajas = result);
     // cargar lista tipos de operación.
     this.sunatService.typeOperation().subscribe(result => this.typeOperation = result);
+  }
+
+  public checkCreditoFormaPago(): boolean {
+    return this.comprobanteForm.get('formaPago')?.value === 'Credito';
   }
 
 }

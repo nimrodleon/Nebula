@@ -4,9 +4,9 @@
   <div class="container-fluid">
     <div class="row px-2">
       <div class="col-12 bg-white shadow-sm my-2 py-3">
-        <h5 class="text-uppercase">Comprobante de venta</h5>
+        <h5 class="text-uppercase">Comprobante de {{nomComprobante}}</h5>
         <hr>
-        <form class="row">
+        <form [formGroup]="comprobanteForm" class="row">
           <div class="col-8">
             <div class="row mb-3">
               <label class="col-3 col-form-label text-end">Contacto</label>
@@ -28,7 +28,7 @@
             <div class="row mb-3">
               <label class="col-3 col-form-label text-end">Tipo Comprobante</label>
               <div class="col-4">
-                <select class="form-select">
+                <select formControlName="docType" class="form-select">
                   <option value="BL">BOLETA</option>
                   <option value="FT">FACTURA</option>
                   <option value="NV">NOTA DE VENTA</option>
@@ -36,24 +36,26 @@
               </div>
               <label class="col-1 col-form-label text-end">Caja</label>
               <div class="col-4">
-                <select class="form-select">
+                <select class="form-select" formControlName="cajaId">
                   <option *ngFor="let item of listaDeCajas" [value]="item.id">{{item.name}}</option>
                 </select>
               </div>
             </div>
-            <div class="row mb-3">
+            <div class="row">
               <label class="col-3 col-form-label text-end">Tipo de operación</label>
               <div class="col-4">
-                <select class="form-select">
+                <select formControlName="typeOperation" class="form-select">
                   <option *ngFor="let item of typeOperation" [value]="item.id">{{item.description}}</option>
                 </select>
               </div>
               <label class="col-1 col-form-label text-end">Serie</label>
               <div class="col-4">
                 <div class="input-group mb-3">
-                  <input type="text" class="form-control" placeholder="F001" style="max-width: 70px;">
+                  <input type="text" formControlName="serie" class="form-control" placeholder="F001"
+                         [readOnly]="docType==='sale'" style="max-width: 70px;">
                   <span class="input-group-text fw-bold">#</span>
-                  <input type="text" class="form-control" placeholder="999999999">
+                  <input type="text" class="form-control" formControlName="numero"
+                         placeholder="999999999" [readOnly]="docType==='sale'">
                 </div>
               </div>
             </div>
@@ -62,119 +64,126 @@
             <div class="row mb-3">
               <label class="col-4 col-form-label text-end">Fecha Emisión</label>
               <div class="col-8">
-                <input type="date" class="form-control">
+                <input type="date" formControlName="startDate" class="form-control">
               </div>
             </div>
             <div class="row mb-3">
               <label class="col-4 col-form-label text-end">Forma de Pago</label>
               <div class="col-8">
-                <select class="form-select">
+                <select formControlName="formaPago" class="form-select">
                   <option value="Credito">CRÉDITO</option>
                   <option value="Contado">CONTADO</option>
                 </select>
               </div>
             </div>
-            <div class="row mb-3">
+            <div class="row">
               <label class="col-4 col-form-label text-end">Vencimiento</label>
               <div class="col-8">
-                <input type="date" class="form-control">
+                <input type="date" formControlName="endDate" class="form-control">
+              </div>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                <tr class="text-uppercase">
+                  <th>Cantidad</th>
+                  <th>Descripción</th>
+                  <th>Precio</th>
+                  <th>Descuento (%)</th>
+                  <th>Importe</th>
+                  <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>COMPUTADORA CORE I3 RAM 8GB 480SSD</td>
+                  <td>2500.00</td>
+                  <td>0.00</td>
+                  <td>2700.00</td>
+                  <td class="text-end">
+                    <button type="button" class="btn btn-danger btn-sm">
+                      <fa-icon [icon]="faTrashAlt"></fa-icon>
+                    </button>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="d-flex align-items-stretch justify-content-between">
+              <div class="w-50">
+                <label class="form-label fw-bold">Observación</label>
+                <textarea formControlName="remark" class="form-control"></textarea>
+              </div>
+              <div class="table-responsive">
+                <table class="table">
+                  <tbody>
+                  <tr>
+                    <th class="bg-white">SubTotal</th>
+                    <td class="bg-white"><input type="number" class="text-end" formControlName="sumTotValVenta"
+                                                readonly></td>
+                  </tr>
+                  <tr>
+                    <th class="bg-white">IGV (18%)</th>
+                    <td class="bg-white"><input type="number" class="text-end" formControlName="sumTotTributos"
+                                                readonly></td>
+                  </tr>
+                  <tr>
+                    <th class="bg-white">ICBPER</th>
+                    <td class="bg-white"><input type="number" class="text-end" formControlName="icbper" readonly></td>
+                  </tr>
+                  <tr>
+                    <th class="bg-white">Total</th>
+                    <td class="bg-white"><input type="number" class="text-end" formControlName="sumImpVenta" readonly>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
         </form>
-        <div class="table-responsive">
-          <table class="table table-striped">
-            <thead>
-            <tr class="text-uppercase">
-              <th>Cantidad</th>
-              <th>Und. Med</th>
-              <th>Producto</th>
-              <th>Precio</th>
-              <th>Impuestos</th>
-              <th>V. Item</th>
-              <th>ICBPER</th>
-              <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td>1</td>
-              <td>NUI</td>
-              <td>COMPUTADORA CORE I3 RAM 8GB 480SSD</td>
-              <td>2500.00</td>
-              <td>IGV(18%)</td>
-              <td>2700.00</td>
-              <td>00.00</td>
-              <td class="text-end">
-                <button type="button" class="btn btn-danger btn-sm">
-                  <fa-icon [icon]="faTrashAlt"></fa-icon>
-                </button>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="d-flex align-items-stretch justify-content-between">
-          <div class="w-50">
-            <label class="form-label">Observación</label>
-            <textarea class="form-control"></textarea>
-          </div>
-          <div class="table-responsive">
-            <table class="table">
-              <tbody>
-              <tr>
-                <th class="bg-white">SubTotal</th>
-                <td class="bg-white">0.00</td>
-              </tr>
-              <tr>
-                <th class="bg-white">IGV (18%)</th>
-                <td class="bg-white">0.00</td>
-              </tr>
-              <tr>
-                <th class="bg-white">Total</th>
-                <td class="bg-white">0.00</td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
         <button type="button" class="btn btn-dark">
           <fa-icon [icon]="faPlus"></fa-icon>
           <span class="text-uppercase ms-1">Agregar Item Comprobante</span>
         </button>
       </div>
-      <div class="col-12 bg-white shadow-sm mb-2 py-3">
-        <h5 class="text-uppercase">Listado de Cuotas de Crédito</h5>
-        <hr>
-        <div class="table-responsive">
-          <table class="table table-striped">
-            <thead>
-            <tr class="text-uppercase">
-              <th># Cuota</th>
-              <th>Fecha Venc.</th>
-              <th>Monto</th>
-              <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td>1</td>
-              <td>2021-11-09</td>
-              <td>0.00</td>
-              <td class="text-end">
-                <button type="button" class="btn btn-danger btn-sm">
-                  <fa-icon [icon]="faTrashAlt"></fa-icon>
-                </button>
-              </td>
-            </tr>
-            </tbody>
-          </table>
+      <ng-container *ngIf="checkCreditoFormaPago()">
+        <div class="col-12 bg-white shadow-sm mb-2 py-3">
+          <h5 class="text-uppercase">Listado de Cuotas de Crédito</h5>
+          <hr>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+              <tr class="text-uppercase">
+                <th># Cuota</th>
+                <th>Fecha Venc.</th>
+                <th>Monto</th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>1</td>
+                <td>2021-11-09</td>
+                <td>0.00</td>
+                <td class="text-end">
+                  <button type="button" class="btn btn-danger btn-sm">
+                    <fa-icon [icon]="faTrashAlt"></fa-icon>
+                  </button>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+          <button type="button" class="btn btn-dark">
+            <fa-icon [icon]="faPlus"></fa-icon>
+            <span class="text-uppercase ms-1">Agregar Cuota de Crédito</span>
+          </button>
         </div>
-        <button type="button" class="btn btn-dark">
-          <fa-icon [icon]="faPlus"></fa-icon>
-          <span class="text-uppercase ms-1">Agregar Cuota de Crédito</span>
-        </button>
-      </div>
+      </ng-container>
       <div class="d-flex justify-content-center bg-white shadow-sm mb-2 py-3">
         <button type="button" class="btn btn-danger btn-lg me-2">
           <fa-icon [icon]="faArrowLeft"></fa-icon>
@@ -186,5 +195,8 @@
         </button>
       </div>
     </div>
+
+    <pre>{{comprobanteForm.value|json}}</pre>
+
   </div>
 </div>
