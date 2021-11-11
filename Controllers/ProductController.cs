@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +9,7 @@ using Nebula.Data;
 using Nebula.Data.Helpers;
 using Nebula.Data.Models;
 using Nebula.Data.Services;
+using Nebula.Data.ViewModels;
 
 namespace Nebula.Controllers
 {
@@ -61,6 +63,19 @@ namespace Nebula.Controllers
                 .IgnoreQueryFilters().FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (result == null) return BadRequest();
             return Ok(result);
+        }
+
+        [HttpGet("Select2")]
+        public async Task<IActionResult> Select2([FromQuery] string term)
+        {
+            var result = from m in _context.Products select m;
+            if (!string.IsNullOrWhiteSpace(term))
+                result = result.Where(m => m.Description.ToLower().Contains(term.ToLower()));
+            result = result.OrderByDescending(m => m.Id);
+            var responseData = await result.AsNoTracking().Take(10).ToListAsync();
+            var data = new List<Select2>();
+            responseData.ForEach(item => { data.Add(new Select2() {Id = item.Id, Text = item.Description}); });
+            return Ok(new {Results = data});
         }
 
         [HttpPost("Store")]
@@ -143,7 +158,7 @@ namespace Nebula.Controllers
             // borrar registro.
             _context.Products.Remove(result);
             await _context.SaveChangesAsync();
-            return Ok(new { Ok = true, Data = result, Msg = "El producto ha sido borrado!" });
+            return Ok(new {Ok = true, Data = result, Msg = "El producto ha sido borrado!"});
         }
     }
 }

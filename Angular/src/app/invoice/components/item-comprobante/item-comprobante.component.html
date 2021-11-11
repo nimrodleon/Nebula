@@ -1,4 +1,5 @@
-<div class="modal fade" id="item-comprobante" tabindex="-1">
+<div class="modal fade" data-bs-backdrop="static"
+     data-bs-keyboard="false" id="item-comprobante" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -15,21 +16,25 @@
               <span class="text-uppercase me-2">Buscar Producto/Servicio</span>
               <a href="#" (click)="showProductModal($event)" class="text-uppercase text-decoration-none">[ Agregar ]</a>
             </label>
-            <select class="form-select"></select>
+            <select id="productId" class="form-select"></select>
           </div>
-          <div class="row">
+          <div class="row mb-2">
             <div class="col-4">
-              <label class="form-label text-uppercase">Cantidad</label>
+              <label class="form-label text-uppercase">Precio</label>
               <input type="number" step="0.1" class="form-control">
             </div>
             <div class="col-4">
-              <label class="form-label text-uppercase">Descuento (%)</label>
+              <label class="form-label text-uppercase">Cantidad</label>
               <input type="number" step="0.1" class="form-control">
             </div>
             <div class="col-4">
               <label class="form-label text-uppercase">Importe</label>
               <input type="number" step="0.1" class="form-control" readonly>
             </div>
+          </div>
+          <div class="mb-0">
+            <label class="form-label text-uppercase">Observación</label>
+            <textarea class="form-control"></textarea>
           </div>
         </form>
       </div>
