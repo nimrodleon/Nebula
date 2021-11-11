@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {faArrowLeft, faPlus, faSave, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {faArrowLeft, faIdCardAlt, faPlus, faSave, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-invoice',
@@ -12,6 +12,7 @@ export class InvoiceComponent implements OnInit {
   faSave = faSave;
   faPlus = faPlus;
   faArrowLeft = faArrowLeft;
+  faIdCardAlt = faIdCardAlt;
 
   constructor() {
   }
