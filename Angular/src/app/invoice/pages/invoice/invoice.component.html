@@ -98,7 +98,14 @@
                 <tbody>
                 <tr>
                   <td>1</td>
-                  <td>COMPUTADORA CORE I3 RAM 8GB 480SSD</td>
+                  <td>
+                    <div class="d-flex justify-content-between">
+                      <span class="text-uppercase">COMPUTADORA CORE I3 RAM 8GB 480SSD</span>
+                      <a href="#">
+                        <fa-icon [icon]="faEdit"></fa-icon>
+                      </a>
+                    </div>
+                  </td>
                   <td>2500.00</td>
                   <td>2700.00</td>
                   <td class="text-end">
@@ -195,8 +202,11 @@
     </div>
 
     <pre>{{comprobanteForm.value|json}}</pre>
+    <pre>{{comprobanteData|json}}</pre>
 
   </div>
 </div>
 
-<app-item-comprobante></app-item-comprobante>
+<app-item-comprobante
+  (responseData)="hideItemComprobante($event)">
+</app-item-comprobante>

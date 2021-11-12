@@ -1,8 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
 import {faBars} from '@fortawesome/free-solid-svg-icons';
-import {environment} from '../../../../environments/environment';
+import {environment} from 'src/environments/environment';
 import {Product} from 'src/app/products/interfaces';
-import {ResponseData} from '../../../global/interfaces';
+import {ResponseData} from 'src/app/global/interfaces';
+import {ProductService} from 'src/app/products/services';
+import {DetalleComprobante} from '../../interfaces';
 
 declare var jQuery: any;
 declare var bootstrap: any;
@@ -16,9 +19,20 @@ export class ItemComprobanteComponent implements OnInit {
   faBars = faBars;
   private appURL: string = environment.applicationUrl;
   currentProduct: Product = new Product();
+  @Output()
+  responseData = new EventEmitter<DetalleComprobante>();
+  itemComprobanteForm: FormGroup = this.fb.group({
+    productId: [null],
+    description: [''],
+    price: [0],
+    quantity: [0],
+    amount: [0]
+  });
   productModal: any;
 
-  constructor() {
+  constructor(
+    private fb: FormBuilder,
+    private productService: ProductService) {
   }
 
   ngOnInit(): void {
@@ -35,8 +49,20 @@ export class ItemComprobanteComponent implements OnInit {
           Authorization: 'Bearer ' + localStorage.getItem('token')
         }
       }
+    }).on('select2:select', (e: any) => {
+      const data = e.params.data;
+      this.itemComprobanteForm.controls['productId'].setValue(data.id);
+      this.productService.show(data.id).subscribe(result => {
+        this.itemComprobanteForm.controls['description'].setValue(result.description);
+        this.itemComprobanteForm.controls['price'].setValue(result.price);
+      });
     });
-
+    // resetear formulario.
+    const myModal: any = document.querySelector('#item-comprobante');
+    myModal.addEventListener('hide.bs.modal', () => {
+      this.itemComprobanteForm.reset();
+      jQuery('#productId').val(null).trigger('change');
+    });
   }
 
   // mostrar modal producto.
@@ -50,6 +76,18 @@ export class ItemComprobanteComponent implements OnInit {
     if (data.ok) {
       this.productModal.hide();
     }
+  }
+
+  // calcular importe producto.
+  public calcAmount(): void {
+    const price = Number(this.itemComprobanteForm.get('price')?.value);
+    const quantity = Number(this.itemComprobanteForm.get('quantity')?.value);
+    this.itemComprobanteForm.controls['amount'].setValue(price * quantity);
+  }
+
+  // botón agregar producto.
+  public saveChanges(): void {
+    this.responseData.emit(this.itemComprobanteForm.value);
   }
 
 }

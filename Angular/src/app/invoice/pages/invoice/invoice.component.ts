@@ -2,13 +2,13 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {
-  faArrowLeft, faIdCardAlt, faPlus,
+  faArrowLeft, faEdit, faIdCardAlt, faPlus,
   faSave, faSearch, faTrashAlt
 } from '@fortawesome/free-solid-svg-icons';
 import * as moment from 'moment';
 import {environment} from 'src/environments/environment';
 import {Caja} from 'src/app/cashier/interfaces';
-import {TypeOperationSunat} from '../../interfaces';
+import {Comprobante, DetalleComprobante, TypeOperationSunat} from '../../interfaces';
 import {CajaService} from 'src/app/cashier/services';
 import {SunatService} from '../../services';
 
@@ -27,6 +27,7 @@ export class InvoiceComponent implements OnInit {
   faPlus = faPlus;
   faArrowLeft = faArrowLeft;
   faIdCardAlt = faIdCardAlt;
+  faEdit = faEdit;
   docType: string = '';
   nomComprobante: string = '';
   private appURL: string = environment.applicationUrl;
@@ -48,6 +49,7 @@ export class InvoiceComponent implements OnInit {
     sumImpVenta: [0],
     remark: [''],
   });
+  comprobanteData: Comprobante = new Comprobante();
   itemComprobanteModal: any;
 
   constructor(
@@ -92,6 +94,10 @@ export class InvoiceComponent implements OnInit {
     this.sunatService.typeOperation().subscribe(result => this.typeOperation = result);
     // modal item comprobante.
     this.itemComprobanteModal = new bootstrap.Modal(document.querySelector('#item-comprobante'));
+    // suscripción formulario comprobante.
+    this.comprobanteForm.valueChanges.subscribe(result => {
+      this.comprobanteData = {...this.comprobanteData, ...result};
+    });
   }
 
   public checkCreditoFormaPago(): boolean {
@@ -101,6 +107,12 @@ export class InvoiceComponent implements OnInit {
   // abrir modal item-comprobante.
   public showItemComprobanteModal(): void {
     this.itemComprobanteModal.show();
+  }
+
+  // ocultar modal item-comprobante.
+  public hideItemComprobante(item: DetalleComprobante): void {
+    this.comprobanteData.details.push(item);
+    this.itemComprobanteModal.hide();
   }
 
 }

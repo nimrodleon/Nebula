@@ -74,7 +74,14 @@ namespace Nebula.Controllers
             result = result.OrderByDescending(m => m.Id);
             var responseData = await result.AsNoTracking().Take(10).ToListAsync();
             var data = new List<Select2>();
-            responseData.ForEach(item => { data.Add(new Select2() {Id = item.Id, Text = item.Description}); });
+            responseData.ForEach(item =>
+            {
+                data.Add(new Select2()
+                {
+                    Id = item.Id,
+                    Text = $"{item.Description} | {Convert.ToDecimal(item.Price):N2}"
+                });
+            });
             return Ok(new {Results = data});
         }
 
