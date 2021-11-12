@@ -96,18 +96,18 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                  <td>1</td>
+                <tr *ngFor="let item of detailComprobante">
+                  <td>{{item.quantity}}</td>
                   <td>
                     <div class="d-flex justify-content-between">
-                      <span class="text-uppercase">COMPUTADORA CORE I3 RAM 8GB 480SSD</span>
+                      <span class="text-uppercase">{{item.description}}</span>
                       <a href="#">
                         <fa-icon [icon]="faEdit"></fa-icon>
                       </a>
                     </div>
                   </td>
-                  <td>2500.00</td>
-                  <td>2700.00</td>
+                  <td>{{item.price|currency}}</td>
+                  <td>{{item.amount|currency}}</td>
                   <td class="text-end">
                     <button type="button" class="btn btn-danger btn-sm">
                       <fa-icon [icon]="faTrashAlt"></fa-icon>
@@ -127,21 +127,30 @@
                   <tbody>
                   <tr>
                     <th class="bg-white">SubTotal</th>
-                    <td class="bg-white"><input type="number" class="text-end" formControlName="sumTotValVenta"
-                                                readonly></td>
+                    <td class="bg-white">
+                      <input type="number" class="text-end"
+                             [value]="comprobanteForm.get('sumTotValVenta')?.value|currency" readonly>
+                    </td>
                   </tr>
                   <tr>
                     <th class="bg-white">IGV (18%)</th>
-                    <td class="bg-white"><input type="number" class="text-end" formControlName="sumTotTributos"
-                                                readonly></td>
+                    <td class="bg-white">
+                      <input type="number" class="text-end"
+                             [value]="comprobanteForm.get('sumTotTributos')?.value|currency" readonly>
+                    </td>
                   </tr>
                   <tr>
                     <th class="bg-white">ICBPER</th>
-                    <td class="bg-white"><input type="number" class="text-end" formControlName="icbper" readonly></td>
+                    <td class="bg-white">
+                      <input type="number" class="text-end"
+                             [value]="comprobanteForm.get('icbper')?.value|currency" readonly>
+                    </td>
                   </tr>
                   <tr>
                     <th class="bg-white">TOTAL</th>
-                    <td class="bg-white"><input type="number" class="text-end" formControlName="sumImpVenta" readonly>
+                    <td class="bg-white">
+                      <input type="number" class="text-end"
+                             [value]="comprobanteForm.get('sumImpVenta')?.value|currency" readonly>
                     </td>
                   </tr>
                   </tbody>
@@ -202,7 +211,7 @@
     </div>
 
     <pre>{{comprobanteForm.value|json}}</pre>
-    <pre>{{comprobanteData|json}}</pre>
+    <pre>{{detailComprobante|json}}</pre>
 
   </div>
 </div>

@@ -8,7 +8,7 @@ import {
 import * as moment from 'moment';
 import {environment} from 'src/environments/environment';
 import {Caja} from 'src/app/cashier/interfaces';
-import {Comprobante, DetalleComprobante, TypeOperationSunat} from '../../interfaces';
+import {DetailComprobante, TypeOperationSunat} from '../../interfaces';
 import {CajaService} from 'src/app/cashier/services';
 import {SunatService} from '../../services';
 
@@ -49,7 +49,7 @@ export class InvoiceComponent implements OnInit {
     sumImpVenta: [0],
     remark: [''],
   });
-  comprobanteData: Comprobante = new Comprobante();
+  detailComprobante: Array<DetailComprobante> = new Array<DetailComprobante>();
   itemComprobanteModal: any;
 
   constructor(
@@ -94,10 +94,18 @@ export class InvoiceComponent implements OnInit {
     this.sunatService.typeOperation().subscribe(result => this.typeOperation = result);
     // modal item comprobante.
     this.itemComprobanteModal = new bootstrap.Modal(document.querySelector('#item-comprobante'));
-    // suscripción formulario comprobante.
-    this.comprobanteForm.valueChanges.subscribe(result => {
-      this.comprobanteData = {...this.comprobanteData, ...result};
+  }
+
+  // calcular importe venta.
+  private calcImporteVenta(): void {
+    let total = 0;
+    this.detailComprobante.forEach(item => {
+      total = total + item.amount;
     });
+    let subTotal: number = total / 1.18;
+    this.comprobanteForm.controls['sumImpVenta'].setValue(total);
+    this.comprobanteForm.controls['sumTotValVenta'].setValue(subTotal);
+    this.comprobanteForm.controls['sumTotTributos'].setValue(total - subTotal);
   }
 
   public checkCreditoFormaPago(): boolean {
@@ -110,8 +118,10 @@ export class InvoiceComponent implements OnInit {
   }
 
   // ocultar modal item-comprobante.
-  public hideItemComprobante(item: DetalleComprobante): void {
-    this.comprobanteData.details.push(item);
+  public hideItemComprobante(data: DetailComprobante): void {
+    data.numItem = this.detailComprobante.length + 1;
+    this.detailComprobante.push(data);
+    this.calcImporteVenta();
     this.itemComprobanteModal.hide();
   }
 
