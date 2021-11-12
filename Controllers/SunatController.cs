@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,8 @@ namespace Nebula.Controllers
         [HttpGet("TypeOperation")]
         public async Task<IActionResult> TypeOperation()
         {
-            var result = await _context.TypeOperationSunat.AsNoTracking().ToListAsync();
+            var result = await _context.TypeOperationSunat.AsNoTracking()
+                .OrderBy(m => m.Id).ToListAsync();
             return Ok(result);
         }
     }

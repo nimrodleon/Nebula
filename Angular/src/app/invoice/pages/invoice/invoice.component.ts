@@ -38,7 +38,7 @@ export class InvoiceComponent implements OnInit {
     startDate: [moment().format('YYYY-MM-DD')],
     docType: [''],
     cajaId: [''],
-    formaPago: ['Contado'],
+    paymentType: ['Contado'],
     typeOperation: [''],
     serie: [''],
     numero: [''],

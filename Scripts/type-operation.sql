@@ -1,7 +1,7 @@
 ﻿INSERT INTO "TypeOperationSunat" ("Id", "Description")
 VALUES ('0101', '0101 - Venta Interna'),
        ('0112', '0112 - Venta Interna - Sustenta Gastos Deducibles Persona Natural'),
-       ('0113', '0113 - Venta Interna-NRUS'),
+       ('0113', '0113 - Venta Interna - NRUS'),
        ('0200', '0200 - Exportación de Bienes'),
        ('0201', '0201 - Exportación de Servicios – Prestación servicios realizados íntegramente en el país'),
        ('0202', '0202 - Exportación de Servicios – Prestación de servicios de hospedaje No Domiciliado'),
