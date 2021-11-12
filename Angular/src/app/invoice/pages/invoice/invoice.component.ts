@@ -41,7 +41,7 @@ export class InvoiceComponent implements OnInit {
     paymentType: ['Contado'],
     typeOperation: [''],
     serie: [''],
-    numero: [''],
+    number: [''],
     endDate: [null],
     sumTotValVenta: [0],
     sumTotTributos: [0],

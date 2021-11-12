@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Nebula.Data.ViewModels
 {
+    /// <summary>
+    /// modelo para el punto de venta.
+    /// </summary>
     public class Sale
     {
         public int ClientId { get; set; }
