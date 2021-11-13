@@ -22,6 +22,7 @@ namespace Nebula.Data.ViewModels
         public decimal Icbper { get; set; }
         public decimal SumImpVenta { get; set; }
         public string Remark { get; set; }
+        public string InvoiceType { get; set; }
         public List<DetalleComprobante> Details { get; set; }
         public List<Cuota> Cuotas { get; set; }
     }

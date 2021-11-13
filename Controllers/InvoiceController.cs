@@ -44,7 +44,147 @@ namespace Nebula.Controllers
         {
             _logger.LogInformation(JsonSerializer.Serialize(model));
 
-            return Ok();
+            // información del cliente.
+            var client = await _context.Contacts.AsNoTracking()
+                .Include(m => m.PeopleDocType)
+                .FirstOrDefaultAsync(m => m.Id.Equals(model.ContactId));
+
+            // información de venta.
+            var invoice = new Invoice()
+            {
+                TypeDoc = model.DocType,
+                TipOperacion = model.TypeOperation,
+                FecEmision = DateTime.Now.ToString("yyyy-MM-dd"),
+                HorEmision = DateTime.Now.ToString("HH:mm:ss"),
+                FecVencimiento = model.PaymentType.Equals("Credito") ? model.EndDate.ToString("yyyy-MM-dd") : "-",
+                CodLocalEmisor = "0000",
+                TipDocUsuario = client.PeopleDocType.SunatCode,
+                NumDocUsuario = client.Document,
+                RznSocialUsuario = client.Name,
+                TipMoneda = "PEN",
+                SumTotTributos = model.SumTotTributos,
+                SumTotValVenta = model.SumTotValVenta,
+                SumPrecioVenta = model.SumImpVenta,
+                SumDescTotal = 0,
+                SumOtrosCargos = 0,
+                SumTotalAnticipos = 0,
+                SumImpVenta = model.SumImpVenta,
+                InvoiceType = model.InvoiceType
+            };
+
+            // guardar en la base de datos.
+            await using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    // comprobante - compra/venta.
+                    switch (model.InvoiceType)
+                    {
+                        case "SALE":
+                            var serieInvoice = await _context.SerieInvoices.FirstOrDefaultAsync(m =>
+                                m.CajaId.Equals(model.CajaId) && m.DocType.Equals(model.DocType));
+                            if (serieInvoice == null) throw new Exception("No existe serie comprobante!");
+                            int numComprobante = Convert.ToInt32(serieInvoice.Counter);
+                            if (numComprobante > 999999999)
+                                throw new Exception("Ingresa nueva serie de comprobante!");
+                            numComprobante = numComprobante + 1;
+                            serieInvoice.Counter = numComprobante;
+                            _context.SerieInvoices.Update(serieInvoice);
+                            await _context.SaveChangesAsync();
+                            _logger.LogInformation("El contador de la serie ha sido actualizado!");
+                            invoice.Serie = serieInvoice.Prefix;
+                            invoice.Number = numComprobante.ToString("D9");
+                            break;
+                        case "PURCHASE":
+                            invoice.Serie = model.Serie;
+                            invoice.Number = model.Number;
+                            break;
+                    }
+
+                    // registrar comprobante.
+                    _context.Invoices.Add(invoice);
+                    await _context.SaveChangesAsync();
+                    _logger.LogInformation("La cabecera del comprobante ha sido registrado");
+
+                    // agregar detalle del comprobante.
+                    model.Details.ForEach(item =>
+                    {
+                        var product = _context.Products.AsNoTracking()
+                            .Include(m => m.UndMedida)
+                            .FirstOrDefault(m => m.Id.Equals(item.ProductId));
+
+                        if (product != null)
+                        {
+                            // Tributo: Afectación al IGV por ítem.
+                            var tipAfeIgv = "10";
+                            switch (product.IgvSunat)
+                            {
+                                case "GRAVADO":
+                                    tipAfeIgv = "10";
+                                    break;
+                                case "EXONERADO":
+                                    tipAfeIgv = "20";
+                                    break;
+                                case "INAFECTO":
+                                    tipAfeIgv = "30";
+                                    break;
+                            }
+
+                            // agregar item al detalle del comprobante.
+                            _context.InvoiceDetails.Add(new InvoiceDetail()
+                            {
+                                Invoice = invoice,
+                                CodUnidadMedida = product.UndMedida.SunatCode,
+                                CtdUnidadItem = item.Quantity,
+                                CodProducto = item.ProductId.ToString(),
+                                CodProductoSunat = product.Barcode,
+                                DesItem = product.Description,
+                                MtoValorUnitario = item.Price,
+                                SumTotTributosItem = (item.Price * item.Quantity) * 0.18M,
+                                CodTriIgv = "1000",
+                                MtoIgvItem = 18.0M,
+                                MtoBaseIgvItem = item.Price * item.Quantity,
+                                NomTributoIgvItem = "IGV",
+                                CodTipTributoIgvItem = "VAT",
+                                TipAfeIgv = tipAfeIgv,
+                                PorIgvItem = 18.ToString("N2"),
+                                CodTriIcbper = "7152",
+                                MtoTriIcbperItem = 0,
+                                CtdBolsasTriIcbperItem = 0,
+                                NomTributoIcbperItem = "ICBPER",
+                                CodTipTributoIcbperItem = "OTH",
+                                MtoTriIcbperUnidad = 0.3M,
+                                MtoPrecioVentaUnitario = item.Price * item.Quantity,
+                                MtoValorVentaItem = (item.Price * item.Quantity) * 1.18M,
+                                MtoValorReferencialUnitario = 0,
+                            });
+                            _context.SaveChanges();
+                            _logger.LogInformation("Item comprobante agregado!");
+                        }
+                    });
+
+                    // confirmar transacción.
+                    await transaction.CommitAsync();
+                    _logger.LogInformation("Transacción confirmada!");
+
+                    return Ok(new
+                    {
+                        Ok = true, Data = model,
+                        Msg = $"{invoice.Serie} - {invoice.Number} ha sido registrado!"
+                    });
+                }
+                catch (Exception e)
+                {
+                    await transaction.RollbackAsync();
+                    _logger.LogInformation("La transacción ha sido cancelada!");
+                    _logger.LogError(e.Message);
+                }
+            }
+
+            return BadRequest(new
+            {
+                Ok = false, Msg = "Hubo un error en la emisión del comprobante!"
+            });
         }
 
         /// <summary>
