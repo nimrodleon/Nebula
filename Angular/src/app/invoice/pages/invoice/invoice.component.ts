@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {
   faArrowLeft, faEdit, faIdCardAlt, faPlus,
   faSave, faSearch, faTrashAlt
@@ -10,7 +10,7 @@ import {environment} from 'src/environments/environment';
 import {Caja} from 'src/app/cashier/interfaces';
 import {DetailComprobante, TypeOperationSunat} from '../../interfaces';
 import {CajaService} from 'src/app/cashier/services';
-import {SunatService} from '../../services';
+import {InvoiceService, SunatService} from '../../services';
 
 declare var jQuery: any;
 declare var bootstrap: any;
@@ -28,7 +28,7 @@ export class InvoiceComponent implements OnInit {
   faArrowLeft = faArrowLeft;
   faIdCardAlt = faIdCardAlt;
   faEdit = faEdit;
-  docType: string = '';
+  invoiceType: string = '';
   nomComprobante: string = '';
   private appURL: string = environment.applicationUrl;
   listaDeCajas: Array<Caja> = new Array<Caja>();
@@ -53,15 +53,17 @@ export class InvoiceComponent implements OnInit {
   itemComprobanteModal: any;
 
   constructor(
+    private router: Router,
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private cajaService: CajaService,
+    private invoiceService: InvoiceService,
     private sunatService: SunatService) {
   }
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe(params => {
-      this.docType = params.get('type') || '';
+      this.invoiceType = params.get('type') || '';
       //  título del comprobante.
       switch (params.get('type')) {
         case 'purchase':
@@ -123,6 +125,30 @@ export class InvoiceComponent implements OnInit {
     this.detailComprobante.push(data);
     this.calcImporteVenta();
     this.itemComprobanteModal.hide();
+  }
+
+  // registrar comprobante.
+  public async registerVoucher() {
+    if (this.comprobanteForm.get('paymentType')?.value === 'Contado') {
+      this.comprobanteForm.controls['endDate'].setValue('1992-04-05');
+    }
+    this.invoiceService.store({
+      ...this.comprobanteForm.value, invoiceType: this.invoiceType,
+      details: this.detailComprobante
+    }).subscribe(result => {
+      let URI: string = '';
+      switch (this.invoiceType.toUpperCase()) {
+        case 'SALE':
+          URI = '/sales';
+          break;
+        case 'PURCHASE':
+          URI = '/shopping';
+          break;
+      }
+      if (result.ok) {
+        this.router.navigate([URI]);
+      }
+    });
   }
 
 }

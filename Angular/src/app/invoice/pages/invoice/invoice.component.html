@@ -52,10 +52,10 @@
               <div class="col-4">
                 <div class="input-group mb-3">
                   <input type="text" formControlName="serie" class="form-control" placeholder="F001"
-                         [readOnly]="docType==='sale'" style="max-width: 70px;">
+                         [readOnly]="invoiceType==='sale'" style="max-width: 70px;">
                   <span class="input-group-text fw-bold">#</span>
                   <input type="text" class="form-control" formControlName="number"
-                         placeholder="999999999" [readOnly]="docType==='sale'">
+                         placeholder="999999999" [readOnly]="invoiceType==='sale'">
                 </div>
               </div>
             </div>
@@ -203,7 +203,7 @@
           <fa-icon [icon]="faArrowLeft"></fa-icon>
           <span class="text-uppercase ms-1">Cancelar</span>
         </button>
-        <button type="button" class="btn btn-primary btn-lg">
+        <button type="button" (click)="registerVoucher()" class="btn btn-primary btn-lg">
           <fa-icon [icon]="faSave"></fa-icon>
           <span class="text-uppercase ms-1">Registrar</span>
         </button>

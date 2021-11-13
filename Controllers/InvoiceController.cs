@@ -43,6 +43,7 @@ namespace Nebula.Controllers
         public async Task<IActionResult> Store([FromBody] Comprobante model)
         {
             _logger.LogInformation(JsonSerializer.Serialize(model));
+            string invoiceType = model.InvoiceType.ToUpper();
 
             // información del cliente.
             var client = await _context.Contacts.AsNoTracking()
@@ -54,8 +55,10 @@ namespace Nebula.Controllers
             {
                 TypeDoc = model.DocType,
                 TipOperacion = model.TypeOperation,
-                FecEmision = DateTime.Now.ToString("yyyy-MM-dd"),
-                HorEmision = DateTime.Now.ToString("HH:mm:ss"),
+                FecEmision = invoiceType.Equals("SALE")
+                    ? DateTime.Now.ToString("yyyy-MM-dd")
+                    : model.StartDate.ToString("yyyy-MM-dd"),
+                HorEmision = invoiceType.Equals("SALE") ? DateTime.Now.ToString("HH:mm:ss") : "-",
                 FecVencimiento = model.PaymentType.Equals("Credito") ? model.EndDate.ToString("yyyy-MM-dd") : "-",
                 CodLocalEmisor = "0000",
                 TipDocUsuario = client.PeopleDocType.SunatCode,
@@ -69,7 +72,7 @@ namespace Nebula.Controllers
                 SumOtrosCargos = 0,
                 SumTotalAnticipos = 0,
                 SumImpVenta = model.SumImpVenta,
-                InvoiceType = model.InvoiceType
+                InvoiceType = model.InvoiceType.ToUpper(),
             };
 
             // guardar en la base de datos.
@@ -78,11 +81,11 @@ namespace Nebula.Controllers
                 try
                 {
                     // comprobante - compra/venta.
-                    switch (model.InvoiceType)
+                    switch (model.InvoiceType.ToUpper())
                     {
                         case "SALE":
                             var serieInvoice = await _context.SerieInvoices.FirstOrDefaultAsync(m =>
-                                m.CajaId.Equals(model.CajaId) && m.DocType.Equals(model.DocType));
+                                m.CajaId.ToString().Equals(model.CajaId) && m.DocType.Equals(model.DocType));
                             if (serieInvoice == null) throw new Exception("No existe serie comprobante!");
                             int numComprobante = Convert.ToInt32(serieInvoice.Counter);
                             if (numComprobante > 999999999)
