@@ -16,6 +16,12 @@ namespace Nebula.Data.Models
         public string TypeDoc { get; set; }
 
         /// <summary>
+        /// Tipo factura (Compra|Venta)
+        /// </summary>
+        [MaxLength(250)]
+        public string InvoiceType { get; set; }
+
+        /// <summary>
         /// Serie comprobante.
         /// </summary>
         [MaxLength(250)]

@@ -35,18 +35,22 @@ namespace Nebula.Controllers
             return Ok(result);
         }
 
+        /// <summary>
+        /// emisión comprobantes de pago,
+        /// desde el módulo invoice de angular.
+        /// </summary>
         [HttpPost("Store")]
-        public async Task<IActionResult> Store([FromBody] Invoice model)
+        public async Task<IActionResult> Store([FromBody] Comprobante model)
         {
-            _context.Invoices.Add(model);
-            await _context.SaveChangesAsync();
-            return Ok(new
-            {
-                Ok = true, Data = model,
-                Msg = $" ha sido registrado!"
-            });
+            _logger.LogInformation(JsonSerializer.Serialize(model));
+
+            return Ok();
         }
 
+        /// <summary>
+        /// emisión comprobantes de pago,
+        /// desde la terminal de venta.
+        /// </summary>
         [HttpPost("SalePos/{id}")]
         public async Task<IActionResult> SalePos(int? id, [FromBody] Sale model)
         {
