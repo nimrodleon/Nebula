@@ -2,13 +2,15 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {RouterModule} from '@angular/router';
+import {DocTypeInvoicePipe} from './pipes/doc-type-invoice.pipe';
 import {NavbarComponent} from './navbar/navbar.component';
 import {SidebarComponent} from './sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
     NavbarComponent,
-    SidebarComponent
+    SidebarComponent,
+    DocTypeInvoicePipe
   ],
   imports: [
     CommonModule,
@@ -17,7 +19,8 @@ import {SidebarComponent} from './sidebar/sidebar.component';
   ],
   exports: [
     NavbarComponent,
-    SidebarComponent
+    SidebarComponent,
+    DocTypeInvoicePipe
   ]
 })
 export class GlobalModule {

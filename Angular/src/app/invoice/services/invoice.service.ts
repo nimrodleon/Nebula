@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {environment} from 'src/environments/environment';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {ResponseData} from '../../global/interfaces';
-import {Comprobante, Invoice} from '../interfaces';
+import {Comprobante, Invoice, VoucherQuery} from '../interfaces';
 import {Sale} from '../../cashier/interfaces';
 
 @Injectable({
@@ -14,6 +14,14 @@ export class InvoiceService {
 
   constructor(
     private http: HttpClient) {
+  }
+
+  public index(type: string, query: VoucherQuery): Observable<Invoice[]> {
+    let params = new HttpParams();
+    params = params.append('Year', query.year);
+    params = params.append('Month', query.month);
+    params = params.append('Query', query.query);
+    return this.http.get<Invoice[]>(`${this.appURL}/Index/${type}`, {params: params});
   }
 
   public show(id: number): Observable<Invoice> {

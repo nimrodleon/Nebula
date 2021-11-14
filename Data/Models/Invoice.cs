@@ -124,6 +124,18 @@ namespace Nebula.Data.Models
         public decimal? SumImpVenta { get; set; }
 
         /// <summary>
+        /// Año de registro.
+        /// </summary>
+        [MaxLength(250)]
+        public string Year { get; set; }
+
+        /// <summary>
+        /// Mes de registro.
+        /// </summary>
+        [MaxLength(250)]
+        public string Month { get; set; }
+
+        /// <summary>
         /// Lista de items de la factura.
         /// </summary>
         public List<InvoiceDetail> InvoiceDetails { get; set; }
