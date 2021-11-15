@@ -73,6 +73,7 @@ export class InvoiceComponent implements OnInit {
           break;
         case 'sale':
           this.nomComprobante = 'Venta';
+          this.comprobanteForm.controls['startDate'].disable();
           break;
       }
     });

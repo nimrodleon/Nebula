@@ -87,6 +87,8 @@ namespace Nebula.Controllers
                 SumTotalAnticipos = 0,
                 SumImpVenta = model.SumImpVenta,
                 InvoiceType = model.InvoiceType.ToUpper(),
+                Year = invoiceType.Equals("SALE") ? DateTime.Now.ToString("yyyy") : model.StartDate.ToString("yyyy"),
+                Month = invoiceType.Equals("SALE") ? DateTime.Now.ToString("MM") : model.StartDate.ToString("MM"),
             };
 
             // guardar en la base de datos.
@@ -249,7 +251,10 @@ namespace Nebula.Controllers
                 SumDescTotal = 0,
                 SumOtrosCargos = 0,
                 SumTotalAnticipos = 0,
-                SumImpVenta = model.SumImpVenta
+                SumImpVenta = model.SumImpVenta,
+                InvoiceType = "SALE",
+                Year = DateTime.Now.ToString("yyyy"),
+                Month = DateTime.Now.ToString("MM"),
             };
 
             // guardar en la base de datos.

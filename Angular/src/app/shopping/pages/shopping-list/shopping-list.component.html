@@ -4,15 +4,15 @@
   <div class="container-fluid">
     <div class="row px-2">
       <div class="col-12 bg-white my-2 py-3">
-        <form class="row row-cols-auto g-2">
+        <form [formGroup]="queryForm" (ngSubmit)="submitQuery()" class="row row-cols-auto g-2">
           <div class="col-auto">
             <label class="col-form-label fw-bold">Filtrar por:</label>
           </div>
           <div class="col-auto">
-            <input type="number" step="1" value="2021" class="form-control">
+            <input type="number" formControlName="year" class="form-control">
           </div>
           <div class="col-auto">
-            <select class="form-select">
+            <select formControlName="month" class="form-select">
               <option value="01">ENERO</option>
               <option value="02">FEBRERO</option>
               <option value="03">MARZO</option>
@@ -28,7 +28,7 @@
             </select>
           </div>
           <div class="col-auto">
-            <input type="search" class="form-control" placeholder="PROVEEDOR...">
+            <input type="search" formControlName="query" class="form-control" placeholder="PROVEEDOR...">
           </div>
           <div class="col-auto">
             <button type="submit" class="btn btn-success">
@@ -50,6 +50,7 @@
           <table class="table table-striped mb-0">
             <thead>
             <tr class="text-uppercase">
+              <th>Tipo</th>
               <th>Documento</th>
               <th>Proveedor</th>
               <th>Fecha</th>
@@ -59,12 +60,13 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-              <td>F001-4514</td>
-              <td class="text-uppercase">GRUPO MAXIMA INTERNACIONAL</td>
-              <td>2021-07-31</td>
+            <tr *ngFor="let item of invoices">
+              <td>{{item.typeDoc|docTypeInvoice}}</td>
+              <td>{{item.serie}}-{{item.number}}</td>
+              <td class="text-uppercase">{{item.rznSocialUsuario}}</td>
+              <td>{{item.fecEmision|date}}</td>
               <td><span class="badge bg-warning">CRÉDITO</span></td>
-              <td>241.50</td>
+              <td>{{item.sumImpVenta|currency}}</td>
               <td>
                 <div class="actions ms-auto">
                   <button type="button" class="btn btn-secondary btn-sm me-2">
@@ -77,6 +79,7 @@
               </td>
             </tr>
             <tr>
+              <td>001</td>
               <td>F001-4500</td>
               <td class="text-uppercase">DELTRON S.A.C</td>
               <td>2021-07-31</td>
@@ -98,5 +101,9 @@
         </div>
       </div>
     </div>
+
+    <pre>{{queryForm.value|json}}</pre>
+    <pre>{{invoices|json}}</pre>
+
   </div>
 </div>
