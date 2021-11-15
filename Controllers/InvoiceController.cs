@@ -102,7 +102,7 @@ namespace Nebula.Controllers
                                 m.CajaId.ToString().Equals(model.CajaId) && m.DocType.Equals(model.DocType));
                             if (serieInvoice == null) throw new Exception("No existe serie comprobante!");
                             int numComprobante = Convert.ToInt32(serieInvoice.Counter);
-                            if (numComprobante > 999999999)
+                            if (numComprobante > 99999999)
                                 throw new Exception("Ingresa nueva serie de comprobante!");
                             numComprobante = numComprobante + 1;
                             serieInvoice.Counter = numComprobante;
@@ -110,7 +110,7 @@ namespace Nebula.Controllers
                             await _context.SaveChangesAsync();
                             _logger.LogInformation("El contador de la serie ha sido actualizado!");
                             invoice.Serie = serieInvoice.Prefix;
-                            invoice.Number = numComprobante.ToString("D9");
+                            invoice.Number = numComprobante.ToString("D8");
                             break;
                         case "PURCHASE":
                             invoice.Serie = model.Serie;
@@ -258,7 +258,7 @@ namespace Nebula.Controllers
                 try
                 {
                     int numComprobante = Convert.ToInt32(serieInvoice.Counter);
-                    if (numComprobante > 999999999)
+                    if (numComprobante > 99999999)
                         return BadRequest(new {Ok = false, Msg = "Ingresa nueva serie de comprobante!"});
                     numComprobante = numComprobante + 1;
                     serieInvoice.Counter = numComprobante;
@@ -268,7 +268,7 @@ namespace Nebula.Controllers
 
                     // registrar factura/boleta.
                     invoice.Serie = serieInvoice.Prefix;
-                    invoice.Number = numComprobante.ToString("D9");
+                    invoice.Number = numComprobante.ToString("D8");
                     _context.Invoices.Add(invoice);
                     await _context.SaveChangesAsync();
                     _logger.LogInformation("La cabecera del comprobante ha sido registrado");
