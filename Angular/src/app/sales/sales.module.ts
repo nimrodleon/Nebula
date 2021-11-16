@@ -6,10 +6,12 @@ import {SalesRoutingModule} from './sales-routing.module';
 import {SalesListComponent} from './pages/sales-list/sales-list.component';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {GlobalModule} from '../global/global.module';
+import {InvoiceNoteListComponent} from './pages/invoice-note-list/invoice-note-list.component';
 
 @NgModule({
   declarations: [
-    SalesListComponent
+    SalesListComponent,
+    InvoiceNoteListComponent
   ],
   imports: [
     CommonModule,
