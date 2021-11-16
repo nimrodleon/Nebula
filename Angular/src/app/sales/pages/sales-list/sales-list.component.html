@@ -62,7 +62,9 @@
             <tbody>
             <tr *ngFor="let item of invoices">
               <td>{{item.typeDoc|docTypeInvoice}}</td>
-              <td>{{item.serie}}-{{item.number}}</td>
+              <td>
+                <a [routerLink]="['/invoice/detail', item.id]">{{item.serie}}-{{item.number}}</a>
+              </td>
               <td class="text-uppercase">{{item.rznSocialUsuario}}</td>
               <td>{{item.fecEmision|date}}</td>
               <td><span class="badge bg-warning">CRÉDITO</span></td>

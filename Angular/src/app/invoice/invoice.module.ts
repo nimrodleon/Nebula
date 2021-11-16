@@ -9,12 +9,14 @@ import {GlobalModule} from '../global/global.module';
 import {ItemComprobanteComponent} from './components/item-comprobante/item-comprobante.component';
 import {ProductsModule} from '../products/products.module';
 import {InvoiceNoteComponent} from './pages/invoice-note/invoice-note.component';
+import {InvoiceDetailComponent} from './pages/invoice-detail/invoice-detail.component';
 
 @NgModule({
   declarations: [
     InvoiceComponent,
     ItemComprobanteComponent,
-    InvoiceNoteComponent
+    InvoiceNoteComponent,
+    InvoiceDetailComponent
   ],
   imports: [
     CommonModule,

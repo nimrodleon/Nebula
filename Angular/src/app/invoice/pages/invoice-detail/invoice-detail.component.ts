@@ -1,15 +1,15 @@
 import {Component, OnInit} from '@angular/core';
-import {faEnvelope, faPrint, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {ActivatedRoute} from '@angular/router';
-import {Invoice} from 'src/app/invoice/interfaces';
-import {InvoiceService} from 'src/app/invoice/services';
+import {faEnvelope, faPrint, faTimes} from '@fortawesome/free-solid-svg-icons';
+import {InvoiceService} from '../../services';
+import {Invoice} from '../../interfaces';
 
 @Component({
-  selector: 'app-invoice',
-  templateUrl: './invoice.component.html',
-  styleUrls: ['./invoice.component.scss']
+  selector: 'app-invoice-detail',
+  templateUrl: './invoice-detail.component.html',
+  styleUrls: ['./invoice-detail.component.scss']
 })
-export class InvoiceComponent implements OnInit {
+export class InvoiceDetailComponent implements OnInit {
   faTimes = faTimes;
   faEnvelope = faEnvelope;
   faPrint = faPrint;
