@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {faEdit, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {faEdit, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-invoice-note-list',
@@ -8,7 +8,6 @@ import {faEdit, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-
 })
 export class InvoiceNoteListComponent implements OnInit {
   faSearch = faSearch;
-  faPlus = faPlus;
   faEdit = faEdit;
   faTrashAlt = faTrashAlt;
 

@@ -4,15 +4,15 @@
   <div class="container-fluid">
     <div class="row px-2">
       <div class="d-flex align-items-center justify-content-between bg-white my-2 py-3">
-        <h5 class="text-uppercase mb-0">{{getNameInvoice(invoice.typeDoc)}}: {{invoice.serie}}-{{invoice.number}}</h5>
+        <h5 class="text-uppercase mb-0">{{invoice.typeDoc|docTypeInvoice}}: {{invoice.serie}}-{{invoice.number}}</h5>
         <div class="d-flex d-print-none">
           <button type="button" class="btn btn-danger me-2">
             <fa-icon [icon]="faTimes" class="me-1"></fa-icon>
             <span class="text-uppercase">Anular</span>
           </button>
-          <button type="button" class="btn btn-primary me-2">
-            <fa-icon [icon]="faEnvelope" class="me-1"></fa-icon>
-            <span class="text-uppercase">Enviar E-Mail</span>
+          <button type="button" [routerLink]="['/invoice/note', invoice.id]" class="btn btn-primary me-2">
+            <fa-icon [icon]="faStickyNote" class="me-1"></fa-icon>
+            <span class="text-uppercase">Nota Electrónica</span>
           </button>
           <button type="button" class="btn btn-success">
             <fa-icon [icon]="faPrint" class="me-1"></fa-icon>

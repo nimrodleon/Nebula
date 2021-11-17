@@ -7,7 +7,7 @@ import {InvoiceDetailComponent} from './pages/invoice-detail/invoice-detail.comp
 const routes: Routes = [{
   path: '',
   children: [
-    {path: 'note', component: InvoiceNoteComponent},
+    {path: 'note/:id', component: InvoiceNoteComponent},
     {path: 'detail/:id', component: InvoiceDetailComponent},
     {path: ':type', component: InvoiceComponent},
     {path: ':type/:id', component: InvoiceComponent},

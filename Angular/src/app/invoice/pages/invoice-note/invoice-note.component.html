@@ -6,33 +6,51 @@
       <div class="col-12 bg-white shadow-sm my-2 py-3">
         <h5 class="text-uppercase">Emisión Nota Electrónica</h5>
         <hr>
-        <form class="row">
+        <form [formGroup]="invoiceNote" class="row">
           <div class="col-8">
             <div class="row mb-3">
               <label class="col-3 col-form-label text-end">Fecha Emisión</label>
               <div class="col-4">
-                <input type="date" class="form-control">
+                <input type="date" formControlName="startDate" class="form-control">
               </div>
               <label class="col-1 col-form-label text-end">Doc</label>
               <div class="col-4">
-                <select class="form-select">
-                  <option>Nota de Crédito</option>
-                  <option>Nota de Débito</option>
+                <select formControlName="docType" class="form-select">
+                  <option value="NC">Nota de Crédito</option>
+                  <option value="ND">Nota de Débito</option>
                 </select>
               </div>
             </div>
             <div class="row mb-3">
               <label class="col-3 col-form-label text-end">Tipo Nota Créd/Déb</label>
               <div class="col-4">
-                <select class="form-select">
+                <select formControlName="codMotivo" class="form-select">
+                  <ng-container *ngIf="invoiceNote.get('docType')?.value === 'NC'">
+                    <option value="01">01 - Anulación de la operación</option>
+                    <option value="02">02 - Anulación por error en el RUC</option>
+                    <option value="03">03 - Corrección por error en la descripción</option>
+                    <option value="04">04 - Descuento global</option>
+                    <option value="05">05 - Descuento por ítem</option>
+                    <option value="06">09 - Devolución total</option>
+                    <option value="07">07 - Devolución por ítem</option>
+                    <option value="08">08 - Bonificación</option>
+                    <option value="09">09 - Disminución en el valor</option>
+                    <option value="10">10 - Otros Conceptos</option>
+                  </ng-container>
+                  <ng-container *ngIf="invoiceNote.get('docType')?.value === 'ND'">
+                    <option value="01">01 - Intereses por mora</option>
+                    <option value="02">02 - Aumento en el valor</option>
+                    <option value="03">03 - Penalidades/ otros conceptos</option>
+                  </ng-container>
                 </select>
               </div>
               <label class="col-1 col-form-label text-end">Serie</label>
               <div class="col-4">
                 <div class="input-group">
-                  <input type="text" class="form-control" placeholder="F001" style="max-width: 70px;">
+                  <input type="text" formControlName="serie" class="form-control"
+                         placeholder="F001" style="max-width: 70px;" readonly>
                   <span class="input-group-text fw-bold">#</span>
-                  <input type="text" class="form-control" placeholder="99999999">
+                  <input type="text" formControlName="number" class="form-control" placeholder="99999999" readonly>
                 </div>
               </div>
             </div>
@@ -41,7 +59,7 @@
             <div class="row">
               <label class="col-2 col-form-label text-end">Motivo de la Emisión</label>
               <div class="col-9">
-                <input type="text" class="form-control">
+                <input type="text" formControlName="desMotivo" class="form-control">
               </div>
             </div>
           </div>
@@ -58,18 +76,18 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                  <td>0.00</td>
+                <tr *ngFor="let item of invoiceNoteDetail">
+                  <td>{{item.quantity}}</td>
                   <td>
                     <div class="d-flex justify-content-between">
-                      <span class="text-uppercase">Descripción del Item</span>
+                      <span class="text-uppercase">{{item.description}}</span>
                       <a href="#">
                         <fa-icon [icon]="faEdit"></fa-icon>
                       </a>
                     </div>
                   </td>
-                  <td>10.00</td>
-                  <td>15.00</td>
+                  <td>{{item.price|currency}}</td>
+                  <td>{{item.amount|currency}}</td>
                   <td class="text-end">
                     <button type="button" class="btn btn-danger btn-sm">
                       <fa-icon [icon]="faTrashAlt"></fa-icon>
@@ -82,7 +100,7 @@
             <div class="d-flex align-items-stretch justify-content-between">
               <div class="w-50">
                 <label class="form-label fw-bold">Observación</label>
-                <textarea class="form-control"></textarea>
+                <textarea formControlName="remark" class="form-control"></textarea>
               </div>
               <div class="table-responsive">
                 <table class="table">
@@ -90,25 +108,28 @@
                   <tr>
                     <th class="bg-white">SubTotal</th>
                     <td class="bg-white">
-                      <input type="number" class="text-end" readonly>
+                      <input type="number" [value]="invoiceNote.get('sumTotValVenta')?.value|currency"
+                             class="text-end" readonly>
                     </td>
                   </tr>
                   <tr>
                     <th class="bg-white">IGV (18%)</th>
                     <td class="bg-white">
-                      <input type="number" class="text-end" readonly>
+                      <input type="number" [value]="invoiceNote.get('sumTotTributos')?.value|currency"
+                             class="text-end" readonly>
                     </td>
                   </tr>
                   <tr>
                     <th class="bg-white">ICBPER</th>
                     <td class="bg-white">
-                      <input type="number" class="text-end" readonly>
+                      <input type="number" value="0.00" class="text-end" readonly>
                     </td>
                   </tr>
                   <tr>
                     <th class="bg-white">TOTAL</th>
                     <td class="bg-white">
-                      <input type="number" class="text-end" readonly>
+                      <input type="number" [value]="invoiceNote.get('sumImpVenta')?.value|currency"
+                             class="text-end" readonly>
                     </td>
                   </tr>
                   </tbody>
@@ -117,7 +138,7 @@
             </div>
           </div>
         </form>
-        <button type="button" class="btn btn-dark">
+        <button type="button" (click)="showItemComprobanteModal()" class="btn btn-dark">
           <fa-icon [icon]="faPlus"></fa-icon>
           <span class="text-uppercase ms-1">Agregar Item Nota</span>
         </button>
@@ -134,7 +155,13 @@
       </div>
     </div>
 
+    <pre>{{invoiceNote.value|json}}</pre>
+    <pre>{{invoiceNoteDetail|json}}</pre>
+    <pre>{{invoice|json}}</pre>
 
   </div>
 </div>
 
+<app-item-comprobante
+  (responseData)="hideItemComprobanteModal($event)">
+</app-item-comprobante>

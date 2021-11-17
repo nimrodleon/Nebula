@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {faEnvelope, faPrint, faTimes} from '@fortawesome/free-solid-svg-icons';
+import {faEnvelope, faFileAlt, faPrint, faStickyNote, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {InvoiceService} from '../../services';
 import {Invoice} from '../../interfaces';
 
@@ -13,6 +13,8 @@ export class InvoiceDetailComponent implements OnInit {
   faTimes = faTimes;
   faEnvelope = faEnvelope;
   faPrint = faPrint;
+  faFileAlt=faFileAlt;
+  faStickyNote=faStickyNote;
   invoice: Invoice = new Invoice();
 
   constructor(
