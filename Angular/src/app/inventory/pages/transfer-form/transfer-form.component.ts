@@ -2,11 +2,11 @@ import {Component, OnInit} from '@angular/core';
 import {faArrowLeft, faEdit, faIdCardAlt, faPlus, faSave, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'app-note-form',
-  templateUrl: './note-form.component.html',
-  styleUrls: ['./note-form.component.scss']
+  selector: 'app-transfer-form',
+  templateUrl: './transfer-form.component.html',
+  styleUrls: ['./transfer-form.component.scss']
 })
-export class NoteFormComponent implements OnInit {
+export class TransferFormComponent implements OnInit {
   faArrowLeft = faArrowLeft;
   faPlus = faPlus;
   faEdit = faEdit;

@@ -5,7 +5,7 @@
     <div class="row px-2">
       <div class="col-12 bg-white shadow-sm my-2 py-3">
         <div class="d-flex align-items-center">
-          <h5 class="text-uppercase d-inline me-2 mb-0">Nota de Ingreso</h5>
+          <h5 class="text-uppercase d-inline me-2 mb-0">Nota de Transferencia</h5>
           <button type="button" class="btn btn-danger btn-sm">
             <fa-icon [icon]="faArrowLeft" class="me-1"></fa-icon>
             <span class="text-uppercase">Regresar</span>
@@ -15,16 +15,11 @@
         <form class="row">
           <div class="col-12">
             <div class="row mb-3">
-              <label class="col-1 col-form-label text-uppercase text-end">Contacto</label>
+              <label class="col-1 col-form-label text-uppercase text-end">Origen</label>
               <div class="col-3">
-                <div class="input-group">
-                  <span class="input-group-text">
-                    <fa-icon [icon]="faIdCardAlt"></fa-icon>
-                  </span>
-                  <select id="contactId" class="form-select"></select>
-                </div>
+                <select class="form-select"></select>
               </div>
-              <label class="col-1 col-form-label text-uppercase text-end">Almacén</label>
+              <label class="col-1 col-form-label text-uppercase text-end">Destino</label>
               <div class="col-3">
                 <select class="form-select"></select>
               </div>

@@ -9,6 +9,7 @@ import {ExitNoteListComponent} from './pages/exit-note-list/exit-note-list.compo
 import {TransferListComponent} from './pages/transfer-list/transfer-list.component';
 import {HistoryListComponent} from './pages/history-list/history-list.component';
 import {NoteFormComponent} from './pages/note-form/note-form.component';
+import {TransferFormComponent} from './pages/transfer-form/transfer-form.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import {NoteFormComponent} from './pages/note-form/note-form.component';
     ExitNoteListComponent,
     TransferListComponent,
     HistoryListComponent,
-    NoteFormComponent
+    NoteFormComponent,
+    TransferFormComponent
   ],
   imports: [
     CommonModule,
