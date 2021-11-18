@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     // inicializar valores del menu principal.
     localStorage.setItem(EnumMenu.rootMenu, EnumBoolean.true);
-    // localStorage.setItem(EnumMenu.childMenuInventory, EnumBoolean.false);
+    localStorage.setItem(EnumMenu.childMenuInventory, EnumBoolean.false);
     localStorage.setItem(EnumMenu.childMenuShopping, EnumBoolean.false);
     localStorage.setItem(EnumMenu.childMenuSales, EnumBoolean.false);
     localStorage.setItem(EnumMenu.childMenuConfiguration, EnumBoolean.false);

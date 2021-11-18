@@ -25,7 +25,6 @@
           </a>
         </div>
       </li>
-      <!--
       <li>
         <div class="mainItemWrapper">
           <a (click)="mnInventory($event)" href="#" class="w-100">
@@ -37,7 +36,6 @@
           </a>
         </div>
       </li>
-      -->
       <li>
         <div class="mainItemWrapper">
           <a (click)="mnShopping($event)" href="#" class="w-100">
@@ -74,7 +72,7 @@
     </ul>
   </ng-container>
   <!-- SubMenu Inventario -->
-  <!-- <ng-container *ngIf="checkMenuChildInventory()">
+  <ng-container *ngIf="checkMenuChildInventory()">
     <ul class="menuChildren">
       <li>
         <div class="header">
@@ -88,26 +86,21 @@
       </li>
       <li>
         <a routerLink="#" class="w-100">
-          <span class="">Movimientos</span>
+          <span class="">Transferencias</span>
         </a>
       </li>
       <li>
         <a routerLink="#" class="w-100">
-          <span class="">Traslados</span>
+          <span class="">Nota de Ingreso</span>
         </a>
       </li>
       <li>
         <a routerLink="#" class="w-100">
-          <span class="">Devoluciones</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="#" class="w-100">
-          <span class="">Reporte Kardex</span>
+          <span class="">Nota de Salida</span>
         </a>
       </li>
     </ul>
-  </ng-container> -->
+  </ng-container>
   <!-- SubMenu Compras -->
   <ng-container *ngIf="checkMenuChildShopping()">
     <ul class="menuChildren">
@@ -161,6 +154,11 @@
           <span class="">Cuentas por Cobrar</span>
         </a>
       </li>
+      <li>
+        <a routerLink="/sales" class="w-100">
+          <span class="">Registro de Cobranza</span>
+        </a>
+      </li>
     </ul>
   </ng-container>
   <!-- SubMenu Configuración -->
@@ -178,17 +176,17 @@
       </li>
       <li>
         <a routerLink="#" class="w-100">
-          <span class="">General</span>
+          <span class="">Empresa</span>
+        </a>
+      </li>
+      <li>
+        <a routerLink="#" class="w-100">
+          <span class="">Formas de Pago</span>
         </a>
       </li>
       <li>
         <a routerLink="#" class="w-100">
           <span class="">Usuarios</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="#" class="w-100">
-          <span class="">Almacenes</span>
         </a>
       </li>
     </ul>

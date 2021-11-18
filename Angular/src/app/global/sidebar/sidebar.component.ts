@@ -27,7 +27,7 @@ export class SidebarComponent implements OnInit {
   // ====================================================================================================
 
   rootMenu: string | null = EnumBoolean.true;
-  // mnChildInventory: string | null = Enum.false;
+  mnChildInventory: string | null = EnumBoolean.false;
   mnChildShopping: string | null = EnumBoolean.false;
   mnChildSales: string | null = EnumBoolean.false;
   childMenuConfiguration: string | null = EnumBoolean.false;
@@ -42,7 +42,7 @@ export class SidebarComponent implements OnInit {
     mainMenu.classList.value = localStorage.getItem('classMainMenu');
     // valores por defecto.
     this.rootMenu = localStorage.getItem(EnumMenu.rootMenu);
-    // this.mnChildInventory = localStorage.getItem('mnChildInventory');
+    this.mnChildInventory = localStorage.getItem(EnumMenu.childMenuInventory);
     this.mnChildShopping = localStorage.getItem(EnumMenu.childMenuShopping);
     this.mnChildSales = localStorage.getItem(EnumMenu.childMenuSales);
     this.childMenuConfiguration = localStorage.getItem(EnumMenu.childMenuConfiguration);
@@ -53,9 +53,9 @@ export class SidebarComponent implements OnInit {
     e.preventDefault();
     this.rootMenu = EnumBoolean.true;
     localStorage.setItem(EnumMenu.rootMenu, this.rootMenu);
-    // // menu inventario.
-    // this.mnChildInventory = Enum.false;
-    // localStorage.setItem('mnChildInventory', this.mnChildInventory);
+    // menu inventario.
+    this.mnChildInventory = EnumBoolean.false;
+    localStorage.setItem(EnumMenu.childMenuInventory, this.mnChildInventory);
     // menu compras.
     this.mnChildShopping = EnumBoolean.false;
     localStorage.setItem(EnumMenu.childMenuShopping, this.mnChildShopping);
@@ -67,17 +67,17 @@ export class SidebarComponent implements OnInit {
     localStorage.setItem(EnumMenu.childMenuConfiguration, this.childMenuConfiguration);
   }
 
-  // // menu inventario.
-  // async mnInventory(e: any, toggler: boolean = false) {
-  //   e.preventDefault();
-  //   this.mnRoot = Enum.false;
-  //   this.mnChildInventory = Enum.true;
-  //   localStorage.setItem('mnRoot', this.mnRoot);
-  //   localStorage.setItem('mnChildInventory', this.mnChildInventory);
-  //   if (!toggler) {
-  //     await this.router.navigate(['/inventory']);
-  //   }
-  // }
+  // menu inventario.
+  async mnInventory(e: any, toggler: boolean = false) {
+    e.preventDefault();
+    this.rootMenu = EnumBoolean.false;
+    this.mnChildInventory = EnumBoolean.true;
+    localStorage.setItem(EnumMenu.rootMenu, this.rootMenu);
+    localStorage.setItem(EnumMenu.childMenuInventory, this.mnChildInventory);
+    if (!toggler) {
+      await this.router.navigate(['/inventory']);
+    }
+  }
 
   // menu compras.
   async mnShopping(e: any, toggler: boolean = false) {
@@ -119,10 +119,10 @@ export class SidebarComponent implements OnInit {
     return this.rootMenu === EnumBoolean.true;
   }
 
-  // // verificar submenu inventario.
-  // checkMenuChildInventory(): boolean {
-  //   return this.mnChildInventory === Enum.true;
-  // }
+  // verificar submenu inventario.
+  checkMenuChildInventory(): boolean {
+    return this.mnChildInventory === EnumBoolean.true;
+  }
 
   // verificar submenu compras.
   checkMenuChildShopping(): boolean {
