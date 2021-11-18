@@ -4,6 +4,7 @@ import {EntryNoteListComponent} from './pages/entry-note-list/entry-note-list.co
 import {ExitNoteListComponent} from './pages/exit-note-list/exit-note-list.component';
 import {TransferListComponent} from './pages/transfer-list/transfer-list.component';
 import {HistoryListComponent} from './pages/history-list/history-list.component';
+import {NoteFormComponent} from './pages/note-form/note-form.component';
 
 const routes: Routes = [{
   path: '',
@@ -11,6 +12,7 @@ const routes: Routes = [{
     {path: '', component: HistoryListComponent},
     {path: 'entry-note', component: EntryNoteListComponent},
     {path: 'exit-note', component: ExitNoteListComponent},
+    {path: 'note-form/:type', component: NoteFormComponent},
     {path: 'transfer', component: TransferListComponent},
     {path: '**', redirectTo: ''}
   ]
