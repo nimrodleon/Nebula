@@ -7,6 +7,7 @@ import {
   faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
 import {AuthService} from '../../user/services';
+import {EnumBoolean, EnumMenu} from '../interfaces';
 
 @Component({
   selector: 'app-navbar',
@@ -36,6 +37,11 @@ export class NavbarComponent implements OnInit {
   public async homePage(e: any) {
     e.preventDefault();
     if (this.mainMenu) {
+      localStorage.setItem(EnumMenu.rootMenu, EnumBoolean.true);
+      localStorage.setItem(EnumMenu.childMenuInventory, EnumBoolean.false);
+      localStorage.setItem(EnumMenu.childMenuShopping, EnumBoolean.false);
+      localStorage.setItem(EnumMenu.childMenuSales, EnumBoolean.false);
+      localStorage.setItem(EnumMenu.childMenuConfiguration, EnumBoolean.false);
       this.mainMenu.classList.remove('hiddenNavigation');
       localStorage.setItem('classMainMenu', this.mainMenu.classList.value);
     }
