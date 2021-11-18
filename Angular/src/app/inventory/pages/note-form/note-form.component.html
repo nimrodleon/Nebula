@@ -14,42 +14,28 @@
         <hr class="mt-1 mb-2">
         <form class="row">
           <div class="col-12">
-            <div class="row">
-              <div class="col-4">
-                <div class="mb-3">
-                  <label class="form-label text-uppercase">Contacto</label>
-                  <select class="form-select"></select>
-                </div>
+            <div class="row mb-3">
+              <label class="col-1 col-form-label text-uppercase text-end">Contacto</label>
+              <div class="col-3">
+                <select class="form-select"></select>
               </div>
-              <div class="col-4">
-                <div class="mb-3">
-                  <label class="form-label text-uppercase">Almacén</label>
-                  <select class="form-select"></select>
-                </div>
+              <label class="col-1 col-form-label text-uppercase text-end">Almacén</label>
+              <div class="col-3">
+                <select class="form-select"></select>
               </div>
             </div>
           </div>
           <div class="col-12">
-            <div class="row">
-              <div class="col-4">
-                <div class="mb-3">
-                  <label class="form-label text-uppercase">Motivo</label>
-                  <select class="form-select"></select>
-                </div>
+            <div class="row mb-3">
+              <label class="col-1 col-form-label text-uppercase text-end">Motivo</label>
+              <div class="col-3">
+                <select class="form-select"></select>
               </div>
-              <div class="col-4">
-                <div class="mb-3">
-                  <label class="form-label text-uppercase">Fecha</label>
-                  <input type="date" class="form-control">
-                </div>
+              <label class="col-1 col-form-label text-uppercase text-end">Fecha</label>
+              <div class="col-3">
+                <input type="date" class="form-control">
               </div>
             </div>
-          </div>
-          <div class="col-12">
-            <button type="button" class="btn btn-dark">
-              <fa-icon [icon]="faPlus" class="me-1"></fa-icon>
-              <span class="text-uppercase">Agregar Item</span>
-            </button>
           </div>
           <div class="col-12">
             <div class="table-responsive">
@@ -89,6 +75,12 @@
                 </tbody>
               </table>
             </div>
+          </div>
+          <div class="col-12 mb-2">
+            <button type="button" class="btn btn-dark">
+              <fa-icon [icon]="faPlus" class="me-1"></fa-icon>
+              <span class="text-uppercase">Agregar Item Producto</span>
+            </button>
           </div>
           <div class="col-8">
             <div class="mb-3">
