@@ -10,13 +10,11 @@ import {AuthGuard} from './auth.guard';
 import {AuthService, TokenInterceptorService} from './user/services';
 import {AppComponent} from './app.component';
 import {LoginComponent} from './login/login.component';
-import {HomeComponent} from './home/home.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent,
-    HomeComponent
+    LoginComponent
   ],
   imports: [
     BrowserModule,
