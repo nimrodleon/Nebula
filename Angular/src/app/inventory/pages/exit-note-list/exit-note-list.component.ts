@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {faPlus, faSearch, faSignOutAlt, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {Component, OnInit} from '@angular/core';
+import {faIdCardAlt, faPlus, faSearch, faSignOutAlt, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-exit-note-list',
@@ -11,8 +11,10 @@ export class ExitNoteListComponent implements OnInit {
   faPlus = faPlus;
   faSignOutAlt = faSignOutAlt;
   faTrashAlt = faTrashAlt;
+  faIdCardAlt = faIdCardAlt;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit(): void {
   }
