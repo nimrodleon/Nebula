@@ -66,7 +66,7 @@
               <td>F001-000241</td>
               <td>200</td>
               <td class="text-end">
-                <button type="button" class="btn btn-primary btn-sm">
+                <button type="button" (click)="showCobranzaModal()" class="btn btn-primary btn-sm">
                   <fa-icon [icon]="faCoins" class="me-1"></fa-icon>
                   <span class="text-uppercase">Registrar</span>
                 </button>
@@ -79,3 +79,5 @@
     </div>
   </div>
 </div>
+
+<app-cobranza-modal></app-cobranza-modal>

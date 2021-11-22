@@ -20,6 +20,7 @@
     <Folder Include="Angular\src\app\global\pipes" />
     <Folder Include="Angular\src\app\invoice\components" />
     <Folder Include="Angular\src\app\invoice\pages" />
+    <Folder Include="Angular\src\app\sales\components" />
     <Folder Include="Data\Migrations" />
   </ItemGroup>
 
