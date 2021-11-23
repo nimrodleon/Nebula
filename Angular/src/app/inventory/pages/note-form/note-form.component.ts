@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {faArrowLeft, faEdit, faIdCardAlt, faPlus, faSave, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {FormBuilder} from '@angular/forms';
 import {environment} from 'src/environments/environment';
 import {InventoryReason, Warehouse} from '../../interfaces';
@@ -26,6 +26,7 @@ export class NoteFormComponent implements OnInit {
   motivos: Array<InventoryReason> = new Array<InventoryReason>();
 
   constructor(
+    private router: Router,
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private warehouseService: WarehouseService,
@@ -60,6 +61,18 @@ export class NoteFormComponent implements OnInit {
         }
       }
     });
+  }
+
+  // botón cancelar.
+  public async cancelOption() {
+    switch (this.typeNote) {
+      case 'input':
+        await this.router.navigate(['/inventory/input-note']);
+        break;
+      case 'output':
+        await this.router.navigate(['/inventory/output-note']);
+        break;
+    }
   }
 
 
