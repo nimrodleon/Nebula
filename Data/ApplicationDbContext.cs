@@ -27,6 +27,7 @@ namespace Nebula.Data
         public DbSet<InvoiceNote> InvoiceNotes { get; set; }
         public DbSet<InvoiceNoteDetail> InvoiceNoteDetails { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
+        public DbSet<InventoryReason> InventoryReasons { get; set; }
 
         /// <summary>
         /// Configurar SoftDelete.
