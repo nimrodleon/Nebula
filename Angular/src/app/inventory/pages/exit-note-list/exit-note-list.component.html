@@ -9,7 +9,9 @@
         <form class="row">
           <div class="col-2">
             <label class="form-label form-label fw-bold">Almacén</label>
-            <select class="form-select"></select>
+            <select class="form-select">
+              <option *ngFor="let item of warehouses" [value]="item.id">{{item.name}}</option>
+            </select>
           </div>
           <div class="col-2">
             <label class="form-label form-label-sm fw-bold">Año</label>

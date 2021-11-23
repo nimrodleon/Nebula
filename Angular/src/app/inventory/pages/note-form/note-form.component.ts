@@ -1,5 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {faArrowLeft, faEdit, faIdCardAlt, faPlus, faSave, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {FormBuilder} from '@angular/forms';
+import {Warehouse} from '../../interfaces';
+import {WarehouseService} from '../../services';
 
 @Component({
   selector: 'app-note-form',
@@ -13,11 +16,16 @@ export class NoteFormComponent implements OnInit {
   faTrashAlt = faTrashAlt;
   faSave = faSave;
   faIdCardAlt = faIdCardAlt;
+  warehouses: Array<Warehouse> = new Array<Warehouse>();
 
-  constructor() {
+  constructor(
+    private fb: FormBuilder,
+    private warehouseService: WarehouseService) {
   }
 
   ngOnInit(): void {
+    // cargar lista de almacenes.
+    this.warehouseService.index().subscribe(result => this.warehouses = result);
   }
 
 }

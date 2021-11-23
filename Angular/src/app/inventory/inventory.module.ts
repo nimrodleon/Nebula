@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
+import {ReactiveFormsModule} from '@angular/forms';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 
 import {InventoryRoutingModule} from './inventory-routing.module';
@@ -23,6 +24,7 @@ import {TransferFormComponent} from './pages/transfer-form/transfer-form.compone
   imports: [
     CommonModule,
     InventoryRoutingModule,
+    ReactiveFormsModule,
     FontAwesomeModule,
     GlobalModule
   ]

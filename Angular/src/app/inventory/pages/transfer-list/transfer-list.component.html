@@ -6,22 +6,26 @@
       <div class="col-12 bg-white my-2 py-3">
         <h5 class="text-uppercase mb-0">Filtro de Búsqueda</h5>
         <hr class="mt-1 mb-2">
-        <form class="row">
+        <form [formGroup]="filterForm" class="row">
           <div class="col-2">
             <label class="form-label form-label fw-bold">Almacén Origen</label>
-            <select class="form-select"></select>
+            <select formControlName="origin" (change)="changeOriginWarehouses()" class="form-select">
+              <option *ngFor="let item of warehouses" [value]="item.id">{{item.name}}</option>
+            </select>
           </div>
           <div class="col-2">
             <label class="form-label form-label fw-bold">Almacén Destino</label>
-            <select class="form-select"></select>
+            <select formControlName="target" class="form-select">
+              <option *ngFor="let item of targetWarehouses" [value]="item.id">{{item.name}}</option>
+            </select>
           </div>
           <div class="col-2">
             <label class="form-label form-label fw-bold">Año</label>
-            <input type="number" step="1" class="form-control">
+            <input type="number" formControlName="year" step="1" class="form-control">
           </div>
           <div class="col-2">
             <label class="form-label form-label fw-bold">Mes</label>
-            <select class="form-select">
+            <select formControlName="month" class="form-select">
               <option value="01">ENERO</option>
               <option value="02">FEBRERO</option>
               <option value="03">MARZO</option>
@@ -108,5 +112,8 @@
         </div>
       </div>
     </div>
+
+    <pre>{{filterForm.value|json}}</pre>
+
   </div>
 </div>
