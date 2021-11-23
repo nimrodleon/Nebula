@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {faArrowLeft, faEdit, faIdCardAlt, faPlus, faSave, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {ActivatedRoute} from '@angular/router';
 import {FormBuilder} from '@angular/forms';
 import {environment} from 'src/environments/environment';
-import {Warehouse} from '../../interfaces';
-import {WarehouseService} from '../../services';
+import {InventoryReason, Warehouse} from '../../interfaces';
+import {InventoryReasonService, WarehouseService} from '../../services';
 
 declare var jQuery: any;
 
@@ -19,15 +20,33 @@ export class NoteFormComponent implements OnInit {
   faTrashAlt = faTrashAlt;
   faSave = faSave;
   faIdCardAlt = faIdCardAlt;
-  warehouses: Array<Warehouse> = new Array<Warehouse>();
+  typeNote: string = '';
   private appURL: string = environment.applicationUrl;
+  warehouses: Array<Warehouse> = new Array<Warehouse>();
+  motivos: Array<InventoryReason> = new Array<InventoryReason>();
 
   constructor(
     private fb: FormBuilder,
-    private warehouseService: WarehouseService) {
+    private activatedRoute: ActivatedRoute,
+    private warehouseService: WarehouseService,
+    private inventoryReasonService: InventoryReasonService) {
   }
 
   ngOnInit(): void {
+    this.activatedRoute.paramMap.subscribe(params => {
+      this.typeNote = params.get('type') || '';
+      // cargar motivos.
+      switch (this.typeNote) {
+        case 'input':
+          this.inventoryReasonService.index('Input')
+            .subscribe(result => this.motivos = result);
+          break;
+        case 'output':
+          this.inventoryReasonService.index('Output')
+            .subscribe(result => this.motivos = result);
+          break;
+      }
+    });
     // cargar lista de almacenes.
     this.warehouseService.index().subscribe(result => this.warehouses = result);
     // buscador de contactos.
@@ -42,5 +61,6 @@ export class NoteFormComponent implements OnInit {
       }
     });
   }
+
 
 }

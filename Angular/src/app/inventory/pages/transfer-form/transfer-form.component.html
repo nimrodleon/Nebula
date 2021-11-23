@@ -15,13 +15,13 @@
         <form [formGroup]="transferForm" class="row">
           <div class="col-12">
             <div class="row mb-3">
-              <label class="col-1 col-form-label text-end">Origen</label>
+              <label class="col-1 col-form-label text-uppercase text-end">Origen</label>
               <div class="col-3">
                 <select formControlName="origin" (change)="changeOriginWarehouse()" class="form-select">
                   <option *ngFor="let item of warehouses" [value]="item.id">{{item.name}}</option>
                 </select>
               </div>
-              <label class="col-1 col-form-label text-end">Destino</label>
+              <label class="col-1 col-form-label text-uppercase text-end">Destino</label>
               <div class="col-3">
                 <select formControlName="target" class="form-select">
                   <option *ngFor="let item of targetWarehouses" [value]="item.id">{{item.name}}</option>
@@ -31,11 +31,13 @@
           </div>
           <div class="col-12">
             <div class="row mb-3">
-              <label class="col-1 col-form-label text-end">Motivo</label>
+              <label class="col-1 col-form-label text-uppercase text-end">Motivo</label>
               <div class="col-3">
-                <select class="form-select"></select>
+                <select class="form-select">
+                  <option *ngFor="let item of motivos" [value]="item.id">{{item.description}}</option>
+                </select>
               </div>
-              <label class="col-1 col-form-label text-end">Fecha</label>
+              <label class="col-1 col-form-label text-uppercase text-end">Fecha</label>
               <div class="col-3">
                 <input type="date" class="form-control">
               </div>
@@ -65,15 +67,10 @@
                   <td class="max-width">
                     <input type="number" step="0.1" class="form-control">
                   </td>
-                  <td style="width: 100px;">
-                    <div class="actions">
-                      <button type="button" class="btn btn-secondary btn-sm me-2">
-                        <fa-icon [icon]="faEdit"></fa-icon>
-                      </button>
-                      <button type="button" class="btn btn-danger btn-sm">
-                        <fa-icon [icon]="faTrashAlt"></fa-icon>
-                      </button>
-                    </div>
+                  <td style="width: 50px;">
+                    <button type="button" class="btn btn-danger">
+                      <fa-icon [icon]="faTrashAlt"></fa-icon>
+                    </button>
                   </td>
                 </tr>
                 </tbody>
@@ -88,7 +85,7 @@
           </div>
           <div class="col-8">
             <div class="mb-3">
-              <label class="form-label">Glosa</label>
+              <label class="form-label text-uppercase">Glosa</label>
               <textarea class="form-control"></textarea>
             </div>
           </div>
