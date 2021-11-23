@@ -8,23 +8,23 @@
         <hr class="mt-1 mb-2">
         <form [formGroup]="filterForm" class="row">
           <div class="col-2">
-            <label class="form-label form-label fw-bold">Almacén Origen</label>
+            <label class="form-label fw-bold">Almacén Origen</label>
             <select formControlName="origin" (change)="changeOriginWarehouses()" class="form-select">
               <option *ngFor="let item of warehouses" [value]="item.id">{{item.name}}</option>
             </select>
           </div>
           <div class="col-2">
-            <label class="form-label form-label fw-bold">Almacén Destino</label>
+            <label class="form-label fw-bold">Almacén Destino</label>
             <select formControlName="target" class="form-select">
               <option *ngFor="let item of targetWarehouses" [value]="item.id">{{item.name}}</option>
             </select>
           </div>
           <div class="col-2">
-            <label class="form-label form-label fw-bold">Año</label>
+            <label class="form-label fw-bold">Año</label>
             <input type="number" formControlName="year" step="1" class="form-control">
           </div>
           <div class="col-2">
-            <label class="form-label form-label fw-bold">Mes</label>
+            <label class="form-label fw-bold">Mes</label>
             <select formControlName="month" class="form-select">
               <option value="01">ENERO</option>
               <option value="02">FEBRERO</option>
