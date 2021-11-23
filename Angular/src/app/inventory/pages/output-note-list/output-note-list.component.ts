@@ -6,11 +6,11 @@ import {Warehouse} from '../../interfaces';
 import * as moment from 'moment';
 
 @Component({
-  selector: 'app-exit-note-list',
-  templateUrl: './exit-note-list.component.html',
-  styleUrls: ['./exit-note-list.component.scss']
+  selector: 'app-output-note-list',
+  templateUrl: './output-note-list.component.html',
+  styleUrls: ['./output-note-list.component.scss']
 })
-export class ExitNoteListComponent implements OnInit {
+export class OutputNoteListComponent implements OnInit {
   faSearch = faSearch;
   faPlus = faPlus;
   faSignOutAlt = faSignOutAlt;

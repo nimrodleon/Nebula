@@ -4,13 +4,7 @@
   <div class="container-fluid">
     <div class="row px-2">
       <div class="col-12 bg-white shadow-sm my-2 py-3">
-        <div class="d-flex align-items-center">
-          <h5 class="text-uppercase d-inline me-2 mb-0">Nota de Transferencia</h5>
-          <button type="button" class="btn btn-danger btn-sm">
-            <fa-icon [icon]="faArrowLeft" class="me-1"></fa-icon>
-            <span class="text-uppercase">Regresar</span>
-          </button>
-        </div>
+        <h5 class="text-uppercase d-inline mb-0">Nota de Transferencia</h5>
         <hr class="mt-1 mb-2">
         <form [formGroup]="transferForm" class="row">
           <div class="col-12">
@@ -33,13 +27,13 @@
             <div class="row mb-3">
               <label class="col-1 col-form-label text-uppercase text-end">Motivo</label>
               <div class="col-3">
-                <select class="form-select">
+                <select formControlName="motivo" class="form-select">
                   <option *ngFor="let item of motivos" [value]="item.id">{{item.description}}</option>
                 </select>
               </div>
               <label class="col-1 col-form-label text-uppercase text-end">Fecha</label>
               <div class="col-3">
-                <input type="date" class="form-control">
+                <input type="date" formControlName="startDate" class="form-control">
               </div>
             </div>
           </div>
@@ -86,7 +80,7 @@
           <div class="col-8">
             <div class="mb-3">
               <label class="form-label text-uppercase">Glosa</label>
-              <textarea class="form-control"></textarea>
+              <textarea formControlName="remark" class="form-control"></textarea>
             </div>
           </div>
         </form>

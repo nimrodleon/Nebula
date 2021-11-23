@@ -6,11 +6,11 @@ import {WarehouseService} from '../../services';
 import {Warehouse} from '../../interfaces';
 
 @Component({
-  selector: 'app-entry-note-list',
-  templateUrl: './entry-note-list.component.html',
-  styleUrls: ['./entry-note-list.component.scss']
+  selector: 'app-input-note-list',
+  templateUrl: './input-note-list.component.html',
+  styleUrls: ['./input-note-list.component.scss']
 })
-export class EntryNoteListComponent implements OnInit {
+export class InputNoteListComponent implements OnInit {
   faSearch = faSearch;
   faPlus = faPlus;
   faSignOutAlt = faSignOutAlt;
