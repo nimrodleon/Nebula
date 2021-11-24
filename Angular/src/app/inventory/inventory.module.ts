@@ -5,6 +5,7 @@ import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 
 import {InventoryRoutingModule} from './inventory-routing.module';
 import {GlobalModule} from '../global/global.module';
+import {InvoiceModule} from '../invoice/invoice.module';
 import {TransferListComponent} from './pages/transfer-list/transfer-list.component';
 import {HistoryListComponent} from './pages/history-list/history-list.component';
 import {NoteFormComponent} from './pages/note-form/note-form.component';
@@ -26,7 +27,8 @@ import {OutputNoteListComponent} from './pages/output-note-list/output-note-list
     InventoryRoutingModule,
     ReactiveFormsModule,
     FontAwesomeModule,
-    GlobalModule
+    GlobalModule,
+    InvoiceModule
   ]
 })
 export class InventoryModule {

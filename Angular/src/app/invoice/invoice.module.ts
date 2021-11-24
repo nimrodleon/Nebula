@@ -25,6 +25,9 @@ import {InvoiceDetailComponent} from './pages/invoice-detail/invoice-detail.comp
     FontAwesomeModule,
     GlobalModule,
     ProductsModule
+  ],
+  exports: [
+    ItemComprobanteComponent
   ]
 })
 export class InvoiceModule {

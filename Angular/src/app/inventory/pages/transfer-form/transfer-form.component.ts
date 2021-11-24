@@ -1,9 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {faArrowLeft, faEdit, faIdCardAlt, faPlus, faSave, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
-import {InventoryReason, Warehouse} from '../../interfaces';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {InventoryReasonService, WarehouseService} from '../../services';
 import * as moment from 'moment';
+import Swal from 'sweetalert2';
+import {InventoryReason, ItemNote, Warehouse} from '../../interfaces';
+import {InventoryReasonService, WarehouseService} from '../../services';
+
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-transfer-form',
@@ -27,6 +30,8 @@ export class TransferFormComponent implements OnInit {
     startDate: [moment().format('YYYY-MM-DD')],
     remark: ['']
   });
+  itemNotes: Array<ItemNote> = new Array<ItemNote>();
+  itemComprobanteModal: any;
 
   constructor(
     private fb: FormBuilder,
@@ -39,6 +44,8 @@ export class TransferFormComponent implements OnInit {
     this.warehouseService.index().subscribe(result => this.warehouses = result);
     // cargar lista de motivos.
     this.inventoryReasonService.index('Transfer').subscribe(result => this.motivos = result);
+    // formulario item comprobante.
+    this.itemComprobanteModal = new bootstrap.Modal(document.querySelector('#item-comprobante'));
   }
 
   // cargar lista de almacenes de destino.
@@ -52,6 +59,49 @@ export class TransferFormComponent implements OnInit {
         }
       });
     }
+  }
+
+  // cargar item comprobante.
+  public showItemComprobanteModal(): void {
+    this.itemComprobanteModal.show();
+  }
+
+  // cerrar item comprobante.
+  public async hideItemComprobanteModal(data: ItemNote) {
+    if (this.itemNotes.find(item =>
+      item.productId === data.productId)) {
+      await Swal.fire(
+        'Información',
+        'El producto seleccionado ya existe en la Nota!',
+        'info'
+      );
+    } else {
+      this.itemNotes.push(data);
+      this.itemComprobanteModal.hide();
+    }
+  }
+
+  // calcular por cantidad de producto.
+  public changeQuantity(id: any, target: any): void {
+    const item: ItemNote | any = this.itemNotes.find(item => item.productId === id);
+    item.quantity = Number(target.value);
+    item.amount = item.quantity * item.price;
+  }
+
+  // calcular por precio de producto.
+  public changePrice(id: any, target: any): void {
+    const item: ItemNote | any = this.itemNotes.find(item => item.productId === id);
+    item.price = Number(target.value);
+    item.amount = item.quantity * item.price;
+  }
+
+  // borrar item detalle nota.
+  public deleteItem(id: any): void {
+    this.itemNotes.forEach((value, index, array) => {
+      if (value.productId === id) {
+        array.splice(index, 1);
+      }
+    });
   }
 
 }
