@@ -9,7 +9,7 @@
         <form [formGroup]="comprobanteForm" class="row">
           <div class="col-8">
             <div class="row mb-3">
-              <label class="col-3 col-form-label text-end">Contacto</label>
+              <label class="col-3 col-form-label text-uppercase text-end">Contacto</label>
               <div class="col-6">
                 <div class="input-group me-1">
                   <span class="input-group-text">
@@ -26,7 +26,7 @@
               </div>
             </div>
             <div class="row mb-3">
-              <label class="col-3 col-form-label text-end">Tipo Comprobante</label>
+              <label class="col-3 col-form-label text-uppercase text-end">Tipo Comprobante</label>
               <div class="col-4">
                 <select formControlName="docType" class="form-select">
                   <option value="BL">BOLETA</option>
@@ -34,7 +34,7 @@
                   <option value="NV">NOTA DE VENTA</option>
                 </select>
               </div>
-              <label class="col-1 col-form-label text-end">Caja</label>
+              <label class="col-1 col-form-label text-uppercase text-end">Caja</label>
               <div class="col-4">
                 <select class="form-select" formControlName="cajaId">
                   <option *ngFor="let item of listaDeCajas" [value]="item.id">{{item.name}}</option>
@@ -42,13 +42,13 @@
               </div>
             </div>
             <div class="row">
-              <label class="col-3 col-form-label text-end">Tipo de operación</label>
+              <label class="col-3 col-form-label text-uppercase text-end">Tipo de operación</label>
               <div class="col-4">
                 <select formControlName="typeOperation" class="form-select">
                   <option *ngFor="let item of typeOperation" [value]="item.id">{{item.description}}</option>
                 </select>
               </div>
-              <label class="col-1 col-form-label text-end">Serie</label>
+              <label class="col-1 col-form-label text-uppercase text-end">Serie</label>
               <div class="col-4">
                 <div class="input-group mb-3">
                   <input type="text" formControlName="serie" class="form-control" placeholder="F001"
@@ -62,13 +62,13 @@
           </div>
           <div class="col-4">
             <div class="row mb-3">
-              <label class="col-4 col-form-label text-end">Emisión</label>
+              <label class="col-4 col-form-label text-uppercase text-end">Emisión</label>
               <div class="col-8">
                 <input type="date" formControlName="startDate" class="form-control">
               </div>
             </div>
             <div class="row mb-3">
-              <label class="col-4 col-form-label text-end">F.Pago</label>
+              <label class="col-4 col-form-label text-uppercase text-end">F.Pago</label>
               <div class="col-8">
                 <select formControlName="paymentType" class="form-select">
                   <option value="Credito">CRÉDITO</option>
@@ -77,7 +77,7 @@
               </div>
             </div>
             <div class="row">
-              <label class="col-4 col-form-label text-end">Vencimiento</label>
+              <label class="col-4 col-form-label text-uppercase text-end">Vencimiento</label>
               <div class="col-8">
                 <input type="date" formControlName="endDate" class="form-control">
               </div>
@@ -119,7 +119,7 @@
             </div>
             <div class="d-flex align-items-stretch justify-content-between">
               <div class="w-50">
-                <label class="form-label fw-bold">Observación</label>
+                <label class="form-label text-uppercase">Observación</label>
                 <textarea formControlName="remark" class="form-control"></textarea>
               </div>
               <div class="table-responsive">

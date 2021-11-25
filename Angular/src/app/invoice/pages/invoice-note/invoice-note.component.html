@@ -9,11 +9,11 @@
         <form [formGroup]="invoiceNote" class="row">
           <div class="col-8">
             <div class="row mb-3">
-              <label class="col-3 col-form-label text-end">Fecha Emisión</label>
+              <label class="col-3 col-form-label text-uppercase text-end">Fecha Emisión</label>
               <div class="col-4">
                 <input type="date" formControlName="startDate" class="form-control">
               </div>
-              <label class="col-1 col-form-label text-end">Doc</label>
+              <label class="col-1 col-form-label text-uppercase text-end">Doc</label>
               <div class="col-4">
                 <select formControlName="docType" class="form-select">
                   <option value="NC">Nota de Crédito</option>
@@ -22,7 +22,7 @@
               </div>
             </div>
             <div class="row mb-3">
-              <label class="col-3 col-form-label text-end">Tipo Nota Créd/Déb</label>
+              <label class="col-3 col-form-label text-uppercase text-end">Tipo Nota</label>
               <div class="col-4">
                 <select formControlName="codMotivo" class="form-select">
                   <ng-container *ngIf="invoiceNote.get('docType')?.value === 'NC'">
@@ -44,7 +44,7 @@
                   </ng-container>
                 </select>
               </div>
-              <label class="col-1 col-form-label text-end">Serie</label>
+              <label class="col-1 col-form-label text-uppercase text-end">Serie</label>
               <div class="col-4">
                 <div class="input-group">
                   <input type="text" formControlName="serie" class="form-control"
@@ -57,7 +57,7 @@
           </div>
           <div class="col-12">
             <div class="row">
-              <label class="col-2 col-form-label text-end">Motivo de Emisión</label>
+              <label class="col-2 col-form-label text-uppercase text-end">Motivo de Emisión</label>
               <div class="col-9">
                 <input type="text" formControlName="desMotivo" class="form-control">
               </div>
@@ -99,7 +99,7 @@
             </div>
             <div class="d-flex align-items-stretch justify-content-between">
               <div class="w-50">
-                <label class="form-label fw-bold">Observación</label>
+                <label class="form-label text-uppercase">Observación</label>
                 <textarea formControlName="remark" class="form-control"></textarea>
               </div>
               <div class="table-responsive">
