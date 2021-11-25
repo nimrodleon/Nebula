@@ -109,13 +109,8 @@ namespace Nebula.Data
             modelBuilder.Entity<Warehouse>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<TransferNote>().Property<bool>("SoftDeleted");
             modelBuilder.Entity<TransferNote>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
-            modelBuilder.Entity<TransferNoteDetail>().Property<bool>("SoftDeleted");
-            modelBuilder.Entity<TransferNoteDetail>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<InventoryNote>().Property<bool>("SoftDeleted");
             modelBuilder.Entity<InventoryNote>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
-            modelBuilder.Entity<InventoryNoteDetail>().Property<bool>("SoftDeleted");
-            modelBuilder.Entity<InventoryNoteDetail>()
-                .HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             base.OnModelCreating(modelBuilder);
         }
     }
