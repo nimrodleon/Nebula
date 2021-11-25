@@ -1,5 +1,7 @@
 export * from './warehouse';
 export * from './inventory-reason';
+export * from './note';
+export * from './transfer';
 export * from './item-note';
 export * from './transfer-note';
 export * from './transfer-note-detail';
