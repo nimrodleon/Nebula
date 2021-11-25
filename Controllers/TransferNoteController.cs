@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Nebula.Data;
+using Nebula.Data.Models;
+using Nebula.Data.ViewModels;
 
 namespace Nebula.Controllers
 {
@@ -11,5 +14,145 @@ namespace Nebula.Controllers
     [ApiController]
     public class TransferNoteController : ControllerBase
     {
+        private readonly ILogger _logger;
+        private readonly ApplicationDbContext _context;
+
+        public TransferNoteController(ILogger logger, ApplicationDbContext context)
+        {
+            _logger = logger;
+            _context = context;
+        }
+
+        [HttpGet("Show/{id}")]
+        public async Task<IActionResult> Show(int? id)
+        {
+            if (id == null) return BadRequest();
+            var result = await _context.TransferNotes.IgnoreQueryFilters().AsNoTracking()
+                .Include(m => m.TransferNoteDetails).FirstOrDefaultAsync(m => m.Id.Equals(id));
+            return Ok(result);
+        }
+
+        [HttpPost("Store")]
+        public async Task<IActionResult> Store([FromBody] Transfer model)
+        {
+            await using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    var transfer = new TransferNote()
+                    {
+                        Origin = model.Origin,
+                        Target = model.Target,
+                        Motivo = model.Motivo,
+                        StartDate = model.StartDate,
+                        Remark = model.Remark,
+                        Status = "BORRADOR"
+                    };
+                    _context.TransferNotes.Add(transfer);
+                    await _context.SaveChangesAsync();
+
+                    // agregar detalle de Nota.
+                    var transferNoteDetails = new List<TransferNoteDetail>();
+                    model.ItemNotes.ForEach(item =>
+                    {
+                        transferNoteDetails.Add(new TransferNoteDetail()
+                        {
+                            TransferNote = transfer,
+                            ProductId = item.ProductId,
+                            Description = item.Description,
+                            Price = item.Price,
+                            Quantity = item.Quantity,
+                            Amount = item.Amount
+                        });
+                    });
+                    _context.TransferNoteDetails.AddRange(transferNoteDetails);
+                    await _context.SaveChangesAsync();
+
+                    // confirmar transacción.
+                    await transaction.CommitAsync();
+                    _logger.LogInformation("Transacción confirmada!");
+
+                    return Ok(new
+                    {
+                        Ok = true, Data = model,
+                        Msg = $"La Transferencia {transfer.Id}, ha sido registrado!"
+                    });
+                }
+                catch (Exception e)
+                {
+                    await transaction.RollbackAsync();
+                    _logger.LogInformation("La transacción ha sido cancelada!");
+                    _logger.LogError(e.Message);
+                }
+            }
+
+            return BadRequest(new
+            {
+                Ok = false, Msg = "Hubo un error en la emisión de la Transferencia!"
+            });
+        }
+
+        [HttpPut("Update/{id}")]
+        public async Task<IActionResult> Update(int? id, [FromBody] Transfer model)
+        {
+            var result = await _context.TransferNotes.FirstOrDefaultAsync(m => m.Id.Equals(id));
+            if (result == null) return BadRequest(new {Ok = false, Msg = "No existe la Transferencia de Inventario!"});
+            await using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    result.Origin = model.Origin;
+                    result.Target = model.Target;
+                    result.Motivo = model.Motivo;
+                    result.StartDate = model.StartDate;
+                    result.Remark = model.Remark;
+                    result.Status = "BORRADOR";
+                    _context.TransferNotes.Update(result);
+                    await _context.SaveChangesAsync();
+
+                    // borrar todos los items anteriores.
+                    _context.TransferNoteDetails.RemoveRange(result.TransferNoteDetails);
+                    await _context.SaveChangesAsync();
+
+                    // agregar detalle de Nota.
+                    var transferNoteDetails = new List<TransferNoteDetail>();
+                    model.ItemNotes.ForEach(item =>
+                    {
+                        transferNoteDetails.Add(new TransferNoteDetail()
+                        {
+                            TransferNoteId = result.Id,
+                            ProductId = item.ProductId,
+                            Description = item.Description,
+                            Price = item.Price,
+                            Quantity = item.Quantity,
+                            Amount = item.Amount
+                        });
+                    });
+                    _context.TransferNoteDetails.AddRange(transferNoteDetails);
+                    await _context.SaveChangesAsync();
+
+                    // confirmar transacción.
+                    await transaction.CommitAsync();
+                    _logger.LogInformation("Transacción confirmada!");
+
+                    return Ok(new
+                    {
+                        Ok = true, Data = model,
+                        Msg = $"La Transferencia {result.Id}, ha sido actualizado!"
+                    });
+                }
+                catch (Exception e)
+                {
+                    await transaction.RollbackAsync();
+                    _logger.LogInformation("La transacción ha sido cancelada!");
+                    _logger.LogError(e.Message);
+                }
+            }
+
+            return BadRequest(new
+            {
+                Ok = false, Msg = "Hubo un error en la actualización de la Transferencia!"
+            });
+        }
     }
 }

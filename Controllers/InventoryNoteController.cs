@@ -138,7 +138,7 @@ namespace Nebula.Controllers
                     return Ok(new
                     {
                         Ok = true, Data = model,
-                        Msg = $"La Nota {result.Id}, ha sido registrado!"
+                        Msg = $"La Nota {result.Id}, ha sido actualizado!"
                     });
                 }
                 catch (Exception e)
@@ -151,7 +151,7 @@ namespace Nebula.Controllers
 
             return BadRequest(new
             {
-                Ok = false, Msg = "Hubo un error en la emisión de la Nota!"
+                Ok = false, Msg = "Hubo un error en la actualización de la Nota!"
             });
         }
     }
