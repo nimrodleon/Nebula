@@ -30,6 +30,8 @@ namespace Nebula.Data
         public DbSet<InventoryReason> InventoryReasons { get; set; }
         public DbSet<TransferNote> TransferNotes { get; set; }
         public DbSet<TransferNoteDetail> TransferNoteDetails { get; set; }
+        public DbSet<InventoryNote> InventoryNotes { get; set; }
+        public DbSet<InventoryNoteDetail> InventoryNoteDetails { get; set; }
 
         /// <summary>
         /// Configurar SoftDelete.
@@ -109,6 +111,11 @@ namespace Nebula.Data
             modelBuilder.Entity<TransferNote>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<TransferNoteDetail>().Property<bool>("SoftDeleted");
             modelBuilder.Entity<TransferNoteDetail>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
+            modelBuilder.Entity<InventoryNote>().Property<bool>("SoftDeleted");
+            modelBuilder.Entity<InventoryNote>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
+            modelBuilder.Entity<InventoryNoteDetail>().Property<bool>("SoftDeleted");
+            modelBuilder.Entity<InventoryNoteDetail>()
+                .HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             base.OnModelCreating(modelBuilder);
         }
     }
