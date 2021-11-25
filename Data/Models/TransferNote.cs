@@ -12,6 +12,7 @@ namespace Nebula.Data.Models
         [MaxLength(250)] public string Motivo { get; set; }
         [DataType(DataType.Date)] public DateTime StartDate { get; set; }
         [MaxLength(250)] public string Remark { get; set; }
+        [MaxLength(250)] public string Status { get; set; }
         public List<TransferNoteDetail> TransferNoteDetails { get; set; }
     }
 }
