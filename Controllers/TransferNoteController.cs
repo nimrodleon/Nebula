@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,18 @@ namespace Nebula.Controllers
         {
             _logger = logger;
             _context = context;
+        }
+
+        [HttpGet("Index")]
+        public async Task<IActionResult> Index([FromQuery] TransferFilter filter)
+        {
+            var result = await _context.TransferNotes.AsNoTracking()
+                .Include(m => m.Origin)
+                .Include(m => m.Target)
+                .Where(m => m.OriginId.ToString().Equals(filter.Origin)
+                            && m.TargetId.ToString().Equals(filter.Target) && m.Year.Equals(filter.Year) &&
+                            m.Month.Equals(filter.Month)).ToListAsync();
+            return Ok(result);
         }
 
         [HttpGet("Show/{id}")]
@@ -45,12 +58,14 @@ namespace Nebula.Controllers
                     // Cabecera Transferencia.
                     var transfer = new TransferNote()
                     {
-                        Origin = model.Origin,
-                        Target = model.Target,
+                        OriginId = model.Origin,
+                        TargetId = model.Target,
                         Motivo = motivo.Description,
                         StartDate = model.StartDate,
                         Remark = model.Remark,
-                        Status = "BORRADOR"
+                        Status = "BORRADOR",
+                        Year = model.StartDate.ToString("yyyy"),
+                        Month = model.StartDate.ToString("MM")
                     };
                     _context.TransferNotes.Add(transfer);
                     await _context.SaveChangesAsync();
@@ -109,12 +124,14 @@ namespace Nebula.Controllers
                         .FirstOrDefaultAsync(m => m.Id.Equals(model.Motivo));
 
                     // Editar Cabecera.
-                    result.Origin = model.Origin;
-                    result.Target = model.Target;
+                    result.OriginId = model.Origin;
+                    result.TargetId = model.Target;
                     result.Motivo = motivo.Description;
                     result.StartDate = model.StartDate;
                     result.Remark = model.Remark;
                     result.Status = "BORRADOR";
+                    result.Year = model.StartDate.ToString("yyyy");
+                    result.Month = model.StartDate.ToString("MM");
                     _context.TransferNotes.Update(result);
                     await _context.SaveChangesAsync();
 

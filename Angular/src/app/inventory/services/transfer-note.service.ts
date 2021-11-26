@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from 'src/environments/environment';
-import {Transfer, TransferNote} from '../interfaces';
+import {Transfer, TransferFilter, TransferNote} from '../interfaces';
 import {ResponseData} from '../../global/interfaces';
 
 @Injectable({
@@ -13,6 +13,15 @@ export class TransferNoteService {
 
   constructor(
     private http: HttpClient) {
+  }
+
+  public index(filter: TransferFilter): Observable<TransferNote[]> {
+    let params = new HttpParams();
+    params = params.append('origin', filter.origin);
+    params = params.append('target', filter.target);
+    params = params.append('year', filter.year);
+    params = params.append('month', filter.month);
+    return this.http.get<TransferNote[]>(`${this.appURL}/Index`, {params: params});
   }
 
   public show(id: number): Observable<TransferNote> {

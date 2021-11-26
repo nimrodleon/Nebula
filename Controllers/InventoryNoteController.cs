@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,15 @@ namespace Nebula.Controllers
         {
             _logger = logger;
             _context = context;
+        }
+
+        [HttpGet("Index")]
+        public async Task<IActionResult> Index([FromQuery] NoteFilter filter)
+        {
+            var result = await _context.InventoryNotes.AsNoTracking()
+                .Where(m => m.WarehouseId.Equals(filter.WarehouseId)
+                            && m.Year.Equals(filter.Year) && m.Month.Equals(filter.Month)).ToListAsync();
+            return Ok(result);
         }
 
         [HttpGet("Show/{id}")]
@@ -50,7 +60,9 @@ namespace Nebula.Controllers
                         Motivo = motivo.Description,
                         StartDate = model.StartDate,
                         Remark = model.Remark,
-                        Status = "BORRADOR"
+                        Status = "BORRADOR",
+                        Year = model.StartDate.ToString("yyyy"),
+                        Month = model.StartDate.ToString("MM")
                     };
                     _context.InventoryNotes.Add(note);
                     await _context.SaveChangesAsync();
@@ -115,6 +127,8 @@ namespace Nebula.Controllers
                     result.StartDate = model.StartDate;
                     result.Remark = model.Remark;
                     result.Status = "BORRADOR";
+                    result.Year = model.StartDate.ToString("yyyy");
+                    result.Month = model.StartDate.ToString("MM");
                     _context.InventoryNotes.Update(result);
                     await _context.SaveChangesAsync();
 

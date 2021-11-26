@@ -13,6 +13,8 @@ namespace Nebula.Data.Models
         [DataType(DataType.Date)] public DateTime StartDate { get; set; }
         [MaxLength(250)] public string Remark { get; set; }
         [MaxLength(250)] public string Status { get; set; }
+        [MaxLength(250)] public string Year { get; set; }
+        [MaxLength(250)] public string Month { get; set; }
         public List<InventoryNoteDetail> InventoryNoteDetails { get; set; }
     }
 }

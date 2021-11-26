@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {environment} from 'src/environments/environment';
 import {Observable} from 'rxjs';
-import {InventoryNote, Note} from '../interfaces';
+import {InventoryNote, Note, NoteFilter} from '../interfaces';
 import {ResponseData} from '../../global/interfaces';
 
 @Injectable({
@@ -13,6 +13,14 @@ export class InventoryNoteService {
 
   constructor(
     private http: HttpClient) {
+  }
+
+  public index(filter: NoteFilter): Observable<InventoryNote[]> {
+    let params = new HttpParams();
+    params = params.append('warehouseId', filter.warehouseId);
+    params = params.append('year', filter.year);
+    params = params.append('month', filter.month);
+    return this.http.get<InventoryNote[]>(`${this.appURL}/Index`, {params: params});
   }
 
   public show(id: number): Observable<InventoryNote> {

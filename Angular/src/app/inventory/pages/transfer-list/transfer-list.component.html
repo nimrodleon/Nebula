@@ -6,7 +6,7 @@
       <div class="col-12 bg-white my-2 py-3">
         <h5 class="text-uppercase mb-0">Filtro de Búsqueda</h5>
         <hr class="mt-1 mb-2">
-        <form [formGroup]="filterForm" class="row">
+        <form [formGroup]="filterForm" (ngSubmit)="getTransferNotes()" class="row">
           <div class="col-2">
             <label class="form-label fw-bold">Almacén Origen</label>
             <select formControlName="origin" (change)="changeOriginWarehouses()" class="form-select">
@@ -73,29 +73,12 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-              <td>2021-11-18</td>
-              <td>Almacén-1</td>
-              <td>Almacén-2</td>
-              <td>Descripción Motivo</td>
-              <td>-</td>
-              <td>
-                <div class="actions ms-auto">
-                  <button type="button" class="btn btn-secondary btn-sm me-2">
-                    <fa-icon [icon]="faSignOutAlt"></fa-icon>
-                  </button>
-                  <button type="button" class="btn btn-danger btn-sm">
-                    <fa-icon [icon]="faTrashAlt"></fa-icon>
-                  </button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>2021-11-18</td>
-              <td>Almacén-1</td>
-              <td>Almacén-2</td>
-              <td>Descripción Motivo</td>
-              <td>-</td>
+            <tr *ngFor="let item of transferNotes">
+              <td>{{item.startDate|date}}</td>
+              <td>{{item.origin.name}}</td>
+              <td>{{item.target.name}}</td>
+              <td>{{item.motivo}}</td>
+              <td>{{item.remark}}</td>
               <td>
                 <div class="actions ms-auto">
                   <button type="button" class="btn btn-secondary btn-sm me-2">
@@ -114,6 +97,7 @@
     </div>
 
     <pre>{{filterForm.value|json}}</pre>
+    <pre>{{transferNotes|json}}</pre>
 
   </div>
 </div>

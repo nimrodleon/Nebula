@@ -1,9 +1,12 @@
 import {TransferNoteDetail} from './transfer-note-detail';
+import {Warehouse} from './warehouse';
 
 export interface TransferNote {
   id: number | null;
-  origin: string;
-  target: string;
+  origin: Warehouse | any;
+  originId: string;
+  target: Warehouse | any;
+  targetId: string;
   motivo: string;
   startDate: any;
   remark: string;

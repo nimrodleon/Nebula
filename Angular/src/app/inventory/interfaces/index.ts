@@ -7,3 +7,5 @@ export * from './transfer-note';
 export * from './transfer-note-detail';
 export * from './inventory-note';
 export * from './inventory-note-detail';
+export * from './note-filter';
+export * from './transfer-filter';

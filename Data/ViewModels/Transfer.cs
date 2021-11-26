@@ -8,8 +8,8 @@ namespace Nebula.Data.ViewModels
     /// </summary>
     public class Transfer
     {
-        public string Origin { get; set; }
-        public string Target { get; set; }
+        public Guid Origin { get; set; }
+        public Guid Target { get; set; }
         public int Motivo { get; set; }
         public DateTime StartDate { get; set; }
         public string Remark { get; set; }
