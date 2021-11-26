@@ -59,7 +59,7 @@ namespace Nebula.Controllers
                     {
                         ContactId = model.ContactId,
                         WarehouseId = model.WarehouseId,
-                        NoteType = model.NoteType,
+                        NoteType = model.NoteType.ToUpper(),
                         Motivo = motivo.Description,
                         StartDate = model.StartDate,
                         Remark = model.Remark,
@@ -126,7 +126,7 @@ namespace Nebula.Controllers
                     // Editar Cabecera.
                     result.ContactId = model.ContactId;
                     result.WarehouseId = model.WarehouseId;
-                    result.NoteType = model.NoteType;
+                    result.NoteType = model.NoteType.ToUpper();
                     result.Motivo = motivo.Description;
                     result.StartDate = model.StartDate;
                     result.Remark = model.Remark;

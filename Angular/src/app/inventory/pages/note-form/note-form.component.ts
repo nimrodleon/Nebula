@@ -5,7 +5,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import * as moment from 'moment';
 import {environment} from 'src/environments/environment';
 import {InventoryReason, ItemNote, Warehouse} from '../../interfaces';
-import {InventoryReasonService, WarehouseService} from '../../services';
+import {InventoryNoteService, InventoryReasonService, WarehouseService} from '../../services';
 import Swal from 'sweetalert2';
 
 declare var jQuery: any;
@@ -23,7 +23,7 @@ export class NoteFormComponent implements OnInit {
   faTrashAlt = faTrashAlt;
   faSave = faSave;
   faIdCardAlt = faIdCardAlt;
-  typeNote: string = '';
+  noteType: string = '';
   private appURL: string = environment.applicationUrl;
   warehouses: Array<Warehouse> = new Array<Warehouse>();
   motivos: Array<InventoryReason> = new Array<InventoryReason>();
@@ -42,14 +42,15 @@ export class NoteFormComponent implements OnInit {
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private warehouseService: WarehouseService,
-    private inventoryReasonService: InventoryReasonService) {
+    private inventoryReasonService: InventoryReasonService,
+    private inventoryNoteService: InventoryNoteService) {
   }
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe(params => {
-      this.typeNote = params.get('type') || '';
+      this.noteType = params.get('type') || '';
       // cargar motivos.
-      switch (this.typeNote) {
+      switch (this.noteType) {
         case 'input':
           this.inventoryReasonService.index('Input')
             .subscribe(result => this.motivos = result);
@@ -82,7 +83,7 @@ export class NoteFormComponent implements OnInit {
 
   // botón cancelar.
   public async cancelOption() {
-    switch (this.typeNote) {
+    switch (this.noteType) {
       case 'input':
         await this.router.navigate(['/inventory/input-note']);
         break;
@@ -131,6 +132,17 @@ export class NoteFormComponent implements OnInit {
     this.itemNotes.forEach((value, index, array) => {
       if (value.productId === id) {
         array.splice(index, 1);
+      }
+    });
+  }
+
+  // botón registrar.
+  public async register() {
+    this.inventoryNoteService.store({
+      ...this.noteForm.value, noteType: this.noteType, itemNotes: this.itemNotes
+    }).subscribe(result => {
+      if (result.ok) {
+        this.router.navigate([`/inventory/${this.noteType}-note`]);
       }
     });
   }
