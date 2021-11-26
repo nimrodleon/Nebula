@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {faArrowLeft, faEdit, faIdCardAlt, faPlus, faSave, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, FormGroup} from '@angular/forms';
+import {Router} from '@angular/router';
 import * as moment from 'moment';
 import Swal from 'sweetalert2';
 import {InventoryReason, ItemNote, Warehouse} from '../../interfaces';
-import {InventoryReasonService, WarehouseService} from '../../services';
+import {InventoryReasonService, TransferNoteService, WarehouseService} from '../../services';
 
 declare var bootstrap: any;
 
@@ -34,9 +35,11 @@ export class TransferFormComponent implements OnInit {
   itemComprobanteModal: any;
 
   constructor(
+    private router: Router,
     private fb: FormBuilder,
     private warehouseService: WarehouseService,
-    private inventoryReasonService: InventoryReasonService) {
+    private inventoryReasonService: InventoryReasonService,
+    private transferNoteService: TransferNoteService) {
   }
 
   ngOnInit(): void {
@@ -100,6 +103,17 @@ export class TransferFormComponent implements OnInit {
     this.itemNotes.forEach((value, index, array) => {
       if (value.productId === id) {
         array.splice(index, 1);
+      }
+    });
+  }
+
+  // botón registrar.
+  public async register() {
+    this.transferNoteService.store({
+      ...this.transferForm.value, itemNotes: this.itemNotes
+    }).subscribe(result => {
+      if (result.ok) {
+        this.router.navigate(['/inventory/transfer']);
       }
     });
   }

@@ -10,7 +10,7 @@ namespace Nebula.Data.ViewModels
     {
         public int ContactId { get; set; }
         public string WarehouseId { get; set; }
-        public string Motivo { get; set; }
+        public int Motivo { get; set; }
         public DateTime StartDate { get; set; }
         public string Remark { get; set; }
         public List<ItemNote> ItemNotes { get; set; }

@@ -39,11 +39,15 @@ namespace Nebula.Controllers
             {
                 try
                 {
+                    var motivo = await _context.InventoryReasons.AsNoTracking()
+                        .FirstOrDefaultAsync(m => m.Id.Equals(model.Motivo));
+
+                    // Cabecera Nota.
                     var note = new InventoryNote()
                     {
                         ContactId = model.ContactId,
                         WarehouseId = model.WarehouseId,
-                        Motivo = model.Motivo,
+                        Motivo = motivo.Description,
                         StartDate = model.StartDate,
                         Remark = model.Remark,
                         Status = "BORRADOR"
@@ -101,9 +105,13 @@ namespace Nebula.Controllers
             {
                 try
                 {
+                    var motivo = await _context.InventoryReasons.AsNoTracking()
+                        .FirstOrDefaultAsync(m => m.Id.Equals(model.Motivo));
+
+                    // Editar Cabecera.
                     result.ContactId = model.ContactId;
                     result.WarehouseId = model.WarehouseId;
-                    result.Motivo = model.Motivo;
+                    result.Motivo = motivo.Description;
                     result.StartDate = model.StartDate;
                     result.Remark = model.Remark;
                     result.Status = "BORRADOR";

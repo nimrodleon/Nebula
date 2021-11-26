@@ -17,7 +17,7 @@ namespace Nebula.Controllers
         private readonly ILogger _logger;
         private readonly ApplicationDbContext _context;
 
-        public TransferNoteController(ILogger logger, ApplicationDbContext context)
+        public TransferNoteController(ILogger<TransferNoteDetail> logger, ApplicationDbContext context)
         {
             _logger = logger;
             _context = context;
@@ -39,11 +39,15 @@ namespace Nebula.Controllers
             {
                 try
                 {
+                    var motivo = await _context.InventoryReasons.AsNoTracking()
+                        .FirstOrDefaultAsync(m => m.Id.Equals(model.Motivo));
+
+                    // Cabecera Transferencia.
                     var transfer = new TransferNote()
                     {
                         Origin = model.Origin,
                         Target = model.Target,
-                        Motivo = model.Motivo,
+                        Motivo = motivo.Description,
                         StartDate = model.StartDate,
                         Remark = model.Remark,
                         Status = "BORRADOR"
@@ -101,9 +105,13 @@ namespace Nebula.Controllers
             {
                 try
                 {
+                    var motivo = await _context.InventoryReasons.AsNoTracking()
+                        .FirstOrDefaultAsync(m => m.Id.Equals(model.Motivo));
+
+                    // Editar Cabecera.
                     result.Origin = model.Origin;
                     result.Target = model.Target;
-                    result.Motivo = model.Motivo;
+                    result.Motivo = motivo.Description;
                     result.StartDate = model.StartDate;
                     result.Remark = model.Remark;
                     result.Status = "BORRADOR";
