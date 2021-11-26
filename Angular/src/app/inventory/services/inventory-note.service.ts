@@ -17,6 +17,7 @@ export class InventoryNoteService {
 
   public index(filter: NoteFilter): Observable<InventoryNote[]> {
     let params = new HttpParams();
+    params = params.append('noteType', filter.noteType);
     params = params.append('warehouseId', filter.warehouseId);
     params = params.append('year', filter.year);
     params = params.append('month', filter.month);

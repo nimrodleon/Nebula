@@ -31,7 +31,8 @@ namespace Nebula.Controllers
                 .Include(m => m.Contact)
                 .Include(m => m.Warehouse)
                 .Where(m => m.WarehouseId.ToString().Equals(filter.WarehouseId)
-                            && m.Year.Equals(filter.Year) && m.Month.Equals(filter.Month)).ToListAsync();
+                            && m.NoteType.Equals(filter.NoteType.ToUpper()) && m.Year.Equals(filter.Year)
+                            && m.Month.Equals(filter.Month)).ToListAsync();
             return Ok(result);
         }
 
