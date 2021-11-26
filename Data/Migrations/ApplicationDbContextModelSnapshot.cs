@@ -389,6 +389,10 @@ namespace Nebula.Data.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
+                    b.Property<string>("NoteType")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
                     b.Property<string>("Remark")
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
@@ -403,14 +407,18 @@ namespace Nebula.Data.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<string>("WarehouseId")
-                        .HasColumnType("text");
+                    b.Property<Guid?>("WarehouseId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Year")
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ContactId");
+
+                    b.HasIndex("WarehouseId");
 
                     b.ToTable("InventoryNotes");
                 });
@@ -1180,6 +1188,21 @@ namespace Nebula.Data.Migrations
                         .HasForeignKey("PeopleDocTypeId");
 
                     b.Navigation("PeopleDocType");
+                });
+
+            modelBuilder.Entity("Nebula.Data.Models.InventoryNote", b =>
+                {
+                    b.HasOne("Nebula.Data.Models.Contact", "Contact")
+                        .WithMany()
+                        .HasForeignKey("ContactId");
+
+                    b.HasOne("Nebula.Data.Models.Warehouse", "Warehouse")
+                        .WithMany()
+                        .HasForeignKey("WarehouseId");
+
+                    b.Navigation("Contact");
+
+                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("Nebula.Data.Models.InventoryNoteDetail", b =>

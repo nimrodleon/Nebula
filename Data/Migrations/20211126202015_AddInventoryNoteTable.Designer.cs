@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Nebula.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211125212944_RemoveSoftDeleteInventoryNoteColumn")]
-    partial class RemoveSoftDeleteInventoryNoteColumn
+    [Migration("20211126202015_AddInventoryNoteTable")]
+    partial class AddInventoryNoteTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -383,7 +383,15 @@ namespace Nebula.Data.Migrations
                     b.Property<int?>("ContactId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Month")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
                     b.Property<string>("Motivo")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<string>("NoteType")
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
@@ -401,10 +409,18 @@ namespace Nebula.Data.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<string>("WarehouseId")
-                        .HasColumnType("text");
+                    b.Property<Guid?>("WarehouseId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Year")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ContactId");
+
+                    b.HasIndex("WarehouseId");
 
                     b.ToTable("InventoryNotes");
                 });
@@ -959,13 +975,16 @@ namespace Nebula.Data.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<string>("Month")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
                     b.Property<string>("Motivo")
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<string>("Origin")
-                        .HasMaxLength(250)
-                        .HasColumnType("character varying(250)");
+                    b.Property<Guid?>("OriginId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Remark")
                         .HasMaxLength(250)
@@ -981,11 +1000,18 @@ namespace Nebula.Data.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<string>("Target")
+                    b.Property<Guid?>("TargetId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Year")
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OriginId");
+
+                    b.HasIndex("TargetId");
 
                     b.ToTable("TransferNotes");
                 });
@@ -1166,6 +1192,21 @@ namespace Nebula.Data.Migrations
                     b.Navigation("PeopleDocType");
                 });
 
+            modelBuilder.Entity("Nebula.Data.Models.InventoryNote", b =>
+                {
+                    b.HasOne("Nebula.Data.Models.Contact", "Contact")
+                        .WithMany()
+                        .HasForeignKey("ContactId");
+
+                    b.HasOne("Nebula.Data.Models.Warehouse", "Warehouse")
+                        .WithMany()
+                        .HasForeignKey("WarehouseId");
+
+                    b.Navigation("Contact");
+
+                    b.Navigation("Warehouse");
+                });
+
             modelBuilder.Entity("Nebula.Data.Models.InventoryNoteDetail", b =>
                 {
                     b.HasOne("Nebula.Data.Models.InventoryNote", "InventoryNote")
@@ -1209,6 +1250,21 @@ namespace Nebula.Data.Migrations
                         .HasForeignKey("CajaId");
 
                     b.Navigation("Caja");
+                });
+
+            modelBuilder.Entity("Nebula.Data.Models.TransferNote", b =>
+                {
+                    b.HasOne("Nebula.Data.Models.Warehouse", "Origin")
+                        .WithMany()
+                        .HasForeignKey("OriginId");
+
+                    b.HasOne("Nebula.Data.Models.Warehouse", "Target")
+                        .WithMany()
+                        .HasForeignKey("TargetId");
+
+                    b.Navigation("Origin");
+
+                    b.Navigation("Target");
                 });
 
             modelBuilder.Entity("Nebula.Data.Models.TransferNoteDetail", b =>

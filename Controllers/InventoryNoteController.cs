@@ -28,7 +28,9 @@ namespace Nebula.Controllers
         public async Task<IActionResult> Index([FromQuery] NoteFilter filter)
         {
             var result = await _context.InventoryNotes.AsNoTracking()
-                .Where(m => m.WarehouseId.Equals(filter.WarehouseId)
+                .Include(m => m.Contact)
+                .Include(m => m.Warehouse)
+                .Where(m => m.WarehouseId.ToString().Equals(filter.WarehouseId)
                             && m.Year.Equals(filter.Year) && m.Month.Equals(filter.Month)).ToListAsync();
             return Ok(result);
         }
@@ -57,6 +59,7 @@ namespace Nebula.Controllers
                     {
                         ContactId = model.ContactId,
                         WarehouseId = model.WarehouseId,
+                        NoteType = model.NoteType,
                         Motivo = motivo.Description,
                         StartDate = model.StartDate,
                         Remark = model.Remark,
@@ -123,6 +126,7 @@ namespace Nebula.Controllers
                     // Editar Cabecera.
                     result.ContactId = model.ContactId;
                     result.WarehouseId = model.WarehouseId;
+                    result.NoteType = model.NoteType;
                     result.Motivo = motivo.Description;
                     result.StartDate = model.StartDate;
                     result.Remark = model.Remark;

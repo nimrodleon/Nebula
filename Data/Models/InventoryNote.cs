@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Nebula.Data.Models
 {
@@ -8,7 +9,22 @@ namespace Nebula.Data.Models
     {
         public int Id { get; set; }
         public int? ContactId { get; set; }
-        public string WarehouseId { get; set; }
+
+        /// <summary>
+        /// Clave foránea Contacto.
+        /// </summary>
+        [ForeignKey("ContactId")]
+        public Contact Contact { get; set; }
+
+        public Guid? WarehouseId { get; set; }
+
+        /// <summary>
+        /// Clave foránea Almacén.
+        /// </summary>
+        [ForeignKey("WarehouseId")]
+        public Warehouse Warehouse { get; set; }
+
+        [MaxLength(250)] public string NoteType { get; set; }
         [MaxLength(250)] public string Motivo { get; set; }
         [DataType(DataType.Date)] public DateTime StartDate { get; set; }
         [MaxLength(250)] public string Remark { get; set; }
