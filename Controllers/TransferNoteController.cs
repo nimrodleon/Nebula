@@ -60,7 +60,7 @@ namespace Nebula.Controllers
                     {
                         OriginId = model.Origin,
                         TargetId = model.Target,
-                        Motivo = motivo.Description,
+                        Motivo = $"{motivo.Id}|{motivo.Description}",
                         StartDate = model.StartDate,
                         Remark = model.Remark,
                         Status = "BORRADOR",
@@ -114,7 +114,8 @@ namespace Nebula.Controllers
         [HttpPut("Update/{id}")]
         public async Task<IActionResult> Update(int? id, [FromBody] Transfer model)
         {
-            var result = await _context.TransferNotes.FirstOrDefaultAsync(m => m.Id.Equals(id));
+            var result = await _context.TransferNotes.Include(m => m.TransferNoteDetails)
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (result == null) return BadRequest(new {Ok = false, Msg = "No existe la Transferencia de Inventario!"});
             await using (var transaction = await _context.Database.BeginTransactionAsync())
             {
@@ -126,7 +127,7 @@ namespace Nebula.Controllers
                     // Editar Cabecera.
                     result.OriginId = model.Origin;
                     result.TargetId = model.Target;
-                    result.Motivo = motivo.Description;
+                    result.Motivo = $"{motivo.Id}|{motivo.Description}";
                     result.StartDate = model.StartDate;
                     result.Remark = model.Remark;
                     result.Status = "BORRADOR";

@@ -61,7 +61,7 @@ namespace Nebula.Controllers
                         ContactId = model.ContactId,
                         WarehouseId = model.WarehouseId,
                         NoteType = model.NoteType.ToUpper(),
-                        Motivo = motivo.Description,
+                        Motivo = $"{motivo.Id}|{motivo.Description}",
                         StartDate = model.StartDate,
                         Remark = model.Remark,
                         Status = "BORRADOR",
@@ -128,7 +128,7 @@ namespace Nebula.Controllers
                     result.ContactId = model.ContactId;
                     result.WarehouseId = model.WarehouseId;
                     result.NoteType = model.NoteType.ToUpper();
-                    result.Motivo = motivo.Description;
+                    result.Motivo = $"{motivo.Id}|{motivo.Description}";
                     result.StartDate = model.StartDate;
                     result.Remark = model.Remark;
                     result.Status = "BORRADOR";

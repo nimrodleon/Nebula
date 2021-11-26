@@ -77,17 +77,12 @@
               <td>{{item.startDate|date}}</td>
               <td>{{item.origin.name}}</td>
               <td>{{item.target.name}}</td>
-              <td>{{item.motivo}}</td>
+              <td>{{item.motivo.split('|')[1]}}</td>
               <td>{{item.remark}}</td>
-              <td>
-                <div class="actions ms-auto">
-                  <button type="button" class="btn btn-secondary btn-sm me-2">
-                    <fa-icon [icon]="faSignOutAlt"></fa-icon>
-                  </button>
-                  <button type="button" class="btn btn-danger btn-sm">
-                    <fa-icon [icon]="faTrashAlt"></fa-icon>
-                  </button>
-                </div>
+              <td class="text-end">
+                <button type="button" [routerLink]="['/inventory/transfer/form', item.id]" class="btn btn-primary btn-sm">
+                  <span class="text-uppercase">Detalle</span>
+                </button>
               </td>
             </tr>
             </tbody>

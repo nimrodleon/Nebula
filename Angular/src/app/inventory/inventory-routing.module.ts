@@ -14,8 +14,10 @@ const routes: Routes = [{
     {path: 'input-note', component: InputNoteListComponent},
     {path: 'output-note', component: OutputNoteListComponent},
     {path: 'note-form/:type', component: NoteFormComponent},
+    {path: 'note-form/:type/:id', component: NoteFormComponent},
     {path: 'transfer', component: TransferListComponent},
     {path: 'transfer/form', component: TransferFormComponent},
+    {path: 'transfer/form/:id', component: TransferFormComponent},
     {path: '**', redirectTo: ''}
   ]
 }];
