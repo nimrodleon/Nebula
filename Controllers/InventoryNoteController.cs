@@ -41,7 +41,9 @@ namespace Nebula.Controllers
         {
             if (id == null) return BadRequest();
             var result = await _context.InventoryNotes.IgnoreQueryFilters().AsNoTracking()
-                .Include(m => m.InventoryNoteDetails).FirstOrDefaultAsync(m => m.Id.Equals(id));
+                .Include(m => m.Contact)
+                .Include(m => m.InventoryNoteDetails)
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
             return Ok(result);
         }
 
@@ -115,7 +117,8 @@ namespace Nebula.Controllers
         [HttpPut("Update/{id}")]
         public async Task<IActionResult> Update(int? id, [FromBody] Note model)
         {
-            var result = await _context.InventoryNotes.FirstOrDefaultAsync(m => m.Id.Equals(id));
+            var result = await _context.InventoryNotes.Include(m => m.InventoryNoteDetails)
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (result == null) return BadRequest(new {Ok = false, Msg = "No existe la Nota de Inventario!"});
             await using (var transaction = await _context.Database.BeginTransactionAsync())
             {

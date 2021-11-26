@@ -3,10 +3,10 @@ import {faArrowLeft, faEdit, faIdCardAlt, faPlus, faSave, faTrashAlt} from '@for
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import * as moment from 'moment';
+import Swal from 'sweetalert2';
 import {environment} from 'src/environments/environment';
 import {InventoryReason, ItemNote, Warehouse} from '../../interfaces';
 import {InventoryNoteService, InventoryReasonService, WarehouseService} from '../../services';
-import Swal from 'sweetalert2';
 
 declare var jQuery: any;
 declare var bootstrap: any;
@@ -25,6 +25,7 @@ export class NoteFormComponent implements OnInit {
   faIdCardAlt = faIdCardAlt;
   noteType: string = '';
   private appURL: string = environment.applicationUrl;
+  noteId: number | null = null;
   warehouses: Array<Warehouse> = new Array<Warehouse>();
   motivos: Array<InventoryReason> = new Array<InventoryReason>();
   noteForm: FormGroup = this.fb.group({
@@ -59,6 +60,29 @@ export class NoteFormComponent implements OnInit {
           this.inventoryReasonService.index('Output')
             .subscribe(result => this.motivos = result);
           break;
+      }
+      if (params.get('id')) {
+        this.noteId = Number(params.get('id'));
+        this.inventoryNoteService.show(<any>params.get('id')).subscribe(result => {
+          // cargar cliente a select2.
+          const newOption = new Option(result.contact.name, result.contact.id, true, true);
+          jQuery('#contactId').append(newOption).trigger('change');
+          this.noteForm.controls['contactId'].setValue(result.contactId);
+          this.noteForm.controls['warehouseId'].setValue(result.warehouseId);
+          this.noteForm.controls['motivo'].setValue(result.motivo.split('|')[0]);
+          this.noteForm.controls['startDate'].setValue(moment(result.startDate).format('YYYY-MM-DD'));
+          this.noteForm.controls['remark'].setValue(result.remark);
+          // cargar items nota de inventario.
+          result.inventoryNoteDetails.forEach(item => {
+            this.itemNotes.push({
+              productId: item.productId,
+              description: item.description,
+              quantity: item.quantity,
+              price: item.price,
+              amount: item.amount
+            });
+          });
+        });
       }
     });
     // cargar lista de almacenes.
@@ -138,13 +162,23 @@ export class NoteFormComponent implements OnInit {
 
   // botón registrar.
   public async register() {
-    this.inventoryNoteService.store({
-      ...this.noteForm.value, noteType: this.noteType, itemNotes: this.itemNotes
-    }).subscribe(result => {
-      if (result.ok) {
-        this.router.navigate([`/inventory/${this.noteType}-note`]);
-      }
-    });
+    if (this.noteId === null) {
+      this.inventoryNoteService.store({
+        ...this.noteForm.value, noteType: this.noteType, itemNotes: this.itemNotes
+      }).subscribe(result => {
+        if (result.ok) {
+          this.router.navigate([`/inventory/${this.noteType}-note`]);
+        }
+      });
+    } else {
+      this.inventoryNoteService.update(this.noteId, {
+        ...this.noteForm.value, noteType: this.noteType, itemNotes: this.itemNotes
+      }).subscribe(result => {
+        if (result.ok) {
+          this.router.navigate([`/inventory/${this.noteType}-note`]);
+        }
+      });
+    }
   }
 
 }
