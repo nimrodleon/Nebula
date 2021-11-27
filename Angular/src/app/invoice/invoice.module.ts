@@ -10,6 +10,8 @@ import {ItemComprobanteComponent} from './components/item-comprobante/item-compr
 import {ProductsModule} from '../products/products.module';
 import {InvoiceNoteComponent} from './pages/invoice-note/invoice-note.component';
 import {InvoiceDetailComponent} from './pages/invoice-detail/invoice-detail.component';
+import {CashierModule} from '../cashier/cashier.module';
+import {ContactModule} from '../contact/contact.module';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import {InvoiceDetailComponent} from './pages/invoice-detail/invoice-detail.comp
     ReactiveFormsModule,
     FontAwesomeModule,
     GlobalModule,
-    ProductsModule
+    ProductsModule,
+    CashierModule,
+    ContactModule
   ],
   exports: [
     ItemComprobanteComponent

@@ -9,20 +9,20 @@ import {ContactListComponent} from './pages/contact-list/contact-list.component'
 import {ContactModalComponent} from './components/contact-modal/contact-modal.component';
 
 @NgModule({
-    declarations: [
-        ContactListComponent,
-        ContactModalComponent
-    ],
-    exports: [
-        ContactModalComponent
-    ],
-    imports: [
-        CommonModule,
-        ContactRoutingModule,
-        ReactiveFormsModule,
-        FontAwesomeModule,
-        GlobalModule
-    ]
+  declarations: [
+    ContactListComponent,
+    ContactModalComponent
+  ],
+  exports: [
+    ContactModalComponent
+  ],
+  imports: [
+    CommonModule,
+    ContactRoutingModule,
+    ReactiveFormsModule,
+    FontAwesomeModule,
+    GlobalModule
+  ]
 })
 export class ContactModule {
 }

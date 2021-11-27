@@ -7,10 +7,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import * as moment from 'moment';
 import {environment} from 'src/environments/environment';
-import {Caja} from 'src/app/cashier/interfaces';
+import {Caja, Cuota} from 'src/app/cashier/interfaces';
 import {DetailComprobante, TypeOperationSunat} from '../../interfaces';
 import {CajaService} from 'src/app/cashier/services';
 import {InvoiceService, SunatService} from '../../services';
+import {Contact} from '../../../contact/interfaces';
+import {ResponseData} from '../../../global/interfaces';
 
 declare var jQuery: any;
 declare var bootstrap: any;
@@ -31,6 +33,8 @@ export class InvoiceComponent implements OnInit {
   invoiceType: string = '';
   nomComprobante: string = '';
   private appURL: string = environment.applicationUrl;
+  currentContact: Contact = new Contact();
+  contactModal: any;
   listaDeCajas: Array<Caja> = new Array<Caja>();
   typeOperation: Array<TypeOperationSunat> = new Array<TypeOperationSunat>();
   comprobanteForm: FormGroup = this.fb.group({
@@ -51,6 +55,8 @@ export class InvoiceComponent implements OnInit {
   });
   detailComprobante: Array<DetailComprobante> = new Array<DetailComprobante>();
   itemComprobanteModal: any;
+  listaDeCuotas: Array<Cuota> = new Array<Cuota>();
+  cuotaModal: any;
 
   constructor(
     private router: Router,
@@ -91,12 +97,16 @@ export class InvoiceComponent implements OnInit {
       const data = e.params.data;
       this.comprobanteForm.controls['contactId'].setValue(data.id);
     });
+    // modal formulario contacto.
+    this.contactModal = new bootstrap.Modal(document.querySelector('#contact-modal'));
     // cargar lista de cajas.
     this.cajaService.index().subscribe(result => this.listaDeCajas = result);
     // cargar lista tipos de operación.
     this.sunatService.typeOperation().subscribe(result => this.typeOperation = result);
     // modal item comprobante.
     this.itemComprobanteModal = new bootstrap.Modal(document.querySelector('#item-comprobante'));
+    // modal cuota crédito.
+    this.cuotaModal = new bootstrap.Modal(document.querySelector('#cuota-modal'));
   }
 
   // calcular importe venta.
@@ -111,8 +121,9 @@ export class InvoiceComponent implements OnInit {
     this.comprobanteForm.controls['sumTotTributos'].setValue(total - subTotal);
   }
 
-  public checkCreditoFormaPago(): boolean {
-    return this.comprobanteForm.get('formaPago')?.value === 'Credito';
+  // verificar forma de pago a Crédito.
+  public checkCreditPaymentType(): boolean {
+    return this.comprobanteForm.get('paymentType')?.value === 'Credito';
   }
 
   // abrir modal item-comprobante.
@@ -126,6 +137,22 @@ export class InvoiceComponent implements OnInit {
     this.detailComprobante.push(data);
     this.calcImporteVenta();
     this.itemComprobanteModal.hide();
+  }
+
+  // borrar item comprobante.
+  public deleteItemComprobante(numItem: number): void {
+    let deleted: Boolean = false;
+    this.detailComprobante.forEach((value, index, array) => {
+      if (value.numItem === numItem) {
+        array.splice(index, 1);
+        deleted = true;
+      }
+    });
+    if (deleted) {
+      for (let i = 0; i < this.detailComprobante.length; i++) {
+        this.detailComprobante[i].numItem = i + 1;
+      }
+    }
   }
 
   // registrar comprobante.
@@ -150,6 +177,52 @@ export class InvoiceComponent implements OnInit {
         this.router.navigate([URI]);
       }
     });
+  }
+
+  // abrir modal cuota.
+  public showCuotaModal(): void {
+    this.cuotaModal.show();
+  }
+
+  // ocultar modal cuota.
+  public hideCuotaModal(data: Cuota): void {
+    if (data) {
+      data.numCuota = this.listaDeCuotas.length + 1;
+      this.listaDeCuotas.push(data);
+      this.cuotaModal.hide();
+    }
+  }
+
+  // borrar item cuota.
+  public deleteItemCuota(numCuota: number): void {
+    let deleted: Boolean = false;
+    this.listaDeCuotas.forEach((value, index, array) => {
+      if (value.numCuota === numCuota) {
+        array.splice(index, 1);
+        deleted = true;
+      }
+    });
+    if (deleted) {
+      for (let i = 0; i < this.listaDeCuotas.length; i++) {
+        this.listaDeCuotas[i].numCuota = i + 1;
+      }
+    }
+  }
+
+  // abrir modal agregar contacto.
+  public showContactModal(): void {
+    this.currentContact = new Contact();
+    this.contactModal.show();
+  }
+
+  // ocultar modal contacto.
+  public hideContactModal(response: ResponseData<Contact>): void {
+    if (response.ok) {
+      const newOption = new Option(response.data?.name, <any>response.data?.id, true, true);
+      jQuery('#clientId').append(newOption).trigger('change');
+      this.comprobanteForm.controls['contactId'].setValue(response.data?.id);
+      this.contactModal.hide();
+    }
   }
 
 }

@@ -33,6 +33,9 @@ import {CuotaModalComponent} from './components/cuota-modal/cuota-modal.componen
     FontAwesomeModule,
     ProductsModule,
     ContactModule
+  ],
+  exports: [
+    CuotaModalComponent
   ]
 })
 export class CashierModule {
