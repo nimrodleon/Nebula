@@ -79,7 +79,7 @@ namespace Nebula.Controllers
                 data.Add(new Select2()
                 {
                     Id = item.Id,
-                    Text = $"{item.Description} | {Convert.ToDecimal(item.Price):N2}"
+                    Text = $"{item.Description} | {Convert.ToDecimal(item.Price1):N2}"
                 });
             });
             return Ok(new {Results = data});
