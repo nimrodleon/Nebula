@@ -46,7 +46,7 @@ export class TerminalComponent implements OnInit {
   // ====================================================================================================
   private appURL: string = environment.applicationUrl;
   queryProduct: FormControl = this.fb.control('');
-  currentProduct: Product = new Product();
+  currentProduct: Product | any;
   currentContact: Contact = new Contact();
   products: Array<Product> = new Array<Product>();
   productModal: any;
@@ -109,7 +109,7 @@ export class TerminalComponent implements OnInit {
 
   // agregar nuevo producto.
   public addProductModal(): void {
-    this.currentProduct = new Product();
+    this.currentProduct = null;
     this.productModal.show();
   }
 

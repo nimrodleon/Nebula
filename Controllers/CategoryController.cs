@@ -20,6 +20,15 @@ namespace Nebula.Controllers
             _context = context;
         }
 
+        [HttpGet("Show/{id}")]
+        public async Task<IActionResult> Show(int? id)
+        {
+            if (id == null) return BadRequest();
+            var result = await _context.Categories.AsNoTracking()
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
+            return Ok(result);
+        }
+
         [HttpGet("Select2")]
         public async Task<IActionResult> Select2([FromQuery] string term)
         {

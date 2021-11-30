@@ -18,7 +18,7 @@ declare var bootstrap: any;
 export class ItemComprobanteComponent implements OnInit {
   faBars = faBars;
   private appURL: string = environment.applicationUrl;
-  currentProduct: Product = new Product();
+  currentProduct: Product | any;
   @Output()
   responseData = new EventEmitter<DetailComprobante>();
   itemComprobanteForm: FormGroup = this.fb.group({
@@ -54,7 +54,7 @@ export class ItemComprobanteComponent implements OnInit {
       this.itemComprobanteForm.controls['productId'].setValue(data.id);
       this.productService.show(data.id).subscribe(result => {
         this.itemComprobanteForm.controls['description'].setValue(result.description);
-        this.itemComprobanteForm.controls['price'].setValue(result.price);
+        this.itemComprobanteForm.controls['price'].setValue(result.price1);
       });
     });
     // resetear formulario.

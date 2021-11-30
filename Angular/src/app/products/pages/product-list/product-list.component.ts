@@ -19,7 +19,7 @@ export class ProductListComponent implements OnInit {
   faPlus = faPlus;
   faFilter = faFilter;
   // ====================================================================================================
-  currentProduct: Product = new Product();
+  currentProduct: Product | any;
   products: PagedResponse<Product> = new PagedResponse<Product>();
   query: FormControl = this.fb.control('');
   pageNumber: number = 1;
@@ -54,7 +54,7 @@ export class ProductListComponent implements OnInit {
   // agregar nuevo producto.
   public addProductModal(): void {
     this.title = 'Agregar Producto';
-    this.currentProduct = new Product();
+    this.currentProduct = null;
     this.productModal.show();
   }
 

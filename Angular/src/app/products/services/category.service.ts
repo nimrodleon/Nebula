@@ -14,6 +14,10 @@ export class CategoryService {
   constructor(private http: HttpClient) {
   }
 
+  public show(id: number): Observable<Category> {
+    return this.http.get<Category>(`${this.appURL}/Show/${id}`);
+  }
+
   public store(data: Category): Observable<ResponseData<Category>> {
     return this.http.post<ResponseData<Category>>(`${this.appURL}/Store`, data);
   }

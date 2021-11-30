@@ -36,22 +36,22 @@ export class TerminalService {
     this.productService.show(prodId).subscribe(result => {
       if (this._sale.details.length <= 0) {
         this.sale.details.push(new SaleDetail(result.id, result.description,
-          result.price, 1, 0, result.price));
+          result.price1, 1, 0, result.price1));
         this.calcImporteVenta();
       } else {
         let changeQuantity: boolean = false;
         this._sale.details.forEach(item => {
           if (item.productId === result.id) {
-            item.price = result.price;
+            item.price = result.price1;
             item.quantity = item.quantity + 1;
-            item.amount = item.quantity * result.price;
+            item.amount = item.quantity * result.price1;
             this.calcImporteVenta();
             changeQuantity = true;
           }
         });
         if (!changeQuantity) {
           this.sale.details.push(new SaleDetail(result.id, result.description,
-            result.price, 1, 0, result.price));
+            result.price1, 1, 0, result.price1));
           this.calcImporteVenta();
         }
       }
