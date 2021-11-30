@@ -1,4 +1,5 @@
-<div class="modal fade" id="product-modal" tabindex="-1">
+<div class="modal fade" id="product-modal"
+     data-bs-backdrop="static" tabindex="-1">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -63,9 +64,10 @@
             <div class="mb-1">
               <label class="col-form-label-sm">
                 <span class="text-uppercase me-1">Categoria</span>
-                <a href="#" class="text-uppercase text-decoration-none">[ Agregar ]</a>
+                <a href="#" (click)="showCategoryModal($event)"
+                   class="text-uppercase text-decoration-none">[ Agregar ]</a>
               </label>
-              <select formControlName="undMedidaId" class="form-select"></select>
+              <select id="categoryId" class="form-select"></select>
             </div>
             <div class="mb-1">
               <label class="col-form-label-sm text-uppercase">Unidad de medida</label>
@@ -98,3 +100,8 @@
     </div>
   </div>
 </div>
+
+<app-category-modal
+  [title]="'Agregar Categoría'"
+  (responseData)="hideCategoryModal($event)">
+</app-category-modal>

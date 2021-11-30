@@ -42,6 +42,7 @@ namespace Nebula.Controllers
         [HttpPost("Store")]
         public async Task<IActionResult> Store([FromBody] Category model)
         {
+            model.Name = model.Name.ToUpper();
             _context.Categories.Add(model);
             await _context.SaveChangesAsync();
             return Ok(new

@@ -1,9 +1,13 @@
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {faBars, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, FormGroup} from '@angular/forms';
+import {environment} from 'src/environments/environment';
 import {ProductService, UndMedidaService} from '../../services';
-import {Product, UndMedida} from '../../interfaces';
+import {Category, Product, UndMedida} from '../../interfaces';
 import {ResponseData} from '../../../global/interfaces';
+
+declare var jQuery: any;
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-product-modal',
@@ -15,6 +19,7 @@ export class ProductModalComponent implements OnInit {
   faSearch = faSearch;
   faTrashAlt = faTrashAlt;
   // ====================================================================================================
+  private appURL: string = environment.applicationUrl;
   undMedidas: Array<UndMedida> = new Array<UndMedida>();
   productForm: FormGroup = this.fb.group({
     id: [null],
@@ -36,6 +41,7 @@ export class ProductModalComponent implements OnInit {
   product: Product = new Product();
   @Output()
   responseData = new EventEmitter<ResponseData<Product>>();
+  categoryModal: any;
 
   constructor(
     private fb: FormBuilder,
@@ -44,6 +50,18 @@ export class ProductModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // cargar lista de categorías.
+    jQuery('#categoryId').select2({
+      theme: 'bootstrap-5',
+      placeholder: 'BUSCAR CATEGORÍA',
+      dropdownParent: jQuery('#product-modal'),
+      ajax: {
+        url: this.appURL + 'Category/Select2',
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }
+    });
     // cargar las unidades de medidas.
     this.undMedidaService.index().subscribe(result => this.undMedidas = result);
     // suscribir formGroup.
@@ -58,6 +76,8 @@ export class ProductModalComponent implements OnInit {
         this.fileImage = null;
       });
     }
+    // formulario modal categoría.
+    this.categoryModal = new bootstrap.Modal(document.querySelector('#category-modal'));
   }
 
   // seleccionar imagen.
@@ -87,6 +107,21 @@ export class ProductModalComponent implements OnInit {
         .subscribe(result => {
           this.responseData.emit(result);
         });
+    }
+  }
+
+  // agregar categoría.
+  public showCategoryModal(e: Event): void {
+    e.preventDefault();
+    this.categoryModal.show();
+  }
+
+  // ocultar categoría.
+  public hideCategoryModal(response: ResponseData<Category>): void {
+    if (response.ok) {
+      const newOption = new Option(response.data?.name, <any>response.data?.id, true, true);
+      jQuery('#categoryId').append(newOption).trigger('change');
+      this.categoryModal.hide();
     }
   }
 
