@@ -33,7 +33,7 @@ export class InvoiceComponent implements OnInit {
   invoiceType: string = '';
   nomComprobante: string = '';
   private appURL: string = environment.applicationUrl;
-  currentContact: Contact = new Contact();
+  currentContact: Contact | any;
   contactModal: any;
   listaDeCajas: Array<Caja> = new Array<Caja>();
   typeOperation: Array<TypeOperationSunat> = new Array<TypeOperationSunat>();
@@ -211,7 +211,7 @@ export class InvoiceComponent implements OnInit {
 
   // abrir modal agregar contacto.
   public showContactModal(): void {
-    this.currentContact = new Contact();
+    this.currentContact = null;
     this.contactModal.show();
   }
 

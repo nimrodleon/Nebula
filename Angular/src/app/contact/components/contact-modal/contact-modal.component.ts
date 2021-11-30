@@ -16,7 +16,7 @@ export class ContactModalComponent implements OnInit {
   @Input()
   title: string = '';
   @Input()
-  contact: Contact = new Contact();
+  contact: Contact | any;
   @Output()
   responseData = new EventEmitter<ResponseData<Contact>>();
   // ====================================================================================================
@@ -27,8 +27,7 @@ export class ContactModalComponent implements OnInit {
     peopleDocTypeId: [''],
     name: [''],
     address: [''],
-    phoneNumber1: [''],
-    phoneNumber2: [''],
+    phoneNumber: [''],
     email: [''],
   });
 

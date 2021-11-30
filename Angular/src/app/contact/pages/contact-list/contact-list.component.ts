@@ -19,7 +19,7 @@ export class ContactListComponent implements OnInit {
   faEdit = faEdit;
   faFilter = faFilter;
   // ====================================================================================================
-  currentContact: Contact = new Contact();
+  currentContact: Contact | any;
   contacts: PagedResponse<Contact> = new PagedResponse<Contact>();
   query: FormControl = this.fb.control('');
   pageNumber: number = 1;
@@ -54,7 +54,7 @@ export class ContactListComponent implements OnInit {
   // botón agregar contacto.
   public addContactModal(): void {
     this.title = 'Agregar Contacto';
-    this.currentContact = new Contact();
+    this.currentContact = null;
     this.contactModal.show();
   }
 
