@@ -58,10 +58,10 @@ namespace Nebula.Data.Models
         public string FecVencimiento { get; set; }
 
         /// <summary>
-        /// Código del domicilio fiscal o de local anexo del emisor. n4
+        /// Forma de pago. Credito / Contado - a7
         /// </summary>
         [MaxLength(250)]
-        public string CodLocalEmisor { get; set; }
+        public string FormaPago { get; set; }
 
         /// <summary>
         /// Tipo de documento de identidad del adquirente o usuario. Catálogo: 6, an1

@@ -48,28 +48,30 @@
           <table class="table table-striped mb-0">
             <thead>
             <tr class="text-uppercase">
+              <th>Documento</th>
+              <th>Cuota</th>
               <th>Vencimiento</th>
               <th>Días Mora</th>
-              <th>Programado</th>
               <th>Detalle</th>
               <th>Estado</th>
-              <th>Documento</th>
+              <th>Monto</th>
               <th>Saldo</th>
               <th></th>
             </tr>
             </thead>
             <tbody>
             <tr>
+              <td>F001-000241</td>
+              <td>1</td>
               <td>2021-11-02</td>
               <td>0</td>
-              <td>2021-01-11</td>
               <td>
                 <button type="button" class="btn btn-secondary btn-sm">
                   <span class="text-uppercase">Detalle</span>
                 </button>
               </td>
               <td>PENDIENTE</td>
-              <td>F001-000241</td>
+              <td>200</td>
               <td>200</td>
               <td class="text-end">
                 <button type="button" (click)="showCobranzaModal()" class="btn btn-primary btn-sm">

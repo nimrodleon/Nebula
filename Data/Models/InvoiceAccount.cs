@@ -46,6 +46,11 @@ namespace Nebula.Data.Models
         public string Status { get; set; }
 
         /// <summary>
+        /// Número de Cuota.
+        /// </summary>
+        public int? Cuota { get; set; }
+
+        /// <summary>
         /// Monto Cuenta.
         /// </summary>
         public decimal? Amount { get; set; }
