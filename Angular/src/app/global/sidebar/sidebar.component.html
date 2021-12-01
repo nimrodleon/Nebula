@@ -64,7 +64,7 @@
             <fa-icon [icon]="faCogs"></fa-icon>
             <span class="">Configuración</span>
           </a>
-          <a (click)="mnConfig($event)" href="#" class="toggler">
+          <a (click)="mnConfig($event, true)" href="#" class="toggler">
             <fa-icon [icon]="faArrowRight"></fa-icon>
           </a>
         </div>
@@ -159,13 +159,13 @@
           <a (click)="mnBack($event)" href="#" class="toggler">
             <fa-icon [icon]="faArrowLeft"></fa-icon>
           </a>
-          <a routerLink="#" class="w-100">
+          <a routerLink="/system" class="w-100">
             <span class="">Configuración</span>
           </a>
         </div>
       </li>
       <li>
-        <a routerLink="#" class="w-100">
+        <a routerLink="/system/company" class="w-100">
           <span class="">Empresa</span>
         </a>
       </li>

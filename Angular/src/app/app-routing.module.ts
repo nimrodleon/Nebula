@@ -11,8 +11,18 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'contacts',
+    loadChildren: () => import('./contact/contact.module').then(m => m.ContactModule),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'cashier',
     loadChildren: () => import('./cashier/cashier.module').then(m => m.CashierModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'inventory',
+    loadChildren: () => import('./inventory/inventory.module').then(m => m.InventoryModule),
     canActivate: [AuthGuard]
   },
   {
@@ -31,13 +41,8 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'inventory',
-    loadChildren: () => import('./inventory/inventory.module').then(m => m.InventoryModule),
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'contacts',
-    loadChildren: () => import('./contact/contact.module').then(m => m.ContactModule),
+    path: 'system',
+    loadChildren: () => import('./system/system.module').then(m => m.SystemModule),
     canActivate: [AuthGuard]
   },
   {path: '', redirectTo: '/products', pathMatch: 'full'}
