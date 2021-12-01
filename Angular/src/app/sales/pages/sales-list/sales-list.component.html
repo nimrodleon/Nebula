@@ -56,7 +56,9 @@
               <th>Fecha</th>
               <th>Estado</th>
               <th>Total</th>
-              <th></th>
+              <th>PDF</th>
+              <th>XML</th>
+              <th>CDR</th>
             </tr>
             </thead>
             <tbody>
@@ -70,32 +72,19 @@
               <td><span class="badge bg-warning">CRÉDITO</span></td>
               <td>{{item.sumImpVenta|currency}}</td>
               <td>
-                <div class="actions ms-auto">
-                  <button type="button" class="btn btn-secondary btn-sm me-2">
-                    <fa-icon [icon]="faEdit"></fa-icon>
-                  </button>
-                  <button type="button" class="btn btn-danger btn-sm">
-                    <fa-icon [icon]="faTrashAlt"></fa-icon>
-                  </button>
-                </div>
+                <a href="#">
+                  <img src="/assets/pdf_cpe.svg" class="img-fluid" alt="PDF">
+                </a>
               </td>
-            </tr>
-            <tr>
-              <td>BOLETA</td>
-              <td>B001-4500</td>
-              <td class="text-uppercase">MAXIMILIANO RIVAS ZEVALLOS</td>
-              <td>2021-07-31</td>
-              <td><span class="badge bg-success">PAGADO</span></td>
-              <td>50.00</td>
               <td>
-                <div class="actions ms-auto">
-                  <button type="button" class="btn btn-secondary btn-sm me-2">
-                    <fa-icon [icon]="faEdit"></fa-icon>
-                  </button>
-                  <button type="button" class="btn btn-danger btn-sm">
-                    <fa-icon [icon]="faTrashAlt"></fa-icon>
-                  </button>
-                </div>
+                <a href="#">
+                  <img src="/assets/xml_cpe.svg" class="img-fluid" alt="XML">
+                </a>
+              </td>
+              <td>
+                <a href="#">
+                  <img src="/assets/xml_cdr.svg" class="img-fluid" alt="CDR">
+                </a>
               </td>
             </tr>
             </tbody>
