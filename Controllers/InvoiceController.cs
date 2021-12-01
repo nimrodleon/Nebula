@@ -175,7 +175,6 @@ namespace Nebula.Controllers
                                 MtoTriIcbperUnidad = 0.3M,
                                 MtoPrecioVentaUnitario = item.Price * item.Quantity,
                                 MtoValorVentaItem = (item.Price * item.Quantity) * 1.18M,
-                                MtoValorReferencialUnitario = 0,
                             });
                             _context.SaveChanges();
                             _logger.LogInformation("Item comprobante agregado!");
@@ -328,7 +327,6 @@ namespace Nebula.Controllers
                                 MtoTriIcbperUnidad = 0.3M,
                                 MtoPrecioVentaUnitario = item.Price * item.Quantity,
                                 MtoValorVentaItem = (item.Price * item.Quantity) * 1.18M,
-                                MtoValorReferencialUnitario = 0,
                             });
                             _context.SaveChanges();
                             _logger.LogInformation("Item comprobante agregado!");
