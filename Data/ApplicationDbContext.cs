@@ -13,27 +13,115 @@ namespace Nebula.Data
         {
         }
 
+        /// <summary>
+        /// Lista de Contactos.
+        /// </summary>
         public DbSet<Contact> Contacts { get; set; }
+
+        /// <summary>
+        /// Tipo documento.
+        /// </summary>
         public DbSet<PeopleDocType> PeopleDocTypes { get; set; }
+
+        /// <summary>
+        /// Configuración de Caja.
+        /// </summary>
         public DbSet<Caja> Cajas { get; set; }
+
+        /// <summary>
+        /// Aperturas y Cierres de caja.
+        /// </summary>
         public DbSet<CajaDiaria> CajasDiaria { get; set; }
+
+        /// <summary>
+        /// Unidades de Medida.
+        /// </summary>
         public DbSet<UndMedida> UndMedida { get; set; }
+
+        /// <summary>
+        /// Lista de Productos.
+        /// </summary>
         public DbSet<Product> Products { get; set; }
+
+        /// <summary>
+        /// Operaciones de Caja.
+        /// </summary>
         public DbSet<CashierDetail> CashierDetails { get; set; }
+
+        /// <summary>
+        /// Cabecera Factura.
+        /// </summary>
         public DbSet<Invoice> Invoices { get; set; }
+
+        /// <summary>
+        /// Detalle Factura.
+        /// </summary>
         public DbSet<InvoiceDetail> InvoiceDetails { get; set; }
+
+        /// <summary>
+        /// Series de Comprobantes.
+        /// </summary>
         public DbSet<SerieInvoice> SerieInvoices { get; set; }
+
+        /// <summary>
+        /// Catalogo Tipos de Operación para facturar.
+        /// </summary>
         public DbSet<TypeOperationSunat> TypeOperationSunat { get; set; }
+
+        /// <summary>
+        /// Notas de Crédito/Débito.
+        /// </summary>
         public DbSet<InvoiceNote> InvoiceNotes { get; set; }
+
+        /// <summary>
+        /// Detalle Notas de Crédito/Débito.
+        /// </summary>
         public DbSet<InvoiceNoteDetail> InvoiceNoteDetails { get; set; }
+
+        /// <summary>
+        /// Lista de almacenes.
+        /// </summary>
         public DbSet<Warehouse> Warehouses { get; set; }
+
+        /// <summary>
+        /// Motivos de Inventario.
+        /// </summary>
         public DbSet<InventoryReason> InventoryReasons { get; set; }
+
+        /// <summary>
+        /// Transferencia entre almacenes.
+        /// </summary>
         public DbSet<TransferNote> TransferNotes { get; set; }
+
+        /// <summary>
+        /// Detalle Transferencia entre almacenes.
+        /// </summary>
         public DbSet<TransferNoteDetail> TransferNoteDetails { get; set; }
+
+        /// <summary>
+        /// Notas de Ingreso/Salida.
+        /// </summary>
         public DbSet<InventoryNote> InventoryNotes { get; set; }
+
+        /// <summary>
+        /// Detalle Notas de Ingreso/Salida.
+        /// </summary>
         public DbSet<InventoryNoteDetail> InventoryNoteDetails { get; set; }
+
+        /// <summary>
+        /// Categoría para productos.
+        /// </summary>
         public DbSet<Category> Categories { get; set; }
+
+        /// <summary>
+        /// Pendientes de Cobro/Pago.
+        /// </summary>
         public DbSet<InvoiceAccount> InvoiceAccounts { get; set; }
+
+        /// <summary>
+        /// Información Empresa.
+        /// </summary>
+        public DbSet<Company> Company { get; set; }
 
         /// <summary>
         /// Configurar SoftDelete.
@@ -117,6 +205,8 @@ namespace Nebula.Data
             modelBuilder.Entity<Category>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<InvoiceAccount>().Property<bool>("SoftDeleted");
             modelBuilder.Entity<InvoiceAccount>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
+            modelBuilder.Entity<Company>().Property<bool>("SoftDeleted");
+            modelBuilder.Entity<Company>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             base.OnModelCreating(modelBuilder);
         }
     }
