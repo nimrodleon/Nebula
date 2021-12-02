@@ -4,7 +4,7 @@
       <fa-icon [icon]="faBars"></fa-icon>
     </a>
     <a (click)="homePage($event)" href="#" class="navbar-brand">
-      <span class="text-uppercase">DEMO S.A.C.</span>
+      <span class="text-uppercase">{{companyName || 'DEMO S.A.C.'}}</span>
     </a>
     <div class="collapse navbar-collapse">
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">

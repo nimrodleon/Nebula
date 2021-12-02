@@ -1,13 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {
-  faBars,
-  faBox, faCashRegister,
-  faCog, faSignOutAlt,
-  faUserCircle
-} from '@fortawesome/free-solid-svg-icons';
+import {faBars, faBox, faCashRegister, faCog, faSignOutAlt, faUserCircle} from '@fortawesome/free-solid-svg-icons';
 import {AuthService} from '../../user/services';
 import {EnumBoolean, EnumMenu} from '../interfaces';
+import {CompanyService} from '../../system/services';
 
 @Component({
   selector: 'app-navbar',
@@ -22,16 +18,20 @@ export class NavbarComponent implements OnInit {
   faBars = faBars;
   faBox = faBox;
   mainMenu: any;
+  companyName: string = '';
 
   constructor(
     private router: Router,
-    private authService: AuthService) {
+    private authService: AuthService,
+    private companyService: CompanyService) {
   }
 
   ngOnInit(): void {
     if (document.getElementById('mainMenu')) {
       this.mainMenu = document.getElementById('mainMenu');
     }
+    // cargar nombre empresa.
+    this.companyService.show().subscribe(result => this.companyName = result.rznSocial);
   }
 
   public async homePage(e: any) {
