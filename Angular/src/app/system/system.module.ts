@@ -7,13 +7,17 @@ import {CompanyComponent} from './pages/company/company.component';
 import {GlobalModule} from '../global/global.module';
 import {WarehouseListComponent} from './pages/warehouse-list/warehouse-list.component';
 import {WarehouseModalComponent} from './components/warehouse-modal/warehouse-modal.component';
+import {InvoiceSerieListComponent} from './pages/invoice-serie-list/invoice-serie-list.component';
+import {InvoiceSerieModalComponent} from './components/invoice-serie-modal/invoice-serie-modal.component';
 
 
 @NgModule({
   declarations: [
     CompanyComponent,
     WarehouseListComponent,
-    WarehouseModalComponent
+    WarehouseModalComponent,
+    InvoiceSerieListComponent,
+    InvoiceSerieModalComponent
   ],
   imports: [
     CommonModule,
