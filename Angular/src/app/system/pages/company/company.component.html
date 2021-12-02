@@ -9,17 +9,17 @@
             <h5 class="fw-bold mb-0">CONFIGURACIÓN DE EMPRESA</h5>
           </div>
           <div class="card-body">
-            <form>
+            <form [formGroup]="companyForm">
               <div class="row mb-3">
                 <label class="col-2 col-form-label text-end fw-bold">R.U.C</label>
                 <div class="col-3">
-                  <input type="text" class="form-control">
+                  <input type="text" formControlName="ruc" class="form-control">
                 </div>
               </div>
               <div class="row mb-3">
                 <label class="col-2 col-form-label text-end fw-bold">Razón Social</label>
                 <div class="col-6">
-                  <input type="text" class="form-control">
+                  <input type="text" formControlName="rznSocial" class="form-control">
                 </div>
               </div>
               <div class="mb-3">
@@ -31,31 +31,31 @@
               <div class="row mb-3">
                 <label class="col-2 col-form-label text-end fw-bold">Cod Local Emisor</label>
                 <div class="col-3">
-                  <input type="text" class="form-control">
+                  <input type="text" formControlName="codLocalEmisor" class="form-control">
                 </div>
                 <label class="col-2 col-form-label text-end fw-bold">Cod Tipo Moneda</label>
                 <div class="col-3">
-                  <input type="text" class="form-control">
+                  <input type="text" formControlName="tipMoneda" class="form-control">
                 </div>
               </div>
               <div class="row mb-3">
                 <label class="col-2 col-form-label text-end fw-bold">Porcentaje IGV</label>
                 <div class="col-3">
-                  <input type="number" step="0.1" class="form-control">
+                  <input type="number" formControlName="porcentajeIgv" step="0.1" class="form-control">
                 </div>
                 <label class="col-2 col-form-label text-end fw-bold">Impuesto por Bolsa</label>
                 <div class="col-3">
-                  <input type="number" step="0.1" class="form-control">
+                  <input type="number" formControlName="valorImpuestoBolsa" step="0.1" class="form-control">
                 </div>
               </div>
               <div class="row mb-3">
                 <label class="col-2 col-form-label text-end fw-bold">Público General</label>
                 <div class="col-3">
-                  <select class="form-select"></select>
+                  <select id="contactId" class="form-select"></select>
                 </div>
                 <label class="col-2 col-form-label text-end fw-bold">Completar Datos Boleta</label>
                 <div class="col-3">
-                  <input type="number" step="0.1" class="form-control">
+                  <input type="number" formControlName="completarDatosBoleta" step="0.1" class="form-control">
                 </div>
               </div>
               <div class="mb-3">
@@ -67,28 +67,28 @@
               <div class="row mb-3">
                 <label class="col-2 col-form-label text-end fw-bold">Cuenta Banco</label>
                 <div class="col-3">
-                  <input type="text" class="form-control">
+                  <input type="text" formControlName="cuentaBancoDetraccion" class="form-control">
                 </div>
                 <label class="col-2 col-form-label text-end fw-bold">Monto Detracción</label>
                 <div class="col-3">
-                  <input type="number" step="0.1" class="form-control">
+                  <input type="number" formControlName="montoDetraccion" step="0.1" class="form-control">
                 </div>
               </div>
               <div class="row">
                 <label class="col-2 col-form-label text-end fw-bold">Texto Detracción</label>
                 <div class="col-8">
-                  <input type="text" class="form-control">
+                  <input type="text" formControlName="textoDetraccion" class="form-control">
                 </div>
               </div>
             </form>
           </div>
           <div class="card-footer">
             <div class="d-flex justify-content-center py-2">
-              <button type="button" class="btn btn-danger btn-lg me-2">
+              <button type="button" (click)="cancel()" class="btn btn-danger btn-lg me-2">
                 <fa-icon [icon]="faArrowLeft"></fa-icon>
                 <span class="text-uppercase ms-1">Cancelar</span>
               </button>
-              <button type="button" class="btn btn-primary btn-lg">
+              <button type="button" (click)="saveChanges()" class="btn btn-primary btn-lg">
                 <fa-icon [icon]="faSave"></fa-icon>
                 <span class="text-uppercase ms-1">Actualizar</span>
               </button>

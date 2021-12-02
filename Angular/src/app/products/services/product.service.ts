@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
-import {environment} from 'src/environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
+import {environment} from 'src/environments/environment';
 import {PagedResponse, ResponseData} from '../../global/interfaces';
 import {Product} from '../interfaces';
 

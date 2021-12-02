@@ -1,5 +1,6 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
+import {ReactiveFormsModule} from '@angular/forms';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 
 import {SystemRoutingModule} from './system-routing.module';
@@ -22,6 +23,7 @@ import {InvoiceSerieModalComponent} from './components/invoice-serie-modal/invoi
   imports: [
     CommonModule,
     SystemRoutingModule,
+    ReactiveFormsModule,
     GlobalModule,
     FontAwesomeModule
   ]
