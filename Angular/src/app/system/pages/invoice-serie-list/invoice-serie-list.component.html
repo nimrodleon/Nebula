@@ -23,7 +23,7 @@
             </button>
           </div>
           <div class="col-auto">
-            <button type="button" class="btn btn-primary">
+            <button type="button" (click)="showInvoiceSerieModal()" class="btn btn-primary">
               <fa-icon [icon]="faPlus"></fa-icon>
               <span class="text-uppercase ms-1">Agregar</span>
             </button>
@@ -75,3 +75,5 @@
     </div>
   </div>
 </div>
+
+<app-invoice-serie-modal [title]="title"></app-invoice-serie-modal>
