@@ -1,0 +1,65 @@
+<app-navbar></app-navbar>
+<div class="Wrapper">
+  <app-sidebar></app-sidebar>
+  <div class="container-fluid">
+    <div class="row px-2">
+      <div class="col-12 bg-white my-2 py-3">
+        <form class="row row-cols-auto g-2">
+          <div class="col-auto">
+            <label class="col-form-label fw-bold">Filtrar por:</label>
+          </div>
+          <div class="col-auto">
+            <div class="input-group">
+              <span class="input-group-text">
+                <fa-icon [icon]="faFilter"></fa-icon>
+              </span>
+              <input type="search" class="form-control" placeholder="ALMACÉN">
+            </div>
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-success">
+              <fa-icon [icon]="faSearch"></fa-icon>
+              <span class="text-uppercase ms-1">Buscar</span>
+            </button>
+          </div>
+          <div class="col-auto">
+            <button type="button" class="btn btn-primary">
+              <fa-icon [icon]="faPlus"></fa-icon>
+              <span class="text-uppercase ms-1">Agregar</span>
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="col-12 bg-white py-3">
+        <h5 class="fw-bold text-uppercase">Lista de Almacenes</h5>
+        <div class="table-responsive">
+          <table class="table table-striped mb-0">
+            <thead>
+            <tr class="text-uppercase">
+              <th>Nombre</th>
+              <th>Observación</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td>Almacén 1</td>
+              <td>-</td>
+              <td>
+                <div class="actions ms-auto">
+                  <button type="button" class="btn btn-secondary btn-sm me-2">
+                    <fa-icon [icon]="faEdit"></fa-icon>
+                  </button>
+                  <button type="button" class="btn btn-danger btn-sm">
+                    <fa-icon [icon]="faTrashAlt"></fa-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
