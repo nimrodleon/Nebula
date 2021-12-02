@@ -2,8 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {faPlus, faSearch, faSignOutAlt, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import * as moment from 'moment';
-import {InventoryNoteService, WarehouseService} from '../../services';
-import {InventoryNote, Warehouse} from '../../interfaces';
+import {InventoryNoteService} from '../../services';
+import {InventoryNote} from '../../interfaces';
+import {Warehouse} from 'src/app/system/interfaces';
+import {WarehouseService} from 'src/app/system/services';
 
 @Component({
   selector: 'app-output-note-list',

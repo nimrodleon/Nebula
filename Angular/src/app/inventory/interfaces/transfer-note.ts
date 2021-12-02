@@ -1,5 +1,5 @@
 import {TransferNoteDetail} from './transfer-note-detail';
-import {Warehouse} from './warehouse';
+import {Warehouse} from '../../system/interfaces';
 
 export interface TransferNote {
   id: number | null;

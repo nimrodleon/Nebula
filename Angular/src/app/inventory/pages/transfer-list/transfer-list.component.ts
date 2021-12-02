@@ -2,8 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {faPlus, faSearch, faSignOutAlt, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import * as moment from 'moment';
-import {TransferNote, Warehouse} from '../../interfaces';
-import {TransferNoteService, WarehouseService} from '../../services';
+import {TransferNote} from '../../interfaces';
+import {TransferNoteService} from '../../services';
+import {Warehouse} from 'src/app/system/interfaces';
+import {WarehouseService} from 'src/app/system/services';
 
 @Component({
   selector: 'app-transfer-list',

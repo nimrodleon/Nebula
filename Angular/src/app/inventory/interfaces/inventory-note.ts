@@ -1,6 +1,6 @@
 import {InventoryNoteDetail} from './inventory-note-detail';
 import {Contact} from '../../contact/interfaces';
-import {Warehouse} from './warehouse';
+import {Warehouse} from '../../system/interfaces';
 
 export interface InventoryNote {
   id: number;
