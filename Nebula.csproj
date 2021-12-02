@@ -25,6 +25,8 @@
     <Folder Include="Angular\src\app\system\interfaces" />
     <Folder Include="Angular\src\app\system\pages" />
     <Folder Include="Angular\src\app\system\services" />
+    <Folder Include="Angular\src\app\user\components" />
+    <Folder Include="Angular\src\app\user\pages" />
     <Folder Include="Data\Migrations" />
   </ItemGroup>
 
