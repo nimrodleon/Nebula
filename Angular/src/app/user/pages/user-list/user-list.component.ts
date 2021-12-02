@@ -16,6 +16,7 @@ export class UserListComponent implements OnInit {
   faTrashAlt = faTrashAlt;
   title: string = '';
   userModal: any;
+  changePasswordModal: any;
 
   constructor() {
   }
@@ -23,12 +24,19 @@ export class UserListComponent implements OnInit {
   ngOnInit(): void {
     // modal usuario.
     this.userModal = new bootstrap.Modal(document.querySelector('#user-modal'));
+    // modal cambiar contraseña.
+    this.changePasswordModal = new bootstrap.Modal(document.querySelector('#change-password'));
   }
 
   // abrir modal usuario.
   public showUserModal(): void {
     this.title = 'Agregar Usuario';
     this.userModal.show();
+  }
+
+  // abrir modal cambiar contraseña.
+  public showChangePassword(): void {
+    this.changePasswordModal.show();
   }
 
 }

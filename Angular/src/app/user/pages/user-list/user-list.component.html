@@ -48,7 +48,7 @@
               <td>user2021</td>
               <td>user2021@local.pe</td>
               <td>
-                <button type="button" class="btn btn-info btn-sm">
+                <button type="button" (click)="showChangePassword()" class="btn btn-info btn-sm">
                   <span class="text-uppercase">Establecer</span>
                 </button>
               </td>
@@ -73,3 +73,4 @@
 </div>
 
 <app-user-modal [title]="title"></app-user-modal>
+<app-change-password></app-change-password>

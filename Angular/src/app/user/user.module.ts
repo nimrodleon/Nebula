@@ -7,12 +7,14 @@ import {GlobalModule} from '../global/global.module';
 import {AuthService} from './services';
 import {UserListComponent} from './pages/user-list/user-list.component';
 import {UserModalComponent} from './components/user-modal/user-modal.component';
+import {ChangePasswordComponent} from './components/change-password/change-password.component';
 
 
 @NgModule({
   declarations: [
     UserListComponent,
-    UserModalComponent
+    UserModalComponent,
+    ChangePasswordComponent
   ],
   imports: [
     CommonModule,
