@@ -6,12 +6,14 @@ import {SystemRoutingModule} from './system-routing.module';
 import {CompanyComponent} from './pages/company/company.component';
 import {GlobalModule} from '../global/global.module';
 import {WarehouseListComponent} from './pages/warehouse-list/warehouse-list.component';
+import {WarehouseModalComponent} from './components/warehouse-modal/warehouse-modal.component';
 
 
 @NgModule({
   declarations: [
     CompanyComponent,
-    WarehouseListComponent
+    WarehouseListComponent,
+    WarehouseModalComponent
   ],
   imports: [
     CommonModule,
