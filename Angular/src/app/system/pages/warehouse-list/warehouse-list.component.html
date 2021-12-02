@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="row px-2">
       <div class="col-12 bg-white my-2 py-3">
-        <form class="row row-cols-auto g-2">
+        <form (submit)="submitSearch($event)" class="row row-cols-auto g-2">
           <div class="col-auto">
             <label class="col-form-label fw-bold">Filtrar por:</label>
           </div>
@@ -13,7 +13,7 @@
               <span class="input-group-text">
                 <fa-icon [icon]="faFilter"></fa-icon>
               </span>
-              <input type="search" class="form-control" placeholder="ALMACÉN">
+              <input type="search" [formControl]="query" class="form-control" placeholder="ALMACÉN">
             </div>
           </div>
           <div class="col-auto">
@@ -42,9 +42,9 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-              <td>Almacén 1</td>
-              <td>-</td>
+            <tr *ngFor="let item of warehouses">
+              <td>{{item.name}}</td>
+              <td>{{item.remark}}</td>
               <td>
                 <div class="actions ms-auto">
                   <button type="button" class="btn btn-secondary btn-sm me-2">
@@ -61,6 +61,10 @@
         </div>
       </div>
     </div>
+
+    <pre>{{warehouses|json}}</pre>
+    <pre>{{query.value|json}}</pre>
+
   </div>
 </div>
 

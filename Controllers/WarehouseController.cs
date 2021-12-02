@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,10 +19,13 @@ namespace Nebula.Controllers
         }
 
         [HttpGet("Index")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] string query)
         {
-            var result = await _context.Warehouses.AsNoTracking().ToListAsync();
-            return Ok(result);
+            var result = from m in _context.Warehouses select m;
+            if (!string.IsNullOrWhiteSpace(query))
+                result = result.Where(m => m.Name.ToLower().Contains(query.ToLower()));
+            var responseData = await result.AsNoTracking().ToListAsync();
+            return Ok(responseData);
         }
 
         [HttpPost("Store")]
