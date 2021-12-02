@@ -23,7 +23,7 @@
             </button>
           </div>
           <div class="col-auto">
-            <button type="button" class="btn btn-primary">
+            <button type="button" (click)="showUserModal()" class="btn btn-primary">
               <fa-icon [icon]="faPlus"></fa-icon>
               <span class="text-uppercase ms-1">Agregar</span>
             </button>
@@ -38,6 +38,7 @@
             <tr class="text-uppercase">
               <th>Usuario</th>
               <th>E-Mail</th>
+              <th>Contraseña</th>
               <th>Rol</th>
               <th></th>
             </tr>
@@ -46,6 +47,11 @@
             <tr>
               <td>user2021</td>
               <td>user2021@local.pe</td>
+              <td>
+                <button type="button" class="btn btn-info btn-sm">
+                  <span class="text-uppercase">Establecer</span>
+                </button>
+              </td>
               <td>ADMIN</td>
               <td>
                 <div class="actions ms-auto">
@@ -65,3 +71,5 @@
     </div>
   </div>
 </div>
+
+<app-user-modal [title]="title"></app-user-modal>
