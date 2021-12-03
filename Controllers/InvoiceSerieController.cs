@@ -24,6 +24,7 @@ namespace Nebula.Controllers
             var result = from m in _context.InvoiceSeries select m;
             if (!string.IsNullOrWhiteSpace(query))
                 result = result.Where(m => m.Name.ToLower().Contains(query.ToLower()));
+            result = result.Include(m => m.Warehouse);
             var responseData = await result.AsNoTracking().ToListAsync();
             return Ok(responseData);
         }
@@ -32,6 +33,7 @@ namespace Nebula.Controllers
         public async Task<IActionResult> Show(string id)
         {
             var result = await _context.InvoiceSeries.AsNoTracking()
+                .Include(m => m.Warehouse)
                 .FirstOrDefaultAsync(m => m.Id.ToString().Equals(id));
             return Ok(result);
         }

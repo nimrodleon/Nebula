@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="row px-2">
       <div class="col-12 bg-white my-2 py-3">
-        <form class="row row-cols-auto g-2">
+        <form (submit)="submitSearch($event)" class="row row-cols-auto g-2">
           <div class="col-auto">
             <label class="col-form-label fw-bold">Filtrar por:</label>
           </div>
@@ -13,7 +13,7 @@
               <span class="input-group-text">
                 <fa-icon [icon]="faFilter"></fa-icon>
               </span>
-              <input type="search" class="form-control" placeholder="NOMBRE">
+              <input type="search" [formControl]="query" class="form-control" placeholder="NOMBRE">
             </div>
           </div>
           <div class="col-auto">
@@ -48,18 +48,18 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-              <td>Almacén 1</td>
-              <td>F001</td>
-              <td>10</td>
-              <td>B001</td>
-              <td>20</td>
-              <td>N001</td>
-              <td>50</td>
-              <td>TERMINAL-1</td>
+            <tr *ngFor="let item of invoiceSeries">
+              <td>{{item.name}}</td>
+              <td>{{item.factura}}</td>
+              <td>{{item.counterFactura}}</td>
+              <td>{{item.boleta}}</td>
+              <td>{{item.counterBoleta}}</td>
+              <td>{{item.notaDeVenta}}</td>
+              <td>{{item.counterNotaDeVenta}}</td>
+              <td>{{item.warehouse?.name}}</td>
               <td>
                 <div class="actions ms-auto">
-                  <button type="button" class="btn btn-secondary btn-sm me-2">
+                  <button type="button" (click)="editInvoiceSerieModal(item.id)" class="btn btn-secondary btn-sm me-2">
                     <fa-icon [icon]="faEdit"></fa-icon>
                   </button>
                   <button type="button" class="btn btn-danger btn-sm">
@@ -76,4 +76,7 @@
   </div>
 </div>
 
-<app-invoice-serie-modal [title]="title"></app-invoice-serie-modal>
+<app-invoice-serie-modal
+  [title]="title" [invoiceSerie]="currentInvoiceSerie"
+  (responseData)="hideInvoiceSerieModal($event)">
+</app-invoice-serie-modal>

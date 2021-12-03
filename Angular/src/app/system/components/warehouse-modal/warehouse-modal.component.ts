@@ -33,7 +33,12 @@ export class WarehouseModalComponent implements OnInit {
     // cargar valores por defecto.
     const myModal: any = document.querySelector('#warehouse-modal');
     myModal.addEventListener('shown.bs.modal', () => {
-      this.warehouseForm.reset(this.warehouse);
+      if (this.warehouse !== null) {
+        this.warehouseForm.reset(this.warehouse);
+      }
+    });
+    myModal.addEventListener('hide.bs.modal', () => {
+      this.warehouseForm.reset();
     });
   }
 
