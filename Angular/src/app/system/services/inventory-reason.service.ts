@@ -19,8 +19,12 @@ export class InventoryReasonService {
     return this.http.get<InventoryReason[]>(`${this.appURL}/Index/${type}`);
   }
 
-  public store(data: InventoryReason): Observable<ResponseData<InventoryReason>> {
-    return this.http.post<ResponseData<InventoryReason>>(`${this.appURL}/Store`, data);
+  public show(id: number): Observable<InventoryReason> {
+    return this.http.get<InventoryReason>(`${this.appURL}/Show/${id}`);
+  }
+
+  public create(data: InventoryReason): Observable<ResponseData<InventoryReason>> {
+    return this.http.post<ResponseData<InventoryReason>>(`${this.appURL}/Create`, data);
   }
 
   public update(id: number, data: InventoryReason): Observable<ResponseData<InventoryReason>> {
@@ -28,7 +32,7 @@ export class InventoryReasonService {
   }
 
   public delete(id: number): Observable<ResponseData<InventoryReason>> {
-    return this.http.delete<ResponseData<InventoryReason>>(`${this.appURL}/Destroy/${id}`);
+    return this.http.delete<ResponseData<InventoryReason>>(`${this.appURL}/Delete/${id}`);
   }
 
 }

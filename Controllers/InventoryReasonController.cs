@@ -26,8 +26,16 @@ namespace Nebula.Controllers
             return Ok(result);
         }
 
-        [HttpPost("Store")]
-        public async Task<IActionResult> Store([FromBody] InventoryReason model)
+        [HttpGet("Show/{id}")]
+        public async Task<IActionResult> Show(int id)
+        {
+            var result = await _context.InventoryReasons.AsNoTracking()
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
+            return Ok(result);
+        }
+
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create([FromBody] InventoryReason model)
         {
             _context.InventoryReasons.Add(model);
             await _context.SaveChangesAsync();
@@ -41,7 +49,7 @@ namespace Nebula.Controllers
         [HttpPut("Update/{id}")]
         public async Task<IActionResult> Update(int? id, [FromBody] InventoryReason model)
         {
-            if (id == null) return BadRequest();
+            if (id != model.Id) return BadRequest();
             _context.InventoryReasons.Update(model);
             await _context.SaveChangesAsync();
             return Ok(new
@@ -51,8 +59,8 @@ namespace Nebula.Controllers
             });
         }
 
-        [HttpDelete("Destroy/{id}")]
-        public async Task<IActionResult> Destroy(int? id)
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
             var result = await _context.InventoryReasons.FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (result == null) return BadRequest();
