@@ -68,4 +68,7 @@
   </div>
 </div>
 
-<app-warehouse-modal [title]="title"></app-warehouse-modal>
+<app-warehouse-modal
+  [title]="title"
+  (responseData)="hideWarehouseModal($event)">
+</app-warehouse-modal>

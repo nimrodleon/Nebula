@@ -39,5 +39,28 @@ namespace Nebula.Controllers
                 Msg = $"{model.Name} ha sido registrado!"
             });
         }
+
+        [HttpPut("Update/{id}")]
+        public async Task<IActionResult> Update(string id, [FromBody] Warehouse model)
+        {
+            if (id != model.Id.ToString()) return BadRequest();
+            _context.Warehouses.Update(model);
+            await _context.SaveChangesAsync();
+            return Ok(new
+            {
+                Ok = true, Data = model,
+                Msg = $"{model.Name} ha sido actualizado!"
+            });
+        }
+
+        [HttpDelete("Destroy/{id}")]
+        public async Task<IActionResult> Destroy(string id)
+        {
+            var result = await _context.Warehouses.FirstOrDefaultAsync(m => m.Id.ToString().Equals(id));
+            if (result == null) return BadRequest();
+            _context.Warehouses.Remove(result);
+            await _context.SaveChangesAsync();
+            return Ok(new {Ok = true, Data = result, Msg = "El almacén ha sido borrado!"});
+        }
     }
 }

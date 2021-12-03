@@ -3,6 +3,7 @@ import {FormBuilder, FormControl} from '@angular/forms';
 import {faEdit, faFilter, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {Warehouse} from '../../interfaces';
 import {WarehouseService} from '../../services';
+import {ResponseData} from '../../../global/interfaces';
 
 declare var bootstrap: any;
 
@@ -49,6 +50,14 @@ export class WarehouseListComponent implements OnInit {
   public showWarehouseModal(): void {
     this.title = 'Agregar Almacén';
     this.warehouseModal.show();
+  }
+
+  // ocultar modal almacén.
+  public hideWarehouseModal(response: ResponseData<Warehouse>): void {
+    if (response.ok) {
+      this.getWarehouses();
+      this.warehouseModal.hide();
+    }
   }
 
 }

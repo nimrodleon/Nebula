@@ -9,20 +9,26 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="mb-3">
-          <label class="form-label text-uppercase">Nombre</label>
-          <input type="email" class="form-control">
-        </div>
-        <div class="mb-0">
-          <label class="form-label text-uppercase">Observación</label>
-          <textarea class="form-control"></textarea>
-        </div>
+        <form [formGroup]="warehouseForm">
+          <div class="mb-3">
+            <label class="form-label text-uppercase">Nombre</label>
+            <input type="text" formControlName="name" class="form-control">
+          </div>
+          <div class="mb-0">
+            <label class="form-label text-uppercase">Observación</label>
+            <textarea formControlName="remark" class="form-control"></textarea>
+          </div>
+        </form>
+
+        <pre>{{warehouseForm.value|json}}</pre>
+        <pre>{{warehouse|json}}</pre>
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
           <span class="text-uppercase">Cerrar</span>
         </button>
-        <button type="button" class="btn btn-primary">
+        <button type="button" (click)="saveChanges()" class="btn btn-primary">
           <span class="text-uppercase">Guardar Cambios</span>
         </button>
       </div>
