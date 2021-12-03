@@ -5,10 +5,10 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import * as moment from 'moment';
 import Swal from 'sweetalert2';
 import {environment} from 'src/environments/environment';
-import {InventoryReason, ItemNote} from '../../interfaces';
-import {InventoryNoteService, InventoryReasonService} from '../../services';
-import {Warehouse} from 'src/app/system/interfaces';
-import {WarehouseService} from 'src/app/system/services';
+import {ItemNote} from '../../interfaces';
+import {InventoryNoteService} from '../../services';
+import {InventoryReason, Warehouse} from 'src/app/system/interfaces';
+import {InventoryReasonService, WarehouseService} from 'src/app/system/services';
 
 declare var jQuery: any;
 declare var bootstrap: any;

@@ -4,10 +4,10 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import * as moment from 'moment';
 import Swal from 'sweetalert2';
-import {InventoryReason, ItemNote} from '../../interfaces';
-import {InventoryReasonService, TransferNoteService} from '../../services';
-import {Warehouse} from 'src/app/system/interfaces';
-import {WarehouseService} from 'src/app/system/services';
+import {ItemNote} from '../../interfaces';
+import {TransferNoteService} from '../../services';
+import {InventoryReason, Warehouse} from 'src/app/system/interfaces';
+import {InventoryReasonService, WarehouseService} from 'src/app/system/services';
 
 declare var bootstrap: any;
 
