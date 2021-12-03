@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {environment} from 'src/environments/environment';
 import {Observable} from 'rxjs';
-import {InvoiceSerie} from '../interfaces/invoice-serie';
+import {InvoiceSerie} from '../interfaces';
 import {ResponseData} from '../../global/interfaces';
 
 @Injectable({
