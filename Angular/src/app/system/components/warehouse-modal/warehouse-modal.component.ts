@@ -30,8 +30,14 @@ export class WarehouseModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // cargar valores por defecto.
+    const myModal: any = document.querySelector('#warehouse-modal');
+    myModal.addEventListener('shown.bs.modal', () => {
+      this.warehouseForm.reset(this.warehouse);
+    });
   }
 
+  // guardar los cambios establecidos.
   public saveChanges(): void {
     if (this.warehouseForm.get('id')?.value === null) {
       this.warehouseForm.removeControl('id');
@@ -40,7 +46,11 @@ export class WarehouseModalComponent implements OnInit {
           this.responseData.emit(result);
         });
     } else {
-
+      const id: string = this.warehouseForm.get('id')?.value;
+      this.warehouseService.update(id, this.warehouseForm.value)
+        .subscribe(result => {
+          this.responseData.emit(result);
+        });
     }
   }
 

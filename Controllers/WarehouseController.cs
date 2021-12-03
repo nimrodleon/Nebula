@@ -28,6 +28,14 @@ namespace Nebula.Controllers
             return Ok(responseData);
         }
 
+        [HttpGet("Show/{id}")]
+        public async Task<IActionResult> Show(string id)
+        {
+            var result = await _context.Warehouses.AsNoTracking()
+                .FirstOrDefaultAsync(m => m.Id.ToString().Equals(id));
+            return Ok(result);
+        }
+
         [HttpPost("Store")]
         public async Task<IActionResult> Store([FromBody] Warehouse model)
         {
