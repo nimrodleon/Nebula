@@ -26,7 +26,7 @@ import {UndMedidaModalComponent} from './components/und-medida-modal/und-medida-
     InventoryReasonListComponent,
     InventoryReasonModalComponent,
     UndMedidaListComponent,
-    UndMedidaModalComponent
+    UndMedidaModalComponent,
   ],
   imports: [
     CommonModule,

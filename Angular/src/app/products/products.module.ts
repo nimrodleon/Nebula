@@ -8,12 +8,14 @@ import {ProductListComponent} from './pages/product-list/product-list.component'
 import {GlobalModule} from '../global/global.module';
 import {ProductModalComponent} from './components/product-modal/product-modal.component';
 import {CategoryModalComponent} from './components/category-modal/category-modal.component';
+import {CategoryListComponent} from './pages/category-list/category-list.component';
 
 @NgModule({
   declarations: [
     ProductListComponent,
     ProductModalComponent,
-    CategoryModalComponent
+    CategoryModalComponent,
+    CategoryListComponent
   ],
   exports: [
     ProductModalComponent
