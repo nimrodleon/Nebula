@@ -19,11 +19,15 @@ namespace Nebula.Controllers
         }
 
         [HttpGet("Index/{type}")]
-        public async Task<IActionResult> Index(string type)
+        public async Task<IActionResult> Index(string type, [FromQuery] string query)
         {
-            var result = await _context.InventoryReasons.AsNoTracking()
-                .Where(m => m.Type.Equals(type)).ToListAsync();
-            return Ok(result);
+            var result = from m in _context.InventoryReasons
+                    .Where(m => m.Type.Equals(type))
+                select m;
+            if (!string.IsNullOrWhiteSpace(query))
+                result = result.Where(m => m.Description.ToLower().Contains(query.ToLower()));
+            var responseData = await result.AsNoTracking().ToListAsync();
+            return Ok(responseData);
         }
 
         [HttpGet("Show/{id}")]

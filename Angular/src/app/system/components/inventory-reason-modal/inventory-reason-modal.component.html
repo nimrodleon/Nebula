@@ -9,14 +9,14 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form [formGroup]="inventoryReasonForm">
           <div class="mb-3">
             <label class="form-label text-uppercase">Descripción</label>
-            <input type="text" class="form-control">
+            <input type="text" formControlName="description" class="form-control">
           </div>
           <div class="mb-0">
             <label class="form-label text-uppercase">Tipo de Inventario</label>
-            <select class="form-select text-uppercase">
+            <select formControlName="type" class="form-select text-uppercase">
               <option value="Transfer">Transferencias</option>
               <option value="Input">Ingreso</option>
               <option value="Output">Salida</option>
@@ -24,6 +24,7 @@
           </div>
         </form>
 
+        <pre>{{inventoryReasonForm.value|json}}</pre>
 
       </div>
       <div class="modal-footer">
