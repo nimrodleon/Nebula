@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {faBars} from '@fortawesome/free-solid-svg-icons';
 import {InvoiceSerieService, WarehouseService} from '../../services';
 import {InvoiceSerie, Warehouse} from '../../interfaces';
@@ -48,6 +48,7 @@ export class InvoiceSerieModalComponent implements OnInit {
       }
     });
     myModal.addEventListener('hide.bs.modal', () => {
+      this.invoiceSerieForm.addControl('id', new FormControl(null));
       this.invoiceSerieForm.reset({counterFactura: 0, counterBoleta: 0, counterNotaDeVenta: 0});
     });
   }

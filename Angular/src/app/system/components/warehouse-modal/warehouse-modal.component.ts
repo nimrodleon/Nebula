@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {faBars} from '@fortawesome/free-solid-svg-icons';
 import {WarehouseService} from '../../services';
 import {ResponseData} from '../../../global/interfaces';
@@ -38,6 +38,7 @@ export class WarehouseModalComponent implements OnInit {
       }
     });
     myModal.addEventListener('hide.bs.modal', () => {
+      this.warehouseForm.addControl('id', new FormControl(null));
       this.warehouseForm.reset();
     });
   }
