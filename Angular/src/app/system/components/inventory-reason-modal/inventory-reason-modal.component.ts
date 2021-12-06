@@ -1,8 +1,9 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {faBars} from '@fortawesome/free-solid-svg-icons';
 import {InventoryReason} from '../../interfaces';
 import {ResponseData} from '../../../global/interfaces';
+import {InventoryReasonService} from '../../services';
 
 @Component({
   selector: 'app-inventory-reason-modal',
@@ -24,7 +25,8 @@ export class InventoryReasonModalComponent implements OnInit {
   });
 
   constructor(
-    private fb: FormBuilder) {
+    private fb: FormBuilder,
+    private inventoryReasonService: InventoryReasonService) {
   }
 
   ngOnInit(): void {
@@ -35,8 +37,22 @@ export class InventoryReasonModalComponent implements OnInit {
       }
     });
     myModal.addEventListener('hide.bs.modal', () => {
+      this.inventoryReasonForm.addControl('id', new FormControl(null));
       this.inventoryReasonForm.reset();
     });
+  }
+
+  // guardar cambios.
+  public saveChanges(): void {
+    if (this.inventoryReasonForm.get('id')?.value === null) {
+      this.inventoryReasonForm.removeControl('id');
+      this.inventoryReasonService.create(this.inventoryReasonForm.value)
+        .subscribe(result => this.responseData.emit(result));
+    } else {
+      const id = this.inventoryReasonForm.get('id')?.value;
+      this.inventoryReasonService.update(id, this.inventoryReasonForm.value)
+        .subscribe(result => this.responseData.emit(result));
+    }
   }
 
 }
