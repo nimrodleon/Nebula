@@ -20,10 +20,19 @@ namespace Nebula.Controllers
             _context = context;
         }
 
-        [HttpGet("Show/{id}")]
-        public async Task<IActionResult> Show(int? id)
+        [HttpGet("Index")]
+        public async Task<IActionResult> Index([FromQuery] string query)
         {
-            if (id == null) return BadRequest();
+            var result = from m in _context.Categories select m;
+            if (!string.IsNullOrWhiteSpace(query))
+                result = result.Where(m => m.Name.ToLower().Contains(query.ToLower()));
+            var responseData = await result.AsNoTracking().Take(25).ToListAsync();
+            return Ok(responseData);
+        }
+
+        [HttpGet("Show/{id}")]
+        public async Task<IActionResult> Show(int id)
+        {
             var result = await _context.Categories.AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id.Equals(id));
             return Ok(result);
@@ -48,8 +57,8 @@ namespace Nebula.Controllers
             return Ok(new {Results = data});
         }
 
-        [HttpPost("Store")]
-        public async Task<IActionResult> Store([FromBody] Category model)
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create([FromBody] Category model)
         {
             model.Name = model.Name.ToUpper();
             _context.Categories.Add(model);
@@ -59,6 +68,29 @@ namespace Nebula.Controllers
                 Ok = true, Data = model,
                 Msg = $"{model.Name} ha sido registrado!"
             });
+        }
+
+        [HttpPut("Update/{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] Category model)
+        {
+            if (id != model.Id) return BadRequest();
+            _context.Categories.Update(model);
+            await _context.SaveChangesAsync();
+            return Ok(new
+            {
+                Ok = true, Data = model,
+                Msg = $"{model.Name} ha sido actualizado!"
+            });
+        }
+
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _context.Categories.FirstOrDefaultAsync(m => m.Id.Equals(id));
+            if (result == null) return BadRequest();
+            _context.Categories.Remove(result);
+            await _context.SaveChangesAsync();
+            return Ok(new {Ok = true, Data = result, Msg = "La categoría ha sido borrado!"});
         }
     }
 }

@@ -32,7 +32,7 @@ export class CategoryModalComponent implements OnInit {
 
   // guardar cambios.
   public saveChanges(): void {
-    this.categoryService.store(this.categoryForm.value)
+    this.categoryService.create(this.categoryForm.value)
       .subscribe(result => this.responseData.emit(result));
   }
 
