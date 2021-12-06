@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,10 +21,14 @@ namespace Nebula.Controllers
         }
 
         [HttpGet("Index")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] string query)
         {
-            var result = await _context.PeopleDocTypes.AsNoTracking().ToListAsync();
-            return Ok(result);
+            var result = from m in _context.PeopleDocTypes select m;
+            if (!string.IsNullOrWhiteSpace(query))
+                result = result.Where(m => m.Description.ToLower().Contains(query.ToLower()));
+            result = result.OrderByDescending(m => m.Id);
+            var responseData = await result.AsNoTracking().Take(25).ToListAsync();
+            return Ok(responseData);
         }
 
         [HttpGet("Show/{id}")]
@@ -36,8 +41,8 @@ namespace Nebula.Controllers
             return Ok(result);
         }
 
-        [HttpPost("Store")]
-        public async Task<IActionResult> Store([FromBody] PeopleDocType model)
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create([FromBody] PeopleDocType model)
         {
             _context.PeopleDocTypes.Add(model);
             await _context.SaveChangesAsync();
@@ -61,15 +66,15 @@ namespace Nebula.Controllers
             });
         }
 
-        [HttpDelete("Destroy/{id}")]
-        public async Task<IActionResult> Destroy(string id)
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> Delete(string id)
         {
             var result = await _context.PeopleDocTypes
                 .FirstOrDefaultAsync(m => m.Id.ToString().Equals(id));
             if (result == null) return BadRequest();
             _context.PeopleDocTypes.Remove(result);
             await _context.SaveChangesAsync();
-            return Ok(new { Ok = true, Data = result, Msg = "El tipo documento ha sido borrado!" });
+            return Ok(new {Ok = true, Data = result, Msg = "El tipo documento ha sido borrado!"});
         }
     }
 }

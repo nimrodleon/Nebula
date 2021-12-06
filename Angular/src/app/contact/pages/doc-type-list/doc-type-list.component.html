@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="row px-2">
       <div class="col-12 bg-white my-2 py-3">
-        <form class="row row-cols-auto g-2">
+        <form (submit)="submitSearch($event)" class="row row-cols-auto g-2">
           <div class="col-auto">
             <label class="col-form-label fw-bold">Filtrar por:</label>
           </div>
@@ -42,12 +42,12 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-              <td>UNIDAD</td>
-              <td>NUI</td>
+            <tr *ngFor="let item of peopleDocTypes">
+              <td>{{item.description}}</td>
+              <td>{{item.sunatCode}}</td>
               <td>
                 <div class="actions ms-auto">
-                  <button type="button" class="btn btn-secondary btn-sm me-2">
+                  <button type="button" (click)="editDocTypeModal(item.id)" class="btn btn-secondary btn-sm me-2">
                     <fa-icon [icon]="faEdit"></fa-icon>
                   </button>
                   <button type="button" class="btn btn-danger btn-sm">
@@ -62,8 +62,13 @@
       </div>
     </div>
 
+    <pre>{{peopleDocTypes|json}}</pre>
 
   </div>
 </div>
 
-<app-doc-type-modal [title]="title"></app-doc-type-modal>
+<app-doc-type-modal
+  [title]="title"
+  [docType]="currentDocType"
+  (responseData)="hideDocTypeModal($event)">
+</app-doc-type-modal>

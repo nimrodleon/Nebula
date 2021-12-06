@@ -9,24 +9,25 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form [formGroup]="docTypeForm">
           <div class="mb-3">
             <label class="form-label text-uppercase">Descripción</label>
-            <input type="text" class="form-control">
+            <input type="text" formControlName="description" class="form-control">
           </div>
           <div class="mb-0">
             <label class="form-label text-uppercase">Código Sunat</label>
-            <input type="text" class="form-control">
+            <input type="text" formControlName="sunatCode" class="form-control">
           </div>
         </form>
 
+        <pre>{{docTypeForm.value|json}}</pre>
 
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
           <span class="text-uppercase">Cerrar</span>
         </button>
-        <button type="button" class="btn btn-primary">
+        <button type="button" (click)="saveChanges()" class="btn btn-primary">
           <span class="text-uppercase">Guardar Cambios</span>
         </button>
       </div>

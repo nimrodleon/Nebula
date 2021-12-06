@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from 'src/environments/environment';
 import {PeopleDocType} from '../interfaces';
@@ -14,24 +14,26 @@ export class PeopleDocTypeService {
   constructor(private http: HttpClient) {
   }
 
-  public index(): Observable<PeopleDocType[]> {
-    return this.http.get<PeopleDocType[]>(`${this.appURL}/Index`);
+  public index(query: string = ''): Observable<PeopleDocType[]> {
+    let params = new HttpParams();
+    params = params.append('query', query);
+    return this.http.get<PeopleDocType[]>(`${this.appURL}/Index`, {params: params});
   }
 
   public show(id: string): Observable<PeopleDocType> {
     return this.http.get<PeopleDocType>(`${this.appURL}/Show/${id}`);
   }
 
-  public store(data: PeopleDocType): Observable<ResponseData<PeopleDocType>> {
-    return this.http.post<ResponseData<PeopleDocType>>(`${this.appURL}/Store`, data);
+  public create(data: PeopleDocType): Observable<ResponseData<PeopleDocType>> {
+    return this.http.post<ResponseData<PeopleDocType>>(`${this.appURL}/Create`, data);
   }
 
   public update(id: string, data: PeopleDocType): Observable<ResponseData<PeopleDocType>> {
     return this.http.put<ResponseData<PeopleDocType>>(`${this.appURL}/Update/${id}`, data);
   }
 
-  public destroy(id: string): Observable<ResponseData<PeopleDocType>> {
-    return this.http.delete<ResponseData<PeopleDocType>>(`${this.appURL}/Destroy/${id}`);
+  public delete(id: string): Observable<ResponseData<PeopleDocType>> {
+    return this.http.delete<ResponseData<PeopleDocType>>(`${this.appURL}/Delete/${id}`);
   }
 
 }
