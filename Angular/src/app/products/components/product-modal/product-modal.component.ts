@@ -2,9 +2,11 @@ import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} f
 import {faBars, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {environment} from 'src/environments/environment';
-import {CategoryService, ProductService, UndMedidaService} from '../../services';
-import {Category, Product, UndMedida} from '../../interfaces';
+import {CategoryService, ProductService} from '../../services';
+import {Category, Product} from '../../interfaces';
 import {ResponseData} from '../../../global/interfaces';
+import {UndMedida} from '../../../system/interfaces';
+import {UndMedidaService} from '../../../system/services';
 
 declare var jQuery: any;
 declare var bootstrap: any;

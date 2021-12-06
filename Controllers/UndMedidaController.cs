@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -18,10 +19,14 @@ namespace Nebula.Controllers
         }
 
         [HttpGet("Index")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] string query)
         {
-            var result = await _context.UndMedida.AsNoTracking().ToListAsync();
-            return Ok(result);
+            var result = from m in _context.UndMedida select m;
+            if (!string.IsNullOrWhiteSpace(query))
+                result = result.Where(m => m.Name.ToLower().Contains(query.ToLower()));
+            result = result.OrderByDescending(m => m.Id);
+            var responseData = await result.AsNoTracking().Take(25).ToListAsync();
+            return Ok(responseData);
         }
 
         [HttpGet("Show/{id}")]
@@ -34,8 +39,8 @@ namespace Nebula.Controllers
             return Ok(result);
         }
 
-        [HttpPost("Store")]
-        public async Task<IActionResult> Store([FromBody] UndMedida model)
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create([FromBody] UndMedida model)
         {
             _context.UndMedida.Add(model);
             await _context.SaveChangesAsync();
@@ -59,15 +64,15 @@ namespace Nebula.Controllers
             });
         }
 
-        [HttpDelete("Destroy/{id}")]
-        public async Task<IActionResult> Destroy(string id)
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> Delete(string id)
         {
             var result = await _context.UndMedida
                 .FirstOrDefaultAsync(m => m.Id.ToString().Equals(id));
             if (result == null) return BadRequest();
             _context.UndMedida.Remove(result);
             await _context.SaveChangesAsync();
-            return Ok(new { Ok = true, Data = result, Msg = "La UndMedida ha sido borrado!" });
+            return Ok(new {Ok = true, Data = result, Msg = "La UndMedida ha sido borrado!"});
         }
     }
 }
