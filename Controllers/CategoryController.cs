@@ -26,6 +26,7 @@ namespace Nebula.Controllers
             var result = from m in _context.Categories select m;
             if (!string.IsNullOrWhiteSpace(query))
                 result = result.Where(m => m.Name.ToLower().Contains(query.ToLower()));
+            result = result.OrderByDescending(m => m.Id);
             var responseData = await result.AsNoTracking().Take(25).ToListAsync();
             return Ok(responseData);
         }

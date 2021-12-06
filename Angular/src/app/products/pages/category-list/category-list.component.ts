@@ -19,6 +19,7 @@ export class CategoryListComponent implements OnInit {
   faEdit = faEdit;
   faTrashAlt = faTrashAlt;
   title: string = '';
+  currentCategory: Category | any;
   categories: Array<Category> = new Array<Category>();
   query: FormControl = this.fb.control('');
   categoryModal: any;
@@ -50,12 +51,17 @@ export class CategoryListComponent implements OnInit {
   // abrir modal categoría.
   public showCategoryModal(): void {
     this.title = 'Agregar Categoría';
+    this.currentCategory = null;
     this.categoryModal.show();
   }
 
   // abrir modal categoría modo edición.
   public editCategoryModal(id: any): void {
-
+    this.title = 'Editar Categoría';
+    this.categoryService.show(id).subscribe(result => {
+      this.currentCategory = result;
+      this.categoryModal.show();
+    });
   }
 
   // ocultar modal categoría.

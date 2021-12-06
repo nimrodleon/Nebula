@@ -41,11 +41,11 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-              <td>UNIDAD</td>
+            <tr *ngFor="let item of categories">
+              <td>{{item.name}}</td>
               <td>
                 <div class="actions ms-auto">
-                  <button type="button" class="btn btn-secondary btn-sm me-2">
+                  <button type="button" (click)="editCategoryModal(item.id)" class="btn btn-secondary btn-sm me-2">
                     <fa-icon [icon]="faEdit"></fa-icon>
                   </button>
                   <button type="button" class="btn btn-danger btn-sm">
@@ -65,4 +65,8 @@
   </div>
 </div>
 
-<app-category-modal [title]="title"></app-category-modal>
+<app-category-modal
+  [title]="title"
+  [category]="currentCategory"
+  (responseData)="hideCategoryModal($event)">
+</app-category-modal>
