@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="row px-2">
       <div class="col-12 bg-white my-2 py-3">
-        <form class="row row-cols-auto g-2">
+        <form (submit)="submitSearch($event)" class="row row-cols-auto g-2">
           <div class="col-auto">
             <label class="col-form-label fw-bold">Filtrar por:</label>
           </div>
@@ -23,7 +23,7 @@
             </button>
           </div>
           <div class="col-auto">
-            <button type="button" class="btn btn-primary">
+            <button type="button" (click)="showCategoryModal()" class="btn btn-primary">
               <fa-icon [icon]="faPlus"></fa-icon>
               <span class="text-uppercase ms-1">Agregar</span>
             </button>
@@ -60,6 +60,7 @@
       </div>
     </div>
 
+    <pre>{{categories|json}}</pre>
 
   </div>
 </div>
