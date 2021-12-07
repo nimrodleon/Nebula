@@ -5,11 +5,34 @@
     /// </summary>
     public class SaleDetail
     {
+        /// <summary>
+        /// Id del producto.
+        /// </summary>
         public int ProductId { get; set; }
+
+        /// <summary>
+        /// Descripción del Item.
+        /// </summary>
         public string Description { get; set; }
+
+        /// <summary>
+        /// Precio del Item.
+        /// </summary>
         public decimal Price { get; set; }
+
+        /// <summary>
+        /// Cantidad del Producto.
+        /// </summary>
         public decimal Quantity { get; set; }
+
+        /// <summary>
+        /// Descuento por Item.
+        /// </summary>
         public decimal Discount { get; set; }
+
+        /// <summary>
+        /// Monto del Item.
+        /// </summary>
         public decimal Amount { get; set; }
     }
 }

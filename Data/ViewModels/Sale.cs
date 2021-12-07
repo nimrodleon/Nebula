@@ -8,18 +8,69 @@ namespace Nebula.Data.ViewModels
     /// </summary>
     public class Sale
     {
+        /// <summary>
+        /// Id del Contacto.
+        /// </summary>
         public int ClientId { get; set; }
+
+        /// <summary>
+        /// Forma de Pago.
+        /// </summary>
         public string PaymentType { get; set; }
+
+        /// <summary>
+        /// Tipo documento.
+        /// </summary>
         public string DocType { get; set; }
+
+        /// <summary>
+        /// Fecha vencimiento.
+        /// </summary>
         public DateTime EndDate { get; set; }
+
+        /// <summary>
+        /// Identificador pago en (Caja|Banco).
+        /// </summary>
         public bool MontoCaja { get; set; }
+
+        /// <summary>
+        /// Monto Cobrado.
+        /// </summary>
         public decimal? MontoTotal { get; set; }
+
+        /// <summary>
+        /// Vuelto para el Cliente.
+        /// </summary>
         public decimal? Vuelto { get; set; }
+
+        /// <summary>
+        /// SubTotal.
+        /// </summary>
         public decimal? SumTotValVenta { get; set; }
+
+        /// <summary>
+        /// Sumatoria Tributos.
+        /// </summary>
         public decimal? SumTotTributos { get; set; }
+
+        /// <summary>
+        /// Importe a Cobrar.
+        /// </summary>
         public decimal? SumImpVenta { get; set; }
+
+        /// <summary>
+        /// Observación.
+        /// </summary>
         public string Remark { get; set; }
+
+        /// <summary>
+        /// Detalle de Venta.
+        /// </summary>
         public List<SaleDetail> Details { get; set; }
+
+        /// <summary>
+        /// Lista de cuotas a crédito.
+        /// </summary>
         public List<Cuota> Cuotas { get; set; }
     }
 }
