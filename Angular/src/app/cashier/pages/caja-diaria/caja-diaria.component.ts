@@ -4,6 +4,8 @@ import {faBars, faPlus, faSyncAlt, faTrashAlt} from '@fortawesome/free-solid-svg
 import * as moment from 'moment';
 import {CajaDiariaService, CajaService} from '../../services';
 import {AperturaCaja, Caja, CajaDiaria} from '../../interfaces';
+import {InvoiceSerie} from '../../../system/interfaces';
+import {InvoiceSerieService} from '../../../system/services';
 
 declare var bootstrap: any;
 
@@ -19,7 +21,7 @@ export class CajaDiariaComponent implements OnInit {
   faTrashAlt = faTrashAlt;
   // ====================================================================================================
   aperturaCajaModal: any;
-  listaDeCajas: Array<Caja> = new Array<Caja>();
+  invoiceSeries: Array<InvoiceSerie> = new Array<InvoiceSerie>();
   cajasDiarias: Array<CajaDiaria> = new Array<CajaDiaria>();
   queryForm: FormGroup = this.fb.group({
     year: [moment().format('YYYY')],
@@ -31,15 +33,12 @@ export class CajaDiariaComponent implements OnInit {
   };
   // ====================================================================================================
   aperturaForm: FormGroup = this.fb.group({
-    cajaId: [''], total: 0
+    serieId: [''], total: 0
   });
-  aperturaData: AperturaCaja = {
-    cajaId: '', total: 0
-  };
 
   constructor(
     private fb: FormBuilder,
-    private cajaService: CajaService,
+    private invoiceSerieService: InvoiceSerieService,
     private cajaDiariaService: CajaDiariaService) {
   }
 
@@ -47,8 +46,6 @@ export class CajaDiariaComponent implements OnInit {
     this.cargarCajasDiarias();
     // suscribir queryForm con queryData.
     this.queryForm.valueChanges.subscribe(value => this.queryData = value);
-    // suscribir aperturaForm con aperturaData.
-    this.aperturaForm.valueChanges.subscribe(value => this.aperturaData = value);
     // seleccionar modal apertura de caja.
     this.aperturaCajaModal = new bootstrap.Modal(document.querySelector('#aperturaCaja'));
     // reset aperturaForm al iniciar el modal.
@@ -58,8 +55,8 @@ export class CajaDiariaComponent implements OnInit {
         this.aperturaForm.reset({cajaId: '', total: 0});
       });
     }
-    // cargar lista de cajas.
-    this.cajaService.index().subscribe(result => this.listaDeCajas = result);
+    // cargar series de facturación.
+    this.invoiceSerieService.index().subscribe(result => this.invoiceSeries = result);
   }
 
   // cargar cajas diarias.
@@ -75,7 +72,7 @@ export class CajaDiariaComponent implements OnInit {
 
   // guardar apertura de caja.
   public guardarAperturaCaja(): void {
-    this.cajaDiariaService.store(this.aperturaData)
+    this.cajaDiariaService.store(this.aperturaForm.value)
       .subscribe(result => {
         if (result.ok) {
           this.aperturaCajaModal.hide();

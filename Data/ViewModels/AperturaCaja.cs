@@ -2,7 +2,7 @@
 {
     public class AperturaCaja
     {
-        public string CajaId { get; set; }
+        public string SerieId { get; set; }
         public decimal Total { get; set; }
     }
 }

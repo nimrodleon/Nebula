@@ -39,9 +39,8 @@ namespace Nebula.Controllers
         }
 
         [HttpGet("Show/{id}")]
-        public async Task<IActionResult> Show(int? id)
+        public async Task<IActionResult> Show(int id)
         {
-            if (id == null) return BadRequest();
             var result = await _context.Invoices.AsNoTracking()
                 .Include(m => m.InvoiceDetails)
                 .FirstOrDefaultAsync(m => m.Id.Equals(id));
@@ -49,12 +48,8 @@ namespace Nebula.Controllers
             return Ok(result);
         }
 
-        /// <summary>
-        /// emisión comprobantes de pago,
-        /// desde el módulo invoice de angular.
-        /// </summary>
-        [HttpPost("Store")]
-        public async Task<IActionResult> Store([FromBody] Comprobante model)
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create([FromBody] Comprobante model)
         {
             _logger.LogInformation(JsonSerializer.Serialize(model));
             string invoiceType = model.InvoiceType.ToUpper();
@@ -91,6 +86,9 @@ namespace Nebula.Controllers
                 Month = invoiceType.Equals("SALE") ? DateTime.Now.ToString("MM") : model.StartDate.ToString("MM"),
             };
 
+            var cajaDiaria = await _context.CajasDiaria.AsNoTracking()
+                .FirstOrDefaultAsync(m => m.Id.Equals(model.CajaDiariaId));
+
             // guardar en la base de datos.
             await using (var transaction = await _context.Database.BeginTransactionAsync())
             {
@@ -100,19 +98,43 @@ namespace Nebula.Controllers
                     switch (model.InvoiceType.ToUpper())
                     {
                         case "SALE":
-                            var serieInvoice = await _context.SerieInvoices.FirstOrDefaultAsync(m =>
-                                m.CajaId.ToString().Equals(model.CajaId) && m.DocType.Equals(model.DocType));
-                            if (serieInvoice == null) throw new Exception("No existe serie comprobante!");
-                            int numComprobante = Convert.ToInt32(serieInvoice.Counter);
-                            if (numComprobante > 99999999)
-                                throw new Exception("Ingresa nueva serie de comprobante!");
-                            numComprobante = numComprobante + 1;
-                            serieInvoice.Counter = numComprobante;
-                            _context.SerieInvoices.Update(serieInvoice);
+                            var invoiceSerie = await _context.InvoiceSeries.FirstOrDefaultAsync(m =>
+                                m.Id.Equals(cajaDiaria.InvoiceSerieId));
+                            if (invoiceSerie == null) throw new Exception("No existe serie comprobante!");
+                            int numComprobante = 0;
+                            string THROW_MESSAGE = "Ingresa serie de comprobante!";
+                            switch (model.DocType)
+                            {
+                                case "FT":
+                                    invoice.Serie = invoiceSerie.Factura;
+                                    numComprobante = invoiceSerie.CounterFactura;
+                                    if (numComprobante > 99999999)
+                                        throw new Exception(THROW_MESSAGE);
+                                    numComprobante = numComprobante + 1;
+                                    invoiceSerie.CounterFactura = numComprobante;
+                                    break;
+                                case "BL":
+                                    invoice.Serie = invoiceSerie.Boleta;
+                                    numComprobante = invoiceSerie.CounterBoleta;
+                                    if (numComprobante > 99999999)
+                                        throw new Exception(THROW_MESSAGE);
+                                    numComprobante = numComprobante + 1;
+                                    invoiceSerie.CounterBoleta = numComprobante;
+                                    break;
+                                case "NV":
+                                    invoice.Serie = invoiceSerie.NotaDeVenta;
+                                    numComprobante = invoiceSerie.CounterNotaDeVenta;
+                                    if (numComprobante > 99999999)
+                                        throw new Exception(THROW_MESSAGE);
+                                    numComprobante = numComprobante + 1;
+                                    invoiceSerie.CounterNotaDeVenta = numComprobante;
+                                    break;
+                            }
+
+                            invoice.Number = numComprobante.ToString("D8");
+                            _context.InvoiceSeries.Update(invoiceSerie);
                             await _context.SaveChangesAsync();
                             _logger.LogInformation("El contador de la serie ha sido actualizado!");
-                            invoice.Serie = serieInvoice.Prefix;
-                            invoice.Number = numComprobante.ToString("D8");
                             break;
                         case "PURCHASE":
                             invoice.Serie = model.Serie;
@@ -205,27 +227,10 @@ namespace Nebula.Controllers
             });
         }
 
-        /// <summary>
-        /// emisión comprobantes de pago,
-        /// desde la terminal de venta.
-        /// </summary>
         [HttpPost("SalePos/{id}")]
-        public async Task<IActionResult> SalePos(int? id, [FromBody] Sale model)
+        public async Task<IActionResult> SalePos(int id, [FromBody] Sale model)
         {
             _logger.LogInformation(JsonSerializer.Serialize(model));
-            // información de serie factura.
-            if (id == null)
-                return BadRequest(new {Ok = false, Msg = "Debe enviar un ID valido!"});
-            _logger.LogInformation("ID valido!");
-            var cajaDiaria = await _context.CajasDiaria.AsNoTracking()
-                .FirstOrDefaultAsync(m => m.Id.Equals(id));
-            if (cajaDiaria == null)
-                return BadRequest(new {Ok = false, Msg = "No existe caja diaria!"});
-            _logger.LogInformation($"Caja diaria [{cajaDiaria.Id}/{cajaDiaria.Name}]");
-            var serieInvoice = await _context.SerieInvoices.FirstOrDefaultAsync(m =>
-                m.CajaId.Equals(cajaDiaria.CajaId) && m.DocType.Equals(model.DocType));
-            if (serieInvoice == null) return BadRequest(new {Ok = false, Msg = "Serie comprobante no existe!"});
-            _logger.LogInformation($"Serie comprobante [{serieInvoice.Prefix}-{serieInvoice.Counter}]");
             // información del cliente.
             var client = await _context.Contacts.AsNoTracking()
                 .Include(m => m.PeopleDocType)
@@ -256,23 +261,58 @@ namespace Nebula.Controllers
                 Month = DateTime.Now.ToString("MM"),
             };
 
+            var cajaDiaria = await _context.CajasDiaria.AsNoTracking()
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
+            if (cajaDiaria == null)
+                return BadRequest(new {Ok = false, Msg = "No existe caja diaria!"});
+            _logger.LogInformation($"Caja diaria [{cajaDiaria.Id}/{cajaDiaria.Name}]");
+
             // guardar en la base de datos.
             await using (var transaction = await _context.Database.BeginTransactionAsync())
             {
                 try
                 {
-                    int numComprobante = Convert.ToInt32(serieInvoice.Counter);
-                    if (numComprobante > 99999999)
-                        return BadRequest(new {Ok = false, Msg = "Ingresa nueva serie de comprobante!"});
-                    numComprobante = numComprobante + 1;
-                    serieInvoice.Counter = numComprobante;
-                    _context.SerieInvoices.Update(serieInvoice);
+                    var invoiceSerie = await _context.InvoiceSeries.FirstOrDefaultAsync(m =>
+                        m.Id.Equals(cajaDiaria.InvoiceSerieId));
+                    if (invoiceSerie == null) throw new Exception("Serie comprobante no existe!");
+                    _logger.LogInformation($"Serie comprobante [{invoiceSerie.Name}]");
+
+                    int numComprobante = 0;
+                    string THROW_MESSAGE = "Ingresa serie de comprobante!";
+                    switch (model.DocType)
+                    {
+                        case "FT":
+                            invoice.Serie = invoiceSerie.Factura;
+                            numComprobante = invoiceSerie.CounterFactura;
+                            if (numComprobante > 99999999)
+                                throw new Exception(THROW_MESSAGE);
+                            numComprobante = numComprobante + 1;
+                            invoiceSerie.CounterFactura = numComprobante;
+                            break;
+                        case "BL":
+                            invoice.Serie = invoiceSerie.Boleta;
+                            numComprobante = invoiceSerie.CounterBoleta;
+                            if (numComprobante > 99999999)
+                                throw new Exception(THROW_MESSAGE);
+                            numComprobante = numComprobante + 1;
+                            invoiceSerie.CounterBoleta = numComprobante;
+                            break;
+                        case "NV":
+                            invoice.Serie = invoiceSerie.NotaDeVenta;
+                            numComprobante = invoiceSerie.CounterNotaDeVenta;
+                            if (numComprobante > 99999999)
+                                throw new Exception(THROW_MESSAGE);
+                            numComprobante = numComprobante + 1;
+                            invoiceSerie.CounterNotaDeVenta = numComprobante;
+                            break;
+                    }
+
+                    invoice.Number = numComprobante.ToString("D8");
+                    _context.InvoiceSeries.Update(invoiceSerie);
                     await _context.SaveChangesAsync();
                     _logger.LogInformation("El contador de la serie ha sido actualizado!");
 
                     // registrar factura/boleta.
-                    invoice.Serie = serieInvoice.Prefix;
-                    invoice.Number = numComprobante.ToString("D8");
                     _context.Invoices.Add(invoice);
                     await _context.SaveChangesAsync();
                     _logger.LogInformation("La cabecera del comprobante ha sido registrado");

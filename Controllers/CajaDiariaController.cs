@@ -30,64 +30,80 @@ namespace Nebula.Controllers
         }
 
         [HttpGet("Show/{id}")]
-        public async Task<IActionResult> Show(int? id)
+        public async Task<IActionResult> Show(int id)
         {
-            if (id == null) return BadRequest();
             var result = await _context.CajasDiaria.AsNoTracking()
                 .FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (result == null) return BadRequest();
             return Ok(result);
         }
 
-        [HttpPost("Store")]
-        public async Task<IActionResult> Store([FromBody] AperturaCaja model)
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create([FromBody] AperturaCaja model)
         {
-            var caja = await _context.Cajas.FirstOrDefaultAsync(m =>
-                m.Id.ToString().Equals(model.CajaId));
-            if (caja == null) return BadRequest();
-            var cajaDiaria = new CajaDiaria()
-            {
-                Caja = caja,
-                Name = caja.Name,
-                StartDate = DateTime.Now,
-                State = "ABIERTO",
-                TotalApertura = model.Total,
-                TotalContabilizado = 0.0M,
-                TotalCierre = 0.0M,
-                Year = DateTime.Now.ToString("yyyy"),
-                Month = DateTime.Now.ToString("MM"),
-            };
-            _context.CajasDiaria.Add(cajaDiaria);
-            await _context.SaveChangesAsync();
+            var invoiceSerie = await _context.InvoiceSeries.AsNoTracking()
+                .FirstOrDefaultAsync(m => m.Id.ToString().Equals(model.SerieId));
+            if (invoiceSerie == null) return BadRequest();
 
-            // registrar apertura de caja en detalle de caja diaria.
-            var detalleCaja = new CashierDetail()
+            await using (var transaction = await _context.Database.BeginTransactionAsync())
             {
-                CajaDiaria = cajaDiaria,
-                TypeOperation = TypeOperation.CajaChica,
-                StartDate = DateTime.Now,
-                Document = "-",
-                Contact = "-",
-                Glosa = "APERTURA DE CAJA",
-                Type = "Ingreso",
-                Total = model.Total
-            };
-            _context.CashierDetails.Add(detalleCaja);
-            await _context.SaveChangesAsync();
+                try
+                {
+                    var cajaDiaria = new CajaDiaria()
+                    {
+                        InvoiceSerie = invoiceSerie,
+                        Name = invoiceSerie.Name,
+                        StartDate = DateTime.Now,
+                        State = "ABIERTO",
+                        TotalApertura = model.Total,
+                        TotalContabilizado = 0.0M,
+                        TotalCierre = 0.0M,
+                        Year = DateTime.Now.ToString("yyyy"),
+                        Month = DateTime.Now.ToString("MM"),
+                    };
+                    _context.CajasDiaria.Add(cajaDiaria);
+                    await _context.SaveChangesAsync();
 
-            return Ok(new
+                    // registrar apertura de caja en detalle de caja diaria.
+                    var detalleCaja = new CashierDetail()
+                    {
+                        CajaDiaria = cajaDiaria,
+                        TypeOperation = TypeOperation.CajaChica,
+                        StartDate = DateTime.Now,
+                        Document = "-",
+                        Contact = "-",
+                        Glosa = "APERTURA DE CAJA",
+                        Type = "ENTRADA",
+                        Total = model.Total
+                    };
+                    _context.CashierDetails.Add(detalleCaja);
+                    await _context.SaveChangesAsync();
+
+                    // confirmar transacción.
+                    await transaction.CommitAsync();
+
+                    return Ok(new
+                    {
+                        Ok = true, Data = cajaDiaria,
+                        Msg = "La apertura de caja ha sido registrado!"
+                    });
+                }
+                catch (Exception)
+                {
+                    await transaction.RollbackAsync();
+                }
+            }
+
+            return BadRequest(new
             {
-                Ok = true, Data = cajaDiaria,
-                Msg = "La apertura de caja ha sido registrado!"
+                Ok = true, Msg = "Hubo un error, al registrar la apertura de caja!"
             });
         }
 
         [HttpPut("Update/{id}")]
-        public async Task<IActionResult> Update(int? id, [FromBody] CerrarCaja model)
+        public async Task<IActionResult> Update(int id, [FromBody] CerrarCaja model)
         {
-            if (id == null) return BadRequest();
-            var result = await _context.CajasDiaria
-                .FirstOrDefaultAsync(m => m.Id.Equals(id));
+            var result = await _context.CajasDiaria.FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (result == null) return BadRequest();
             result.TotalContabilizado = model.TotalContabilizado;
             result.TotalCierre = model.TotalCierre;
@@ -99,6 +115,16 @@ namespace Nebula.Controllers
                 Ok = true, Data = model,
                 Msg = "El cierre de caja ha sido registrado!"
             });
+        }
+
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _context.CajasDiaria.FirstOrDefaultAsync(m => m.Id.Equals(id));
+            if (result == null) return BadRequest();
+            _context.CajasDiaria.Remove(result);
+            await _context.SaveChangesAsync();
+            return Ok(new {Ok = true, Data = result, Msg = "La caja diaria ha sido borrado!"});
         }
     }
 }

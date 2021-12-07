@@ -25,12 +25,16 @@ export class CajaDiariaService {
     return this.http.get<CajaDiaria>(`${this.appURL}/Show/${id}`);
   }
 
-  public store(data: AperturaCaja): Observable<ResponseData<CajaDiaria>> {
-    return this.http.post<ResponseData<CajaDiaria>>(`${this.appURL}/Store`, data);
+  public create(data: AperturaCaja): Observable<ResponseData<CajaDiaria>> {
+    return this.http.post<ResponseData<CajaDiaria>>(`${this.appURL}/Create`, data);
   }
 
   public update(id: number, data: CerrarCaja): Observable<ResponseData<CajaDiaria>> {
     return this.http.put<ResponseData<CajaDiaria>>(`${this.appURL}/Update/${id}`, data);
+  }
+
+  public delete(id: number): Observable<ResponseData<CajaDiaria>> {
+    return this.http.delete<ResponseData<CajaDiaria>>(`${this.appURL}/Delete/${id}`);
   }
 
 }

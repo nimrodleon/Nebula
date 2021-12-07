@@ -24,11 +24,6 @@ namespace Nebula.Data
         public DbSet<PeopleDocType> PeopleDocTypes { get; set; }
 
         /// <summary>
-        /// Configuración de Caja.
-        /// </summary>
-        public DbSet<Caja> Cajas { get; set; }
-
-        /// <summary>
         /// Aperturas y Cierres de caja.
         /// </summary>
         public DbSet<CajaDiaria> CajasDiaria { get; set; }
@@ -57,11 +52,6 @@ namespace Nebula.Data
         /// Detalle Factura.
         /// </summary>
         public DbSet<InvoiceDetail> InvoiceDetails { get; set; }
-
-        /// <summary>
-        /// Series de Comprobantes.
-        /// </summary>
-        public DbSet<SerieInvoice> SerieInvoices { get; set; }
 
         /// <summary>
         /// Catalogo Tipos de Operación para facturar.
@@ -180,8 +170,6 @@ namespace Nebula.Data
             modelBuilder.Entity<Contact>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<PeopleDocType>().Property<bool>("SoftDeleted");
             modelBuilder.Entity<PeopleDocType>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
-            modelBuilder.Entity<Caja>().Property<bool>("SoftDeleted");
-            modelBuilder.Entity<Caja>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<CajaDiaria>().Property<bool>("SoftDeleted");
             modelBuilder.Entity<CajaDiaria>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<UndMedida>().Property<bool>("SoftDeleted");
@@ -194,8 +182,6 @@ namespace Nebula.Data
             modelBuilder.Entity<Invoice>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<InvoiceDetail>().Property<bool>("SoftDeleted");
             modelBuilder.Entity<InvoiceDetail>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
-            modelBuilder.Entity<SerieInvoice>().Property<bool>("SoftDeleted");
-            modelBuilder.Entity<SerieInvoice>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<InvoiceNote>().Property<bool>("SoftDeleted");
             modelBuilder.Entity<InvoiceNote>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<InvoiceNoteDetail>().Property<bool>("SoftDeleted");
