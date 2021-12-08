@@ -7,16 +7,43 @@ namespace Nebula.Data.Models
     public class TransferNoteDetail
     {
         public int Id { get; set; }
+
+        /// <summary>
+        /// Id Nota de Transferencia.
+        /// </summary>
         public int? TransferNoteId { get; set; }
 
+        /// <summary>
+        /// Propiedad de Relación, Nota de Trasferencia.
+        /// </summary>
         [JsonIgnore]
         [ForeignKey("TransferNoteId")]
         public TransferNote TransferNote { get; set; }
 
+        /// <summary>
+        /// Id del producto.
+        /// </summary>
         public int? ProductId { get; set; }
-        [MaxLength(250)] public string Description { get; set; }
+
+        /// <summary>
+        /// Descripción del producto.
+        /// </summary>
+        [MaxLength(250)]
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Precio del producto.
+        /// </summary>
         public decimal? Price { get; set; }
+
+        /// <summary>
+        /// Cantidad del producto.
+        /// </summary>
         public decimal? Quantity { get; set; }
+
+        /// <summary>
+        /// Monto del Item (cantidad * precio).
+        /// </summary>
         public decimal? Amount { get; set; }
     }
 }

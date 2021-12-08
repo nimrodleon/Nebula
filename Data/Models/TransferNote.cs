@@ -8,6 +8,10 @@ namespace Nebula.Data.Models
     public class TransferNote
     {
         public int Id { get; set; }
+
+        /// <summary>
+        /// Id Almacén de Origen.
+        /// </summary>
         public Guid? OriginId { get; set; }
 
         /// <summary>
@@ -16,6 +20,9 @@ namespace Nebula.Data.Models
         [ForeignKey("OriginId")]
         public Warehouse Origin { get; set; }
 
+        /// <summary>
+        /// Id Almacén de destino.
+        /// </summary>
         public Guid? TargetId { get; set; }
 
         /// <summary>
@@ -24,12 +31,45 @@ namespace Nebula.Data.Models
         [ForeignKey("TargetId")]
         public Warehouse Target { get; set; }
 
-        [MaxLength(250)] public string Motivo { get; set; }
-        [DataType(DataType.Date)] public DateTime StartDate { get; set; }
-        [MaxLength(250)] public string Remark { get; set; }
-        [MaxLength(250)] public string Status { get; set; }
-        [MaxLength(250)] public string Year { get; set; }
-        [MaxLength(250)] public string Month { get; set; }
+        /// <summary>
+        /// Motivo de Inventario.
+        /// </summary>
+        [MaxLength(250)]
+        public string Motivo { get; set; }
+
+        /// <summary>
+        /// Fecha de registro.
+        /// </summary>
+        [DataType(DataType.Date)]
+        public DateTime StartDate { get; set; }
+
+        /// <summary>
+        /// Observación.
+        /// </summary>
+        [MaxLength(250)]
+        public string Remark { get; set; }
+
+        /// <summary>
+        /// Estado de la Transferencia.
+        /// </summary>
+        [MaxLength(250)]
+        public string Status { get; set; }
+
+        /// <summary>
+        /// Año de Inventario.
+        /// </summary>
+        [MaxLength(250)]
+        public string Year { get; set; }
+
+        /// <summary>
+        /// Mes de Inventario.
+        /// </summary>
+        [MaxLength(250)]
+        public string Month { get; set; }
+
+        /// <summary>
+        /// Detalles Nota de Trasferencia.
+        /// </summary>
         public List<TransferNoteDetail> TransferNoteDetails { get; set; }
     }
 }

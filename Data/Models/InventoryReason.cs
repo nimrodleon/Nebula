@@ -8,7 +8,12 @@ namespace Nebula.Data.Models
     public class InventoryReason
     {
         public int Id { get; set; }
-        [MaxLength(250)] public string Description { get; set; }
+
+        /// <summary>
+        /// Descripción de Motivo.
+        /// </summary>
+        [MaxLength(250)]
+        public string Description { get; set; }
 
         /// <summary>
         /// Transfer|Input|Output

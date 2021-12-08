@@ -10,7 +10,16 @@ namespace Nebula.Data.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
-        [MaxLength(250)] public string Description { get; set; }
-        [MaxLength(250)] public string SunatCode { get; set; }
+        /// <summary>
+        /// Descripción Tipo de documento.
+        /// </summary>
+        [MaxLength(250)]
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Código Sunat Catalogo-6
+        /// </summary>
+        [MaxLength(250)]
+        public string SunatCode { get; set; }
     }
 }
