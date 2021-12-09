@@ -12,7 +12,7 @@ namespace Nebula.Data.Models
         /// FACTURA|BOLETA|NOTA DE VENTA, (FT|BL|NV).
         /// </summary>
         [MaxLength(250)]
-        public string TypeDoc { get; set; }
+        public string DocType { get; set; }
 
         /// <summary>
         /// Tipo factura (Compra|Venta)

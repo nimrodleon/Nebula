@@ -62,7 +62,7 @@ namespace Nebula.Controllers
             // información de venta.
             var invoice = new Invoice()
             {
-                TypeDoc = model.DocType,
+                DocType = model.DocType,
                 TipOperacion = model.TypeOperation,
                 FecEmision = invoiceType.Equals("SALE")
                     ? DateTime.Now.ToString("yyyy-MM-dd")
@@ -239,7 +239,7 @@ namespace Nebula.Controllers
             // información venta.
             var invoice = new Invoice()
             {
-                TypeDoc = model.DocType,
+                DocType = model.DocType,
                 TipOperacion = "0101",
                 FecEmision = DateTime.Now.ToString("yyyy-MM-dd"),
                 HorEmision = DateTime.Now.ToString("HH:mm:ss"),
