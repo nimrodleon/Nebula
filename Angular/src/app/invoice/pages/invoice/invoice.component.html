@@ -34,10 +34,10 @@
                   <option value="NV">NOTA DE VENTA</option>
                 </select>
               </div>
-              <label class="col-1 col-form-label text-uppercase text-end">Caja</label>
+              <label class="col-1 col-form-label text-uppercase text-end">Auto</label>
               <div class="col-4">
                 <select class="form-select" formControlName="cajaId">
-                  <option *ngFor="let item of listaDeCajas" [value]="item.id">{{item.name}}</option>
+                  <option *ngFor="let item of invoiceSeries" [value]="item.id">{{item.name}}</option>
                 </select>
               </div>
             </div>

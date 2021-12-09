@@ -21,7 +21,7 @@ export class CashInOutModalComponent implements OnInit {
   cajaDiariaId: number = 0;
   @Output()
   responseData = new EventEmitter<ResponseData<CashierDetail>>();
-  cashierDetail: CashierDetail = new CashierDetail();
+  cashierDetail: CashierDetail | any;
   cajaChicaForm: FormGroup = this.fb.group({
     id: [null],
     cajaDiariaId: [''],
@@ -57,7 +57,7 @@ export class CashInOutModalComponent implements OnInit {
       const myModal: any = document.querySelector('#cash-in-out-modal');
       myModal.addEventListener('shown.bs.modal', () => {
         jQuery('#contactId').val(null).trigger('change');
-        this.cashierDetail = new CashierDetail();
+        this.cashierDetail = null;
         this.cashierDetail.cajaDiariaId = <any>this.cajaDiariaId;
         this.cajaChicaForm.reset({...this.cashierDetail});
       });

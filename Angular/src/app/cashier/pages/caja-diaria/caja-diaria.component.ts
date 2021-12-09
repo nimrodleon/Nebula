@@ -2,8 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {faBars, faPlus, faSyncAlt, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import * as moment from 'moment';
-import {CajaDiariaService, CajaService} from '../../services';
-import {AperturaCaja, Caja, CajaDiaria} from '../../interfaces';
+import {CajaDiariaService} from '../../services';
+import {CajaDiaria} from '../../interfaces';
 import {InvoiceSerie} from '../../../system/interfaces';
 import {InvoiceSerieService} from '../../../system/services';
 
@@ -27,10 +27,6 @@ export class CajaDiariaComponent implements OnInit {
     year: [moment().format('YYYY')],
     month: [moment().format('MM')],
   });
-  queryData: any = {
-    year: moment().format('YYYY'),
-    month: moment().format('MM'),
-  };
   // ====================================================================================================
   aperturaForm: FormGroup = this.fb.group({
     serieId: [''], total: 0
@@ -44,15 +40,13 @@ export class CajaDiariaComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarCajasDiarias();
-    // suscribir queryForm con queryData.
-    this.queryForm.valueChanges.subscribe(value => this.queryData = value);
     // seleccionar modal apertura de caja.
     this.aperturaCajaModal = new bootstrap.Modal(document.querySelector('#aperturaCaja'));
     // reset aperturaForm al iniciar el modal.
     if (document.querySelector('#aperturaCaja')) {
-      let myModalEl: any = document.querySelector('#aperturaCaja');
-      myModalEl.addEventListener('shown.bs.modal', () => {
-        this.aperturaForm.reset({cajaId: '', total: 0});
+      const myModal: any = document.querySelector('#aperturaCaja');
+      myModal.addEventListener('hide.bs.modal', () => {
+        this.aperturaForm.reset({serieId: '', total: 0});
       });
     }
     // cargar series de facturación.
@@ -61,8 +55,9 @@ export class CajaDiariaComponent implements OnInit {
 
   // cargar cajas diarias.
   public cargarCajasDiarias(): void {
-    this.cajaDiariaService.index(this.queryData.year, this.queryData.month)
-      .subscribe(result => this.cajasDiarias = result);
+    const year = this.queryForm.get('year')?.value;
+    const month = this.queryForm.get('month')?.value;
+    this.cajaDiariaService.index(year, month).subscribe(result => this.cajasDiarias = result);
   }
 
   // botón apertura caja.
@@ -72,11 +67,11 @@ export class CajaDiariaComponent implements OnInit {
 
   // guardar apertura de caja.
   public guardarAperturaCaja(): void {
-    this.cajaDiariaService.store(this.aperturaForm.value)
+    this.cajaDiariaService.create(this.aperturaForm.value)
       .subscribe(result => {
         if (result.ok) {
-          this.aperturaCajaModal.hide();
           this.cargarCajasDiarias();
+          this.aperturaCajaModal.hide();
         }
       });
   }

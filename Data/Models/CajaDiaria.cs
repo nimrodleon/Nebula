@@ -35,7 +35,7 @@ namespace Nebula.Data.Models
         /// Estado Caja.
         /// </summary>
         [MaxLength(250)]
-        public string State { get; set; }
+        public string Status { get; set; }
 
         /// <summary>
         /// Monto Apertura.

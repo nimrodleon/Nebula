@@ -1,15 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {
-  faCashRegister,
-  faCog, faFilter, faLock,
-  faPlus, faSearch, faTrashAlt
-} from '@fortawesome/free-solid-svg-icons';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormBuilder, FormControl} from '@angular/forms';
+import {faCashRegister, faCog, faFilter, faLock, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import {CajaDiaria, CashierDetail} from '../../interfaces';
 import {CajaDiariaService, CashierDetailService} from '../../services';
-import {ResponseData} from '../../../global/interfaces';
+import {ResponseData} from 'src/app/global/interfaces';
 
 declare var bootstrap: any;
 
@@ -27,8 +23,8 @@ export class CashDetailComponent implements OnInit {
   faCog = faCog;
   faFilter = faFilter;
   // ====================================================================================================
-  cajaDiariaId: string = '';
-  currentCajaDiaria: CajaDiaria = new CajaDiaria();
+  cajaDiariaId: number | any;
+  currentCajaDiaria: CajaDiaria | any;
   query: FormControl = this.fb.control('');
   cashierDetails: Array<CashierDetail> = new Array<CashierDetail>();
   cerrarCajaModal: any;
@@ -43,7 +39,7 @@ export class CashDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe(params => {
-      this.cajaDiariaId = params.get('id') || '';
+      this.cajaDiariaId = params.get('id') || 0;
       this.cajaDiariaService.show(<any>params.get('id'))
         .subscribe(result => this.currentCajaDiaria = result);
       // cargar detalle de caja.
@@ -61,7 +57,7 @@ export class CashDetailComponent implements OnInit {
 
   // abrir terminal de venta.
   public async openTerminal() {
-    if (this.currentCajaDiaria.state == 'ABIERTO') {
+    if (this.currentCajaDiaria.status == 'ABIERTO') {
       await this.router.navigate(['/cashier/terminal', this.cajaDiariaId]);
     } else {
       await Swal.fire(
@@ -73,14 +69,14 @@ export class CashDetailComponent implements OnInit {
   }
 
   // buscar documentos.
-  public submitSearch(e: any): void {
+  public submitSearch(e: Event): void {
     e.preventDefault();
     this.loadCashierDetails();
   }
 
   // botón cerrar caja.
   public async showCerrarCajaModal() {
-    if (this.currentCajaDiaria.state === 'ABIERTO') {
+    if (this.currentCajaDiaria.status === 'ABIERTO') {
       this.cerrarCajaModal.show();
     } else {
       await Swal.fire(
@@ -92,8 +88,8 @@ export class CashDetailComponent implements OnInit {
   }
 
   // cerrar modal cierre de caja.
-  public async hideCerrarCajaModal(data: ResponseData<CajaDiaria>) {
-    if (data.ok) {
+  public async hideCerrarCajaModal(result: ResponseData<CajaDiaria>) {
+    if (result.ok) {
       this.cerrarCajaModal.hide();
       await this.router.navigate(['/cashier']);
     }

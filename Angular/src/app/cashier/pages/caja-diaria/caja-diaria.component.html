@@ -66,8 +66,8 @@
               </td>
               <td>{{item.startDate|date}}</td>
               <td class="text-uppercase">
-                <span *ngIf="item.state === 'ABIERTO'" class="badge bg-success">{{item.state}}</span>
-                <span *ngIf="item.state === 'CERRADO'" class="badge bg-danger">{{item.state}}</span>
+                <span *ngIf="item.status === 'ABIERTO'" class="badge bg-success">{{item.status}}</span>
+                <span *ngIf="item.status === 'CERRADO'" class="badge bg-danger">{{item.status}}</span>
               </td>
               <td>{{item.totalApertura|currency}}</td>
               <td>{{item.totalContabilizado|currency}}</td>
@@ -109,7 +109,7 @@
               <div class="row mb-0">
                 <label class="col-3 col-form-label fw-bold text-uppercase text-end">Monto</label>
                 <div class="col-6">
-                  <input type="number" formControlName="total" step="0.01" class="form-control w-100">
+                  <input type="number" formControlName="total" step="0.1" class="form-control w-100">
                 </div>
               </div>
             </form>

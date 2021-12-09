@@ -20,9 +20,8 @@ namespace Nebula.Controllers
         }
 
         [HttpGet("Index/{id}")]
-        public async Task<IActionResult> Index(int? id, [FromQuery] string query)
+        public async Task<IActionResult> Index(int id, [FromQuery] string query)
         {
-            if (id == null) return BadRequest();
             var result = from m in _context.CashierDetails
                 where m.CajaDiariaId.Equals(id)
                 select m;

@@ -1,4 +1,4 @@
 export interface AperturaCaja {
-  cajaId: string;
+  serieId: string;
   total: number;
 }
