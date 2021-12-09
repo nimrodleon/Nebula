@@ -7,12 +7,13 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import * as moment from 'moment';
 import {environment} from 'src/environments/environment';
-import {Caja, Cuota} from 'src/app/cashier/interfaces';
+import {Cuota} from 'src/app/cashier/interfaces';
 import {DetailComprobante, TypeOperationSunat} from '../../interfaces';
-import {CajaService} from 'src/app/cashier/services';
 import {InvoiceService, SunatService} from '../../services';
-import {Contact} from '../../../contact/interfaces';
-import {ResponseData} from '../../../global/interfaces';
+import {Contact} from 'src/app/contact/interfaces';
+import {ResponseData} from 'src/app/global/interfaces';
+import {InvoiceSerieService} from 'src/app/system/services';
+import {InvoiceSerie} from 'src/app/system/interfaces';
 
 declare var jQuery: any;
 declare var bootstrap: any;
@@ -35,7 +36,7 @@ export class InvoiceComponent implements OnInit {
   private appURL: string = environment.applicationUrl;
   currentContact: Contact | any;
   contactModal: any;
-  listaDeCajas: Array<Caja> = new Array<Caja>();
+  invoiceSeries: Array<InvoiceSerie> = new Array<InvoiceSerie>();
   typeOperation: Array<TypeOperationSunat> = new Array<TypeOperationSunat>();
   comprobanteForm: FormGroup = this.fb.group({
     contactId: [null],
@@ -62,7 +63,7 @@ export class InvoiceComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private cajaService: CajaService,
+    private invoiceSerieService: InvoiceSerieService,
     private invoiceService: InvoiceService,
     private sunatService: SunatService) {
   }
@@ -99,8 +100,8 @@ export class InvoiceComponent implements OnInit {
     });
     // modal formulario contacto.
     this.contactModal = new bootstrap.Modal(document.querySelector('#contact-modal'));
-    // cargar lista de cajas.
-    this.cajaService.index().subscribe(result => this.listaDeCajas = result);
+    // series de facturación.
+    this.invoiceSerieService.index().subscribe(result => this.invoiceSeries = result);
     // cargar lista tipos de operación.
     this.sunatService.typeOperation().subscribe(result => this.typeOperation = result);
     // modal item comprobante.

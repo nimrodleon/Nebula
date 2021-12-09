@@ -28,7 +28,7 @@ export class CashDetailComponent implements OnInit {
   faFilter = faFilter;
   // ====================================================================================================
   cajaDiariaId: string = '';
-  currentCajaDiaria: CajaDiaria = new CajaDiaria();
+  // currentCajaDiaria: CajaDiaria = new CajaDiaria();
   query: FormControl = this.fb.control('');
   cashierDetails: Array<CashierDetail> = new Array<CashierDetail>();
   cerrarCajaModal: any;
@@ -42,13 +42,13 @@ export class CashDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.activatedRoute.paramMap.subscribe(params => {
-      this.cajaDiariaId = params.get('id') || '';
-      this.cajaDiariaService.show(<any>params.get('id'))
-        .subscribe(result => this.currentCajaDiaria = result);
-      // cargar detalle de caja.
-      this.loadCashierDetails();
-    });
+    // this.activatedRoute.paramMap.subscribe(params => {
+    //   this.cajaDiariaId = params.get('id') || '';
+    //   this.cajaDiariaService.show(<any>params.get('id'))
+    //     .subscribe(result => this.currentCajaDiaria = result);
+    //   // cargar detalle de caja.
+    //   this.loadCashierDetails();
+    // });
     // modal cerrar caja.
     this.cerrarCajaModal = new bootstrap.Modal(document.querySelector('#cerrar-caja'));
   }
@@ -61,15 +61,15 @@ export class CashDetailComponent implements OnInit {
 
   // abrir terminal de venta.
   public async openTerminal() {
-    if (this.currentCajaDiaria.state == 'ABIERTO') {
-      await this.router.navigate(['/cashier/terminal', this.cajaDiariaId]);
-    } else {
-      await Swal.fire(
-        'Info?',
-        'La caja esta cerrada!',
-        'info'
-      );
-    }
+    // if (this.currentCajaDiaria.state == 'ABIERTO') {
+    //   await this.router.navigate(['/cashier/terminal', this.cajaDiariaId]);
+    // } else {
+    //   await Swal.fire(
+    //     'Info?',
+    //     'La caja esta cerrada!',
+    //     'info'
+    //   );
+    // }
   }
 
   // buscar documentos.
@@ -80,15 +80,15 @@ export class CashDetailComponent implements OnInit {
 
   // botón cerrar caja.
   public async showCerrarCajaModal() {
-    if (this.currentCajaDiaria.state === 'ABIERTO') {
-      this.cerrarCajaModal.show();
-    } else {
-      await Swal.fire(
-        'Info?',
-        'La caja esta cerrada!',
-        'info'
-      );
-    }
+    // if (this.currentCajaDiaria.state === 'ABIERTO') {
+    //   this.cerrarCajaModal.show();
+    // } else {
+    //   await Swal.fire(
+    //     'Info?',
+    //     'La caja esta cerrada!',
+    //     'info'
+    //   );
+    // }
   }
 
   // cerrar modal cierre de caja.
