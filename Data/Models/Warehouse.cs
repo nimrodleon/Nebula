@@ -10,7 +10,16 @@ namespace Nebula.Data.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
 
-        [MaxLength(250)] public string Name { get; set; }
-        [MaxLength(250)] public string Remark { get; set; }
+        /// <summary>
+        /// Nombre Almacén.
+        /// </summary>
+        [MaxLength(250)]
+        public string Name { get; set; }
+
+        /// <summary>
+        /// Observación.
+        /// </summary>
+        [MaxLength(250)]
+        public string Remark { get; set; }
     }
 }

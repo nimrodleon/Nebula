@@ -4,7 +4,17 @@ namespace Nebula.Data.Models
 {
     public class TypeOperationSunat
     {
-        [Key] [MaxLength(250)] public string Id { get; set; }
-        [MaxLength(250)] public string Description { get; set; }
+        /// <summary>
+        /// Clave Primaria.
+        /// </summary>
+        [Key]
+        [MaxLength(250)]
+        public string Id { get; set; }
+
+        /// <summary>
+        /// Descripción del Tipo de Operación.
+        /// </summary>
+        [MaxLength(250)]
+        public string Description { get; set; }
     }
 }
