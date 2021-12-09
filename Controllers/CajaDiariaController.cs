@@ -51,10 +51,10 @@ namespace Nebula.Controllers
                 {
                     var cajaDiaria = new CajaDiaria()
                     {
-                        InvoiceSerie = invoiceSerie,
+                        InvoiceSerieId = invoiceSerie.Id,
                         Name = invoiceSerie.Name,
                         StartDate = DateTime.Now,
-                        State = "ABIERTO",
+                        Status = "ABIERTO",
                         TotalApertura = model.Total,
                         TotalContabilizado = 0.0M,
                         TotalCierre = 0.0M,
@@ -67,7 +67,7 @@ namespace Nebula.Controllers
                     // registrar apertura de caja en detalle de caja diaria.
                     var detalleCaja = new CashierDetail()
                     {
-                        CajaDiaria = cajaDiaria,
+                        CajaDiariaId = cajaDiaria.Id,
                         TypeOperation = TypeOperation.CajaChica,
                         StartDate = DateTime.Now,
                         Document = "-",
@@ -107,7 +107,7 @@ namespace Nebula.Controllers
             if (result == null) return BadRequest();
             result.TotalContabilizado = model.TotalContabilizado;
             result.TotalCierre = model.TotalCierre;
-            result.State = "CERRADO";
+            result.Status = "CERRADO";
             _context.CajasDiaria.Update(result);
             await _context.SaveChangesAsync();
             return Ok(new

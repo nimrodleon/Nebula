@@ -1,9 +1,9 @@
 export interface CajaDiaria {
   id: number | null;
-  cajaId: string;
+  invoiceSerieId: string;
   name: string;
   startDate: any;
-  state: string;
+  status: string;
   totalApertura: number;
   totalContabilizado: number;
   totalCierre: number;
