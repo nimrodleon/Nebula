@@ -4,62 +4,86 @@ import {Cuota, Sale, SaleDetail} from '../interfaces';
 import {InvoiceService} from '../../invoice/services';
 import {Observable} from 'rxjs';
 import {ResponseData} from '../../global/interfaces';
+import {CompanyService} from '../../system/services';
+import {Company} from '../../system/interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TerminalService {
+  private _config: Company | any;
   private _sale: Sale = new Sale();
 
   constructor(
     private productService: ProductService,
-    private invoiceService: InvoiceService,) {
+    private invoiceService: InvoiceService,
+    private companyService: CompanyService) {
   }
 
+  // parámetros del sistema.
+  public get config(): any {
+    return this._config;
+  }
+
+  // información de la venta.
   public get sale(): Sale {
     return this._sale;
   }
 
+  // setter venta.
   public set sale(value: Sale) {
     this._sale = value;
   }
 
+  // borrar venta.
   public deleteSale(): void {
     this._sale = new Sale();
   }
 
+  // setter clienteID.
   public setClientId(id: number): void {
     this._sale.clientId = id;
   }
 
+  // cargar parámetros del sistema.
+  public getConfig(): void {
+    this.companyService.show()
+      .subscribe(result => this._config = result);
+  }
+
+  // Agregar item al carrito de compras.
   public addItem(prodId: any): void {
     this.productService.show(prodId).subscribe(result => {
       if (this._sale.details.length <= 0) {
-        this.sale.details.push(new SaleDetail(result.id, result.description,
-          result.price1, 1, 0, result.price1));
+        this._sale.details.push(new SaleDetail(
+          result.id, result.description, 1, result.price1, result.price1
+        ));
         this.calcImporteVenta();
       } else {
         let changeQuantity: boolean = false;
-        this._sale.details.forEach(item => {
+        this._sale.details.forEach((item: SaleDetail) => {
           if (item.productId === result.id) {
-            item.price = result.price1;
             item.quantity = item.quantity + 1;
-            item.amount = item.quantity * result.price1;
+            item.price = result.price1;
+            item.amount = item.quantity * item.price;
             this.calcImporteVenta();
             changeQuantity = true;
           }
         });
+        // ejecutar si no hay coincidencias.
         if (!changeQuantity) {
-          this.sale.details.push(new SaleDetail(result.id, result.description,
-            result.price1, 1, 0, result.price1));
+          this._sale.details.push(new SaleDetail(
+            result.id, result.description, 1, result.price1, result.price1
+          ));
           this.calcImporteVenta();
         }
       }
     });
   }
 
+  // cambiar cantidad item.
   public changeQuantity(prodId: any, value: number): void {
-    this._sale.details.forEach(item => {
+    this._sale.details.forEach((item: SaleDetail) => {
       if (item.productId === prodId) {
         item.quantity = value;
         item.amount = item.quantity * item.price;
@@ -68,19 +92,9 @@ export class TerminalService {
     });
   }
 
-  public calcDiscount(prodId: any, value: number): void {
-    this._sale.details.forEach(item => {
-      if (item.productId === prodId) {
-        item.discount = value;
-        const amount = item.quantity * item.price;
-        item.amount = amount - ((item.discount / 100) * amount);
-        this.calcImporteVenta();
-      }
-    });
-  }
-
+  // borrar item carrito de compras.
   public deleteItem(prodId: any): void {
-    this._sale.details.forEach((value, index, array) => {
+    this._sale.details.forEach((value: SaleDetail, index: number, array: any) => {
       if (value.productId === prodId) {
         array.splice(index, 1);
         this.calcImporteVenta();
@@ -88,35 +102,32 @@ export class TerminalService {
     });
   }
 
+  // calcular importe venta.
   public calcImporteVenta(): void {
     let total = 0;
-    this._sale.details.forEach(item => {
+    const {porcentajeIgv} = this._config;
+    this._sale.details.forEach((item: SaleDetail) => {
       total = total + item.amount;
     });
-    const precioConIgv: boolean = false;
-    if (precioConIgv) {
-      this._sale.sumImpVenta = total;
-      this._sale.sumTotValVenta = total / 1.18;
-      this._sale.sumTotTributos = total - this._sale.sumTotValVenta;
-    } else {
-      this._sale.sumTotValVenta = total;
-      this._sale.sumTotTributos = total * 0.18;
-      this._sale.sumImpVenta = this._sale.sumTotValVenta + this._sale.sumTotTributos;
-    }
+    this._sale.sumTotValVenta = total / ((porcentajeIgv / 100) + 1);
+    this._sale.sumTotTributos = total - this._sale.sumTotValVenta;
+    this._sale.sumImpVenta = total;
   }
 
+  // agregar información.
   public addInfo(data: any): void {
     this._sale = {...this._sale, ...data};
   }
 
+  // Agregar cuotas.
   public addCuotas(cuotas: Array<Cuota>): void {
     this._sale.cuotas = cuotas;
   }
 
+  // guardar cambios.
   public saveChanges(id: number): Observable<ResponseData<Sale>> {
     if (this._sale.paymentType === 'Contado') this._sale.endDate = '1992-04-05';
     return this.invoiceService.salePos(id, this._sale);
   }
-
 
 }

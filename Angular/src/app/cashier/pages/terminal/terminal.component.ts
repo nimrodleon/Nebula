@@ -1,8 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {
   faBarcode, faCashRegister, faCogs,
-  faCoins, faIdCardAlt, faMinus, faPlus,
-  faSearch, faSignOutAlt, faTags, faThLarge,
+  faCoins, faIdCardAlt, faMinus, faPlus, faSearch, faSignOutAlt, faTags, faThLarge,
   faTimes, faTrashAlt, faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, FormControl} from '@angular/forms';
@@ -13,8 +12,8 @@ import {ProductService} from 'src/app/products/services';
 import {deleteConfirm, ResponseData} from 'src/app/global/interfaces';
 import {Product} from '../../../products/interfaces';
 import {Contact} from '../../../contact/interfaces';
-import {CashierDetail} from '../../interfaces';
-import {TerminalService} from '../../services';
+import {CajaDiaria, CashierDetail} from '../../interfaces';
+import {CajaDiariaService, TerminalService} from '../../services';
 
 declare var jQuery: any;
 declare var bootstrap: any;
@@ -43,25 +42,30 @@ export class TerminalComponent implements OnInit {
   cajaDiariaId: number = 0;
   cobrarModal: any;
   cashInOutModal: any;
+  productModal: any;
+  contactModal: any;
   // ====================================================================================================
   private appURL: string = environment.applicationUrl;
   queryProduct: FormControl = this.fb.control('');
+  cajaDiaria: CajaDiaria | any;
   currentProduct: Product | any;
   currentContact: Contact | any;
   products: Array<Product> = new Array<Product>();
-  productModal: any;
-  contactModal: any;
 
   constructor(
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private productService: ProductService,
-    private terminalService: TerminalService) {
+    private terminalService: TerminalService,
+    private cajaDiariaService: CajaDiariaService) {
   }
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe(params => {
       this.cajaDiariaId = Number(params.get('id'));
+      // cargar caja diaria.
+      this.cajaDiariaService.show(this.cajaDiariaId)
+        .subscribe(result => this.cajaDiaria = result);
     });
     // buscador de clientes.
     jQuery('#clientId').select2({
@@ -84,6 +88,10 @@ export class TerminalComponent implements OnInit {
         jQuery('#clientId').val(null).trigger('change');
       }
     });
+    // cargar valor inicial.
+    this.terminalService.deleteSale();
+    // cargar parámetros del sistema.
+    this.terminalService.getConfig();
     // cargar lista de productos.
     this.searchProducts();
     // modal formulario de productos.
@@ -94,6 +102,11 @@ export class TerminalComponent implements OnInit {
     this.cobrarModal = new bootstrap.Modal(document.querySelector('#cobrar-modal'));
     // formulario entrada/salida de efectivo.
     this.cashInOutModal = new bootstrap.Modal(document.querySelector('#cash-in-out-modal'));
+  }
+
+  // parámetros del sistema.
+  public get config() {
+    return this.terminalService.config;
   }
 
   // información de la venta.
@@ -128,10 +141,12 @@ export class TerminalComponent implements OnInit {
   }
 
   // cerrar modal contacto.
-  public hideContactModal(data: ResponseData<Contact>): void {
-    if (data.ok) {
+  public hideContactModal(result: ResponseData<Contact>): void {
+    if (result.ok) {
+      const newOption = new Option(`${result.data?.document} - ${result.data?.name}`,
+        <any>result.data?.id, true, true);
+      jQuery('#clientId').append(newOption).trigger('change');
       this.contactModal.hide();
-      // TODO: seleccionar contacto.
     }
   }
 
@@ -188,10 +203,10 @@ export class TerminalComponent implements OnInit {
     this.terminalService.changeQuantity(prodId, value);
   }
 
-  // calcular el descuento por item.
-  public calcDiscount(prodId: any, target: any): void {
-    const value: number = Number(target.value);
-    this.terminalService.calcDiscount(prodId, value);
+  // cambiar precio del Item.
+  public changePrice(e: Event): void {
+    e.preventDefault();
+    alert('Cambiar precio');
   }
 
   // borrar item de la tabla.

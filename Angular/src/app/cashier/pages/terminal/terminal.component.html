@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <a class="navbar-brand" [routerLink]="['/cashier/detail', cajaDiariaId]">
       <fa-icon [icon]="faThLarge" class="me-1"></fa-icon>
-      <span class="text-uppercase">Terminal-1</span>
+      <span class="text-uppercase">{{cajaDiaria?.name}}</span>
     </a>
     <div class="collapse navbar-collapse">
       <form class="d-none d-sm-block">
@@ -62,9 +62,8 @@
             <thead>
             <tr class="text-uppercase">
               <th>Descripción</th>
-              <th>Precio</th>
               <th>Cantidad</th>
-              <th>Descuento (%)</th>
+              <th>Precio</th>
               <th>Importe</th>
               <th></th>
             </tr>
@@ -72,19 +71,21 @@
             <tbody>
             <tr *ngFor="let item of sale.details">
               <td>{{item.description}}</td>
-              <td>{{item.price|currency}}</td>
-              <td>
+              <td style="width: 124px;">
                 <input type="number" [value]="item.quantity"
                        (change)="changeQuantity(item.productId, $event.target)"
                        class="form-control form-control-sm">
               </td>
-              <td>
-                <input type="number" [value]="item.discount"
-                       (change)="calcDiscount(item.productId, $event.target)"
-                       step="0.1" class="form-control form-control-sm">
+              <td style="width: 124px;">
+                <div class="d-flex align-items-center justify-content-between">
+                  {{item.price|currency}}
+                  <a href="#" (click)="changePrice($event)">
+                    <fa-icon [icon]="faTags"></fa-icon>
+                  </a>
+                </div>
               </td>
-              <td>{{item.amount|currency}}</td>
-              <td class="text-end">
+              <td style="width: 124px;">{{item.amount|currency}}</td>
+              <td style="width: 50px;" class="text-center">
                 <button type="button" (click)="deleteItem(item.productId)" class="btn btn-danger btn-sm">
                   <fa-icon [icon]="faTrashAlt"></fa-icon>
                 </button>
@@ -103,11 +104,11 @@
           <table>
             <tbody>
             <tr>
-              <th>Sub-Total:</th>
+              <th>OP.GRAVADA:</th>
               <td>{{sale.sumTotValVenta|currency}}</td>
             </tr>
             <tr>
-              <th>IGV(18%):</th>
+              <th>IGV({{config?.porcentajeIgv|number}}%):</th>
               <td>{{sale.sumTotTributos|currency}}</td>
             </tr>
             <tr>
