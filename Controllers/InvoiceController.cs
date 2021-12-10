@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace Nebula.Controllers
     {
         private readonly ILogger _logger;
         private readonly ApplicationDbContext _context;
+        private const string CREDITO = "Credito";
 
         public InvoiceController(ILogger<InvoiceController> logger, ApplicationDbContext context)
         {
@@ -231,47 +233,51 @@ namespace Nebula.Controllers
         public async Task<IActionResult> SalePos(int id, [FromBody] Sale model)
         {
             _logger.LogInformation(JsonSerializer.Serialize(model));
+            //  parámetros de configuración.
+            var config = await _context.Company.FirstAsync();
+
             // información del cliente.
             var client = await _context.Contacts.AsNoTracking()
                 .Include(m => m.PeopleDocType)
                 .FirstOrDefaultAsync(m => m.Id.Equals(model.ClientId));
             _logger.LogInformation($"Cliente - {client.Name}");
-            // información venta.
+
+            // cabecera comprobante de venta.
             var invoice = new Invoice()
             {
                 DocType = model.DocType,
                 TipOperacion = "0101",
                 FecEmision = DateTime.Now.ToString("yyyy-MM-dd"),
                 HorEmision = DateTime.Now.ToString("HH:mm:ss"),
-                FecVencimiento = model.PaymentType.Equals("Credito") ? model.EndDate.ToString("yyyy-MM-dd") : "-",
+                FecVencimiento = model.PaymentType.Equals(CREDITO) ? model.EndDate.ToString("yyyy-MM-dd") : "-",
                 FormaPago = model.PaymentType,
                 TipDocUsuario = client.PeopleDocType.SunatCode,
                 NumDocUsuario = client.Document,
                 RznSocialUsuario = client.Name,
-                TipMoneda = "PEN",
-                SumTotTributos = model.SumTotTributos,
-                SumTotValVenta = model.SumTotValVenta,
-                SumPrecioVenta = model.SumImpVenta,
+                TipMoneda = config.TipMoneda,
+                SumTotTributos = model.SumTotTributos, // refactoring
+                SumTotValVenta = model.SumTotValVenta, // refactoring
+                SumPrecioVenta = model.SumImpVenta, // refactoring
                 SumDescTotal = 0,
                 SumOtrosCargos = 0,
                 SumTotalAnticipos = 0,
-                SumImpVenta = model.SumImpVenta,
+                SumImpVenta = model.SumImpVenta, // refactoring
                 InvoiceType = "SALE",
                 Year = DateTime.Now.ToString("yyyy"),
                 Month = DateTime.Now.ToString("MM"),
             };
 
-            var cajaDiaria = await _context.CajasDiaria.AsNoTracking()
-                .FirstOrDefaultAsync(m => m.Id.Equals(id));
-            if (cajaDiaria == null)
-                return BadRequest(new {Ok = false, Msg = "No existe caja diaria!"});
+            // información de la caja diaria.
+            var cajaDiaria = await _context.CajasDiaria.AsNoTracking().FirstOrDefaultAsync(m => m.Id.Equals(id));
+            if (cajaDiaria == null) return BadRequest(new {Ok = false, Msg = "No existe caja diaria!"});
             _logger.LogInformation($"Caja diaria [{cajaDiaria.Id}/{cajaDiaria.Name}]");
 
-            // guardar en la base de datos.
+            // configurar transacción de la base de datos.
             await using (var transaction = await _context.Database.BeginTransactionAsync())
             {
                 try
                 {
+                    // serie de facturación.
                     var invoiceSerie = await _context.InvoiceSeries.FirstOrDefaultAsync(m =>
                         m.Id.Equals(cajaDiaria.InvoiceSerieId));
                     if (invoiceSerie == null) throw new Exception("Serie comprobante no existe!");
@@ -310,14 +316,15 @@ namespace Nebula.Controllers
                     invoice.Number = numComprobante.ToString("D8");
                     _context.InvoiceSeries.Update(invoiceSerie);
                     await _context.SaveChangesAsync();
-                    _logger.LogInformation("El contador de la serie ha sido actualizado!");
+                    _logger.LogInformation("Contador de serie ha sido actualizado!");
 
                     // registrar factura/boleta.
                     _context.Invoices.Add(invoice);
                     await _context.SaveChangesAsync();
-                    _logger.LogInformation("La cabecera del comprobante ha sido registrado");
+                    _logger.LogInformation("Cabecera del comprobante ha sido registrado");
 
                     // agregar detalle de factura.
+                    var invoiceDetails = new List<InvoiceDetail>();
                     model.Details.ForEach(item =>
                     {
                         // información del producto.
@@ -341,37 +348,38 @@ namespace Nebula.Controllers
                                     break;
                             }
 
-                            // agregar nuevo item factura al contexto.
-                            _context.InvoiceDetails.Add(new InvoiceDetail()
+                            // agregar items del comprobante.
+                            invoiceDetails.Add(new InvoiceDetail()
                             {
-                                Invoice = invoice,
+                                InvoiceId = invoice.Id,
                                 CodUnidadMedida = product.UndMedida.SunatCode,
                                 CtdUnidadItem = item.Quantity,
-                                CodProducto = item.ProductId.ToString(),
-                                CodProductoSunat = product.Barcode,
+                                CodProducto = product.Id.ToString(),
+                                CodProductoSunat = product.Barcode.Length == 0 ? "-" : product.Barcode,
                                 DesItem = product.Description,
-                                MtoValorUnitario = item.Price,
-                                SumTotTributosItem = (item.Price * item.Quantity) * 0.18M,
+                                MtoValorUnitario = item.Price - (item.Price * (config.PorcentajeIgv / 100)),
+                                SumTotTributosItem = (item.Price * item.Quantity) * (config.PorcentajeIgv / 100),
                                 CodTriIgv = "1000",
-                                MtoIgvItem = 18.0M,
+                                MtoIgvItem = config.PorcentajeIgv,
                                 MtoBaseIgvItem = item.Price * item.Quantity,
                                 NomTributoIgvItem = "IGV",
                                 CodTipTributoIgvItem = "VAT",
                                 TipAfeIgv = tipAfeIgv,
-                                PorIgvItem = 18.ToString("N2"),
+                                PorIgvItem = Convert.ToDecimal(config.PorcentajeIgv).ToString("N2"),
                                 CodTriIcbper = "7152",
                                 MtoTriIcbperItem = 0,
                                 CtdBolsasTriIcbperItem = 0,
                                 NomTributoIcbperItem = "ICBPER",
                                 CodTipTributoIcbperItem = "OTH",
-                                MtoTriIcbperUnidad = 0.3M,
+                                MtoTriIcbperUnidad = config.ValorImpuestoBolsa,
                                 MtoPrecioVentaUnitario = item.Price * item.Quantity,
-                                MtoValorVentaItem = (item.Price * item.Quantity) * 1.18M,
+                                MtoValorVentaItem = (item.Price * item.Quantity) * ((config.PorcentajeIgv / 100) + 1),
                             });
-                            _context.SaveChanges();
-                            _logger.LogInformation("Item comprobante agregado!");
                         }
                     });
+                    _context.InvoiceDetails.AddRange(invoiceDetails);
+                    await _context.SaveChangesAsync();
+                    _logger.LogInformation("Detalle comprobante registrado!");
 
                     // registrar operación de caja.
                     var cashierDetail = new CashierDetail()
@@ -383,7 +391,7 @@ namespace Nebula.Controllers
                         Document = string.Format($"{invoice.Serie}-{invoice.Number}"),
                         Contact = invoice.RznSocialUsuario,
                         Glosa = model.Remark,
-                        Type = "Ingreso",
+                        Type = "ENTRADA",
                         Total = invoice.SumImpVenta
                     };
                     _context.CashierDetails.Add(cashierDetail);
