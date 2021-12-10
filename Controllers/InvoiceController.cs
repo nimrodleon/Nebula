@@ -234,7 +234,7 @@ namespace Nebula.Controllers
         {
             _logger.LogInformation(JsonSerializer.Serialize(model));
             //  parámetros de configuración.
-            var config = await _context.Company.FirstAsync();
+            var config = await _context.Configuration.FirstAsync();
 
             // información del cliente.
             var client = await _context.Contacts.AsNoTracking()

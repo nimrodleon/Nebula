@@ -109,9 +109,9 @@ namespace Nebula.Data
         public DbSet<InvoiceAccount> InvoiceAccounts { get; set; }
 
         /// <summary>
-        /// Información Empresa.
+        /// Configuración del sistema.
         /// </summary>
-        public DbSet<Company> Company { get; set; }
+        public DbSet<Configuration> Configuration { get; set; }
 
         /// <summary>
         /// Series de facturación.
@@ -196,8 +196,8 @@ namespace Nebula.Data
             modelBuilder.Entity<Category>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<InvoiceAccount>().Property<bool>("SoftDeleted");
             modelBuilder.Entity<InvoiceAccount>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
-            modelBuilder.Entity<Company>().Property<bool>("SoftDeleted");
-            modelBuilder.Entity<Company>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
+            modelBuilder.Entity<Configuration>().Property<bool>("SoftDeleted");
+            modelBuilder.Entity<Configuration>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<InvoiceSerie>().Property<bool>("SoftDeleted");
             modelBuilder.Entity<InvoiceSerie>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             base.OnModelCreating(modelBuilder);

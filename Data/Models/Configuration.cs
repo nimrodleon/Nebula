@@ -2,7 +2,7 @@
 
 namespace Nebula.Data.Models
 {
-    public class Company
+    public class Configuration
     {
         public int Id { get; set; }
 

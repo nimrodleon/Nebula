@@ -8,11 +8,11 @@ namespace Nebula.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CompanyController : ControllerBase
+    public class ConfigurationController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public CompanyController(ApplicationDbContext context)
+        public ConfigurationController(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -20,21 +20,21 @@ namespace Nebula.Controllers
         [HttpGet("Show")]
         public async Task<IActionResult> Show()
         {
-            if (await _context.Company.AsNoTracking().CountAsync() == 0)
+            if (await _context.Configuration.AsNoTracking().CountAsync() == 0)
             {
-                _context.Company.Add(new Company());
+                _context.Configuration.Add(new Configuration());
                 await _context.SaveChangesAsync();
             }
 
-            var result = await _context.Company.FirstAsync();
+            var result = await _context.Configuration.FirstAsync();
             return Ok(result);
         }
 
         [HttpPut("Update/{id}")]
-        public async Task<IActionResult> Update(int? id, [FromBody] Company model)
+        public async Task<IActionResult> Update(int? id, [FromBody] Configuration model)
         {
             if (id != model.Id) return BadRequest();
-            _context.Company.Update(model);
+            _context.Configuration.Update(model);
             await _context.SaveChangesAsync();
             return Ok(new
             {

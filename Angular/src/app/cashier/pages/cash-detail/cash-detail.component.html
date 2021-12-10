@@ -65,8 +65,8 @@
               <td>{{item.contact}}</td>
               <td>{{item.glosa}}</td>
               <td class="text-uppercase">
-                <span *ngIf="item.type === 'Ingreso'" class="badge bg-success">{{item.type}}</span>
-                <span *ngIf="item.type === 'Egreso'" class="badge bg-danger">{{item.type}}</span>
+                <span *ngIf="item.type === 'ENTRADA'" class="badge bg-success">{{item.type}}</span>
+                <span *ngIf="item.type === 'SALIDA'" class="badge bg-danger">{{item.type}}</span>
               </td>
               <td>{{item.total|currency}}</td>
               <td class="text-end">
