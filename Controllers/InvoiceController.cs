@@ -79,9 +79,6 @@ namespace Nebula.Controllers
                 SumTotTributos = model.SumTotTributos,
                 SumTotValVenta = model.SumTotValVenta,
                 SumPrecioVenta = model.SumImpVenta,
-                SumDescTotal = 0,
-                SumOtrosCargos = 0,
-                SumTotalAnticipos = 0,
                 SumImpVenta = model.SumImpVenta,
                 InvoiceType = model.InvoiceType.ToUpper(),
                 Year = invoiceType.Equals("SALE") ? DateTime.Now.ToString("yyyy") : model.StartDate.ToString("yyyy"),
@@ -258,9 +255,6 @@ namespace Nebula.Controllers
                 SumTotTributos = model.SumTotTributos, // refactoring
                 SumTotValVenta = model.SumTotValVenta, // refactoring
                 SumPrecioVenta = model.SumImpVenta, // refactoring
-                SumDescTotal = 0,
-                SumOtrosCargos = 0,
-                SumTotalAnticipos = 0,
                 SumImpVenta = model.SumImpVenta, // refactoring
                 InvoiceType = "SALE",
                 Year = DateTime.Now.ToString("yyyy"),

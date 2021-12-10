@@ -103,21 +103,6 @@ namespace Nebula.Data.Models
         public decimal? SumPrecioVenta { get; set; }
 
         /// <summary>
-        /// Total descuentos (no afectan la base imponible del IGV/IVAP). an..15|n(12,2)
-        /// </summary>
-        public decimal? SumDescTotal { get; set; }
-
-        /// <summary>
-        /// Sumatoria otros Cargos. an..15|n(12,2)
-        /// </summary>
-        public decimal? SumOtrosCargos { get; set; }
-
-        /// <summary>
-        /// Total Anticipos. an..15|n(12,2)
-        /// </summary>
-        public decimal? SumTotalAnticipos { get; set; }
-
-        /// <summary>
         /// Importe total de la venta, cesión en uso o del servicio prestado. an..15|n(12,2)
         /// </summary>
         public decimal? SumImpVenta { get; set; }
