@@ -98,11 +98,6 @@ namespace Nebula.Data.Models
         public decimal? SumTotValVenta { get; set; }
 
         /// <summary>
-        /// Total Precio de Venta. an..15|n(12,2)
-        /// </summary>
-        public decimal? SumPrecioVenta { get; set; }
-
-        /// <summary>
         /// Importe total de la venta, cesión en uso o del servicio prestado. an..15|n(12,2)
         /// </summary>
         public decimal? SumImpVenta { get; set; }

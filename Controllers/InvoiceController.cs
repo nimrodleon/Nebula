@@ -78,7 +78,6 @@ namespace Nebula.Controllers
                 TipMoneda = "PEN",
                 SumTotTributos = model.SumTotTributos,
                 SumTotValVenta = model.SumTotValVenta,
-                SumPrecioVenta = model.SumImpVenta,
                 SumImpVenta = model.SumImpVenta,
                 InvoiceType = model.InvoiceType.ToUpper(),
                 Year = invoiceType.Equals("SALE") ? DateTime.Now.ToString("yyyy") : model.StartDate.ToString("yyyy"),
@@ -252,9 +251,8 @@ namespace Nebula.Controllers
                 NumDocUsuario = client.Document,
                 RznSocialUsuario = client.Name,
                 TipMoneda = config.TipMoneda,
-                SumTotTributos = model.SumTotTributos, // refactoring
                 SumTotValVenta = model.SumTotValVenta, // refactoring
-                SumPrecioVenta = model.SumImpVenta, // refactoring
+                SumTotTributos = model.SumTotTributos, // refactoring
                 SumImpVenta = model.SumImpVenta, // refactoring
                 InvoiceType = "SALE",
                 Year = DateTime.Now.ToString("yyyy"),
@@ -342,6 +340,11 @@ namespace Nebula.Controllers
                                     break;
                             }
 
+                            // calculo base imponible.
+                            var valorIgv = ((config.PorcentajeIgv / 100) + 1);
+                            var precioVenta = item.Price * item.Quantity;
+                            var baseImponible = precioVenta / valorIgv;
+
                             // agregar items del comprobante.
                             invoiceDetails.Add(new InvoiceDetail()
                             {
@@ -351,11 +354,11 @@ namespace Nebula.Controllers
                                 CodProducto = product.Id.ToString(),
                                 CodProductoSunat = product.Barcode.Length == 0 ? "-" : product.Barcode,
                                 DesItem = product.Description,
-                                MtoValorUnitario = item.Price - (item.Price * (config.PorcentajeIgv / 100)),
-                                SumTotTributosItem = (item.Price * item.Quantity) * (config.PorcentajeIgv / 100),
+                                MtoValorUnitario = baseImponible,
+                                SumTotTributosItem = precioVenta - baseImponible,
                                 CodTriIgv = "1000",
-                                MtoIgvItem = config.PorcentajeIgv,
-                                MtoBaseIgvItem = item.Price * item.Quantity,
+                                MtoIgvItem = precioVenta - baseImponible,
+                                MtoBaseIgvItem = baseImponible,
                                 NomTributoIgvItem = "IGV",
                                 CodTipTributoIgvItem = "VAT",
                                 TipAfeIgv = tipAfeIgv,
@@ -366,8 +369,8 @@ namespace Nebula.Controllers
                                 NomTributoIcbperItem = "ICBPER",
                                 CodTipTributoIcbperItem = "OTH",
                                 MtoTriIcbperUnidad = config.ValorImpuestoBolsa,
-                                MtoPrecioVentaUnitario = item.Price * item.Quantity,
-                                MtoValorVentaItem = (item.Price * item.Quantity) * ((config.PorcentajeIgv / 100) + 1),
+                                MtoPrecioVentaUnitario = precioVenta,
+                                MtoValorVentaItem = baseImponible,
                             });
                         }
                     });

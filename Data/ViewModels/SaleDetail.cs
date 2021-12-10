@@ -24,15 +24,5 @@
         /// Cantidad del Producto.
         /// </summary>
         public decimal Quantity { get; set; }
-
-        /// <summary>
-        /// Descuento por Item.
-        /// </summary>
-        public decimal Discount { get; set; }
-
-        /// <summary>
-        /// Monto del Item.
-        /// </summary>
-        public decimal Amount { get; set; }
     }
 }
