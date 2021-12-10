@@ -1,10 +1,9 @@
 import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs';
 import {ProductService} from '../../products/services';
 import {Cuota, Sale, SaleDetail} from '../interfaces';
 import {InvoiceService} from '../../invoice/services';
-import {Observable} from 'rxjs';
 import {ResponseData} from '../../global/interfaces';
-import {ConfigurationService} from '../../system/services';
 import {Configuration} from '../../system/interfaces';
 
 @Injectable({
@@ -16,13 +15,7 @@ export class TerminalService {
 
   constructor(
     private productService: ProductService,
-    private invoiceService: InvoiceService,
-    private configurationService: ConfigurationService) {
-  }
-
-  // parámetros del sistema.
-  public get config(): any {
-    return this._config;
+    private invoiceService: InvoiceService) {
   }
 
   // información de la venta.
@@ -46,9 +39,8 @@ export class TerminalService {
   }
 
   // cargar parámetros del sistema.
-  public getConfig(): void {
-    this.configurationService.show()
-      .subscribe(result => this._config = result);
+  public setConfig(value: any): void {
+    this._config = value;
   }
 
   // Agregar item al carrito de compras.
@@ -56,7 +48,7 @@ export class TerminalService {
     this.productService.show(prodId).subscribe(result => {
       if (this._sale.details.length <= 0) {
         this._sale.details.push(new SaleDetail(
-          result.id, result.description, 1, result.price1, result.price1
+          result.id, result.description, result.price1, 1, result.price1
         ));
         this.calcImporteVenta();
       } else {
@@ -65,7 +57,7 @@ export class TerminalService {
           if (item.productId === result.id) {
             item.quantity = item.quantity + 1;
             item.price = result.price1;
-            item.amount = item.quantity * item.price;
+            item.amount = item.price * item.quantity;
             this.calcImporteVenta();
             changeQuantity = true;
           }
@@ -73,7 +65,7 @@ export class TerminalService {
         // ejecutar si no hay coincidencias.
         if (!changeQuantity) {
           this._sale.details.push(new SaleDetail(
-            result.id, result.description, 1, result.price1, result.price1
+            result.id, result.description, result.price1, 1, result.price1
           ));
           this.calcImporteVenta();
         }
@@ -86,7 +78,7 @@ export class TerminalService {
     this._sale.details.forEach((item: SaleDetail) => {
       if (item.productId === prodId) {
         item.quantity = value;
-        item.amount = item.quantity * item.price;
+        item.amount = item.price * item.quantity;
         this.calcImporteVenta();
       }
     });
@@ -104,14 +96,14 @@ export class TerminalService {
 
   // calcular importe venta.
   public calcImporteVenta(): void {
-    let total = 0;
+    let sumImpVenta = 0;
     const {porcentajeIgv} = this._config;
     this._sale.details.forEach((item: SaleDetail) => {
-      total = total + item.amount;
+      sumImpVenta = sumImpVenta + item.amount;
     });
-    this._sale.sumTotValVenta = total / ((porcentajeIgv / 100) + 1);
-    this._sale.sumTotTributos = total - this._sale.sumTotValVenta;
-    this._sale.sumImpVenta = total;
+    this._sale.sumTotValVenta = sumImpVenta / ((porcentajeIgv / 100) + 1);
+    this._sale.sumTotTributos = sumImpVenta - this._sale.sumTotValVenta;
+    this._sale.sumImpVenta = sumImpVenta;
   }
 
   // agregar información.

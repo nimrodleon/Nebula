@@ -14,6 +14,9 @@ import {Product} from '../../../products/interfaces';
 import {Contact} from '../../../contact/interfaces';
 import {CajaDiaria, CashierDetail} from '../../interfaces';
 import {CajaDiariaService, TerminalService} from '../../services';
+import {Configuration} from '../../../system/interfaces';
+import {ConfigurationService} from '../../../system/services';
+import {ContactService} from '../../../contact/services';
 
 declare var jQuery: any;
 declare var bootstrap: any;
@@ -47,6 +50,7 @@ export class TerminalComponent implements OnInit {
   // ====================================================================================================
   private appURL: string = environment.applicationUrl;
   queryProduct: FormControl = this.fb.control('');
+  config: Configuration | any;
   cajaDiaria: CajaDiaria | any;
   currentProduct: Product | any;
   currentContact: Contact | any;
@@ -57,7 +61,9 @@ export class TerminalComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private productService: ProductService,
     private terminalService: TerminalService,
-    private cajaDiariaService: CajaDiariaService) {
+    private cajaDiariaService: CajaDiariaService,
+    private configurationService: ConfigurationService,
+    private contactService: ContactService) {
   }
 
   ngOnInit(): void {
@@ -68,30 +74,43 @@ export class TerminalComponent implements OnInit {
         .subscribe(result => this.cajaDiaria = result);
     });
     // buscador de clientes.
-    jQuery('#clientId').select2({
-      theme: 'bootstrap-5',
-      placeholder: 'BUSCAR CLIENTE',
-      ajax: {
-        url: this.appURL + 'Contact/Select2',
-        headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('token')
+    const clientId = jQuery('#clientId')
+      .select2({
+        theme: 'bootstrap-5',
+        placeholder: 'BUSCAR CLIENTE',
+        ajax: {
+          url: this.appURL + 'Contact/Select2',
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('token')
+          }
         }
-      }
-    }).on('select2:select', (e: any) => {
-      const data = e.params.data;
-      this.terminalService.setClientId(data.id);
-    });
+      }).on('select2:select', (e: any) => {
+        const data = e.params.data;
+        this.terminalService.setClientId(data.id);
+      });
     // limpiar el cliente seleccionado.
     const myModal: any = document.querySelector('#cobrar-modal');
     myModal.addEventListener('hidden.bs.modal', () => {
       if (this.sale.clientId === null) {
-        jQuery('#clientId').val(null).trigger('change');
+        clientId.val(null).trigger('change');
       }
     });
     // cargar valor inicial.
     this.terminalService.deleteSale();
-    // cargar parámetros del sistema.
-    this.terminalService.getConfig();
+    // cargar parámetros del configuración.
+    this.configurationService.show()
+      .subscribe(result => {
+        this.config = result;
+        this.terminalService.setConfig(result);
+        // cargar cliente por defecto.
+        this.contactService.show(result.contactId)
+          .subscribe(result => {
+            this.terminalService.setClientId(<any>result.id);
+            const newOption = new Option(`${result.document} - ${result.name}`,
+              <any>result.id, true, true);
+            clientId.append(newOption).trigger('change');
+          });
+      });
     // cargar lista de productos.
     this.searchProducts();
     // modal formulario de productos.
@@ -102,11 +121,6 @@ export class TerminalComponent implements OnInit {
     this.cobrarModal = new bootstrap.Modal(document.querySelector('#cobrar-modal'));
     // formulario entrada/salida de efectivo.
     this.cashInOutModal = new bootstrap.Modal(document.querySelector('#cash-in-out-modal'));
-  }
-
-  // parámetros del sistema.
-  public get config() {
-    return this.terminalService.config;
   }
 
   // información de la venta.
