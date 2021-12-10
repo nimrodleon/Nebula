@@ -4,8 +4,8 @@ import {ReactiveFormsModule} from '@angular/forms';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 
 import {SystemRoutingModule} from './system-routing.module';
-import {CompanyComponent} from './pages/company/company.component';
 import {GlobalModule} from '../global/global.module';
+import {ConfigurationComponent} from './pages/configuration/configuration.component';
 import {WarehouseListComponent} from './pages/warehouse-list/warehouse-list.component';
 import {WarehouseModalComponent} from './components/warehouse-modal/warehouse-modal.component';
 import {InvoiceSerieListComponent} from './pages/invoice-serie-list/invoice-serie-list.component';
@@ -18,7 +18,7 @@ import {UndMedidaModalComponent} from './components/und-medida-modal/und-medida-
 
 @NgModule({
   declarations: [
-    CompanyComponent,
+    ConfigurationComponent,
     WarehouseListComponent,
     WarehouseModalComponent,
     InvoiceSerieListComponent,

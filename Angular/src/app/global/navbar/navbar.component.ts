@@ -3,7 +3,7 @@ import {Router} from '@angular/router';
 import {faBars, faBox, faCashRegister, faCog, faSignOutAlt, faUserCircle} from '@fortawesome/free-solid-svg-icons';
 import {AuthService} from '../../user/services';
 import {EnumBoolean, EnumMenu} from '../interfaces';
-import {CompanyService} from '../../system/services';
+import {ConfigurationService} from '../../system/services';
 
 @Component({
   selector: 'app-navbar',
@@ -23,7 +23,7 @@ export class NavbarComponent implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private companyService: CompanyService) {
+    private companyService: ConfigurationService) {
   }
 
   ngOnInit(): void {

@@ -4,20 +4,20 @@ import {Cuota, Sale, SaleDetail} from '../interfaces';
 import {InvoiceService} from '../../invoice/services';
 import {Observable} from 'rxjs';
 import {ResponseData} from '../../global/interfaces';
-import {CompanyService} from '../../system/services';
-import {Company} from '../../system/interfaces';
+import {ConfigurationService} from '../../system/services';
+import {Configuration} from '../../system/interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TerminalService {
-  private _config: Company | any;
+  private _config: Configuration | any;
   private _sale: Sale = new Sale();
 
   constructor(
     private productService: ProductService,
     private invoiceService: InvoiceService,
-    private companyService: CompanyService) {
+    private configurationService: ConfigurationService) {
   }
 
   // parámetros del sistema.
@@ -47,7 +47,7 @@ export class TerminalService {
 
   // cargar parámetros del sistema.
   public getConfig(): void {
-    this.companyService.show()
+    this.configurationService.show()
       .subscribe(result => this._config = result);
   }
 

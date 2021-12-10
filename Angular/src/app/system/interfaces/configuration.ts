@@ -1,4 +1,4 @@
-export interface Company {
+export interface Configuration {
   id: number;
   ruc: string;
   rznSocial: string;

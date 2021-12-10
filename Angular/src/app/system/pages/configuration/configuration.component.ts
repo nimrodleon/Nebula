@@ -5,23 +5,23 @@ import {faArrowLeft, faClipboardList, faSave, faThumbtack} from '@fortawesome/fr
 import {environment} from 'src/environments/environment';
 import {EnumBoolean, EnumMenu} from 'src/app/global/interfaces';
 import {ContactService} from 'src/app/contact/services';
-import {CompanyService} from '../../services';
+import {ConfigurationService} from '../../services';
 import Swal from 'sweetalert2';
 
 declare var jQuery: any;
 
 @Component({
-  selector: 'app-company',
-  templateUrl: './company.component.html',
-  styleUrls: ['./company.component.scss']
+  selector: 'app-configuration',
+  templateUrl: './configuration.component.html',
+  styleUrls: ['./configuration.component.scss']
 })
-export class CompanyComponent implements OnInit {
+export class ConfigurationComponent implements OnInit {
   faClipboardList = faClipboardList;
   faThumbtack = faThumbtack;
   faArrowLeft = faArrowLeft;
   faSave = faSave;
   private appURL: string = environment.applicationUrl;
-  companyForm: FormGroup = this.fb.group({
+  configForm: FormGroup = this.fb.group({
     id: [0],
     ruc: [''],
     rznSocial: [''],
@@ -40,7 +40,7 @@ export class CompanyComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private contactService: ContactService,
-    private companyService: CompanyService) {
+    private configurationService: ConfigurationService) {
   }
 
   ngOnInit(): void {
@@ -56,11 +56,11 @@ export class CompanyComponent implements OnInit {
           }
         }
       }).on('select2:select', ({params}: any) => {
-        this.companyForm.controls['contactId'].setValue(params.data.id);
+        this.configForm.controls['contactId'].setValue(params.data.id);
       });
     // establecer valores por defecto.
-    this.companyService.show().subscribe(result => {
-      this.companyForm.reset(result);
+    this.configurationService.show().subscribe(result => {
+      this.configForm.reset(result);
       this.contactService.show(result.contactId).subscribe(result => {
         const newOption = new Option(`${result.document} - ${result.name}`, <any>result.id, true, true);
         contactId.append(newOption).trigger('change');
@@ -79,8 +79,8 @@ export class CompanyComponent implements OnInit {
 
   // guardar cambios.
   public async saveChanges() {
-    const id = this.companyForm.get('id')?.value;
-    this.companyService.update(id, this.companyForm.value).subscribe(result => {
+    const id = this.configForm.get('id')?.value;
+    this.configurationService.update(id, this.configForm.value).subscribe(result => {
       Swal.fire(
         'Información',
         result.msg || '',
