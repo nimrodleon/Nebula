@@ -14,76 +14,34 @@
       <div class="modal-body">
         <form [formGroup]="cobrarForm">
           <ng-container *ngIf="formReg else successTpl">
-            <div class="row">
+            <div class="row mb-3">
+              <label class="col-4 col-form-label text-uppercase text-end">Medios de Pago</label>
               <div class="col-6">
-                <div class="mb-2">
-                  <label class="form-label text-uppercase">Forma de pago</label>
-                  <select formControlName="paymentType" class="form-select">
-                    <option value="Credito">CRÉDITO</option>
-                    <option value="Contado">CONTADO</option>
-                  </select>
-                </div>
-                <div class="mb-1">
-                  <label class="form-label text-uppercase">Fecha de Vencimiento</label>
-                  <input type="date" formControlName="endDate" class="form-control">
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="mb-2">
-                  <label class="form-label text-uppercase">Numeración</label>
-                  <select formControlName="docType" class="form-select">
-                    <option value="BL">BOLETA</option>
-                    <option value="FT">FACTURA</option>
-                    <option value="NV">NOTA DE VENTA</option>
-                  </select>
-                </div>
-                <div class="mb-1">
-                  <div class="form-label">
-                    <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox"
-                             formControlName="montoCaja" role="switch" id="flexSwitchCheckDefault">
-                      <label class="form-check-label text-uppercase" for="flexSwitchCheckDefault">Monto Caja</label>
-                    </div>
-                  </div>
-                  <input type="number" formControlName="montoTotal" step="0.1" class="form-control">
-                </div>
+                <select formControlName="paymentType" class="form-select text-uppercase">
+                  <option value="0">Dinero en efectivo</option>
+                  <option value="1">Depósito en cuenta</option>
+                  <option value="2">Billetera digital</option>
+                </select>
               </div>
             </div>
-            <div class="row">
-              <ng-container *ngIf="cobrarForm.get('paymentType')?.value !== 'Contado'">
-                <div class="col-12">
-                  <div class="table-responsive">
-                    <table class="table table-striped mb-1">
-                      <thead>
-                      <tr class="text-uppercase">
-                        <th># Cuota</th>
-                        <th>Fecha Venc.</th>
-                        <th>Monto</th>
-                        <th></th>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      <tr *ngFor="let item of listaDeCuotas">
-                        <td>{{item.numCuota}}</td>
-                        <td>{{item.endDate|date}}</td>
-                        <td>{{item.amount|currency}}</td>
-                        <td class="text-end">
-                          <button type="button" (click)="deleteItemCuota(item.numCuota)" class="btn btn-danger btn-sm">
-                            <fa-icon [icon]="faTrashAlt"></fa-icon>
-                          </button>
-                        </td>
-                      </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                  <a (click)="addCuotaModal($event)" href="#" class="text-uppercase">Agregar Cuota</a>
-                </div>
-              </ng-container>
-              <div class="col-12">
-                <label for="remark" class="form-label text-uppercase">Observaciones</label>
-                <textarea class="form-control" formControlName="remark" id="remark" rows="2"></textarea>
+            <div class="row mb-3">
+              <label class="col-4 col-form-label text-uppercase text-end">Numeración</label>
+              <div class="col-6">
+                <select formControlName="docType" class="form-select">
+                  <option value="BL">BOLETA</option>
+                  <option value="FT">FACTURA</option>
+                  <option value="NV">NOTA DE VENTA</option>
+                </select>
               </div>
             </div>
+            <div class="row mb-3">
+              <label class="col-4 col-form-label text-uppercase text-end">Monto Caja</label>
+              <div class="col-6">
+                <input type="number" formControlName="montoTotal" step="0.1" class="form-control">
+              </div>
+            </div>
+            <label for="remark" class="form-label text-uppercase">Observaciones</label>
+            <textarea class="form-control" formControlName="remark" id="remark" rows="2"></textarea>
           </ng-container>
           <ng-template #successTpl>
             <div class="div-success">
@@ -104,7 +62,6 @@
           </ng-template>
         </form>
         <pre>{{cobrarForm.value|json}}</pre>
-        <pre>{{listaDeCuotas|json}}</pre>
       </div>
       <div class="modal-footer justify-content-center">
         <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">
@@ -124,5 +81,3 @@
     </div>
   </div>
 </div>
-
-<app-cuota-modal (responseData)="hideCuotaModal($event)"></app-cuota-modal>
