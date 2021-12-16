@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
-import {faArrowLeft, faClipboardList, faSave, faThumbtack} from '@fortawesome/free-solid-svg-icons';
+import {faArrowLeft, faClipboardList, faFolderOpen, faSave, faThumbtack} from '@fortawesome/free-solid-svg-icons';
 import {environment} from 'src/environments/environment';
 import {EnumBoolean, EnumMenu} from 'src/app/global/interfaces';
 import {ContactService} from 'src/app/contact/services';
@@ -20,6 +20,7 @@ export class ConfigurationComponent implements OnInit {
   faThumbtack = faThumbtack;
   faArrowLeft = faArrowLeft;
   faSave = faSave;
+  faFolderOpen = faFolderOpen;
   private appURL: string = environment.applicationUrl;
   configForm: FormGroup = this.fb.group({
     id: [0],
@@ -33,7 +34,10 @@ export class ConfigurationComponent implements OnInit {
     cuentaBancoDetraccion: [''],
     textoDetraccion: [''],
     montoDetraccion: [0],
-    contactId: [null]
+    contactId: [null],
+    urlApi: [''],
+    fileSunat: [''],
+    fileControl: ['']
   });
 
   constructor(

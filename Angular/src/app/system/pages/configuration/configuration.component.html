@@ -74,10 +74,34 @@
                   <input type="number" formControlName="montoDetraccion" step="0.1" class="form-control">
                 </div>
               </div>
-              <div class="row">
+              <div class="row mb-3">
                 <label class="col-2 col-form-label text-end fw-bold">Texto Detracción</label>
                 <div class="col-8">
                   <input type="text" formControlName="textoDetraccion" class="form-control">
+                </div>
+              </div>
+              <div class="mb-3">
+                <h5 class="title mb-0">
+                  <fa-icon [icon]="faFolderOpen" class="me-1"></fa-icon>
+                  <span>Facturador SUNAT</span>
+                </h5>
+              </div>
+              <div class="row mb-3">
+                <label class="col-2 col-form-label text-end fw-bold">URL Api</label>
+                <div class="col-8">
+                  <input type="text" formControlName="urlApi" class="form-control">
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label class="col-2 col-form-label text-end fw-bold">Archivos SUNAT</label>
+                <div class="col-8">
+                  <input type="text" formControlName="fileSunat" class="form-control">
+                </div>
+              </div>
+              <div class="row">
+                <label class="col-2 col-form-label text-end fw-bold">Archivos Control</label>
+                <div class="col-8">
+                  <input type="text" formControlName="fileControl" class="form-control">
                 </div>
               </div>
             </form>
