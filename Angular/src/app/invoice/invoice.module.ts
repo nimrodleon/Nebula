@@ -12,13 +12,15 @@ import {InvoiceNoteComponent} from './pages/invoice-note/invoice-note.component'
 import {InvoiceDetailComponent} from './pages/invoice-detail/invoice-detail.component';
 import {CashierModule} from '../cashier/cashier.module';
 import {ContactModule} from '../contact/contact.module';
+import {CuotaModalComponent} from './components/cuota-modal/cuota-modal.component';
 
 @NgModule({
   declarations: [
     InvoiceComponent,
     ItemComprobanteComponent,
     InvoiceNoteComponent,
-    InvoiceDetailComponent
+    InvoiceDetailComponent,
+    CuotaModalComponent
   ],
   imports: [
     CommonModule,

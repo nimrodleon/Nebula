@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {ProductService} from '../../products/services';
-import {Cuota, Sale, SaleDetail} from '../interfaces';
+import {Sale, SaleDetail} from '../interfaces';
 import {InvoiceService} from '../../invoice/services';
 import {ResponseData} from '../../global/interfaces';
 import {Configuration} from '../../system/interfaces';
@@ -111,14 +111,8 @@ export class TerminalService {
     this._sale = {...this._sale, ...data};
   }
 
-  // Agregar cuotas.
-  public addCuotas(cuotas: Array<Cuota>): void {
-    this._sale.cuotas = cuotas;
-  }
-
   // guardar cambios.
   public saveChanges(id: number): Observable<ResponseData<Sale>> {
-    if (this._sale.paymentType === 'Contado') this._sale.endDate = '1992-04-05';
     return this.invoiceService.salePos(id, this._sale);
   }
 

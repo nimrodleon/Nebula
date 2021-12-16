@@ -7,8 +7,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import * as moment from 'moment';
 import {environment} from 'src/environments/environment';
-import {Cuota} from 'src/app/cashier/interfaces';
-import {DetailComprobante, TypeOperationSunat} from '../../interfaces';
+import {Cuota, DetailComprobante, TypeOperationSunat} from '../../interfaces';
 import {InvoiceService, SunatService} from '../../services';
 import {Contact} from 'src/app/contact/interfaces';
 import {ResponseData} from 'src/app/global/interfaces';

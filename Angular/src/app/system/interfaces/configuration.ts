@@ -11,4 +11,7 @@ export interface Configuration {
   textoDetraccion: string;
   montoDetraccion: number;
   contactId: number;
+  urlApi: string;
+  fileSunat: string;
+  fileControl: string;
 }

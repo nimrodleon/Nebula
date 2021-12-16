@@ -13,7 +13,6 @@ import {CashInOutModalComponent} from './components/cash-in-out-modal/cash-in-ou
 import {TerminalComponent} from './pages/terminal/terminal.component';
 import {CobrarModalComponent} from './components/cobrar-modal/cobrar-modal.component';
 import {CerrarCajaComponent} from './components/cerrar-caja/cerrar-caja.component';
-import {CuotaModalComponent} from './components/cuota-modal/cuota-modal.component';
 
 @NgModule({
   declarations: [
@@ -22,8 +21,7 @@ import {CuotaModalComponent} from './components/cuota-modal/cuota-modal.componen
     CashInOutModalComponent,
     TerminalComponent,
     CobrarModalComponent,
-    CerrarCajaComponent,
-    CuotaModalComponent
+    CerrarCajaComponent
   ],
   imports: [
     CommonModule,
@@ -33,9 +31,6 @@ import {CuotaModalComponent} from './components/cuota-modal/cuota-modal.componen
     FontAwesomeModule,
     ProductsModule,
     ContactModule
-  ],
-  exports: [
-    CuotaModalComponent
   ]
 })
 export class CashierModule {
