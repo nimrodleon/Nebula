@@ -57,7 +57,6 @@ namespace Nebula.Controllers
 
             // información del cliente.
             var client = await _context.Contacts.AsNoTracking()
-                .Include(m => m.PeopleDocType)
                 .FirstOrDefaultAsync(m => m.Id.Equals(model.ContactId));
 
             // información de venta.
@@ -71,7 +70,7 @@ namespace Nebula.Controllers
                 HorEmision = invoiceType.Equals("SALE") ? DateTime.Now.ToString("HH:mm:ss") : "-",
                 FecVencimiento = model.PaymentType.Equals("Credito") ? model.EndDate.ToString("yyyy-MM-dd") : "-",
                 FormaPago = model.PaymentType,
-                TipDocUsuario = client.PeopleDocType.SunatCode,
+                TipDocUsuario = client.DocType.ToString(),
                 NumDocUsuario = client.Document,
                 RznSocialUsuario = client.Name,
                 TipMoneda = "PEN",
@@ -233,7 +232,6 @@ namespace Nebula.Controllers
 
             // información del cliente.
             var client = await _context.Contacts.AsNoTracking()
-                .Include(m => m.PeopleDocType)
                 .FirstOrDefaultAsync(m => m.Id.Equals(model.ClientId));
             _logger.LogInformation($"Cliente - {client.Name}");
 
@@ -245,7 +243,7 @@ namespace Nebula.Controllers
                 FecEmision = DateTime.Now.ToString("yyyy-MM-dd"),
                 HorEmision = DateTime.Now.ToString("HH:mm:ss"),
                 FormaPago = "Contado",
-                TipDocUsuario = client.PeopleDocType.SunatCode,
+                TipDocUsuario = client.DocType.ToString(),
                 NumDocUsuario = client.Document,
                 RznSocialUsuario = client.Name,
                 TipMoneda = config.TipMoneda,

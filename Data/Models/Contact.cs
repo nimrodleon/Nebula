@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Nebula.Data.Models
 {
@@ -15,15 +13,9 @@ namespace Nebula.Data.Models
         public string Document { get; set; }
 
         /// <summary>
-        /// Id del Tipo de documento.
+        /// Tipo de documento.
         /// </summary>
-        public Guid? PeopleDocTypeId { get; set; }
-
-        /// <summary>
-        /// Propiedad de Relación, Tipo documento.
-        /// </summary>
-        [ForeignKey("PeopleDocTypeId")]
-        public PeopleDocType PeopleDocType { get; set; }
+        public int? DocType { get; set; }
 
         /// <summary>
         /// Nombre de contacto.

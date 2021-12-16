@@ -18,8 +18,11 @@
             </div>
             <div class="col-6 mb-1">
               <label class="col-form-label-sm text-uppercase">Tipo documento</label>
-              <select formControlName="peopleDocTypeId" class="form-select">
-                <option *ngFor="let item of docTypes" [value]="item.id">{{item.description}}</option>
+              <select formControlName="docType" class="form-select">
+                <option value="0">0 - SIN DEFINIR</option>
+                <option value="1">1 - D.N.I</option>
+                <option value="6">6 - R.U.C</option>
+                <option value="7">7 - PASAPORTE</option>
               </select>
               <div class="invalid-feedback">El tipo documento es requerido.</div>
             </div>

@@ -26,16 +26,16 @@ export class ContactService {
     return this.http.get<Contact>(`${this.appURL}/Show/${id}`);
   }
 
-  public store(data: Contact): Observable<ResponseData<Contact>> {
-    return this.http.post<ResponseData<Contact>>(`${this.appURL}/Store`, data);
+  public create(data: Contact): Observable<ResponseData<Contact>> {
+    return this.http.post<ResponseData<Contact>>(`${this.appURL}/Create`, data);
   }
 
   public update(id: number, data: Contact): Observable<ResponseData<Contact>> {
     return this.http.put<ResponseData<Contact>>(`${this.appURL}/Update/${id}`, data);
   }
 
-  public destroy(id: number): Observable<ResponseData<Contact>> {
-    return this.http.delete<ResponseData<Contact>>(`${this.appURL}/Destroy/${id}`);
+  public delete(id: number): Observable<ResponseData<Contact>> {
+    return this.http.delete<ResponseData<Contact>>(`${this.appURL}/Delete/${id}`);
   }
 
 }

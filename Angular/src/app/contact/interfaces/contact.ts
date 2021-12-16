@@ -1,8 +1,7 @@
 ﻿export interface Contact {
-  id: number | null | undefined;
+  id: number | null;
   document: string;
-  peopleDocTypeId: string;
-  peopleDocType: undefined | any;
+  docType: number;
   name: string;
   address: string;
   phoneNumber: string;

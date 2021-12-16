@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Nebula.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -9,9 +10,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Nebula.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211216222108_AddDocTypeContactTable")]
+    partial class AddDocTypeContactTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1013,6 +1015,28 @@ namespace Nebula.Data.Migrations
                     b.HasIndex("WarehouseId");
 
                     b.ToTable("InvoiceSeries");
+                });
+
+            modelBuilder.Entity("Nebula.Data.Models.PeopleDocType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<bool>("SoftDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("SunatCode")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PeopleDocTypes");
                 });
 
             modelBuilder.Entity("Nebula.Data.Models.Product", b =>

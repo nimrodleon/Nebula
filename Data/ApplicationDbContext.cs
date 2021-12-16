@@ -19,11 +19,6 @@ namespace Nebula.Data
         public DbSet<Contact> Contacts { get; set; }
 
         /// <summary>
-        /// Tipo documento.
-        /// </summary>
-        public DbSet<PeopleDocType> PeopleDocTypes { get; set; }
-
-        /// <summary>
         /// Aperturas y Cierres de caja.
         /// </summary>
         public DbSet<CajaDiaria> CajasDiaria { get; set; }
@@ -168,8 +163,6 @@ namespace Nebula.Data
         {
             modelBuilder.Entity<Contact>().Property<bool>("SoftDeleted");
             modelBuilder.Entity<Contact>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
-            modelBuilder.Entity<PeopleDocType>().Property<bool>("SoftDeleted");
-            modelBuilder.Entity<PeopleDocType>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<CajaDiaria>().Property<bool>("SoftDeleted");
             modelBuilder.Entity<CajaDiaria>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<UndMedida>().Property<bool>("SoftDeleted");

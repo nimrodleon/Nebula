@@ -30,7 +30,7 @@ namespace Nebula.Controllers
             var route = Request.Path.Value;
             var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.Query);
             var skip = (validFilter.PageNumber - 1) * validFilter.PageSize;
-            var result = from c in _context.Contacts.Include(x => x.PeopleDocType) select c;
+            var result = from c in _context.Contacts select c;
             if (!string.IsNullOrWhiteSpace(filter.Query))
                 result = result.Where(m => m.Document.Contains(filter.Query)
                                            || m.Name.ToLower().Contains(filter.Query.ToLower()));
@@ -64,13 +64,13 @@ namespace Nebula.Controllers
             var data = new List<Select2>();
             responseData.ForEach(item =>
             {
-                data.Add(new Select2() { Id = item.Id, Text = $"{item.Document} - {item.Name}" });
+                data.Add(new Select2() {Id = item.Id, Text = $"{item.Document} - {item.Name}"});
             });
-            return Ok(new { Results = data });
+            return Ok(new {Results = data});
         }
 
-        [HttpPost("Store")]
-        public async Task<IActionResult> Store([FromBody] Contact model)
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create([FromBody] Contact model)
         {
             _context.Contacts.Add(model);
             await _context.SaveChangesAsync();
@@ -94,14 +94,14 @@ namespace Nebula.Controllers
             });
         }
 
-        [HttpDelete("Destroy/{id}")]
-        public async Task<IActionResult> Destroy(int? id)
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> Delete(int? id)
         {
             var result = await _context.Contacts.FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (result == null) return BadRequest();
             _context.Contacts.Remove(result);
             await _context.SaveChangesAsync();
-            return Ok(new { Ok = true, Data = result, Msg = "El contacto ha sido borrado!" });
+            return Ok(new {Ok = true, Data = result, Msg = "El contacto ha sido borrado!"});
         }
     }
 }
