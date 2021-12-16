@@ -12,7 +12,7 @@
         <form [formGroup]="cajaChicaForm">
           <div class="row mb-3">
             <label class="col-3 col-form-label-sm text-uppercase text-end">Tipo</label>
-            <div class="col-4">
+            <div class="col-6">
               <select formControlName="type" class="form-select">
                 <option value="Ingreso">ENTRADA</option>
                 <option value="Egreso">SALIDA</option>
@@ -21,7 +21,7 @@
           </div>
           <div class="row mb-3">
             <label class="col-3 col-form-label-sm text-uppercase text-end">Monto</label>
-            <div class="col-4">
+            <div class="col-6">
               <input type="number" formControlName="total" step="0.01" class="form-control">
             </div>
           </div>
@@ -32,9 +32,9 @@
             </div>
           </div>
           <div class="row">
-            <label class="col-3 col-form-label-sm text-uppercase text-end">Glosa</label>
-            <div class="col-sm-9">
-              <textarea formControlName="glosa" class="form-control"></textarea>
+            <label class="col-3 col-form-label-sm text-uppercase text-end">Concepto</label>
+            <div class="col-9">
+              <select id="conceptoId" class="form-select"></select>
             </div>
           </div>
         </form>
