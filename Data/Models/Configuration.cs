@@ -67,5 +67,23 @@ namespace Nebula.Data.Models
         /// menores a 700 soles con boleta.
         /// </summary>
         public int? ContactId { get; set; }
+
+        /// <summary>
+        /// URL Api. CPE - SUNAT.
+        /// </summary>
+        [MaxLength(250)]
+        public string UrlApi { get; set; }
+
+        /// <summary>
+        /// Path Archivos SUNAT.
+        /// </summary>
+        [MaxLength(250)]
+        public string FileSunat { get; set; }
+
+        /// <summary>
+        /// Path Archivos de Control.
+        /// </summary>
+        [MaxLength(250)]
+        public string FileControl { get; set; }
     }
 }
