@@ -7,6 +7,7 @@ export interface CashierDetail {
   document: string;
   contact: string;
   glosa: string;
+  paymentMethod: number;
   type: string;
   total: number;
 }

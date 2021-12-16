@@ -55,13 +55,13 @@ namespace Nebula.Data.Models
         /// Sin Fecha: Por defecto guión -
         /// </summary>
         [MaxLength(250)]
-        public string FecVencimiento { get; set; }
+        public string FecVencimiento { get; set; } = "-";
 
         /// <summary>
         /// Forma de pago. Credito / Contado - a7
         /// </summary>
         [MaxLength(250)]
-        public string FormaPago { get; set; }
+        public string FormaPago { get; set; } = "Contado";
 
         /// <summary>
         /// Tipo de documento de identidad del adquirente o usuario. Catálogo: 6, an1

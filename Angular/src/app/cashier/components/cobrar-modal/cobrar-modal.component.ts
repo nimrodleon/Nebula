@@ -18,7 +18,7 @@ export class CobrarModalComponent implements OnInit {
   @Input()
   cajaDiariaId: number = 0;
   cobrarForm: FormGroup = this.fb.group({
-    paymentType: ['0'],
+    paymentMethod: ['0'],
     docType: ['BL'],
     montoTotal: [0],
     remark: ['']

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Nebula.Data.ViewModels
 {
@@ -14,24 +13,14 @@ namespace Nebula.Data.ViewModels
         public int ClientId { get; set; }
 
         /// <summary>
-        /// Forma de Pago.
+        /// Medios de Pago.
         /// </summary>
-        public string PaymentType { get; set; }
+        public string PaymentMethod { get; set; }
 
         /// <summary>
         /// Tipo documento.
         /// </summary>
         public string DocType { get; set; }
-
-        /// <summary>
-        /// Fecha vencimiento.
-        /// </summary>
-        public DateTime EndDate { get; set; }
-
-        /// <summary>
-        /// Identificador pago en (Caja|Banco).
-        /// </summary>
-        public bool MontoCaja { get; set; }
 
         /// <summary>
         /// Monto Cobrado.
@@ -67,10 +56,5 @@ namespace Nebula.Data.ViewModels
         /// Detalle de Venta.
         /// </summary>
         public List<SaleDetail> Details { get; set; }
-
-        /// <summary>
-        /// Lista de cuotas a crédito.
-        /// </summary>
-        public List<Cuota> Cuotas { get; set; }
     }
 }

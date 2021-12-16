@@ -3,7 +3,7 @@ import {SaleDetail} from './sale-detail';
 export class Sale {
   constructor(
     public clientId: number | null = null,
-    public paymentType: string = '', // forma de pago.
+    public paymentMethod: number = 0, // forma de pago.
     public docType: string = '', // tipo documento.
     public montoTotal: number = 0,
     public vuelto: number = 0,

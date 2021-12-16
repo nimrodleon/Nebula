@@ -69,6 +69,11 @@ namespace Nebula.Data.Models
         public string Glosa { get; set; }
 
         /// <summary>
+        /// Medios de Pago.
+        /// </summary>
+        public int? PaymentMethod { get; set; }
+
+        /// <summary>
         /// Movimiento de efectivo,
         /// (Entrada|Salida).
         /// </summary>

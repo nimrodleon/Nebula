@@ -18,7 +18,6 @@ namespace Nebula.Controllers
     {
         private readonly ILogger _logger;
         private readonly ApplicationDbContext _context;
-        private const string CREDITO = "Credito";
 
         public InvoiceController(ILogger<InvoiceController> logger, ApplicationDbContext context)
         {
@@ -245,8 +244,7 @@ namespace Nebula.Controllers
                 TipOperacion = "0101",
                 FecEmision = DateTime.Now.ToString("yyyy-MM-dd"),
                 HorEmision = DateTime.Now.ToString("HH:mm:ss"),
-                FecVencimiento = model.PaymentType.Equals(CREDITO) ? model.EndDate.ToString("yyyy-MM-dd") : "-",
-                FormaPago = model.PaymentType,
+                FormaPago = "Contado",
                 TipDocUsuario = client.PeopleDocType.SunatCode,
                 NumDocUsuario = client.Document,
                 RznSocialUsuario = client.Name,
