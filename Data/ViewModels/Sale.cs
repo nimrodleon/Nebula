@@ -15,7 +15,7 @@ namespace Nebula.Data.ViewModels
         /// <summary>
         /// Medios de Pago.
         /// </summary>
-        public string PaymentMethod { get; set; }
+        public int PaymentMethod { get; set; }
 
         /// <summary>
         /// Tipo documento.

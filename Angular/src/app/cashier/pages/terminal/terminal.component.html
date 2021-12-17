@@ -186,7 +186,8 @@
 </app-cash-in-out-modal>
 
 <app-cobrar-modal
-  [cajaDiariaId]="cajaDiariaId">
+  [cajaDiariaId]="cajaDiariaId"
+  (responseData)="hideCobrarModal($event)">
 </app-cobrar-modal>
 
 <pre>{{sale|json}}</pre>

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -8,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Nebula.Data;
 using Nebula.Data.Models;
+using Nebula.Data.Services;
 using Nebula.Data.ViewModels;
 
 namespace Nebula.Controllers
@@ -18,11 +18,14 @@ namespace Nebula.Controllers
     {
         private readonly ILogger _logger;
         private readonly ApplicationDbContext _context;
+        private readonly ITerminalService _terminalService;
 
-        public InvoiceController(ILogger<InvoiceController> logger, ApplicationDbContext context)
+        public InvoiceController(ILogger<InvoiceController> logger,
+            ApplicationDbContext context, ITerminalService terminalService)
         {
             _logger = logger;
             _context = context;
+            _terminalService = terminalService;
         }
 
         [HttpGet("Index/{type}")]
@@ -226,193 +229,21 @@ namespace Nebula.Controllers
         [HttpPost("SalePos/{id}")]
         public async Task<IActionResult> SalePos(int id, [FromBody] Sale model)
         {
-            _logger.LogInformation(JsonSerializer.Serialize(model));
-            //  parámetros de configuración.
-            var config = await _context.Configuration.FirstAsync();
-
-            // información del cliente.
-            var client = await _context.Contacts.AsNoTracking()
-                .FirstOrDefaultAsync(m => m.Id.Equals(model.ClientId));
-            _logger.LogInformation($"Cliente - {client.Name}");
-
-            // cabecera comprobante de venta.
-            var invoice = new Invoice()
+            try
             {
-                DocType = model.DocType,
-                TipOperacion = "0101",
-                FecEmision = DateTime.Now.ToString("yyyy-MM-dd"),
-                HorEmision = DateTime.Now.ToString("HH:mm:ss"),
-                FormaPago = "Contado",
-                TipDocUsuario = client.DocType.ToString(),
-                NumDocUsuario = client.Document,
-                RznSocialUsuario = client.Name,
-                TipMoneda = config.TipMoneda,
-                SumTotValVenta = model.SumTotValVenta, // refactoring
-                SumTotTributos = model.SumTotTributos, // refactoring
-                SumImpVenta = model.SumImpVenta, // refactoring
-                InvoiceType = "SALE",
-                Year = DateTime.Now.ToString("yyyy"),
-                Month = DateTime.Now.ToString("MM"),
-            };
-
-            // información de la caja diaria.
-            var cajaDiaria = await _context.CajasDiaria.AsNoTracking().FirstOrDefaultAsync(m => m.Id.Equals(id));
-            if (cajaDiaria == null) return BadRequest(new {Ok = false, Msg = "No existe caja diaria!"});
-            _logger.LogInformation($"Caja diaria [{cajaDiaria.Id}/{cajaDiaria.Name}]");
-
-            // configurar transacción de la base de datos.
-            await using (var transaction = await _context.Database.BeginTransactionAsync())
-            {
-                try
+                _terminalService.SetModel(model);
+                var invoice = await _terminalService.SaveInvoice(id);
+                model.Vuelto = model.MontoTotal - model.SumImpVenta;
+                return Ok(new
                 {
-                    // serie de facturación.
-                    var invoiceSerie = await _context.InvoiceSeries.FirstOrDefaultAsync(m =>
-                        m.Id.Equals(cajaDiaria.InvoiceSerieId));
-                    if (invoiceSerie == null) throw new Exception("Serie comprobante no existe!");
-                    _logger.LogInformation($"Serie comprobante [{invoiceSerie.Name}]");
-
-                    int numComprobante = 0;
-                    string THROW_MESSAGE = "Ingresa serie de comprobante!";
-                    switch (model.DocType)
-                    {
-                        case "FT":
-                            invoice.Serie = invoiceSerie.Factura;
-                            numComprobante = invoiceSerie.CounterFactura;
-                            if (numComprobante > 99999999)
-                                throw new Exception(THROW_MESSAGE);
-                            numComprobante = numComprobante + 1;
-                            invoiceSerie.CounterFactura = numComprobante;
-                            break;
-                        case "BL":
-                            invoice.Serie = invoiceSerie.Boleta;
-                            numComprobante = invoiceSerie.CounterBoleta;
-                            if (numComprobante > 99999999)
-                                throw new Exception(THROW_MESSAGE);
-                            numComprobante = numComprobante + 1;
-                            invoiceSerie.CounterBoleta = numComprobante;
-                            break;
-                        case "NV":
-                            invoice.Serie = invoiceSerie.NotaDeVenta;
-                            numComprobante = invoiceSerie.CounterNotaDeVenta;
-                            if (numComprobante > 99999999)
-                                throw new Exception(THROW_MESSAGE);
-                            numComprobante = numComprobante + 1;
-                            invoiceSerie.CounterNotaDeVenta = numComprobante;
-                            break;
-                    }
-
-                    invoice.Number = numComprobante.ToString("D8");
-                    _context.InvoiceSeries.Update(invoiceSerie);
-                    await _context.SaveChangesAsync();
-                    _logger.LogInformation("Contador de serie ha sido actualizado!");
-
-                    // registrar factura/boleta.
-                    _context.Invoices.Add(invoice);
-                    await _context.SaveChangesAsync();
-                    _logger.LogInformation("Cabecera del comprobante ha sido registrado");
-
-                    // agregar detalle de factura.
-                    var invoiceDetails = new List<InvoiceDetail>();
-                    model.Details.ForEach(item =>
-                    {
-                        // información del producto.
-                        var product = _context.Products.AsNoTracking()
-                            .Include(m => m.UndMedida)
-                            .FirstOrDefault(m => m.Id.Equals(item.ProductId));
-                        if (product != null)
-                        {
-                            // Tributo: Afectación al IGV por ítem.
-                            var tipAfeIgv = "10";
-                            switch (product.IgvSunat)
-                            {
-                                case "GRAVADO":
-                                    tipAfeIgv = "10";
-                                    break;
-                                case "EXONERADO":
-                                    tipAfeIgv = "20";
-                                    break;
-                                case "INAFECTO":
-                                    tipAfeIgv = "30";
-                                    break;
-                            }
-
-                            // calculo base imponible.
-                            var valorIgv = ((config.PorcentajeIgv / 100) + 1);
-                            var precioVenta = item.Price * item.Quantity;
-                            var baseImponible = precioVenta / valorIgv;
-
-                            // agregar items del comprobante.
-                            invoiceDetails.Add(new InvoiceDetail()
-                            {
-                                InvoiceId = invoice.Id,
-                                CodUnidadMedida = product.UndMedida.SunatCode,
-                                CtdUnidadItem = item.Quantity,
-                                CodProducto = product.Id.ToString(),
-                                CodProductoSunat = product.Barcode.Length == 0 ? "-" : product.Barcode,
-                                DesItem = product.Description,
-                                MtoValorUnitario = baseImponible,
-                                SumTotTributosItem = precioVenta - baseImponible,
-                                CodTriIgv = "1000",
-                                MtoIgvItem = precioVenta - baseImponible,
-                                MtoBaseIgvItem = baseImponible,
-                                NomTributoIgvItem = "IGV",
-                                CodTipTributoIgvItem = "VAT",
-                                TipAfeIgv = tipAfeIgv,
-                                PorIgvItem = Convert.ToDecimal(config.PorcentajeIgv).ToString("N2"),
-                                CodTriIcbper = "7152",
-                                MtoTriIcbperItem = 0,
-                                CtdBolsasTriIcbperItem = 0,
-                                NomTributoIcbperItem = "ICBPER",
-                                CodTipTributoIcbperItem = "OTH",
-                                MtoTriIcbperUnidad = config.ValorImpuestoBolsa,
-                                MtoPrecioVentaUnitario = precioVenta,
-                                MtoValorVentaItem = baseImponible,
-                            });
-                        }
-                    });
-                    _context.InvoiceDetails.AddRange(invoiceDetails);
-                    await _context.SaveChangesAsync();
-                    _logger.LogInformation("Detalle comprobante registrado!");
-
-                    // registrar operación de caja.
-                    var cashierDetail = new CashierDetail()
-                    {
-                        CajaDiariaId = cajaDiaria.Id,
-                        InvoiceId = invoice.Id,
-                        TypeOperation = TypeOperation.Comprobante,
-                        StartDate = DateTime.Now,
-                        Document = string.Format($"{invoice.Serie}-{invoice.Number}"),
-                        Contact = invoice.RznSocialUsuario,
-                        Glosa = model.Remark,
-                        Type = "ENTRADA",
-                        Total = invoice.SumImpVenta
-                    };
-                    _context.CashierDetails.Add(cashierDetail);
-                    await _context.SaveChangesAsync();
-                    _logger.LogInformation("Operación de caja registrada!");
-
-                    // confirmar transacción.
-                    await transaction.CommitAsync();
-                    _logger.LogInformation("Transacción confirmada!");
-
-                    model.Vuelto = model.MontoTotal - model.SumImpVenta;
-                    return Ok(new
-                    {
-                        Ok = true, Data = model,
-                        Msg = $"{invoice.Serie} - {invoice.Number} ha sido registrado!"
-                    });
-                }
-                catch (Exception)
-                {
-                    await transaction.RollbackAsync();
-                    _logger.LogInformation("La transacción ha sido cancelada!");
-                }
+                    Ok = true, Data = model, Msg = $"{invoice.Serie} - {invoice.Number} ha sido registrado!"
+                });
             }
-
-            return BadRequest(new
+            catch (Exception e)
             {
-                Ok = false, Msg = $"Hubo un error en la emisión del comprobante!"
-            });
+                _logger.LogError(e.Message);
+                return BadRequest(new {Ok = false, Msg = e.Message});
+            }
         }
     }
 }

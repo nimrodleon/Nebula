@@ -98,19 +98,7 @@ export class TerminalComponent implements OnInit {
     // cargar valor inicial.
     this.terminalService.deleteSale();
     // cargar parámetros del configuración.
-    this.configurationService.show()
-      .subscribe(result => {
-        this.config = result;
-        this.terminalService.setConfig(result);
-        // cargar cliente por defecto.
-        this.contactService.show(result.contactId)
-          .subscribe(result => {
-            this.terminalService.setClientId(<any>result.id);
-            const newOption = new Option(`${result.document} - ${result.name}`,
-              <any>result.id, true, true);
-            clientId.append(newOption).trigger('change');
-          });
-      });
+    this.getDefaultParams();
     // cargar lista de productos.
     this.searchProducts();
     // modal formulario de productos.
@@ -121,6 +109,23 @@ export class TerminalComponent implements OnInit {
     this.cobrarModal = new bootstrap.Modal(document.querySelector('#cobrar-modal'));
     // formulario entrada/salida de efectivo.
     this.cashInOutModal = new bootstrap.Modal(document.querySelector('#cash-in-out-modal'));
+  }
+
+  // Cargar parámetros por defecto.
+  private getDefaultParams(): void {
+    this.configurationService.show()
+      .subscribe(result => {
+        this.config = result;
+        this.terminalService.setConfig(result);
+        // cargar cliente por defecto.
+        this.contactService.show(result.contactId)
+          .subscribe(result => {
+            this.terminalService.setClientId(<any>result.id);
+            const newOption = new Option(`${result.document} - ${result.name}`,
+              <any>result.id, true, true);
+            jQuery('#clientId').append(newOption).trigger('change');
+          });
+      });
   }
 
   // información de la venta.
@@ -194,6 +199,13 @@ export class TerminalComponent implements OnInit {
       } else {
         this.cobrarModal.show();
       }
+    }
+  }
+
+  // cerrar modal cobrar.
+  public hideCobrarModal(value: boolean): void {
+    if (!value) {
+      this.getDefaultParams();
     }
   }
 

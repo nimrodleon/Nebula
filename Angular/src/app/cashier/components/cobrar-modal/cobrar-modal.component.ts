@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {faBars, faEnvelope, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {faCheckSquare} from '@fortawesome/free-regular-svg-icons';
 import {FormBuilder, FormGroup} from '@angular/forms';
@@ -17,6 +17,8 @@ export class CobrarModalComponent implements OnInit {
   // ====================================================================================================
   @Input()
   cajaDiariaId: number = 0;
+  @Output()
+  responseData = new EventEmitter<boolean>();
   cobrarForm: FormGroup = this.fb.group({
     paymentMethod: ['0'],
     docType: ['BL'],
@@ -32,10 +34,13 @@ export class CobrarModalComponent implements OnInit {
 
   ngOnInit(): void {
     const myModal: any = document.querySelector('#cobrar-modal');
+    myModal.addEventListener('shown.bs.modal', () => {
+      this.formReg = true;
+    });
     myModal.addEventListener('hide.bs.modal', () => {
       if (!this.formReg) {
         this.terminalService.deleteSale();
-        this.formReg = true;
+        this.responseData.emit(this.formReg);
       }
     });
   }
