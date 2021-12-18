@@ -6,7 +6,7 @@ export interface Configuration {
   tipMoneda: string;
   porcentajeIgv: number;
   valorImpuestoBolsa: number;
-  completarDatosBoleta: number;
+  cpeSunat: string;
   cuentaBancoDetraccion: string;
   textoDetraccion: string;
   montoDetraccion: number;

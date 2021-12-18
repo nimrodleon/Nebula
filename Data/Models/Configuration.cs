@@ -41,9 +41,9 @@ namespace Nebula.Data.Models
         public decimal? ValorImpuestoBolsa { get; set; }
 
         /// <summary>
-        /// Monto para completar datos del cliente en la boleta.
+        /// Tipo de Emisión Electrónica.
         /// </summary>
-        public decimal? CompletarDatosBoleta { get; set; }
+        public string CpeSunat { get; set; }
 
         /// <summary>
         /// Cuenta de detracción.
