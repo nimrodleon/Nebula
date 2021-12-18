@@ -233,7 +233,7 @@ namespace Nebula.Data.Services
         /// </summary>
         private async Task GetConfiguration()
         {
-            _configuration = await _context.Configuration.FirstAsync();
+            _configuration = await _context.Configuration.AsNoTracking().FirstAsync();
             _logger.LogInformation($"Configuración: {JsonSerializer.Serialize(_configuration)}");
         }
 

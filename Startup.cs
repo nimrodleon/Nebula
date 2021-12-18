@@ -65,6 +65,7 @@ namespace Nebula
 
             services.AddHttpContextAccessor();
             services.AddScoped<ITerminalService, TerminalService>();
+            services.AddScoped<ICpeService, CpeService>();
             services.AddSingleton<IUriService>(o =>
             {
                 var accessor = o.GetRequiredService<IHttpContextAccessor>();
