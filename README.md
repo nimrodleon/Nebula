@@ -1,2 +1,3 @@
 # Nebula
-Software de Gestión Comercial.
+
+Software de Facturación Electrónica.
