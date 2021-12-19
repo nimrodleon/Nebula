@@ -1,6 +1,8 @@
 import {SaleDetail} from './sale-detail';
 
 export class Sale {
+  public ICBPER: number = 0;
+
   constructor(
     public clientId: number | null = null,
     public paymentMethod: number = 0, // forma de pago.
@@ -11,7 +13,20 @@ export class Sale {
     public sumTotTributos: number = 0, // IGV(18%).
     public sumImpVenta: number = 0, // importe total.
     public remark: string = '', // observación.
-    public details: Array<SaleDetail> = new Array<SaleDetail>(), // detalle de venta.
-  ) {
+    public details: Array<SaleDetail> = new Array<SaleDetail>()) {
   }
+
+  // calcular importe de venta.
+  public calcImporteVenta(): void {
+    this.ICBPER = 0;
+    this.sumTotValVenta = 0;
+    this.sumTotTributos = 0;
+    this.details.forEach(item => {
+      this.sumTotValVenta = this.sumTotValVenta + item.mtoBaseIgvItem;
+      this.sumTotTributos = this.sumTotTributos + item.mtoIgvItem;
+      this.ICBPER = this.ICBPER + item.mtoTriIcbperItem;
+    });
+    this.sumImpVenta = this.sumTotValVenta + this.sumTotTributos + this.ICBPER;
+  }
+
 }
