@@ -56,5 +56,27 @@ namespace Nebula.Data.ViewModels
         /// Detalle de Venta.
         /// </summary>
         public List<SaleDetail> Details { get; set; }
+
+        /// <summary>
+        /// Monto Tributo ICBPER.
+        /// </summary>
+        public decimal ICBPER { get; set; }
+
+        /// <summary>
+        /// calcular importe de venta.
+        /// </summary>
+        public void CalcImporteVenta()
+        {
+            ICBPER = 0;
+            SumTotValVenta = 0;
+            SumTotTributos = 0;
+            Details.ForEach(item =>
+            {
+                SumTotValVenta = SumTotValVenta + item.MtoBaseIgvItem;
+                SumTotTributos = SumTotTributos + item.MtoIgvItem;
+                ICBPER = ICBPER + item.MtoTriIcbperItem;
+            });
+            SumImpVenta = SumTotValVenta + SumTotTributos + ICBPER;
+        }
     }
 }

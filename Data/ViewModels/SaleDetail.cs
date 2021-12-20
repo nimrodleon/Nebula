@@ -24,5 +24,35 @@
         /// Cantidad del Producto.
         /// </summary>
         public decimal Quantity { get; set; }
+
+        /// <summary>
+        /// Tipo de operación IGV Sunat.
+        /// </summary>
+        public string IgvSunat { get; set; }
+
+        /// <summary>
+        /// Monto IGV por Item.
+        /// </summary>
+        public decimal MtoIgvItem { get; set; }
+
+        /// <summary>
+        /// Base Imponible IGV por Item.
+        /// </summary>
+        public decimal MtoBaseIgvItem { get; set; }
+
+        /// <summary>
+        /// Precio Venta Item.
+        /// </summary>
+        public decimal Amount { get; set; }
+
+        /// <summary>
+        /// Tributo ICBPER.
+        /// </summary>
+        public bool TriIcbper { get; set; } = false;
+
+        /// <summary>
+        /// Monto Tributo ICBPER por Item.
+        /// </summary>
+        public decimal MtoTriIcbperItem { get; set; }
     }
 }
