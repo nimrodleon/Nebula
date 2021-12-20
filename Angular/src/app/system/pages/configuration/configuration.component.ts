@@ -30,7 +30,7 @@ export class ConfigurationComponent implements OnInit {
     tipMoneda: [''],
     porcentajeIgv: [0],
     valorImpuestoBolsa: [0],
-    completarDatosBoleta: [0],
+    cpeSunat: ['SFS'],
     cuentaBancoDetraccion: [''],
     textoDetraccion: [''],
     montoDetraccion: [0],

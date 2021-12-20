@@ -40,6 +40,7 @@ namespace Nebula.Data.Services
             await GetConfiguration();
             var invoice = await _context.Invoices.AsNoTracking()
                 .Include(m => m.InvoiceDetails)
+                .Include(m => m.Tributos)
                 .SingleAsync(m => m.Id.Equals(id));
             var cabecera = new sfs.Invoice()
             {

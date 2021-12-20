@@ -14,8 +14,8 @@ namespace Nebula.Data.Helpers
         public override string ToString()
         {
             var entero = Convert.ToInt64(Math.Truncate(_value));
-            var decimales = Convert.ToDecimal(Math.Round((_value - entero) * 100, 2)).ToString("D2");
-            return $"{ConvertNumber(Convert.ToDecimal(entero))} Y {decimales}/100 SOLES";
+            var decimales = Convert.ToInt32(Math.Round((_value - entero) * 100, 2));
+            return $"{ConvertNumber(Convert.ToDecimal(entero))} Y {decimales:0,0}/100 SOLES";
         }
 
         private string ConvertNumber(decimal value)

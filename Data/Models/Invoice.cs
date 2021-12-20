@@ -120,6 +120,11 @@ namespace Nebula.Data.Models
         public List<InvoiceDetail> InvoiceDetails { get; set; }
 
         /// <summary>
+        /// Tributos de la Factura.
+        /// </summary>
+        public List<Tributo> Tributos { get; set; }
+
+        /// <summary>
         /// Cuentas por Cobrar/Pagar.
         /// </summary>
         public List<InvoiceAccount> InvoiceAccounts { get; set; }

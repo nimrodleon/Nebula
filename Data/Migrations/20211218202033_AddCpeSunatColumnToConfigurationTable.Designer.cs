@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Nebula.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -9,9 +10,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Nebula.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211218202033_AddCpeSunatColumnToConfigurationTable")]
+    partial class AddCpeSunatColumnToConfigurationTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1154,44 +1156,6 @@ namespace Nebula.Data.Migrations
                     b.ToTable("TransferNoteDetails");
                 });
 
-            modelBuilder.Entity("Nebula.Data.Models.Tributo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("CodTipTributo")
-                        .HasMaxLength(250)
-                        .HasColumnType("character varying(250)");
-
-                    b.Property<string>("IdeTributo")
-                        .HasMaxLength(250)
-                        .HasColumnType("character varying(250)");
-
-                    b.Property<int?>("InvoiceId")
-                        .HasColumnType("integer");
-
-                    b.Property<decimal?>("MtoBaseImponible")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal?>("MtoTributo")
-                        .HasColumnType("numeric");
-
-                    b.Property<string>("NomTributo")
-                        .HasMaxLength(250)
-                        .HasColumnType("character varying(250)");
-
-                    b.Property<bool>("SoftDeleted")
-                        .HasColumnType("boolean");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InvoiceId");
-
-                    b.ToTable("Tributos");
-                });
-
             modelBuilder.Entity("Nebula.Data.Models.TypeOperationSunat", b =>
                 {
                     b.Property<string>("Id")
@@ -1425,15 +1389,6 @@ namespace Nebula.Data.Migrations
                     b.Navigation("TransferNote");
                 });
 
-            modelBuilder.Entity("Nebula.Data.Models.Tributo", b =>
-                {
-                    b.HasOne("Nebula.Data.Models.Invoice", "Invoice")
-                        .WithMany("Tributos")
-                        .HasForeignKey("InvoiceId");
-
-                    b.Navigation("Invoice");
-                });
-
             modelBuilder.Entity("Nebula.Data.Models.InventoryNote", b =>
                 {
                     b.Navigation("InventoryNoteDetails");
@@ -1444,8 +1399,6 @@ namespace Nebula.Data.Migrations
                     b.Navigation("InvoiceAccounts");
 
                     b.Navigation("InvoiceDetails");
-
-                    b.Navigation("Tributos");
                 });
 
             modelBuilder.Entity("Nebula.Data.Models.InvoiceNote", b =>

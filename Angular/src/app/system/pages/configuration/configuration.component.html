@@ -53,9 +53,11 @@
                 <div class="col-3">
                   <select id="contactId" class="form-select"></select>
                 </div>
-                <label class="col-2 col-form-label text-end fw-bold">Pedir Datos Boleta</label>
+                <label class="col-2 col-form-label text-end fw-bold">Emisión Electrónica</label>
                 <div class="col-3">
-                  <input type="number" formControlName="completarDatosBoleta" step="0.1" class="form-control">
+                  <select formControlName="cpeSunat" class="form-select">
+                    <option value="SFS">Facturador SUNAT</option>
+                  </select>
                 </div>
               </div>
               <div class="mb-3">
