@@ -47,5 +47,17 @@ namespace Nebula.Data.Models
         /// Monto de Tributo.
         /// </summary>
         public decimal? MtoTributo { get; set; }
+
+        /// <summary>
+        /// Año de registro.
+        /// </summary>
+        [MaxLength(250)]
+        public string Year { get; set; }
+
+        /// <summary>
+        /// Mes de registro.
+        /// </summary>
+        [MaxLength(250)]
+        public string Month { get; set; }
     }
 }
