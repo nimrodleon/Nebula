@@ -60,6 +60,7 @@ namespace Nebula.Controllers
         {
             if (id == null) return BadRequest();
             var result = await _context.Products.AsNoTracking()
+                .Include(m => m.UndMedida)
                 .IgnoreQueryFilters().FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (result == null) return BadRequest();
             return Ok(result);

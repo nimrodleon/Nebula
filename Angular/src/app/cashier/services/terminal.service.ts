@@ -48,11 +48,15 @@ export class TerminalService {
   private getDetalleVenta(data: Product): SaleDetail {
     const detalleVenta: SaleDetail = new SaleDetail();
     detalleVenta.productId = data.id;
+    detalleVenta.codUnidadMedida = data.undMedida.sunatCode;
+    detalleVenta.codProductoSunat = data.barcode.length > 0 ? data.barcode : '-';
     detalleVenta.description = data.description;
     detalleVenta.price = data.price1;
     detalleVenta.quantity = 1;
     detalleVenta.igvSunat = data.igvSunat;
+    detalleVenta.valorIgv = this._config.porcentajeIgv;
     detalleVenta.triIcbper = data.icbper === 'SI';
+    detalleVenta.valorIcbper = this._config.valorImpuestoBolsa;
     detalleVenta.porcentajeIGV = this._config.porcentajeIgv;
     detalleVenta.mtoTriIcbperUnidad = this._config.valorImpuestoBolsa;
     detalleVenta.calcularItem();
@@ -105,18 +109,6 @@ export class TerminalService {
       }
     });
   }
-
-  // // calcular importe venta.
-  // public calcImporteVenta(): void {
-  //   let sumImpVenta = 0;
-  //   const {porcentajeIgv} = this._config;
-  //   this._sale.details.forEach((item: SaleDetail) => {
-  //     sumImpVenta = sumImpVenta + item.amount;
-  //   });
-  //   this._sale.sumTotValVenta = sumImpVenta / ((porcentajeIgv / 100) + 1);
-  //   this._sale.sumTotTributos = sumImpVenta - this._sale.sumTotValVenta;
-  //   this._sale.sumImpVenta = sumImpVenta;
-  // }
 
   // agregar información.
   public addInfo(data: any): void {

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -50,7 +48,7 @@ namespace Nebula.Data.Services
             await using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                var invoice = GetInvoice();
+                var invoice = _model.GetInvoice(_configuration, _client);
                 var invoiceSerie = await GetInvoiceSerie(_cajaDiaria.InvoiceSerieId);
 
                 int numComprobante = 0;
@@ -94,10 +92,16 @@ namespace Nebula.Data.Services
                 _logger.LogInformation("Cabecera comprobante registrado!");
 
                 // Agregar detalle del comprobante.
-                var invoiceDetails = GetInvoiceDetails(invoice.Id);
+                var invoiceDetails = _model.GetInvoiceDetail(invoice.Id);
                 _context.InvoiceDetails.AddRange(invoiceDetails);
                 await _context.SaveChangesAsync();
                 _logger.LogInformation("Detalle comprobante registrado!");
+
+                // Registrar Tributos de Factura.
+                var tributos = _model.GetTributo(invoice.Id);
+                _context.Tributos.AddRange(tributos);
+                await _context.SaveChangesAsync();
+                _logger.LogInformation("Tributos de factura registrado!");
 
                 // Registrar operación de Caja.
                 var cashierDetail = GetCashierDetail(invoice);
@@ -118,94 +122,6 @@ namespace Nebula.Data.Services
             }
 
             throw new Exception("Hubo un error en la emisión del comprobante!");
-        }
-
-        /// <summary>
-        /// Configurar cabecera de venta.
-        /// </summary>
-        private Invoice GetInvoice()
-        {
-            return new Invoice()
-            {
-                DocType = _model.DocType,
-                TipOperacion = "0101",
-                FecEmision = DateTime.Now.ToString("yyyy-MM-dd"),
-                HorEmision = DateTime.Now.ToString("HH:mm:ss"),
-                FormaPago = "Contado",
-                TipDocUsuario = _client.DocType.ToString(),
-                NumDocUsuario = _client.Document,
-                RznSocialUsuario = _client.Name,
-                TipMoneda = _configuration.TipMoneda,
-                SumTotValVenta = _model.SumTotValVenta, // refactoring
-                SumTotTributos = _model.SumTotTributos, // refactoring
-                SumImpVenta = _model.SumImpVenta, // refactoring
-                InvoiceType = "SALE",
-                Year = DateTime.Now.ToString("yyyy"),
-                Month = DateTime.Now.ToString("MM"),
-            };
-        }
-
-        /// <summary>
-        /// Configurar detalle de comprobante.
-        /// </summary>
-        private List<InvoiceDetail> GetInvoiceDetails(int? invoice)
-        {
-            var invoiceDetails = new List<InvoiceDetail>();
-            _model.Details.ForEach(item =>
-            {
-                var product = GetProduct(item.ProductId);
-                if (product != null)
-                {
-                    // Tributo: Afectación al IGV por ítem.
-                    string tipAfeIgv = "10";
-                    switch (product.IgvSunat)
-                    {
-                        case "GRAVADO":
-                            tipAfeIgv = "10";
-                            break;
-                        case "EXONERADO":
-                            tipAfeIgv = "20";
-                            break;
-                        case "INAFECTO":
-                            tipAfeIgv = "30";
-                            break;
-                    }
-
-                    // calculo base imponible.
-                    var valorIgv = ((_configuration.PorcentajeIgv / 100) + 1);
-                    var precioVenta = item.Price * item.Quantity;
-                    var baseImponible = precioVenta / valorIgv;
-
-                    // agregar items al comprobante.
-                    invoiceDetails.Add(new InvoiceDetail()
-                    {
-                        InvoiceId = invoice,
-                        CodUnidadMedida = product.UndMedida.SunatCode,
-                        CtdUnidadItem = item.Quantity,
-                        CodProducto = product.Id.ToString(),
-                        CodProductoSunat = product.Barcode.Length == 0 ? "-" : product.Barcode,
-                        DesItem = product.Description,
-                        MtoValorUnitario = baseImponible,
-                        SumTotTributosItem = precioVenta - baseImponible,
-                        CodTriIgv = "1000",
-                        MtoIgvItem = precioVenta - baseImponible,
-                        MtoBaseIgvItem = baseImponible,
-                        NomTributoIgvItem = "IGV",
-                        CodTipTributoIgvItem = "VAT",
-                        TipAfeIgv = tipAfeIgv,
-                        PorIgvItem = Convert.ToDecimal(_configuration.PorcentajeIgv).ToString("N2"),
-                        CodTriIcbper = "7152",
-                        MtoTriIcbperItem = 0,
-                        CtdBolsasTriIcbperItem = 0,
-                        NomTributoIcbperItem = "ICBPER",
-                        CodTipTributoIcbperItem = "OTH",
-                        MtoTriIcbperUnidad = _configuration.ValorImpuestoBolsa,
-                        MtoPrecioVentaUnitario = precioVenta,
-                        MtoValorVentaItem = baseImponible,
-                    });
-                }
-            });
-            return invoiceDetails;
         }
 
         /// <summary>
@@ -266,18 +182,6 @@ namespace Nebula.Data.Services
             if (invoiceSerie == null) throw new Exception("Serie comprobante no existe!");
             _logger.LogInformation($"Serie Comprobante: {JsonSerializer.Serialize(invoiceSerie)}");
             return invoiceSerie;
-        }
-
-        /// <summary>
-        /// Obtener producto por id.
-        /// </summary>
-        private Product GetProduct(int id)
-        {
-            var product = _context.Products.AsNoTracking()
-                .Include(m => m.UndMedida)
-                .Single(m => m.Id.Equals(id));
-            _logger.LogInformation($"Producto: {JsonSerializer.Serialize(product)}");
-            return product;
         }
     }
 }
