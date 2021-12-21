@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Nebula.Data.Models;
 
 namespace Nebula.Data.ViewModels
 {
@@ -77,6 +79,85 @@ namespace Nebula.Data.ViewModels
                 ICBPER = ICBPER + item.MtoTriIcbperItem;
             });
             SumImpVenta = SumTotValVenta + SumTotTributos + ICBPER;
+        }
+
+        /// <summary>
+        /// Lista de Tributos.
+        /// </summary>
+        public List<Tributo> GetTributo()
+        {
+            bool icbper = false;
+            decimal opGravada = 0;
+            decimal opExonerada = 0;
+            decimal opGratuita = 0;
+            decimal totalIgv = 0;
+            decimal totalIcbper = 0;
+            Details.ForEach(item =>
+            {
+                switch (item.IgvSunat)
+                {
+                    case "GRAVADO":
+                        opGravada = opGravada + item.MtoBaseIgvItem;
+                        totalIgv = totalIgv + item.MtoIgvItem;
+                        break;
+                    case "EXONERADO":
+                        opExonerada = opExonerada + item.MtoBaseIgvItem;
+                        break;
+                    case "GRATUITO":
+                        opGratuita = opGratuita + item.MtoBaseIgvItem;
+                        break;
+                }
+
+                if (item.TriIcbper)
+                {
+                    icbper = true;
+                    totalIcbper = totalIcbper + item.MtoTriIcbperItem;
+                }
+            });
+
+            var tributos = new List<Tributo>();
+            if (opGratuita > 0)
+            {
+                tributos.Add(new Tributo()
+                {
+                    IdeTributo = "9996", NomTributo = "GRA", CodTipTributo = "FRE",
+                    MtoBaseImponible = opGratuita, MtoTributo = 0,
+                    Year = DateTime.Now.ToString("yyyy"),
+                    Month = DateTime.Now.ToString("MM")
+                });
+            }
+
+            if (opExonerada > 0)
+            {
+                tributos.Add(new Tributo()
+                {
+                    IdeTributo = "9997", NomTributo = "EXO", CodTipTributo = "VAT",
+                    MtoBaseImponible = opExonerada, MtoTributo = 0,
+                    Year = DateTime.Now.ToString("yyyy"),
+                    Month = DateTime.Now.ToString("MM")
+                });
+            }
+
+            tributos.Add(new Tributo()
+            {
+                IdeTributo = "1000", NomTributo = "IGV", CodTipTributo = "VAT",
+                MtoBaseImponible = opGravada, MtoTributo = totalIgv,
+                Year = DateTime.Now.ToString("yyyy"),
+                Month = DateTime.Now.ToString("MM")
+            });
+
+            if (icbper)
+            {
+                tributos.Add(new Tributo()
+                {
+                    IdeTributo = "7152", NomTributo = "ICBPER", CodTipTributo = "OTH",
+                    MtoBaseImponible = 0, MtoTributo = totalIcbper,
+                    Year = DateTime.Now.ToString("yyyy"),
+                    Month = DateTime.Now.ToString("MM")
+                });
+            }
+
+            return tributos;
         }
     }
 }
