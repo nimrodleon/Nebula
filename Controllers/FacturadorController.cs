@@ -105,10 +105,97 @@ namespace Nebula.Controllers
         [HttpGet("GetPdf")]
         public async Task<IActionResult> GetPdf([FromQuery] string nomArch)
         {
+            string pathFilePdf = string.Empty;
             var config = await GetConfiguration();
-            var stream = new FileStream(Path.Combine(config.FileSunat,
-                Path.Combine("REPO", $"{nomArch}.pdf")), FileMode.Open);
+            var file = Path.Combine("REPO", $"{nomArch}.pdf");
+            if (System.IO.File.Exists(Path.Combine(config.FileSunat, file)))
+                pathFilePdf = Path.Combine(config.FileSunat, file);
+            if (System.IO.File.Exists(Path.Combine(config.FileControl, file)))
+                pathFilePdf = Path.Combine(config.FileControl, file);
+            var stream = new FileStream(pathFilePdf, FileMode.Open);
             return new FileStreamResult(stream, "application/pdf");
+        }
+
+        [HttpGet("Backup")]
+        public async Task<IActionResult> Backup([FromQuery] string nomArch)
+        {
+            var fileData = $"{nomArch}.json";
+            var fileEnvio = $"{nomArch}.zip";
+            var fileFirma = $"{nomArch}.xml";
+            var fileParse = $"{nomArch}.xml";
+            var fileRepo = $"{nomArch}.pdf";
+            var fileRpta = $"R{nomArch}.zip";
+            var fileTemp = $"{nomArch}.xml";
+
+            var config = await GetConfiguration();
+
+            // configurar rutas de destino.
+            var targetData = Path.Combine(config.FileControl, "DATA");
+            if (!Directory.Exists(targetData)) Directory.CreateDirectory(targetData);
+            var targetEnvio = Path.Combine(config.FileControl, "ENVIO");
+            if (!Directory.Exists(targetEnvio)) Directory.CreateDirectory(targetEnvio);
+            var targetFirma = Path.Combine(config.FileControl, "FIRMA");
+            if (!Directory.Exists(targetFirma)) Directory.CreateDirectory(targetFirma);
+            var targetParse = Path.Combine(config.FileControl, "PARSE");
+            if (!Directory.Exists(targetParse)) Directory.CreateDirectory(targetParse);
+            var targetRepo = Path.Combine(config.FileControl, "REPO");
+            if (!Directory.Exists(targetRepo)) Directory.CreateDirectory(targetRepo);
+            var targetRpta = Path.Combine(config.FileControl, "RPTA");
+            if (!Directory.Exists(targetRpta)) Directory.CreateDirectory(targetRpta);
+            var targetTemp = Path.Combine(config.FileControl, "TEMP");
+            if (!Directory.Exists(targetTemp)) Directory.CreateDirectory(targetTemp);
+
+            // copia de seguridad de archivos.
+            if (System.IO.File.Exists(Path.Combine(config.FileSunat, Path.Combine("DATA", fileData))))
+            {
+                System.IO.File.Copy(Path.Combine(config.FileSunat, Path.Combine("DATA",
+                    fileData)), Path.Combine(targetData, fileData));
+                System.IO.File.Delete(Path.Combine(config.FileSunat, Path.Combine("DATA", fileData)));
+            }
+
+            if (System.IO.File.Exists(Path.Combine(config.FileSunat, Path.Combine("ENVIO", fileEnvio))))
+            {
+                System.IO.File.Copy(Path.Combine(config.FileSunat, Path.Combine("ENVIO",
+                    fileEnvio)), Path.Combine(targetEnvio, fileEnvio));
+                System.IO.File.Delete(Path.Combine(config.FileSunat, Path.Combine("ENVIO", fileEnvio)));
+            }
+
+            if (System.IO.File.Exists(Path.Combine(config.FileSunat, Path.Combine("FIRMA", fileFirma))))
+            {
+                System.IO.File.Copy(Path.Combine(config.FileSunat, Path.Combine("FIRMA",
+                    fileFirma)), Path.Combine(targetFirma, fileFirma));
+                System.IO.File.Delete(Path.Combine(config.FileSunat, Path.Combine("FIRMA", fileFirma)));
+            }
+
+            if (System.IO.File.Exists(Path.Combine(config.FileSunat, Path.Combine("PARSE", fileParse))))
+            {
+                System.IO.File.Copy(Path.Combine(config.FileSunat, Path.Combine("PARSE",
+                    fileParse)), Path.Combine(targetParse, fileParse));
+                System.IO.File.Delete(Path.Combine(config.FileSunat, Path.Combine("PARSE", fileParse)));
+            }
+
+            if (System.IO.File.Exists(Path.Combine(config.FileSunat, Path.Combine("REPO", fileRepo))))
+            {
+                System.IO.File.Copy(Path.Combine(config.FileSunat, Path.Combine("REPO",
+                    fileRepo)), Path.Combine(targetRepo, fileRepo));
+                System.IO.File.Delete(Path.Combine(config.FileSunat, Path.Combine("REPO", fileRepo)));
+            }
+
+            if (System.IO.File.Exists(Path.Combine(config.FileSunat, Path.Combine("RPTA", fileRpta))))
+            {
+                System.IO.File.Copy(Path.Combine(config.FileSunat, Path.Combine("RPTA",
+                    fileRpta)), Path.Combine(targetRpta, fileRpta));
+                System.IO.File.Delete(Path.Combine(config.FileSunat, Path.Combine("RPTA", fileRpta)));
+            }
+
+            if (System.IO.File.Exists(Path.Combine(config.FileSunat, Path.Combine("TEMP", fileTemp))))
+            {
+                System.IO.File.Copy(Path.Combine(config.FileSunat, Path.Combine("TEMP",
+                    fileTemp)), Path.Combine(targetTemp, fileTemp));
+                System.IO.File.Delete(Path.Combine(config.FileSunat, Path.Combine("TEMP", fileTemp)));
+            }
+
+            return Ok(new {Ok = true, Msg = "Backup Completado!"});
         }
     }
 }
