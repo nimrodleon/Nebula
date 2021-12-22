@@ -19,13 +19,15 @@ namespace Nebula.Controllers
         private readonly ILogger _logger;
         private readonly ApplicationDbContext _context;
         private readonly ITerminalService _terminalService;
+        private readonly ICpeService _cpeService;
 
         public InvoiceController(ILogger<InvoiceController> logger,
-            ApplicationDbContext context, ITerminalService terminalService)
+            ApplicationDbContext context, ITerminalService terminalService, ICpeService cpeService)
         {
             _logger = logger;
             _context = context;
             _terminalService = terminalService;
+            _cpeService = cpeService;
         }
 
         [HttpGet("Index/{type}")]
@@ -233,10 +235,13 @@ namespace Nebula.Controllers
             {
                 _terminalService.SetModel(model);
                 var invoice = await _terminalService.SaveInvoice(id);
+                bool xml = false;
+                xml = invoice.DocType.Equals("BL") && await _cpeService.CreateBoletaJson(invoice.Id);
+                // factura...
                 model.Vuelto = model.MontoTotal - model.SumImpVenta;
                 return Ok(new
                 {
-                    Ok = true, Data = model, Msg = $"{invoice.Serie} - {invoice.Number} ha sido registrado!"
+                    Ok = xml, Data = model, Msg = $"{invoice.Serie} - {invoice.Number} ha sido registrado!"
                 });
             }
             catch (Exception e)

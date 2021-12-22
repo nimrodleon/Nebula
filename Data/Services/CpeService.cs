@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using CpeLibPE.Facturador;
+using CpeLibPE.Facturador.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Nebula.Data.Helpers;
 using Nebula.Data.Models;
 using sfs = CpeLibPE.Facturador.Models;
 
@@ -32,6 +35,31 @@ namespace Nebula.Data.Services
         }
 
         /// <summary>
+        /// Comprobar si Existe operaciones gratuitas.
+        /// </summary>
+        private bool ExistFreeOperations(List<Tributo> tributos)
+        {
+            bool result = false;
+            tributos.ForEach(item => result = item.IdeTributo.Equals("9996"));
+            return result;
+        }
+
+        /// <summary>
+        /// Generar XML del Comprobante.
+        /// </summary>
+        private async Task<bool> GenerarComprobante(string tipDocu, string numDocu)
+        {
+            var api = new ApiFacturador();
+            var result = await api.GenerarComprobante(_configuration.UrlApi, new HttpParam()
+            {
+                num_ruc = _configuration.Ruc,
+                tip_docu = tipDocu, num_docu = numDocu
+            });
+            _logger.LogInformation(JsonSerializer.Serialize(result));
+            return Convert.ToBoolean(result?.validacion.Equals("EXITO"));
+        }
+
+        /// <summary>
         /// Crear Archivo Json Boleta.
         /// </summary>
         public async Task<bool> CreateBoletaJson(int id)
@@ -42,6 +70,7 @@ namespace Nebula.Data.Services
                 .Include(m => m.InvoiceDetails)
                 .Include(m => m.Tributos)
                 .SingleAsync(m => m.Id.Equals(id));
+
             var cabecera = new sfs.Invoice()
             {
                 tipOperacion = invoice.TipOperacion,
@@ -54,8 +83,10 @@ namespace Nebula.Data.Services
                 tipMoneda = invoice.TipMoneda,
                 sumTotTributos = Convert.ToDecimal(invoice.SumTotTributos).ToString("N2"),
                 sumTotValVenta = Convert.ToDecimal(invoice.SumTotValVenta).ToString("N2"),
+                sumPrecioVenta = Convert.ToDecimal(invoice.SumImpVenta).ToString("N2"),
                 sumImpVenta = Convert.ToDecimal(invoice.SumImpVenta).ToString("N2"),
             };
+
             var detalle = new List<sfs.InvoiceDetail>();
             invoice.InvoiceDetails.ForEach(item =>
             {
@@ -72,20 +103,66 @@ namespace Nebula.Data.Services
                     codTriIGV = item.CodTriIgv,
                     mtoIgvItem = Convert.ToDecimal(item.MtoIgvItem).ToString("N2"),
                     mtoBaseIgvItem = Convert.ToDecimal(item.MtoBaseIgvItem).ToString("N2"),
+                    nomTributoIgvItem = item.NomTributoIgvItem,
+                    codTipTributoIgvItem = item.CodTipTributoIgvItem,
                     tipAfeIGV = item.TipAfeIgv,
                     porIgvItem = item.PorIgvItem,
+                    // Tributo ICBPER 7152.
+                    codTriIcbper = item.CodTriIcbper,
+                    mtoTriIcbperItem = Convert.ToDecimal(item.MtoTriIcbperItem).ToString("N2"),
+                    ctdBolsasTriIcbperItem = item.CtdBolsasTriIcbperItem.ToString(),
+                    nomTributoIcbperItem = item.NomTributoIcbperItem,
+                    codTipTributoIcbperItem = item.CodTipTributoIcbperItem,
+                    mtoTriIcbperUnidad = Convert.ToDecimal(item.MtoTriIcbperItem).ToString("N2"),
                     // Importe de Venta.
                     mtoPrecioVentaUnitario = Convert.ToDecimal(item.MtoPrecioVentaUnitario).ToString("N2"),
                     mtoValorVentaItem = Convert.ToDecimal(item.MtoValorVentaItem).ToString("N2")
                 });
             });
 
-            var json = new JsonBoletaParser()
+            var tributos = new List<sfs.Tributo>();
+            invoice.Tributos.ForEach(item =>
+            {
+                tributos.Add(new sfs.Tributo()
+                {
+                    ideTributo = item.IdeTributo,
+                    nomTributo = item.NomTributo,
+                    codTipTributo = item.CodTipTributo,
+                    mtoBaseImponible = Convert.ToDecimal(item.MtoBaseImponible).ToString("N2"),
+                    mtoTributo = Convert.ToDecimal(item.MtoTributo).ToString("N2")
+                });
+            });
+
+            var leyendas = new List<sfs.Leyenda>();
+            if (ExistFreeOperations(invoice.Tributos))
+            {
+                leyendas.Add(new sfs.Leyenda()
+                {
+                    codLeyenda = "1002",
+                    desLeyenda = "TRANSFERENCIA GRATUITA DE UN BIEN Y/O SERVICIO PRESTADO GRATUITAMENTE"
+                });
+            }
+
+            leyendas.Add(new sfs.Leyenda()
+            {
+                codLeyenda = "1000",
+                desLeyenda = new NumberToLetters(Convert.ToDecimal(invoice.SumImpVenta)).ToString()
+            });
+
+            // Configurar estructura de la boleta.
+            var boleta = new JsonBoletaParser()
             {
                 cabecera = cabecera,
-                detalle = detalle
+                detalle = detalle,
+                tributos = tributos,
+                leyendas = leyendas
             };
 
+            // Escribir datos en el Disco duro.
+            string fileName = Path.Combine("DATA", $"{_configuration.Ruc}-03-{invoice.Serie}-{invoice.Number}.json");
+            boleta.CreateJson(Path.Combine(_configuration.FileSunat, fileName));
+            // if (File.Exists(Path.Combine(_configuration.FileSunat, fileName)))
+            result = await GenerarComprobante("03", $"{invoice.Serie}-{invoice.Number}");
             return result;
         }
     }

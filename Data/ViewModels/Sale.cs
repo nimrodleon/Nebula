@@ -106,7 +106,6 @@ namespace Nebula.Data.ViewModels
         /// <summary>
         /// Configurar Detalle de Facturas.
         /// </summary>
-        /// <returns></returns>
         public List<InvoiceDetail> GetInvoiceDetail(int invoice)
         {
             var invoiceDetails = new List<InvoiceDetail>();
