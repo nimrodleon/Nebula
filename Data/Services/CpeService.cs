@@ -4,7 +4,6 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using CpeLibPE.Facturador;
-using CpeLibPE.Facturador.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Nebula.Data.Helpers;
@@ -45,26 +44,10 @@ namespace Nebula.Data.Services
         }
 
         /// <summary>
-        /// Generar XML del Comprobante.
-        /// </summary>
-        private async Task<bool> GenerarComprobante(string tipDocu, string numDocu)
-        {
-            var api = new ApiFacturador();
-            var result = await api.GenerarComprobante(_configuration.UrlApi, new HttpParam()
-            {
-                num_ruc = _configuration.Ruc,
-                tip_docu = tipDocu, num_docu = numDocu
-            });
-            _logger.LogInformation(JsonSerializer.Serialize(result));
-            return Convert.ToBoolean(result?.validacion.Equals("EXITO"));
-        }
-
-        /// <summary>
         /// Crear Archivo Json Boleta.
         /// </summary>
         public async Task<bool> CreateBoletaJson(int id)
         {
-            bool result = false;
             await GetConfiguration();
             var invoice = await _context.Invoices.AsNoTracking()
                 .Include(m => m.InvoiceDetails)
@@ -161,9 +144,7 @@ namespace Nebula.Data.Services
             // Escribir datos en el Disco duro.
             string fileName = Path.Combine("DATA", $"{_configuration.Ruc}-03-{invoice.Serie}-{invoice.Number}.json");
             boleta.CreateJson(Path.Combine(_configuration.FileSunat, fileName));
-            // if (File.Exists(Path.Combine(_configuration.FileSunat, fileName)))
-            result = await GenerarComprobante("03", $"{invoice.Serie}-{invoice.Number}");
-            return result;
+            return File.Exists(Path.Combine(_configuration.FileSunat, fileName));
         }
     }
 }
