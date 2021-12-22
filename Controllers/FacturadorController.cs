@@ -1,3 +1,4 @@
+using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -49,7 +50,7 @@ namespace Nebula.Controllers
         }
 
         [HttpGet("GenerarComprobante")]
-        public async Task<IActionResult> GenerarComprobante(int invoice)
+        public async Task<IActionResult> GenerarComprobante([FromQuery] int invoice)
         {
             var config = await GetConfiguration();
             var comprobante = await _context.Invoices.AsNoTracking()
@@ -70,7 +71,7 @@ namespace Nebula.Controllers
         }
 
         [HttpGet("EnviarXML")]
-        public async Task<IActionResult> EnviarXml(int invoice)
+        public async Task<IActionResult> EnviarXml([FromQuery] int invoice)
         {
             var config = await GetConfiguration();
             var comprobante = await _context.Invoices.AsNoTracking()
@@ -88,6 +89,26 @@ namespace Nebula.Controllers
             var httpResponse = await _client.PostAsync($"{config.UrlApi}/api/enviarXML.htm", content);
             var result = await httpResponse.Content.ReadAsStringAsync();
             return Ok(result);
+        }
+
+        [HttpGet("GenerarPdf")]
+        public async Task<IActionResult> GenerarPdf([FromQuery] string nomArch)
+        {
+            var config = await GetConfiguration();
+            var data = JsonSerializer.Serialize(new {nomArch});
+            HttpContent content = new StringContent(data, Encoding.UTF8, "application/json");
+            var httpResponse = await _client.PostAsync($"{config.UrlApi}/api/MostrarXml.htm", content);
+            var result = await httpResponse.Content.ReadAsStringAsync();
+            return Ok(result);
+        }
+
+        [HttpGet("GetPdf")]
+        public async Task<IActionResult> GetPdf([FromQuery] string nomArch)
+        {
+            var config = await GetConfiguration();
+            var stream = new FileStream(Path.Combine(config.FileSunat,
+                Path.Combine("REPO", $"{nomArch}.pdf")), FileMode.Open);
+            return new FileStreamResult(stream, "application/pdf");
         }
     }
 }
