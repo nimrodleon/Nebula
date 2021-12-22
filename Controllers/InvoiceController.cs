@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -235,13 +237,13 @@ namespace Nebula.Controllers
             {
                 _terminalService.SetModel(model);
                 var invoice = await _terminalService.SaveInvoice(id);
-                bool xml = false;
-                xml = invoice.DocType.Equals("BL") && await _cpeService.CreateBoletaJson(invoice.Id);
+                bool fileExist = false;
+                fileExist = invoice.DocType.Equals("BL") && await _cpeService.CreateBoletaJson(invoice.Id);
                 // factura...
                 model.Vuelto = model.MontoTotal - model.SumImpVenta;
                 return Ok(new
                 {
-                    Ok = xml, Data = model, Msg = $"{invoice.Serie} - {invoice.Number} ha sido registrado!"
+                    Ok = fileExist, Data = model, Msg = $"{invoice.Serie} - {invoice.Number} ha sido registrado!"
                 });
             }
             catch (Exception e)
