@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {faBars, faEnvelope, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {faCheckSquare} from '@fortawesome/free-regular-svg-icons';
 import {FormBuilder, FormGroup} from '@angular/forms';
+import {environment} from 'src/environments/environment';
 import {FacturadorService} from 'src/app/invoice/services';
 import {TerminalService} from '../../services';
 
@@ -16,6 +17,7 @@ export class CobrarModalComponent implements OnInit {
   faEnvelope = faEnvelope;
   faTrashAlt = faTrashAlt;
   // ====================================================================================================
+  private appURL: string = environment.applicationUrl;
   @Input()
   cajaDiariaId: number = 0;
   @Output()
@@ -27,6 +29,7 @@ export class CobrarModalComponent implements OnInit {
     remark: ['']
   });
   formReg: boolean = true;
+  urlPdf: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -53,24 +56,33 @@ export class CobrarModalComponent implements OnInit {
 
   public cobrarVenta(): void {
     this.terminalService.addInfo(this.cobrarForm.value);
-    this.terminalService.saveChanges(this.cajaDiariaId).subscribe(result => {
-      if (result.ok) {
-        if (result.data) {
-          const venta = result.data;
-          this.terminalService.sale = result.data;
-          this.facturadorService.GenerarComprobante(venta.invoiceId)
-            .subscribe(result => {
-              if (result.validacion === 'EXITO') {
-                this.facturadorService.GenerarPdf(venta.invoiceId).subscribe(_ => this.formReg = false);
-              }
-            });
-          // log información.
-          console.log(result.data);
+    // guardar comprobante de pago.
+    this.terminalService.saveChanges(this.cajaDiariaId)
+      .subscribe(result => {
+        if (result.ok) {
+          if (result.data) {
+            const {data} = result;
+            this.terminalService.sale = data;
+            this.urlPdf = `${this.appURL}Facturador/GetPdf?invoice=${data?.invoiceId}`;
+            console.info(result.msg);
+            // cargar la Lista de archivos JSON.
+            this.facturadorService.ActualizarPantalla()
+              .subscribe(result => {
+                if (result.listaBandejaFacturador.length > 0) {
+                  // generar fichero XML del comprobante.
+                  this.facturadorService.GenerarComprobante(data.invoiceId)
+                    .subscribe(result => {
+                      if (result.listaBandejaFacturador.length > 0) {
+                        this.formReg = false;
+                        // generar fichero PDF del comprobante.
+                        this.facturadorService.GenerarPdf(data.invoiceId).subscribe(console.info);
+                      }
+                    });
+                }
+              });
+          }
         }
-      }
-    }, ({error}) => {
-      console.error(error);
-    });
+      });
   }
 
 }
