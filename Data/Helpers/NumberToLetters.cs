@@ -8,14 +8,14 @@ namespace Nebula.Data.Helpers
 
         public NumberToLetters(decimal value)
         {
-            _value = value;
+            _value = Convert.ToDecimal(value.ToString("N2"));
         }
 
         public override string ToString()
         {
-            var entero = Convert.ToInt64(Math.Truncate(Math.Round(_value)));
+            var entero = Convert.ToInt64(Math.Truncate(_value));
             var decimales = Convert.ToInt32(Math.Round((_value - entero) * 100, 2));
-            return $"{ConvertNumber(Convert.ToDecimal(entero))} Y {decimales:0,0}/100 SOLES";
+            return $"{ConvertNumber(Convert.ToDecimal(entero))} CON {decimales:0,0}/100 SOLES";
         }
 
         private string ConvertNumber(decimal value)

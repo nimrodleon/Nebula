@@ -170,7 +170,7 @@ namespace Nebula.Data.ViewModels
                     CodTipTributoIcbperItem = "OTH",
                     MtoTriIcbperUnidad = item.ValorIcbper,
                     // Precio de Venta Unitario.
-                    MtoPrecioVentaUnitario = item.Amount,
+                    MtoPrecioVentaUnitario = item.Price,
                     MtoValorVentaItem = item.MtoBaseIgvItem
                 });
             });
