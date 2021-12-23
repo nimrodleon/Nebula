@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Nebula.Data;
 using Nebula.Data.Models;
 
@@ -14,11 +15,13 @@ namespace Nebula.Controllers
     [ApiController]
     public class FacturadorController : ControllerBase
     {
+        private readonly ILogger _logger;
         private readonly ApplicationDbContext _context;
         private readonly HttpClient _client = new();
 
-        public FacturadorController(ApplicationDbContext context)
+        public FacturadorController(ILogger<FacturadorController> logger, ApplicationDbContext context)
         {
+            _logger = logger;
             _context = context;
         }
 
@@ -54,7 +57,8 @@ namespace Nebula.Controllers
         {
             var config = await GetConfiguration();
             var comprobante = await _context.Invoices.AsNoTracking()
-                .SingleAsync(m => m.Id.Equals(invoice));
+                .FirstOrDefaultAsync(m => m.Id.Equals(invoice));
+            _logger.LogInformation(JsonSerializer.Serialize(comprobante));
             string tipDocu = string.Empty;
             if (comprobante.DocType.Equals("FT")) tipDocu = "01";
             if (comprobante.DocType.Equals("BL")) tipDocu = "03";
@@ -64,9 +68,11 @@ namespace Nebula.Controllers
                 tip_docu = tipDocu,
                 num_docu = $"{comprobante.Serie}-{comprobante.Number}"
             });
+            _logger.LogInformation(JsonSerializer.Serialize(data));
             HttpContent content = new StringContent(data, Encoding.UTF8, "application/json");
             var httpResponse = await _client.PostAsync($"{config.UrlApi}/api/GenerarComprobante.htm", content);
             var result = await httpResponse.Content.ReadAsStringAsync();
+            _logger.LogInformation(JsonSerializer.Serialize(result));
             return Ok(result);
         }
 
@@ -97,16 +103,19 @@ namespace Nebula.Controllers
             var config = await GetConfiguration();
             var comprobante = await _context.Invoices.AsNoTracking()
                 .SingleAsync(m => m.Id.Equals(invoice));
+            _logger.LogInformation(JsonSerializer.Serialize(comprobante));
             string tipDocu = string.Empty;
             if (comprobante.DocType.Equals("FT")) tipDocu = "01";
             if (comprobante.DocType.Equals("BL")) tipDocu = "03";
             // 20520485750-03-B001-00000015
             string nomArch = $"{config.Ruc}-{tipDocu}-{comprobante.Serie}-{comprobante.Number}";
+            _logger.LogInformation(JsonSerializer.Serialize(nomArch));
             var data = JsonSerializer.Serialize(new {nomArch});
             HttpContent content = new StringContent(data, Encoding.UTF8, "application/json");
             var httpResponse = await _client.PostAsync($"{config.UrlApi}/api/MostrarXml.htm", content);
             var result = await httpResponse.Content.ReadAsStringAsync();
-            return Ok(result);
+            _logger.LogInformation(JsonSerializer.Serialize(result));
+            return Ok(JsonSerializer.Serialize(result));
         }
 
         [HttpGet("GetPdf")]

@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
-import {Observable} from 'rxjs';
+import {Observable, Subject} from 'rxjs';
 import {ProductService} from '../../products/services';
 import {Sale, SaleDetail} from '../interfaces';
 import {InvoiceService} from '../../invoice/services';
 import {ResponseData} from '../../global/interfaces';
 import {Configuration} from '../../system/interfaces';
 import {Product} from '../../products/interfaces';
+import {FacturadorData} from '../../invoice/interfaces/facturador';
 
 @Injectable({
   providedIn: 'root'
