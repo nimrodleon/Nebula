@@ -1,11 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {
-  faBarcode, faCashRegister, faCogs,
-  faCoins, faIdCardAlt, faMinus, faPlus, faSearch, faSignOutAlt, faTags, faThLarge,
-  faTimes, faTrashAlt, faUserCircle
-} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, FormControl} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
+import {
+  faBarcode, faCogs, faCoins, faIdCardAlt, faMinus, faPlus,
+  faSearch, faSignOutAlt, faTags, faThLarge, faTimes, faTrashAlt, faUserCircle
+} from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import {environment} from 'src/environments/environment';
 import {ProductService} from 'src/app/products/services';
@@ -34,7 +33,6 @@ export class TerminalComponent implements OnInit {
   faTrashAlt = faTrashAlt;
   faMinus = faMinus;
   faSignOutAlt = faSignOutAlt;
-  faCashRegister = faCashRegister;
   faBarcode = faBarcode;
   faTags = faTags;
   faIdCardAlt = faIdCardAlt;
@@ -165,6 +163,7 @@ export class TerminalComponent implements OnInit {
       const newOption = new Option(`${result.data?.document} - ${result.data?.name}`,
         <any>result.data?.id, true, true);
       jQuery('#clientId').append(newOption).trigger('change');
+      this.terminalService.setClientId(<any>result.data?.id);
       this.contactModal.hide();
     }
   }
