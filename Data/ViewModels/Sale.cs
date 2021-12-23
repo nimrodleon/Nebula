@@ -60,6 +60,11 @@ namespace Nebula.Data.ViewModels
         public List<SaleDetail> Details { get; set; }
 
         /// <summary>
+        /// Id del Comprobante.
+        /// </summary>
+        public int? InvoiceId { get; set; }
+
+        /// <summary>
         /// calcular importe de venta.
         /// </summary>
         private void CalcImporteVenta()

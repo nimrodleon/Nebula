@@ -92,9 +92,16 @@ namespace Nebula.Controllers
         }
 
         [HttpGet("GenerarPdf")]
-        public async Task<IActionResult> GenerarPdf([FromQuery] string nomArch)
+        public async Task<IActionResult> GenerarPdf([FromQuery] int invoice)
         {
             var config = await GetConfiguration();
+            var comprobante = await _context.Invoices.AsNoTracking()
+                .SingleAsync(m => m.Id.Equals(invoice));
+            string tipDocu = string.Empty;
+            if (comprobante.DocType.Equals("FT")) tipDocu = "01";
+            if (comprobante.DocType.Equals("BL")) tipDocu = "03";
+            // 20520485750-03-B001-00000015
+            string nomArch = $"{config.Ruc}-{tipDocu}-{comprobante.Serie}-{comprobante.Number}";
             var data = JsonSerializer.Serialize(new {nomArch});
             HttpContent content = new StringContent(data, Encoding.UTF8, "application/json");
             var httpResponse = await _client.PostAsync($"{config.UrlApi}/api/MostrarXml.htm", content);
@@ -103,10 +110,17 @@ namespace Nebula.Controllers
         }
 
         [HttpGet("GetPdf")]
-        public async Task<IActionResult> GetPdf([FromQuery] string nomArch)
+        public async Task<IActionResult> GetPdf([FromQuery] int invoice)
         {
             string pathFilePdf = string.Empty;
             var config = await GetConfiguration();
+            var comprobante = await _context.Invoices.AsNoTracking()
+                .SingleAsync(m => m.Id.Equals(invoice));
+            string tipDocu = string.Empty;
+            if (comprobante.DocType.Equals("FT")) tipDocu = "01";
+            if (comprobante.DocType.Equals("BL")) tipDocu = "03";
+            // 20520485750-03-B001-00000015
+            string nomArch = $"{config.Ruc}-{tipDocu}-{comprobante.Serie}-{comprobante.Number}";
             var file = Path.Combine("REPO", $"{nomArch}.pdf");
             if (System.IO.File.Exists(Path.Combine(config.FileSunat, file)))
                 pathFilePdf = Path.Combine(config.FileSunat, file);
@@ -117,8 +131,16 @@ namespace Nebula.Controllers
         }
 
         [HttpGet("Backup")]
-        public async Task<IActionResult> Backup([FromQuery] string nomArch)
+        public async Task<IActionResult> Backup([FromQuery] int invoice)
         {
+            var config = await GetConfiguration();
+            var comprobante = await _context.Invoices.AsNoTracking()
+                .SingleAsync(m => m.Id.Equals(invoice));
+            string tipDocu = string.Empty;
+            if (comprobante.DocType.Equals("FT")) tipDocu = "01";
+            if (comprobante.DocType.Equals("BL")) tipDocu = "03";
+            // 20520485750-03-B001-00000015
+            string nomArch = $"{config.Ruc}-{tipDocu}-{comprobante.Serie}-{comprobante.Number}";
             var fileData = $"{nomArch}.json";
             var fileEnvio = $"{nomArch}.zip";
             var fileFirma = $"{nomArch}.xml";
@@ -126,8 +148,6 @@ namespace Nebula.Controllers
             var fileRepo = $"{nomArch}.pdf";
             var fileRpta = $"R{nomArch}.zip";
             var fileTemp = $"{nomArch}.xml";
-
-            var config = await GetConfiguration();
 
             // configurar rutas de destino.
             var targetData = Path.Combine(config.FileControl, "DATA");

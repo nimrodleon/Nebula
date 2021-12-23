@@ -240,8 +240,7 @@ namespace Nebula.Controllers
                 bool fileExist = false;
                 fileExist = invoice.DocType.Equals("BL") && await _cpeService.CreateBoletaJson(invoice.Id);
                 // factura...
-
-
+                model.InvoiceId = invoice.Id;
                 model.Vuelto = model.MontoTotal - model.SumImpVenta;
                 return Ok(new
                 {

@@ -13,7 +13,8 @@ export class Sale {
     public sumTotTributos: number = 0, // IGV(18%).
     public sumImpVenta: number = 0, // importe total.
     public remark: string = '', // observación.
-    public details: Array<SaleDetail> = new Array<SaleDetail>()) {
+    public details: Array<SaleDetail> = new Array<SaleDetail>(),
+    public invoiceId: number | any = undefined) {
   }
 
   // calcular importe de venta.

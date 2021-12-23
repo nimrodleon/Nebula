@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {faBars, faEnvelope, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {faCheckSquare} from '@fortawesome/free-regular-svg-icons';
 import {FormBuilder, FormGroup} from '@angular/forms';
+import {FacturadorService} from 'src/app/invoice/services';
 import {TerminalService} from '../../services';
 
 @Component({
@@ -29,7 +30,8 @@ export class CobrarModalComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private terminalService: TerminalService) {
+    private terminalService: TerminalService,
+    private facturadorService: FacturadorService) {
   }
 
   ngOnInit(): void {
@@ -54,9 +56,17 @@ export class CobrarModalComponent implements OnInit {
     this.terminalService.saveChanges(this.cajaDiariaId).subscribe(result => {
       if (result.ok) {
         if (result.data) {
+          const venta = result.data;
           this.terminalService.sale = result.data;
+          this.facturadorService.GenerarComprobante(venta.invoiceId)
+            .subscribe(result => {
+              if (result.validacion === 'EXITO') {
+                this.facturadorService.GenerarPdf(venta.invoiceId).subscribe(_ => this.formReg = false);
+              }
+            });
+          // log información.
+          console.log(result.data);
         }
-        this.formReg = false;
       }
     }, ({error}) => {
       console.error(error);
