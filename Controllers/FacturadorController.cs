@@ -38,6 +38,7 @@ namespace Nebula.Controllers
             HttpContent content = new StringContent(data, Encoding.UTF8, "application/json");
             var httpResponse = await _client.PostAsync($"{config.UrlApi}/api/ActualizarPantalla.htm", content);
             var result = await httpResponse.Content.ReadAsStringAsync();
+            _logger.LogInformation(JsonSerializer.Serialize(result));
             return Ok(result);
         }
 
@@ -49,6 +50,7 @@ namespace Nebula.Controllers
             HttpContent content = new StringContent(data, Encoding.UTF8, "application/json");
             var httpResponse = await _client.PostAsync($"{config.UrlApi}/api/EliminarBandeja.htm", content);
             var result = await httpResponse.Content.ReadAsStringAsync();
+            _logger.LogInformation(JsonSerializer.Serialize(result));
             return Ok(result);
         }
 
@@ -82,6 +84,7 @@ namespace Nebula.Controllers
             var config = await GetConfiguration();
             var comprobante = await _context.Invoices.AsNoTracking()
                 .SingleAsync(m => m.Id.Equals(invoice));
+            _logger.LogInformation(JsonSerializer.Serialize(comprobante));
             string tipDocu = string.Empty;
             if (comprobante.DocType.Equals("FT")) tipDocu = "01";
             if (comprobante.DocType.Equals("BL")) tipDocu = "03";
@@ -91,9 +94,11 @@ namespace Nebula.Controllers
                 tip_docu = tipDocu,
                 num_docu = $"{comprobante.Serie}-{comprobante.Number}"
             });
+            _logger.LogInformation(JsonSerializer.Serialize(data));
             HttpContent content = new StringContent(data, Encoding.UTF8, "application/json");
             var httpResponse = await _client.PostAsync($"{config.UrlApi}/api/enviarXML.htm", content);
             var result = await httpResponse.Content.ReadAsStringAsync();
+            _logger.LogInformation(JsonSerializer.Serialize(result));
             return Ok(result);
         }
 

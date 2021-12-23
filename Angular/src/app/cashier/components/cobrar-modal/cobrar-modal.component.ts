@@ -73,9 +73,12 @@ export class CobrarModalComponent implements OnInit {
                   this.facturadorService.GenerarComprobante(data.invoiceId)
                     .subscribe(result => {
                       if (result.listaBandejaFacturador.length > 0) {
-                        this.formReg = false;
                         // generar fichero PDF del comprobante.
-                        this.facturadorService.GenerarPdf(data.invoiceId).subscribe(console.info);
+                        this.facturadorService.GenerarPdf(data.invoiceId)
+                          .subscribe(result => {
+                            this.formReg = false;
+                            console.info(result);
+                          });
                       }
                     });
                 }
