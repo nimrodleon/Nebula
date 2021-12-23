@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {faBars, faEnvelope, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {faBars, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {faWhatsapp} from '@fortawesome/free-brands-svg-icons';
 import {faCheckSquare} from '@fortawesome/free-regular-svg-icons';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {environment} from 'src/environments/environment';
@@ -14,8 +15,8 @@ import {TerminalService} from '../../services';
 export class CobrarModalComponent implements OnInit {
   faBars = faBars;
   faCheckSquare = faCheckSquare;
-  faEnvelope = faEnvelope;
   faTrashAlt = faTrashAlt;
+  faWhatsapp = faWhatsapp;
   // ====================================================================================================
   private appURL: string = environment.applicationUrl;
   @Input()
@@ -39,9 +40,6 @@ export class CobrarModalComponent implements OnInit {
 
   ngOnInit(): void {
     const myModal: any = document.querySelector('#cobrar-modal');
-    // myModal.addEventListener('shown.bs.modal', () => {
-    //   this.formReg = true;
-    // });
     myModal.addEventListener('hide.bs.modal', () => {
       if (!this.formReg) {
         this.terminalService.deleteSale();
