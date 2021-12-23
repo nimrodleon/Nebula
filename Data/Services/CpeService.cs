@@ -34,16 +34,6 @@ namespace Nebula.Data.Services
         }
 
         /// <summary>
-        /// Comprobar si Existe operaciones gratuitas.
-        /// </summary>
-        private bool ExistFreeOperations(List<Tributo> tributos)
-        {
-            bool result = false;
-            tributos.ForEach(item => result = item.IdeTributo.Equals("9996"));
-            return result;
-        }
-
-        /// <summary>
         /// Crear Archivo Json Boleta.
         /// </summary>
         public async Task<bool> CreateBoletaJson(int id)
@@ -54,7 +44,42 @@ namespace Nebula.Data.Services
                 .Include(m => m.Tributos)
                 .SingleAsync(m => m.Id.Equals(id));
 
-            var cabecera = new sfs.Invoice()
+            var cabecera = GetInvoice(invoice);
+            var detalle = GetInvoiceDetail(invoice.InvoiceDetails);
+            var tributos = GetTributos(invoice.Tributos);
+            var leyendas = GetLeyendas(invoice);
+
+            // Configurar estructura de la boleta.
+            var boleta = new JsonBoletaParser()
+            {
+                cabecera = cabecera,
+                detalle = detalle,
+                tributos = tributos,
+                leyendas = leyendas
+            };
+
+            // Escribir datos en el Disco duro.
+            string fileName = Path.Combine("DATA", $"{_configuration.Ruc}-03-{invoice.Serie}-{invoice.Number}.json");
+            boleta.CreateJson(Path.Combine(_configuration.FileSunat, fileName));
+            return File.Exists(Path.Combine(_configuration.FileSunat, fileName));
+        }
+
+        /// <summary>
+        /// Comprobar si Existe operaciones gratuitas.
+        /// </summary>
+        private bool ExistFreeOperations(List<Tributo> tributos)
+        {
+            bool result = false;
+            tributos.ForEach(item => result = item.IdeTributo.Equals("9996"));
+            return result;
+        }
+
+        /// <summary>
+        /// Configurar cabecera del comprobante.
+        /// </summary>
+        private sfs.Invoice GetInvoice(Invoice invoice)
+        {
+            return new sfs.Invoice()
             {
                 tipOperacion = invoice.TipOperacion,
                 fecEmision = invoice.FecEmision,
@@ -69,9 +94,15 @@ namespace Nebula.Data.Services
                 sumPrecioVenta = Convert.ToDecimal(invoice.SumImpVenta).ToString("N2"),
                 sumImpVenta = Convert.ToDecimal(invoice.SumImpVenta).ToString("N2"),
             };
+        }
 
+        /// <summary>
+        /// Configurar detalle del comprobante.
+        /// </summary>
+        private List<sfs.InvoiceDetail> GetInvoiceDetail(List<InvoiceDetail> details)
+        {
             var detalle = new List<sfs.InvoiceDetail>();
-            invoice.InvoiceDetails.ForEach(item =>
+            details.ForEach(item =>
             {
                 detalle.Add(new sfs.InvoiceDetail()
                 {
@@ -102,11 +133,18 @@ namespace Nebula.Data.Services
                     mtoValorVentaItem = Convert.ToDecimal(item.MtoValorVentaItem).ToString("N2")
                 });
             });
+            return detalle;
+        }
 
-            var tributos = new List<sfs.Tributo>();
-            invoice.Tributos.ForEach(item =>
+        /// <summary>
+        /// Configurar Tributos del Comprobante.
+        /// </summary>
+        private List<sfs.Tributo> GetTributos(List<Tributo> tributos)
+        {
+            var result = new List<sfs.Tributo>();
+            tributos.ForEach(item =>
             {
-                tributos.Add(new sfs.Tributo()
+                result.Add(new sfs.Tributo()
                 {
                     ideTributo = item.IdeTributo,
                     nomTributo = item.NomTributo,
@@ -115,7 +153,14 @@ namespace Nebula.Data.Services
                     mtoTributo = Convert.ToDecimal(item.MtoTributo).ToString("N2")
                 });
             });
+            return result;
+        }
 
+        /// <summary>
+        /// Configurar Leyendas del Comprobante.
+        /// </summary>
+        private List<sfs.Leyenda> GetLeyendas(Invoice invoice)
+        {
             var leyendas = new List<sfs.Leyenda>();
             if (ExistFreeOperations(invoice.Tributos))
             {
@@ -131,20 +176,7 @@ namespace Nebula.Data.Services
                 codLeyenda = "1000",
                 desLeyenda = new NumberToLetters(Convert.ToDecimal(invoice.SumImpVenta)).ToString()
             });
-
-            // Configurar estructura de la boleta.
-            var boleta = new JsonBoletaParser()
-            {
-                cabecera = cabecera,
-                detalle = detalle,
-                tributos = tributos,
-                leyendas = leyendas
-            };
-
-            // Escribir datos en el Disco duro.
-            string fileName = Path.Combine("DATA", $"{_configuration.Ruc}-03-{invoice.Serie}-{invoice.Number}.json");
-            boleta.CreateJson(Path.Combine(_configuration.FileSunat, fileName));
-            return File.Exists(Path.Combine(_configuration.FileSunat, fileName));
+            return leyendas;
         }
     }
 }
