@@ -39,13 +39,18 @@ export class CobrarModalComponent implements OnInit {
 
   ngOnInit(): void {
     const myModal: any = document.querySelector('#cobrar-modal');
-    myModal.addEventListener('shown.bs.modal', () => {
-      this.formReg = true;
-    });
+    // myModal.addEventListener('shown.bs.modal', () => {
+    //   this.formReg = true;
+    // });
     myModal.addEventListener('hide.bs.modal', () => {
       if (!this.formReg) {
         this.terminalService.deleteSale();
         this.responseData.emit(this.formReg);
+      }
+    });
+    myModal.addEventListener('hidden.bs.modal', () => {
+      if (!this.formReg) {
+        this.formReg = true;
       }
     });
   }
