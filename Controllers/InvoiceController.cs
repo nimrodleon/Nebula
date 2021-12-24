@@ -238,10 +238,22 @@ namespace Nebula.Controllers
                 _terminalService.SetModel(model);
                 var invoice = await _terminalService.SaveInvoice(id);
                 bool fileExist = false;
-                fileExist = invoice.DocType.Equals("BL") && await _cpeService.CreateBoletaJson(invoice.Id);
-                // factura...
+
+                // generar XML según tipo comprobante.
+                switch (invoice.DocType)
+                {
+                    case "BL":
+                        fileExist = await _cpeService.CreateBoletaJson(invoice.Id);
+                        break;
+                    case "FT":
+                        fileExist = await _cpeService.CreateFacturaJson(invoice.Id);
+                        break;
+                }
+
+                // Configurar valor de retorno.
                 model.InvoiceId = invoice.Id;
                 model.Vuelto = model.MontoTotal - model.SumImpVenta;
+
                 return Ok(new
                 {
                     Ok = fileExist, Data = model, Msg = $"{invoice.Serie} - {invoice.Number} ha sido registrado!"
