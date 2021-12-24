@@ -29,6 +29,7 @@ namespace Nebula.Controllers
                 result = result.Where(m =>
                     m.Document.Contains(query) || m.Contact.ToLower().Contains(query.ToLower()) ||
                     m.Glosa.ToLower().Contains(query.ToLower()));
+            result = result.OrderByDescending(m => m.Id);
             var responseData = await result.AsNoTracking().ToListAsync();
             return Ok(responseData);
         }
