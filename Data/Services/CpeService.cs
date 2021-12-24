@@ -69,6 +69,43 @@ namespace Nebula.Data.Services
         }
 
         /// <summary>
+        /// Crear Archivo Json Factura.
+        /// </summary>
+        public async Task<bool> CreateFacturaJson(int id)
+        {
+            await GetConfiguration();
+            _logger.LogInformation("*** CreateFacturaJson ***");
+            var invoice = await _context.Invoices.AsNoTracking()
+                .Include(m => m.InvoiceDetails)
+                .Include(m => m.Tributos)
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
+            _logger.LogInformation(JsonSerializer.Serialize(invoice));
+            var cabecera = GetInvoice(invoice);
+            var detalle = GetInvoiceDetail(invoice.InvoiceDetails);
+            var tributos = GetTributos(invoice.Tributos);
+            var leyendas = GetLeyendas(invoice);
+            var datoPago = GetDatoPago(invoice);
+
+            // Configurar estructura de la boleta.
+            var factura = new JsonFacturaParser()
+            {
+                cabecera = cabecera,
+                detalle = detalle,
+                tributos = tributos,
+                leyendas = leyendas,
+                datoPago = datoPago,
+            };
+
+            // Información del comprobante.
+            _logger.LogInformation(JsonSerializer.Serialize(factura));
+
+            // Escribir datos en el Disco duro.
+            string fileName = Path.Combine("DATA", $"{_configuration.Ruc}-01-{invoice.Serie}-{invoice.Number}.json");
+            factura.CreateJson(Path.Combine(_configuration.FileSunat, fileName));
+            return File.Exists(Path.Combine(_configuration.FileSunat, fileName));
+        }
+
+        /// <summary>
         /// Comprobar si Existe operaciones gratuitas.
         /// </summary>
         private bool ExistFreeOperations(List<Tributo> tributos)
@@ -181,6 +218,19 @@ namespace Nebula.Data.Services
                 desLeyenda = new NumberToLetters(Convert.ToDecimal(invoice.SumImpVenta)).ToString()
             });
             return leyendas;
+        }
+
+        /// <summary>
+        /// Configurar forma de pago.
+        /// </summary>
+        private sfs.DatoPago GetDatoPago(Invoice invoice)
+        {
+            return new sfs.DatoPago()
+            {
+                formaPago = invoice.FormaPago,
+                mtoNetoPendientePago = Convert.ToDecimal(invoice.SumImpVenta).ToString("N2"),
+                tipMonedaMtoNetoPendientePago = invoice.TipMoneda
+            };
         }
     }
 }

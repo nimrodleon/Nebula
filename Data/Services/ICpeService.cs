@@ -5,5 +5,6 @@ namespace Nebula.Data.Services
     public interface ICpeService
     {
         public Task<bool> CreateBoletaJson(int invoice);
+        public Task<bool> CreateFacturaJson(int invoice);
     }
 }
