@@ -39,11 +39,12 @@ namespace Nebula.Data.Services
         public async Task<bool> CreateBoletaJson(int id)
         {
             await GetConfiguration();
+            _logger.LogInformation("*** CreateBoletaJson ***");
             var invoice = await _context.Invoices.AsNoTracking()
                 .Include(m => m.InvoiceDetails)
                 .Include(m => m.Tributos)
-                .SingleAsync(m => m.Id.Equals(id));
-
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
+            _logger.LogInformation(JsonSerializer.Serialize(invoice));
             var cabecera = GetInvoice(invoice);
             var detalle = GetInvoiceDetail(invoice.InvoiceDetails);
             var tributos = GetTributos(invoice.Tributos);
@@ -57,6 +58,9 @@ namespace Nebula.Data.Services
                 tributos = tributos,
                 leyendas = leyendas
             };
+
+            // Información del comprobante.
+            _logger.LogInformation(JsonSerializer.Serialize(boleta));
 
             // Escribir datos en el Disco duro.
             string fileName = Path.Combine("DATA", $"{_configuration.Ruc}-03-{invoice.Serie}-{invoice.Number}.json");
