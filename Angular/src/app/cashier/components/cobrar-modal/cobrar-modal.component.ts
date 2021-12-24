@@ -26,7 +26,7 @@ export class CobrarModalComponent implements OnInit {
   cobrarForm: FormGroup = this.fb.group({
     paymentMethod: ['0'],
     docType: ['BL'],
-    montoTotal: [0],
+    montoTotal: [null],
     remark: ['']
   });
   formReg: boolean = true;
@@ -44,6 +44,7 @@ export class CobrarModalComponent implements OnInit {
       if (!this.formReg) {
         this.terminalService.deleteSale();
         this.responseData.emit(this.formReg);
+        this.cobrarForm.controls['montoTotal'].setValue(null);
       }
     });
     myModal.addEventListener('hidden.bs.modal', () => {
