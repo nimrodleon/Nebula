@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using CpeLibPE.Facturador;
@@ -78,6 +79,7 @@ namespace Nebula.Data.Services
             var invoice = await _context.Invoices.AsNoTracking()
                 .Include(m => m.InvoiceDetails)
                 .Include(m => m.Tributos)
+                .Include(m => m.InvoiceAccounts)
                 .FirstOrDefaultAsync(m => m.Id.Equals(id));
             _logger.LogInformation(JsonSerializer.Serialize(invoice));
             var cabecera = GetInvoice(invoice);
@@ -85,6 +87,8 @@ namespace Nebula.Data.Services
             var tributos = GetTributos(invoice.Tributos);
             var leyendas = GetLeyendas(invoice);
             var datoPago = GetDatoPago(invoice);
+            var detallePagos = new List<sfs.DetallePago>();
+            if (invoice.FormaPago.Equals("Credito")) detallePagos = GetDetallePagos(invoice);
 
             // Configurar estructura de la boleta.
             var factura = new JsonFacturaParser()
@@ -94,6 +98,7 @@ namespace Nebula.Data.Services
                 tributos = tributos,
                 leyendas = leyendas,
                 datoPago = datoPago,
+                detallePago = detallePagos
             };
 
             // Información del comprobante.
@@ -125,6 +130,7 @@ namespace Nebula.Data.Services
                 tipOperacion = invoice.TipOperacion,
                 fecEmision = invoice.FecEmision,
                 horEmision = invoice.HorEmision,
+                fecVencimiento = invoice.FecVencimiento,
                 codLocalEmisor = _configuration.CodLocalEmisor,
                 tipDocUsuario = invoice.TipDocUsuario,
                 numDocUsuario = invoice.NumDocUsuario,
@@ -231,6 +237,25 @@ namespace Nebula.Data.Services
                 mtoNetoPendientePago = Convert.ToDecimal(invoice.SumImpVenta).ToString("N2"),
                 tipMonedaMtoNetoPendientePago = invoice.TipMoneda
             };
+        }
+
+        /// <summary>
+        /// Configurar Cuentas por cobrar.
+        /// </summary>
+        private List<sfs.DetallePago> GetDetallePagos(Invoice invoice)
+        {
+            var detallePagos = new List<sfs.DetallePago>();
+            invoice.InvoiceAccounts.OrderBy(m => m.Cuota).ToList()
+                .ForEach(item =>
+                {
+                    detallePagos.Add(new sfs.DetallePago()
+                    {
+                        mtoCuotaPago = Convert.ToDecimal(item.Amount).ToString("N2"),
+                        fecCuotaPago = item.DateEnd.ToString("yyyy-MM-dd"),
+                        tipMonedaCuotaPago = invoice.TipMoneda,
+                    });
+                });
+            return detallePagos;
         }
     }
 }
