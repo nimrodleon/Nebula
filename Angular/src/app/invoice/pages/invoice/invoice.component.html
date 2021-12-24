@@ -34,7 +34,7 @@
                   <option value="NV">NOTA DE VENTA</option>
                 </select>
               </div>
-              <label class="col-1 col-form-label text-uppercase text-end">Auto</label>
+              <label class="col-1 col-form-label text-uppercase text-end">Serie</label>
               <div class="col-4">
                 <select class="form-select" formControlName="cajaId">
                   <option *ngFor="let item of invoiceSeries" [value]="item.id">{{item.name}}</option>
@@ -55,7 +55,7 @@
                          [readOnly]="invoiceType==='sale'" style="max-width: 70px;">
                   <span class="input-group-text fw-bold">#</span>
                   <input type="text" class="form-control" formControlName="number"
-                         placeholder="999999999" [readOnly]="invoiceType==='sale'">
+                         placeholder="99999999" [readOnly]="invoiceType==='sale'">
                 </div>
               </div>
             </div>
@@ -126,7 +126,7 @@
                 <table class="table">
                   <tbody>
                   <tr>
-                    <th class="bg-white text-end">OP.GRAVADA</th>
+                    <th class="bg-white text-end">IMPORTE</th>
                     <td class="bg-white">
                       <input type="number" class="text-end"
                              [value]="comprobanteForm.get('sumTotValVenta')?.value|currency" readonly>
