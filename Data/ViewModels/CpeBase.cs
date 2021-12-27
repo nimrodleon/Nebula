@@ -9,7 +9,7 @@ namespace Nebula.Data.ViewModels
         /// <summary>
         /// Id del Contacto.
         /// </summary>
-        public int ClientId { get; set; }
+        public int ContactId { get; set; }
 
         /// <summary>
         /// Tipo documento.

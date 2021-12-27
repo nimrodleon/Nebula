@@ -14,7 +14,7 @@ namespace Nebula.Data.Services
         private readonly ApplicationDbContext _context;
         private Configuration _configuration;
         private CajaDiaria _cajaDiaria;
-        private Contact _client;
+        private Contact _contact;
         private Sale _model;
 
         /// <summary>
@@ -41,14 +41,14 @@ namespace Nebula.Data.Services
         public async Task<Invoice> SaveInvoice(int cajaDiaria)
         {
             await GetConfiguration();
-            await GetClientData(_model.ClientId);
+            await GetContactData(_model.ContactId);
             await GetCajaDiaria(cajaDiaria);
 
             // configurar transacción de la base de datos.
             await using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
-                var invoice = _model.GetInvoice(_configuration, _client);
+                var invoice = _model.GetInvoice(_configuration, _contact);
                 var invoiceSerie = await GetInvoiceSerie(_cajaDiaria.InvoiceSerieId);
 
                 int numComprobante = 0;
@@ -156,11 +156,11 @@ namespace Nebula.Data.Services
         /// <summary>
         /// Cargar datos del cliente.
         /// </summary>
-        private async Task GetClientData(int id)
+        private async Task GetContactData(int id)
         {
-            _client = await _context.Contacts.AsNoTracking()
+            _contact = await _context.Contacts.AsNoTracking()
                 .SingleAsync(m => m.Id.Equals(id));
-            _logger.LogInformation($"Cliente: {JsonSerializer.Serialize(_client)}");
+            _logger.LogInformation($"Cliente: {JsonSerializer.Serialize(_contact)}");
         }
 
         /// <summary>
