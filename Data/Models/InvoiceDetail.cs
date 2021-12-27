@@ -145,5 +145,10 @@ namespace Nebula.Data.Models
         /// Valor de venta por Item cac:InvoiceLine/cbc:LineExtensionAmount an..15|n(12,2)
         /// </summary>
         public decimal? MtoValorVentaItem { get; set; }
+
+        /// <summary>
+        /// Valor REFERENCIAL unitario (gratuitos) cac:InvoiceLine/cac:PricingReference/cac:AlternativeConditionPrice
+        /// </summary>
+        public decimal? MtoValorReferencialUnitario { get; set; } = 0;
     }
 }

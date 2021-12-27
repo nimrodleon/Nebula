@@ -63,7 +63,7 @@ namespace Nebula.Data.Models
         /// <summary>
         /// Fecha Vencimiento.
         /// </summary>
-        public DateTime DateEnd { get; set; }
+        public DateTime EndDate { get; set; }
 
         /// <summary>
         /// Año de registro.

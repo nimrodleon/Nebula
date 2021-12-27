@@ -3,7 +3,7 @@
     /// <summary>
     /// modelo para el punto de venta.
     /// </summary>
-    public class SaleDetail
+    public class CpeDetail
     {
         /// <summary>
         /// Id del producto.

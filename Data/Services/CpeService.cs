@@ -251,7 +251,7 @@ namespace Nebula.Data.Services
                     detallePagos.Add(new sfs.DetallePago()
                     {
                         mtoCuotaPago = Convert.ToDecimal(item.Amount).ToString("N2"),
-                        fecCuotaPago = item.DateEnd.ToString("yyyy-MM-dd"),
+                        fecCuotaPago = item.EndDate.ToString("yyyy-MM-dd"),
                         tipMonedaCuotaPago = invoice.TipMoneda,
                     });
                 });

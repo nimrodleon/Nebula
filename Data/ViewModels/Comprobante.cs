@@ -1,37 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
+using Nebula.Data.Models;
 
 namespace Nebula.Data.ViewModels
 {
     /// <summary>
     /// modelo para la emisión de comprobantes.
     /// </summary>
-    public class Comprobante
+    public class Comprobante : CpeBase
     {
-        /// <summary>
-        /// Id de contacto.
-        /// </summary>
-        public int ContactId { get; set; }
-
         /// <summary>
         /// Fecha de registro.
         /// </summary>
         public DateTime StartDate { get; set; }
 
         /// <summary>
-        /// Tipo de documento.
+        /// Forma de Pago #Credito/Contado.
         /// </summary>
-        public string DocType { get; set; }
-
-        /// <summary>
-        /// Id de Caja diaria.
-        /// </summary>
-        public int CajaDiariaId { get; set; }
-
-        /// <summary>
-        /// Forma de Pago.
-        /// </summary>
-        public string PaymentType { get; set; }
+        public string FormaPago { get; set; }
 
         /// <summary>
         /// Tipo Operación.
@@ -39,12 +24,12 @@ namespace Nebula.Data.ViewModels
         public string TypeOperation { get; set; }
 
         /// <summary>
-        /// Serie Comprobante.
+        /// Serie Comprobante #SOLO PARA COMPRAS.
         /// </summary>
         public string Serie { get; set; }
 
         /// <summary>
-        /// Número Comprobante.
+        /// Número Comprobante #SOLO PARA COMPRAS.
         /// </summary>
         public string Number { get; set; }
 
@@ -54,43 +39,57 @@ namespace Nebula.Data.ViewModels
         public DateTime EndDate { get; set; }
 
         /// <summary>
-        /// SubTotal.
+        /// Configurar cabecera de venta.
         /// </summary>
-        public decimal SumTotValVenta { get; set; }
+        public Invoice GetInvoice(Configuration config, Contact client)
+        {
+            CalcImporteVenta();
 
-        /// <summary>
-        /// Total Tributos.
-        /// </summary>
-        public decimal SumTotTributos { get; set; }
+            // configurar fecha de registro.
+            string year = DateTime.Now.ToString("yyyy");
+            string month = DateTime.Now.ToString("MM");
+            string startDate = DateTime.Now.ToString("yyyy-MM-dd");
+            string startTime = DateTime.Now.ToString("HH:mm:ss");
+            string fecVencimiento = EndDate.ToString("yyyy-MM-dd");
+            if (InvoiceType.Equals("PURCHASE"))
+            {
+                year = StartDate.ToString("yyyy");
+                month = StartDate.ToString("MM");
+                startDate = StartDate.ToString("yyyy-MM-dd");
+                startTime = "00:00:00";
+                fecVencimiento = "-";
+            }
 
-        /// <summary>
-        /// Impuesto a la Bolsa plástica.
-        /// </summary>
-        public decimal Icbper { get; set; }
+            // Devolver Configuración Factura.
+            var invoice = new Invoice()
+            {
+                DocType = DocType,
+                TipOperacion = TypeOperation,
+                FecEmision = startDate,
+                HorEmision = startTime,
+                FecVencimiento = fecVencimiento,
+                CodLocalEmisor = config.CodLocalEmisor,
+                FormaPago = FormaPago,
+                TipDocUsuario = client.DocType.ToString(),
+                NumDocUsuario = client.Document,
+                RznSocialUsuario = client.Name,
+                TipMoneda = config.TipMoneda,
+                SumTotValVenta = SumTotValVenta,
+                SumTotTributos = SumTotTributos,
+                SumImpVenta = SumImpVenta,
+                InvoiceType = InvoiceType,
+                Year = year,
+                Month = month,
+            };
 
-        /// <summary>
-        /// Importe Total a Pagar.
-        /// </summary>
-        public decimal SumImpVenta { get; set; }
+            // configurar número y serie de facturación.
+            if (InvoiceType.Equals("PURCHASE"))
+            {
+                invoice.Number = Number;
+                invoice.Serie = Serie;
+            }
 
-        /// <summary>
-        /// Observación o Comentario.
-        /// </summary>
-        public string Remark { get; set; }
-
-        /// <summary>
-        /// Tipo Comprobante.
-        /// </summary>
-        public string InvoiceType { get; set; }
-
-        /// <summary>
-        /// Detalle Comprobante.
-        /// </summary>
-        public List<DetalleComprobante> Details { get; set; }
-
-        /// <summary>
-        /// Cuotas a Crédito.
-        /// </summary>
-        public List<Cuota> Cuotas { get; set; }
+            return invoice;
+        }
     }
 }

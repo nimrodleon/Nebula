@@ -58,6 +58,12 @@ namespace Nebula.Data.Models
         public string FecVencimiento { get; set; } = "-";
 
         /// <summary>
+        /// Código del domicilio fiscal o de local anexo del emisor.
+        /// </summary>
+        [MaxLength(250)]
+        public string CodLocalEmisor { get; set; }
+
+        /// <summary>
         /// Forma de pago. Credito / Contado - a7
         /// </summary>
         [MaxLength(250)]
@@ -96,6 +102,11 @@ namespace Nebula.Data.Models
         /// Total valor de venta. an..15|n(12,2)
         /// </summary>
         public decimal? SumTotValVenta { get; set; }
+
+        /// <summary>
+        /// Total Precio de Venta. an..15|n(12,2)
+        /// </summary>
+        public decimal? SumPrecioVenta { get; set; }
 
         /// <summary>
         /// Importe total de la venta, cesión en uso o del servicio prestado. an..15|n(12,2)
