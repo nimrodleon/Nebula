@@ -2,10 +2,12 @@ import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {faBars} from '@fortawesome/free-solid-svg-icons';
 import {environment} from 'src/environments/environment';
+import {ConfigurationService} from 'src/app/system/services';
+import {Configuration} from 'src/app/system/interfaces';
 import {Product} from 'src/app/products/interfaces';
 import {ResponseData} from 'src/app/global/interfaces';
 import {ProductService} from 'src/app/products/services';
-import {CpeDetail} from '../../interfaces';
+import {CpeBase, CpeDetail} from '../../interfaces';
 
 declare var jQuery: any;
 declare var bootstrap: any;
@@ -18,12 +20,13 @@ declare var bootstrap: any;
 export class ItemComprobanteComponent implements OnInit {
   faBars = faBars;
   private appURL: string = environment.applicationUrl;
+  private configuration: Configuration = new Configuration();
   currentProduct: Product | any;
   @Output()
   responseData = new EventEmitter<CpeDetail>();
+  detalleVenta: CpeDetail = new CpeDetail();
   itemComprobanteForm: FormGroup = this.fb.group({
     productId: [null],
-    description: [''],
     price: [0],
     quantity: [0],
     amount: [0]
@@ -32,10 +35,13 @@ export class ItemComprobanteComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private configurationService: ConfigurationService,
     private productService: ProductService) {
   }
 
   ngOnInit(): void {
+    this.configurationService.show()
+      .subscribe(result => this.configuration = result);
     // modal agregar producto.
     this.productModal = new bootstrap.Modal(document.querySelector('#product-modal'));
     // buscar producto.
@@ -51,14 +57,17 @@ export class ItemComprobanteComponent implements OnInit {
       }
     }).on('select2:select', (e: any) => {
       const data = e.params.data;
-      this.itemComprobanteForm.controls['productId'].setValue(data.id);
       this.productService.show(data.id).subscribe(result => {
-        this.itemComprobanteForm.controls['description'].setValue(result.description);
-        this.itemComprobanteForm.controls['price'].setValue(result.price1);
+        this.detalleVenta = CpeBase.configItemDetail(this.configuration, result);
+        this.detalleVenta.calcularItem();
+        this.itemComprobanteForm.reset({...this.detalleVenta});
       });
     });
     // resetear formulario.
     const myModal: any = document.querySelector('#item-comprobante');
+    myModal.addEventListener('shown.bs.modal', () => {
+      this.detalleVenta = new CpeDetail();
+    });
     myModal.addEventListener('hide.bs.modal', () => {
       this.itemComprobanteForm.reset();
       jQuery('#productId').val(null).trigger('change');
@@ -72,9 +81,17 @@ export class ItemComprobanteComponent implements OnInit {
   }
 
   // ocultar modal producto.
-  public hideProductModal(data: ResponseData<Product>): void {
-    if (data.ok) {
-      this.productModal.hide();
+  public hideProductModal(response: ResponseData<Product>): void {
+    if (response.ok) {
+      this.productService.show(<any>response.data?.id)
+        .subscribe(result => {
+          const newOption = new Option(result.description, <any>result.id, true, true);
+          jQuery('#productId').append(newOption).trigger('change');
+          this.detalleVenta = CpeBase.configItemDetail(this.configuration, result);
+          this.detalleVenta.calcularItem();
+          this.itemComprobanteForm.reset({...this.detalleVenta});
+          this.productModal.hide();
+        });
     }
   }
 
@@ -82,12 +99,15 @@ export class ItemComprobanteComponent implements OnInit {
   public calcAmount(): void {
     const price = Number(this.itemComprobanteForm.get('price')?.value);
     const quantity = Number(this.itemComprobanteForm.get('quantity')?.value);
-    this.itemComprobanteForm.controls['amount'].setValue(price * quantity);
+    this.detalleVenta.price = price;
+    this.detalleVenta.quantity = quantity;
+    this.detalleVenta.calcularItem();
+    this.itemComprobanteForm.reset({...this.detalleVenta});
   }
 
   // botón agregar producto.
   public saveChanges(): void {
-    this.responseData.emit(this.itemComprobanteForm.value);
+    this.responseData.emit(this.detalleVenta);
   }
 
 }

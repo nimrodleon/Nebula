@@ -1,5 +1,5 @@
 /**
- * Detalle del Comprobante de Electrónico.
+ * Detalle del Comprobante Electrónico.
  */
 export class CpeDetail {
   private _porcentajeIGV: number = 0;

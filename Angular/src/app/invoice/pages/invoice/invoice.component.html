@@ -36,7 +36,7 @@
               </div>
               <label class="col-1 col-form-label text-uppercase text-end">Serie</label>
               <div class="col-4">
-                <select class="form-select" formControlName="cajaId">
+                <select class="form-select" [formControl]="serieId">
                   <option *ngFor="let item of invoiceSeries" [value]="item.id">{{item.name}}</option>
                 </select>
               </div>
@@ -70,7 +70,7 @@
             <div class="row mb-3">
               <label class="col-4 col-form-label text-uppercase text-end">F.Pago</label>
               <div class="col-8">
-                <select formControlName="paymentType" class="form-select">
+                <select formControlName="formaPago" class="form-select">
                   <option value="Credito">CRÉDITO</option>
                   <option value="Contado">CONTADO</option>
                 </select>
@@ -96,7 +96,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let item of detalleComprobante">
+                <tr *ngFor="let item of comprobante.details">
                   <td>{{item.quantity}}</td>
                   <td>
                     <div class="d-flex justify-content-between">
@@ -106,13 +106,10 @@
                       </a>
                     </div>
                   </td>
-                  <td>{{item.price|currency}}</td>
-                  <td>{{item.amount|currency}}</td>
+                  <td>{{item.price.toFixed(2)}}</td>
+                  <td>{{item.amount.toFixed(2)}}</td>
                   <td class="text-end">
-                    <!--<button type="button" (click)="deleteItemComprobante(item.numItem)" class="btn btn-danger btn-sm">
-                      <fa-icon [icon]="faTrashAlt"></fa-icon>
-                    </button>-->
-                    <button type="button" class="btn btn-danger btn-sm">
+                    <button type="button" (click)="deleteItem(item.productId)" class="btn btn-danger btn-sm">
                       <fa-icon [icon]="faTrashAlt"></fa-icon>
                     </button>
                   </td>
@@ -131,29 +128,25 @@
                   <tr>
                     <th class="bg-white text-end">IMPORTE</th>
                     <td class="bg-white">
-                      <input type="number" class="text-end"
-                             [value]="comprobanteForm.get('sumTotValVenta')?.value|currency" readonly>
+                      <input type="number" class="text-end" [value]="comprobante.sumTotValVenta.toFixed(2)" readonly>
                     </td>
                   </tr>
                   <tr>
                     <th class="bg-white text-end">IGV (18%)</th>
                     <td class="bg-white">
-                      <input type="number" class="text-end"
-                             [value]="comprobanteForm.get('sumTotTributos')?.value|currency" readonly>
+                      <input type="number" class="text-end" [value]="comprobante.sumTotTributos.toFixed(2)" readonly>
                     </td>
                   </tr>
                   <tr>
                     <th class="bg-white text-end">ICBPER</th>
                     <td class="bg-white">
-                      <input type="number" class="text-end"
-                             [value]="comprobanteForm.get('icbper')?.value|currency" readonly>
+                      <input type="number" class="text-end" [value]="comprobante.ICBPER.toFixed(2)" readonly>
                     </td>
                   </tr>
                   <tr>
-                    <th class="bg-white text-end">TOTAL A PAGAR</th>
+                    <th class="bg-white text-end">TOTAL</th>
                     <td class="bg-white">
-                      <input type="number" class="text-end"
-                             [value]="comprobanteForm.get('sumImpVenta')?.value|currency" readonly>
+                      <input type="number" class="text-end" [value]="comprobante.sumImpVenta.toFixed(2)" readonly>
                     </td>
                   </tr>
                   </tbody>
@@ -167,7 +160,7 @@
           <span class="text-uppercase ms-1">Agregar Item</span>
         </button>
       </div>
-      <ng-container *ngIf="checkCreditPaymentType()">
+      <ng-container *ngIf="checkFormaPago()">
         <div class="col-12 bg-white shadow-sm mb-2 py-3">
           <h5 class="text-uppercase">Listado de Cuotas de Crédito</h5>
           <hr>
@@ -182,19 +175,19 @@
               </tr>
               </thead>
               <tbody>
-              <tr *ngFor="let item of listaDeCuotas">
+              <!--<tr *ngFor="let item of listaDeCuotas">
                 <td>{{item.numCuota}}</td>
                 <td>{{item.endDate}}</td>
                 <td>{{item.amount|currency}}</td>
                 <td class="text-end">
-                  <!--<button type="button" (click)="deleteItemCuota(item.numCuota)" class="btn btn-danger btn-sm">
+                  &lt;!&ndash;<button type="button" (click)="deleteItemCuota(item.numCuota)" class="btn btn-danger btn-sm">
                     <fa-icon [icon]="faTrashAlt"></fa-icon>
-                  </button>-->
+                  </button>&ndash;&gt;
                   <button type="button" class="btn btn-danger btn-sm">
                     <fa-icon [icon]="faTrashAlt"></fa-icon>
                   </button>
                 </td>
-              </tr>
+              </tr>-->
               </tbody>
             </table>
           </div>
@@ -215,11 +208,11 @@
         </button>
       </div>
     </div>
-
-    <pre>{{comprobanteForm.value|json}}</pre>
-    <pre>{{detalleComprobante|json}}</pre>
-    <pre>{{listaDeCuotas|json}}</pre>
-
+    <!-- TESTING DATA -->
+    <pre><strong>SERIE:</strong>{{serieId.value|json}}</pre>
+    <pre><strong>FORMULARIO:</strong>{{comprobanteForm.value|json}}</pre>
+    <pre><strong>COMPROBANTE:</strong>{{comprobante|json}}</pre>
+    <!-- END TESTING -->
   </div>
 </div>
 
@@ -229,9 +222,9 @@
   (responseData)="hideContactModal($event)">
 </app-contact-modal>
 
-<!--<app-item-comprobante-->
-<!--  (responseData)="hideItemComprobante($event)">-->
-<!--</app-item-comprobante>-->
+<app-item-comprobante
+  (responseData)="hideItemComprobante($event)">
+</app-item-comprobante>
 
 <app-cuota-modal
   (responseData)="hideCuotaModal($event)">

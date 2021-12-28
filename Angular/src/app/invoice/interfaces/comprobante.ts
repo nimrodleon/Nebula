@@ -7,7 +7,7 @@ export class Comprobante extends CpeBase {
     public typeOperation: string = '',
     public serie: string = '',
     public number: string = '',
-    public EndDate: any = null) {
+    public endDate: any = null) {
     super();
   }
 }

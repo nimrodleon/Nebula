@@ -33,9 +33,8 @@
             </div>
           </div>
         </form>
-
-        <pre>{{itemComprobanteForm.value|json}}</pre>
-
+        <!--<pre>{{itemComprobanteForm.value|json}}</pre>
+        <pre>{{detalleVenta|json}}</pre>-->
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary text-uppercase" data-bs-dismiss="modal">Cerrar</button>
@@ -47,5 +46,6 @@
 
 <app-product-modal
   [title]="'Agregar Producto'"
-  [product]="currentProduct">
+  [product]="currentProduct"
+  (responseData)="hideProductModal($event)">
 </app-product-modal>
