@@ -162,27 +162,15 @@ export class InvoiceComponent implements OnInit {
 
   // ocultar modal cuota.
   public hideCuotaModal(data: Cuota): void {
-    // if (data) {
-    //   data.numCuota = this.listaDeCuotas.length + 1;
-    //   this.listaDeCuotas.push(data);
-    //   this.cuotaModal.hide();
-    // }
+    if (data) {
+      this.comprobante.addCuota(data);
+      this.cuotaModal.hide();
+    }
   }
 
   // borrar item cuota.
-  public deleteItemCuota(numCuota: number): void {
-    // let deleted: Boolean = false;
-    // this.listaDeCuotas.forEach((value, index, array) => {
-    //   if (value.numCuota === numCuota) {
-    //     array.splice(index, 1);
-    //     deleted = true;
-    //   }
-    // });
-    // if (deleted) {
-    //   for (let i = 0; i < this.listaDeCuotas.length; i++) {
-    //     this.listaDeCuotas[i].numCuota = i + 1;
-    //   }
-    // }
+  public deleteCuota(numCuota: number): void {
+    this.comprobante.deleteCuota(numCuota);
   }
 
   // abrir modal agregar contacto.

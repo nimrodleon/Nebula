@@ -1,6 +1,6 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
-import {faPlus} from '@fortawesome/free-solid-svg-icons';
+import {faBars, faPlus} from '@fortawesome/free-solid-svg-icons';
 import {Cuota} from '../../interfaces';
 
 @Component({
@@ -10,6 +10,7 @@ import {Cuota} from '../../interfaces';
 })
 export class CuotaModalComponent implements OnInit {
   faPlus = faPlus;
+  faBars = faBars;
   cuotaForm: FormGroup = this.fb.group({
     endDate: [null],
     amount: [0],

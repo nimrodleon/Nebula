@@ -5,7 +5,10 @@
   <div class="modal-dialog modal-sm modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title text-uppercase">Agregar Cuota</h5>
+        <h5 class="modal-title">
+          <fa-icon [icon]="faBars" class="me-1"></fa-icon>
+          <span class="text-uppercase">Agregar Cuota</span>
+        </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -20,7 +23,7 @@
           </div>
         </form>
       </div>
-      <div class="modal-footer justify-content-center bg-light">
+      <div class="modal-footer justify-content-center">
         <button type="button" (click)="saveChanges()" class="btn btn-success btn-lg w-100">
           <fa-icon [icon]="faPlus" class="me-1"></fa-icon>
           <span class="text-uppercase">Agregar Cuota</span>

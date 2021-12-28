@@ -107,4 +107,26 @@ export class CpeBase {
     return item;
   }
 
+  // Agregar cuota al comprobante.
+  public addCuota(data: Cuota): void {
+    data.numCuota = this.cuotas.length + 1;
+    this.cuotas.push(data);
+  }
+
+  // borrar item cuota.
+  public deleteCuota(numCuota: number): void {
+    let deleted: boolean = false;
+    this.cuotas.forEach((value: Cuota, index: number, array: Cuota[]) => {
+      if (value.numCuota === numCuota) {
+        array.splice(index, 1);
+        deleted = true;
+      }
+    });
+    if (deleted) {
+      for (let i = 0; i < this.cuotas.length; i++) {
+        this.cuotas[i].numCuota = i + 1;
+      }
+    }
+  }
+
 }
