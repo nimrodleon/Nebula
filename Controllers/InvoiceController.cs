@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -219,6 +220,8 @@ namespace Nebula.Controllers
             //         _logger.LogError(e.Message);
             //     }
             // }
+
+            _logger.LogInformation(JsonSerializer.Serialize(model));
 
             return BadRequest(new
             {

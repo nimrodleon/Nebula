@@ -1,4 +1,7 @@
-export class SaleDetail {
+/**
+ * Detalle del Comprobante de Electrónico.
+ */
+export class CpeDetail {
   private _porcentajeIGV: number = 0;
   private _mtoTriIcbperUnidad: number = 0;
 

@@ -96,7 +96,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let item of detailComprobante">
+                <tr *ngFor="let item of detalleComprobante">
                   <td>{{item.quantity}}</td>
                   <td>
                     <div class="d-flex justify-content-between">
@@ -109,7 +109,10 @@
                   <td>{{item.price|currency}}</td>
                   <td>{{item.amount|currency}}</td>
                   <td class="text-end">
-                    <button type="button" (click)="deleteItemComprobante(item.numItem)" class="btn btn-danger btn-sm">
+                    <!--<button type="button" (click)="deleteItemComprobante(item.numItem)" class="btn btn-danger btn-sm">
+                      <fa-icon [icon]="faTrashAlt"></fa-icon>
+                    </button>-->
+                    <button type="button" class="btn btn-danger btn-sm">
                       <fa-icon [icon]="faTrashAlt"></fa-icon>
                     </button>
                   </td>
@@ -184,7 +187,10 @@
                 <td>{{item.endDate}}</td>
                 <td>{{item.amount|currency}}</td>
                 <td class="text-end">
-                  <button type="button" (click)="deleteItemCuota(item.numCuota)" class="btn btn-danger btn-sm">
+                  <!--<button type="button" (click)="deleteItemCuota(item.numCuota)" class="btn btn-danger btn-sm">
+                    <fa-icon [icon]="faTrashAlt"></fa-icon>
+                  </button>-->
+                  <button type="button" class="btn btn-danger btn-sm">
                     <fa-icon [icon]="faTrashAlt"></fa-icon>
                   </button>
                 </td>
@@ -211,7 +217,7 @@
     </div>
 
     <pre>{{comprobanteForm.value|json}}</pre>
-    <pre>{{detailComprobante|json}}</pre>
+    <pre>{{detalleComprobante|json}}</pre>
     <pre>{{listaDeCuotas|json}}</pre>
 
   </div>
@@ -223,9 +229,9 @@
   (responseData)="hideContactModal($event)">
 </app-contact-modal>
 
-<app-item-comprobante
-  (responseData)="hideItemComprobante($event)">
-</app-item-comprobante>
+<!--<app-item-comprobante-->
+<!--  (responseData)="hideItemComprobante($event)">-->
+<!--</app-item-comprobante>-->
 
 <app-cuota-modal
   (responseData)="hideCuotaModal($event)">

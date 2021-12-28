@@ -5,7 +5,7 @@ import {environment} from 'src/environments/environment';
 import {Product} from 'src/app/products/interfaces';
 import {ResponseData} from 'src/app/global/interfaces';
 import {ProductService} from 'src/app/products/services';
-import {DetailComprobante} from '../../interfaces';
+import {CpeDetail} from '../../interfaces';
 
 declare var jQuery: any;
 declare var bootstrap: any;
@@ -20,7 +20,7 @@ export class ItemComprobanteComponent implements OnInit {
   private appURL: string = environment.applicationUrl;
   currentProduct: Product | any;
   @Output()
-  responseData = new EventEmitter<DetailComprobante>();
+  responseData = new EventEmitter<CpeDetail>();
   itemComprobanteForm: FormGroup = this.fb.group({
     productId: [null],
     description: [''],

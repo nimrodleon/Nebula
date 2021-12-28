@@ -28,8 +28,8 @@ export class InvoiceService {
     return this.http.get<Invoice>(`${this.appURL}/Show/${id}`);
   }
 
-  public store(data: Comprobante): Observable<ResponseData<Comprobante>> {
-    return this.http.post<ResponseData<Comprobante>>(`${this.appURL}/Store`, data);
+  public create(data: Comprobante): Observable<ResponseData<Comprobante>> {
+    return this.http.post<ResponseData<Comprobante>>(`${this.appURL}/Create`, data);
   }
 
   public salePos(id: number, sale: Sale): Observable<ResponseData<Sale>> {

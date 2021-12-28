@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
-import {Observable, Subject} from 'rxjs';
+import {Observable} from 'rxjs';
 import {ProductService} from '../../products/services';
-import {Sale, SaleDetail} from '../interfaces';
+import {Sale} from '../interfaces';
 import {InvoiceService} from '../../invoice/services';
 import {ResponseData} from '../../global/interfaces';
 import {Configuration} from '../../system/interfaces';
 import {Product} from '../../products/interfaces';
-import {FacturadorData} from '../../invoice/interfaces/facturador';
+import {CpeDetail} from '../../invoice/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -35,9 +35,9 @@ export class TerminalService {
     this._sale = new Sale();
   }
 
-  // setter clienteID.
-  public setClientId(id: number): void {
-    this._sale.clientId = id;
+  // establecer el ID del contacto.
+  public setContactId(id: number): void {
+    this._sale.contactId = id;
   }
 
   // cargar parámetros del sistema.
@@ -46,8 +46,8 @@ export class TerminalService {
   }
 
   // configurar detalle venta.
-  private getDetalleVenta(data: Product): SaleDetail {
-    const detalleVenta: SaleDetail = new SaleDetail();
+  private getDetalleVenta(data: Product): CpeDetail {
+    const detalleVenta: CpeDetail = new CpeDetail();
     detalleVenta.productId = data.id;
     detalleVenta.codUnidadMedida = data.undMedida.sunatCode;
     detalleVenta.codProductoSunat = data.barcode.length > 0 ? data.barcode : '-';
@@ -72,7 +72,7 @@ export class TerminalService {
         this._sale.calcImporteVenta();
       } else {
         let changeQuantity: boolean = false;
-        this._sale.details.forEach((item: SaleDetail) => {
+        this._sale.details.forEach((item: CpeDetail) => {
           if (item.productId === result.id) {
             item.quantity = item.quantity + 1;
             item.price = result.price1;
@@ -92,7 +92,7 @@ export class TerminalService {
 
   // cambiar cantidad item.
   public changeQuantity(prodId: any, value: number): void {
-    this._sale.details.forEach((item: SaleDetail) => {
+    this._sale.details.forEach((item: CpeDetail) => {
       if (item.productId === prodId) {
         item.quantity = value;
         item.calcularItem();
@@ -103,7 +103,7 @@ export class TerminalService {
 
   // borrar item carrito de compras.
   public deleteItem(prodId: any): void {
-    this._sale.details.forEach((value: SaleDetail, index: number, array: any) => {
+    this._sale.details.forEach((value: CpeDetail, index: number, array: any) => {
       if (value.productId === prodId) {
         array.splice(index, 1);
         this._sale.calcImporteVenta();

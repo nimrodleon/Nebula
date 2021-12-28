@@ -7,7 +7,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import * as moment from 'moment';
 import {environment} from 'src/environments/environment';
-import {Cuota, DetailComprobante, TypeOperationSunat} from '../../interfaces';
+import {CpeDetail, Cuota, TypeOperationSunat} from '../../interfaces';
 import {InvoiceService, SunatService} from '../../services';
 import {Contact} from 'src/app/contact/interfaces';
 import {ResponseData} from 'src/app/global/interfaces';
@@ -41,7 +41,6 @@ export class InvoiceComponent implements OnInit {
     contactId: [null],
     startDate: [moment().format('YYYY-MM-DD')],
     docType: [''],
-    cajaId: [''],
     paymentType: ['Contado'],
     typeOperation: [''],
     serie: [''],
@@ -53,9 +52,9 @@ export class InvoiceComponent implements OnInit {
     sumImpVenta: [0],
     remark: [''],
   });
-  detailComprobante: Array<DetailComprobante> = new Array<DetailComprobante>();
-  itemComprobanteModal: any;
+  detalleComprobante: Array<CpeDetail> = new Array<CpeDetail>();
   listaDeCuotas: Array<Cuota> = new Array<Cuota>();
+  itemComprobanteModal: any;
   cuotaModal: any;
 
   constructor(
@@ -112,7 +111,7 @@ export class InvoiceComponent implements OnInit {
   // calcular importe venta.
   private calcImporteVenta(): void {
     let total = 0;
-    this.detailComprobante.forEach(item => {
+    this.detalleComprobante.forEach(item => {
       total = total + item.amount;
     });
     let subTotal: number = total / 1.18;
@@ -131,38 +130,38 @@ export class InvoiceComponent implements OnInit {
     this.itemComprobanteModal.show();
   }
 
-  // ocultar modal item-comprobante.
-  public hideItemComprobante(data: DetailComprobante): void {
-    data.numItem = this.detailComprobante.length + 1;
-    this.detailComprobante.push(data);
-    this.calcImporteVenta();
-    this.itemComprobanteModal.hide();
-  }
+  // // ocultar modal item-comprobante.
+  // public hideItemComprobante(data: DetailComprobante): void {
+  //   data.numItem = this.detalleComprobante.length + 1;
+  //   this.detalleComprobante.push(data);
+  //   this.calcImporteVenta();
+  //   this.itemComprobanteModal.hide();
+  // }
 
-  // borrar item comprobante.
-  public deleteItemComprobante(numItem: number): void {
-    let deleted: Boolean = false;
-    this.detailComprobante.forEach((value, index, array) => {
-      if (value.numItem === numItem) {
-        array.splice(index, 1);
-        deleted = true;
-      }
-    });
-    if (deleted) {
-      for (let i = 0; i < this.detailComprobante.length; i++) {
-        this.detailComprobante[i].numItem = i + 1;
-      }
-    }
-  }
+  // // borrar item comprobante.
+  // public deleteItemComprobante(numItem: number): void {
+  //   let deleted: Boolean = false;
+  //   this.detalleComprobante.forEach((value, index, array) => {
+  //     if (value.numItem === numItem) {
+  //       array.splice(index, 1);
+  //       deleted = true;
+  //     }
+  //   });
+  //   if (deleted) {
+  //     for (let i = 0; i < this.detalleComprobante.length; i++) {
+  //       this.detalleComprobante[i].numItem = i + 1;
+  //     }
+  //   }
+  // }
 
   // registrar comprobante.
   public async registerVoucher() {
     if (this.comprobanteForm.get('paymentType')?.value === 'Contado') {
       this.comprobanteForm.controls['endDate'].setValue('1992-04-05');
     }
-    this.invoiceService.store({
+    this.invoiceService.create({
       ...this.comprobanteForm.value, invoiceType: this.invoiceType,
-      details: this.detailComprobante
+      details: this.detalleComprobante
     }).subscribe(result => {
       let URI: string = '';
       switch (this.invoiceType.toUpperCase()) {

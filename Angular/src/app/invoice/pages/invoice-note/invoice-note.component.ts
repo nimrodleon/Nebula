@@ -3,7 +3,7 @@ import {faArrowLeft, faEdit, faIdCardAlt, faPlus, faSave, faTrashAlt} from '@for
 import {ActivatedRoute} from '@angular/router';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import * as moment from 'moment';
-import {DetailComprobante, Invoice, InvoiceDetail} from '../../interfaces';
+import {CpeDetail, Invoice, InvoiceDetail} from '../../interfaces';
 import {InvoiceService} from '../../services';
 
 declare var bootstrap: any;
@@ -34,7 +34,7 @@ export class InvoiceNoteComponent implements OnInit {
     sumImpVenta: [0],
     remark: ['']
   });
-  invoiceNoteDetail: Array<DetailComprobante> = new Array<DetailComprobante>();
+  invoiceNoteDetail: Array<CpeDetail> = new Array<CpeDetail>();
   itemComprobanteModal: any;
 
   constructor(
@@ -57,11 +57,11 @@ export class InvoiceNoteComponent implements OnInit {
           this.invoiceNote.controls['sumImpVenta'].setValue(result.sumImpVenta);
           // detalle notas de crédito/débito.
           result.invoiceDetails.forEach((value: InvoiceDetail, index: number) => {
-            this.invoiceNoteDetail.push({
-              numItem: index + 1, productId: Number(value.codProducto),
-              description: value.desItem, price: value.mtoValorUnitario, quantity: value.ctdUnidadItem,
-              amount: value.mtoValorVentaItem
-            });
+            // this.invoiceNoteDetail.push({
+            //   numItem: index + 1, productId: Number(value.codProducto),
+            //   description: value.desItem, price: value.mtoValorUnitario, quantity: value.ctdUnidadItem,
+            //   amount: value.mtoValorVentaItem
+            // });
           });
         });
     });
@@ -74,9 +74,9 @@ export class InvoiceNoteComponent implements OnInit {
     this.itemComprobanteModal.show();
   }
 
-  // ocultar item comprobante modal.
-  public hideItemComprobanteModal(data: DetailComprobante): void {
-
-  }
+  // // ocultar item comprobante modal.
+  // public hideItemComprobanteModal(data: DetailComprobante): void {
+  //
+  // }
 
 }

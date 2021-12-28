@@ -84,12 +84,12 @@ export class TerminalComponent implements OnInit {
         }
       }).on('select2:select', (e: any) => {
         const data = e.params.data;
-        this.terminalService.setClientId(data.id);
+        this.terminalService.setContactId(data.id);
       });
     // limpiar el cliente seleccionado.
     const myModal: any = document.querySelector('#cobrar-modal');
     myModal.addEventListener('hidden.bs.modal', () => {
-      if (this.sale.clientId === null) {
+      if (this.sale.contactId === null) {
         clientId.val(null).trigger('change');
       }
     });
@@ -118,7 +118,7 @@ export class TerminalComponent implements OnInit {
         // cargar cliente por defecto.
         this.contactService.show(result.contactId)
           .subscribe(result => {
-            this.terminalService.setClientId(<any>result.id);
+            this.terminalService.setContactId(<any>result.id);
             const newOption = new Option(`${result.document} - ${result.name}`,
               <any>result.id, true, true);
             jQuery('#clientId').append(newOption).trigger('change');
@@ -163,7 +163,7 @@ export class TerminalComponent implements OnInit {
       const newOption = new Option(`${result.data?.document} - ${result.data?.name}`,
         <any>result.data?.id, true, true);
       jQuery('#clientId').append(newOption).trigger('change');
-      this.terminalService.setClientId(<any>result.data?.id);
+      this.terminalService.setContactId(<any>result.data?.id);
       this.contactModal.hide();
     }
   }
@@ -182,7 +182,7 @@ export class TerminalComponent implements OnInit {
 
   // botón cobrar.
   public async btnCobrarClick() {
-    if (this.sale.clientId === null) {
+    if (this.sale.contactId === null) {
       await Swal.fire(
         'Información',
         'La información del cliente es requerida!',
