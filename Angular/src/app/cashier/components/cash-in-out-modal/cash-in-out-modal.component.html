@@ -1,4 +1,4 @@
-<div class="modal fade" id="cash-in-out-modal" tabindex="-1">
+<div class="modal fade" data-bs-backdrop="static" id="cash-in-out-modal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -13,35 +13,40 @@
           <div class="row mb-3">
             <label class="col-3 col-form-label-sm text-uppercase text-end">Tipo</label>
             <div class="col-6">
-              <select formControlName="type" class="form-select">
-                <option value="Ingreso">ENTRADA</option>
-                <option value="Egreso">SALIDA</option>
+              <select formControlName="type" class="form-select"
+                      [ngClass]="{'is-invalid': inputIsInvalid('type')}">
+                <option value="ENTRADA">ENTRADA</option>
+                <option value="SALIDA">SALIDA</option>
               </select>
-            </div>
-          </div>
-          <div class="row mb-3">
-            <label class="col-3 col-form-label-sm text-uppercase text-end">Monto</label>
-            <div class="col-6">
-              <input type="number" formControlName="total" step="0.01" class="form-control">
             </div>
           </div>
           <div class="row mb-3">
             <label class="col-3 col-form-label-sm text-uppercase text-end">Contacto</label>
             <div class="col-9">
-              <select id="contactId" class="form-select"></select>
+              <select id="contactId" class="form-select"
+                      [ngClass]="{'is-invalid': inputIsInvalid('contactId')}"></select>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-3 col-form-label-sm text-uppercase text-end">Monto</label>
+            <div class="col-6">
+              <input type="number" formControlName="total" step="0.1" class="form-control"
+                     [ngClass]="{'is-invalid': inputIsInvalid('total')}">
             </div>
           </div>
           <div class="row">
-            <label class="col-3 col-form-label-sm text-uppercase text-end">Concepto</label>
-            <div class="col-9">
-              <select id="conceptoId" class="form-select"></select>
+            <label class="col-3 col-form-label-sm text-uppercase text-end">Glosa</label>
+            <div class="col-sm-9">
+              <textarea formControlName="glosa" class="form-control"
+                        [ngClass]="{'is-invalid': inputIsInvalid('glosa')}"
+                        placeholder="ESCRIBE AQUÍ TU COMENTARIO"></textarea>
             </div>
           </div>
         </form>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary text-uppercase" data-bs-dismiss="modal">Cerrar</button>
-        <button type="button" (click)="saveChanges()" class="btn btn-primary text-uppercase">Guardar Cambios</button>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary btn-lg text-uppercase" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" (click)="saveChanges()" class="btn btn-primary btn-lg text-uppercase">Guardar</button>
       </div>
     </div>
   </div>
