@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
   faArrowLeft, faEdit, faIdCardAlt, faPlus,
@@ -10,9 +10,10 @@ import {environment} from 'src/environments/environment';
 import {Comprobante, CpeDetail, Cuota, TypeOperationSunat} from '../../interfaces';
 import {InvoiceService, SunatService} from '../../services';
 import {Contact} from 'src/app/contact/interfaces';
-import {ResponseData} from 'src/app/global/interfaces';
+import {confirmTask, ResponseData} from 'src/app/global/interfaces';
 import {InvoiceSerieService} from 'src/app/system/services';
 import {InvoiceSerie} from 'src/app/system/interfaces';
+import Swal from 'sweetalert2';
 
 declare var jQuery: any;
 declare var bootstrap: any;
@@ -42,14 +43,14 @@ export class InvoiceComponent implements OnInit {
   // lista tipos de operación.
   typeOperation: Array<TypeOperationSunat> = new Array<TypeOperationSunat>();
   // ID de la serie de facturación, se usa solo si es una venta.
-  serieId: FormControl = this.fb.control('');
+  serieId: FormControl = this.fb.control('', [Validators.required]);
   // formulario comprobante.
   comprobanteForm: FormGroup = this.fb.group({
-    contactId: [null],
-    startDate: [moment().format('YYYY-MM-DD')],
-    docType: [''],
-    formaPago: ['Contado'],
-    typeOperation: [''],
+    contactId: [null, [Validators.required]],
+    startDate: [moment().format('YYYY-MM-DD'), [Validators.required]],
+    docType: ['', [Validators.required]],
+    formaPago: ['Contado', [Validators.required]],
+    typeOperation: ['', [Validators.required]],
     serie: [''],
     number: [''],
     endDate: [null],
@@ -75,9 +76,12 @@ export class InvoiceComponent implements OnInit {
         case 'purchase':
           this.nomComprobante = 'Compra';
           this.serieId.disable();
+          this.comprobanteForm.controls['serie'].setValidators([Validators.required]);
+          this.comprobanteForm.controls['number'].setValidators([Validators.required]);
           break;
         case 'sale':
           this.nomComprobante = 'Venta';
+          this.serieId.setValidators([Validators.required]);
           break;
       }
     });
@@ -85,7 +89,7 @@ export class InvoiceComponent implements OnInit {
     this.comprobante.formaPago = 'Contado';
     this.comprobante.startDate = moment().format('YYYY-MM-DD');
     // buscador de contactos.
-    jQuery('#clientId').select2({
+    jQuery('#contactId').select2({
       theme: 'bootstrap-5',
       placeholder: 'BUSCAR CONTACTO',
       ajax: {
@@ -131,8 +135,61 @@ export class InvoiceComponent implements OnInit {
     this.itemComprobanteModal.hide();
   }
 
+  // Verificar campo invalido.
+  public inputIsInvalid(field: string) {
+    return this.comprobanteForm.controls[field].errors && this.comprobanteForm.controls[field].touched;
+  }
+
   // registrar comprobante.
-  public async registerVoucher() {
+  public registerVoucher(): void {
+    let hasError: boolean = false;
+    if (this.comprobanteForm.invalid) {
+      this.comprobanteForm.markAllAsTouched();
+      hasError = true;
+    }
+    if (this.serieId.invalid) {
+      this.serieId.markAsTouched();
+      hasError = true;
+    }
+    if (hasError) return;
+    // validar detalle de factura.
+    if (this.comprobante.details.length <= 0) {
+      Swal.fire(
+        'Información',
+        'Debe existir al menos un Item para facturar!',
+        'info'
+      );
+      return;
+    }
+    // validar lista de cuotas si la factura es ha crédito.
+    if (this.comprobanteForm.get('formaPago')?.value === 'Credito') {
+      if (this.comprobante.cuotas.length <= 0) {
+        Swal.fire(
+          'Información',
+          'Debe existir al menos una Cuota para facturar!',
+          'info'
+        );
+        return;
+      }
+      // validar si existe fecha de vencimiento.
+      if (!this.comprobanteForm.get('endDate')?.value) {
+        Swal.fire(
+          'Información',
+          'Debe ingresar fecha de vencimiento!',
+          'info'
+        );
+        return;
+      }
+    }
+    // Guardar datos, sólo si es válido el formulario.
+    confirmTask().then(result => {
+      if (result.isConfirmed) {
+        this.comprobante = {...this.comprobante, ...this.comprobanteForm.value};
+        console.log(this.comprobante);
+      }
+    });
+
+
     // if (this.comprobanteForm.get('paymentType')?.value === 'Contado') {
     //   this.comprobanteForm.controls['endDate'].setValue('1992-04-05');
     // }

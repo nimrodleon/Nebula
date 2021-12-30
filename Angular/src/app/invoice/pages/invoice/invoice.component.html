@@ -11,11 +11,13 @@
             <div class="row mb-3">
               <label class="col-3 col-form-label text-uppercase text-end">Contacto</label>
               <div class="col-6">
-                <div class="input-group me-1">
+                <div class="input-group has-validation me-1">
                   <span class="input-group-text">
                     <fa-icon [icon]="faIdCardAlt"></fa-icon>
                   </span>
-                  <select id="clientId" class="form-select"></select>
+                  <select id="contactId" class="form-select"
+                          [ngClass]="{'is-invalid': inputIsInvalid('contactId')}">
+                  </select>
                 </div>
               </div>
               <div class="col-3">
@@ -28,7 +30,8 @@
             <div class="row mb-3">
               <label class="col-3 col-form-label text-uppercase text-end">Tipo Comprobante</label>
               <div class="col-4">
-                <select formControlName="docType" class="form-select">
+                <select formControlName="docType" class="form-select"
+                        [ngClass]="{'is-invalid': inputIsInvalid('docType')}">
                   <option value="BL">BOLETA</option>
                   <option value="FT">FACTURA</option>
                   <option value="NV">NOTA DE VENTA</option>
@@ -36,7 +39,8 @@
               </div>
               <label class="col-1 col-form-label text-uppercase text-end">Serie</label>
               <div class="col-4">
-                <select class="form-select" [formControl]="serieId">
+                <select class="form-select" [formControl]="serieId"
+                        [ngClass]="{'is-invalid': serieId.errors && serieId.touched}">
                   <option *ngFor="let item of invoiceSeries" [value]="item.id">{{item.name}}</option>
                 </select>
               </div>
@@ -44,7 +48,8 @@
             <div class="row">
               <label class="col-3 col-form-label text-uppercase text-end">Tipo de operación</label>
               <div class="col-4">
-                <select formControlName="typeOperation" class="form-select text-uppercase">
+                <select formControlName="typeOperation" class="form-select text-uppercase"
+                        [ngClass]="{'is-invalid': inputIsInvalid('typeOperation')}">
                   <option *ngFor="let item of typeOperation" [value]="item.id">{{item.description}}</option>
                 </select>
               </div>
@@ -52,10 +57,12 @@
               <div class="col-4">
                 <div class="input-group mb-3">
                   <input type="text" formControlName="serie" class="form-control" placeholder="F001"
-                         [readOnly]="invoiceType==='sale'" style="max-width: 70px;">
+                         [readOnly]="invoiceType==='sale'" style="max-width: 90px;"
+                         [ngClass]="{'is-invalid': inputIsInvalid('serie')}">
                   <span class="input-group-text fw-bold">#</span>
                   <input type="text" class="form-control" formControlName="number"
-                         placeholder="99999999" [readOnly]="invoiceType==='sale'">
+                         placeholder="99999999" [readOnly]="invoiceType==='sale'"
+                         [ngClass]="{'is-invalid': inputIsInvalid('number')}">
                 </div>
               </div>
             </div>
@@ -64,13 +71,15 @@
             <div class="row mb-3">
               <label class="col-4 col-form-label text-uppercase text-end">Emisión</label>
               <div class="col-8">
-                <input type="date" formControlName="startDate" class="form-control">
+                <input type="date" formControlName="startDate" class="form-control"
+                       [ngClass]="{'is-invalid': inputIsInvalid('startDate')}">
               </div>
             </div>
             <div class="row mb-3">
               <label class="col-4 col-form-label text-uppercase text-end">F.Pago</label>
               <div class="col-8">
-                <select formControlName="formaPago" class="form-select">
+                <select formControlName="formaPago" class="form-select"
+                        [ngClass]="{'is-invalid': inputIsInvalid('formaPago')}">
                   <option value="Credito">CRÉDITO</option>
                   <option value="Contado">CONTADO</option>
                 </select>
