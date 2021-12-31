@@ -22,19 +22,14 @@ export class InvoiceNoteComponent implements OnInit {
   faIdCardAlt = faIdCardAlt;
   invoice: Invoice = new Invoice();
   invoiceNote: FormGroup = this.fb.group({
-    invoiceId: [''],
     startDate: [moment().format('YYYY-MM-DD')],
     docType: ['NC'],
     codMotivo: ['01'],
     serie: [''],
     number: [''],
     desMotivo: [''],
-    sumTotTributos: [0],
-    sumTotValVenta: [0],
-    sumImpVenta: [0],
     remark: ['']
   });
-  invoiceNoteDetail: Array<CpeDetail> = new Array<CpeDetail>();
   itemComprobanteModal: any;
 
   constructor(
@@ -48,13 +43,8 @@ export class InvoiceNoteComponent implements OnInit {
       this.invoiceService.show(<any>params.get('id'))
         .subscribe(result => {
           this.invoice = result;
-          this.invoiceNote.controls['invoiceId'].setValue(result.id);
           this.invoiceNote.controls['serie'].setValue(result.serie);
           this.invoiceNote.controls['number'].setValue(result.number);
-          // subTotal igv y total factura/boleta.
-          this.invoiceNote.controls['sumTotTributos'].setValue(result.sumTotTributos);
-          this.invoiceNote.controls['sumTotValVenta'].setValue(result.sumTotValVenta);
-          this.invoiceNote.controls['sumImpVenta'].setValue(result.sumImpVenta);
           // detalle notas de crédito/débito.
           result.invoiceDetails.forEach((value: InvoiceDetail, index: number) => {
             // this.invoiceNoteDetail.push({

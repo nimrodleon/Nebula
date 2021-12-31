@@ -15,7 +15,7 @@
               </div>
               <label class="col-1 col-form-label text-uppercase text-end">Doc</label>
               <div class="col-4">
-                <select formControlName="docType" class="form-select">
+                <select formControlName="docType" class="form-select text-uppercase">
                   <option value="NC">Nota de Crédito</option>
                   <option value="ND">Nota de Débito</option>
                 </select>
@@ -24,7 +24,7 @@
             <div class="row mb-3">
               <label class="col-3 col-form-label text-uppercase text-end">Tipo Nota</label>
               <div class="col-4">
-                <select formControlName="codMotivo" class="form-select">
+                <select formControlName="codMotivo" class="form-select text-uppercase">
                   <ng-container *ngIf="invoiceNote.get('docType')?.value === 'NC'">
                     <option value="01">01 - Anulación de la operación</option>
                     <option value="02">02 - Anulación por error en el RUC</option>
@@ -48,7 +48,7 @@
               <div class="col-4">
                 <div class="input-group">
                   <input type="text" formControlName="serie" class="form-control"
-                         placeholder="F001" style="max-width: 70px;" readonly>
+                         placeholder="F001" style="max-width: 74px;" readonly>
                   <span class="input-group-text fw-bold">#</span>
                   <input type="text" formControlName="number" class="form-control" placeholder="99999999" readonly>
                 </div>
@@ -57,7 +57,7 @@
           </div>
           <div class="col-12">
             <div class="row">
-              <label class="col-2 col-form-label text-uppercase text-end">Motivo de Emisión</label>
+              <label class="col-2 col-form-label text-uppercase text-end">Motivo</label>
               <div class="col-9">
                 <input type="text" formControlName="desMotivo" class="form-control">
               </div>
@@ -76,7 +76,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let item of invoiceNoteDetail">
+                <!--<tr *ngFor="let item of invoiceNoteDetail">
                   <td>{{item.quantity}}</td>
                   <td>
                     <div class="d-flex justify-content-between">
@@ -93,7 +93,7 @@
                       <fa-icon [icon]="faTrashAlt"></fa-icon>
                     </button>
                   </td>
-                </tr>
+                </tr>-->
                 </tbody>
               </table>
             </div>
@@ -106,27 +106,27 @@
                 <table class="table">
                   <tbody>
                   <tr>
-                    <th class="bg-white">SubTotal</th>
+                    <th class="bg-white text-end">IMPORTE</th>
                     <td class="bg-white">
                       <input type="number" [value]="invoiceNote.get('sumTotValVenta')?.value|currency"
                              class="text-end" readonly>
                     </td>
                   </tr>
                   <tr>
-                    <th class="bg-white">IGV (18%)</th>
+                    <th class="bg-white text-end">IGV (18%)</th>
                     <td class="bg-white">
                       <input type="number" [value]="invoiceNote.get('sumTotTributos')?.value|currency"
                              class="text-end" readonly>
                     </td>
                   </tr>
                   <tr>
-                    <th class="bg-white">ICBPER</th>
+                    <th class="bg-white text-end">ICBPER</th>
                     <td class="bg-white">
                       <input type="number" value="0.00" class="text-end" readonly>
                     </td>
                   </tr>
                   <tr>
-                    <th class="bg-white">TOTAL</th>
+                    <th class="bg-white text-end">TOTAL</th>
                     <td class="bg-white">
                       <input type="number" [value]="invoiceNote.get('sumImpVenta')?.value|currency"
                              class="text-end" readonly>
@@ -156,7 +156,6 @@
     </div>
 
     <pre>{{invoiceNote.value|json}}</pre>
-    <pre>{{invoiceNoteDetail|json}}</pre>
     <pre>{{invoice|json}}</pre>
 
   </div>

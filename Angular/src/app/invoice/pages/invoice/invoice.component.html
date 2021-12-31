@@ -28,7 +28,7 @@
               </div>
             </div>
             <div class="row mb-3">
-              <label class="col-3 col-form-label text-uppercase text-end">Tipo Comprobante</label>
+              <label class="col-3 col-form-label text-uppercase text-end">Comprobante</label>
               <div class="col-4">
                 <select formControlName="docType" class="form-select"
                         [ngClass]="{'is-invalid': inputIsInvalid('docType')}">
@@ -46,7 +46,7 @@
               </div>
             </div>
             <div class="row">
-              <label class="col-3 col-form-label text-uppercase text-end">Tipo de operación</label>
+              <label class="col-3 col-form-label text-uppercase text-end">Tipo operación</label>
               <div class="col-4">
                 <select formControlName="typeOperation" class="form-select text-uppercase"
                         [ngClass]="{'is-invalid': inputIsInvalid('typeOperation')}">
@@ -57,7 +57,7 @@
               <div class="col-4">
                 <div class="input-group mb-3">
                   <input type="text" formControlName="serie" class="form-control" placeholder="F001"
-                         [readOnly]="invoiceType==='sale'" style="max-width: 90px;"
+                         [readOnly]="invoiceType==='sale'" style="max-width: 74px;"
                          [ngClass]="{'is-invalid': inputIsInvalid('serie')}">
                   <span class="input-group-text fw-bold">#</span>
                   <input type="text" class="form-control" formControlName="number"
