@@ -9,3 +9,5 @@ export * from './cpe-detail';
 export * from './tributo';
 export * from './invoice-account';
 export * from './note';
+export * from './invoice-note';
+export * from './invoice-note-detail';
