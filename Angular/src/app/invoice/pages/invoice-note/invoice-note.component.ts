@@ -3,7 +3,7 @@ import {faArrowLeft, faEdit, faIdCardAlt, faPlus, faSave, faTrashAlt} from '@for
 import {ActivatedRoute} from '@angular/router';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import * as moment from 'moment';
-import {CpeDetail, Invoice, InvoiceDetail} from '../../interfaces';
+import {CpeDetail, Invoice, InvoiceDetail, Note} from '../../interfaces';
 import {InvoiceService} from '../../services';
 
 declare var bootstrap: any;
@@ -21,6 +21,7 @@ export class InvoiceNoteComponent implements OnInit {
   faTrashAlt = faTrashAlt;
   faIdCardAlt = faIdCardAlt;
   invoice: Invoice = new Invoice();
+  note: Note = new Note();
   invoiceNote: FormGroup = this.fb.group({
     startDate: [moment().format('YYYY-MM-DD')],
     docType: ['NC'],
