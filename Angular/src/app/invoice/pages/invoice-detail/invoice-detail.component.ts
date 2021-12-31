@@ -34,20 +34,4 @@ export class InvoiceDetailComponent implements OnInit {
     });
   }
 
-  public getNameInvoice(value: string): string {
-    let result: string = '';
-    switch (value) {
-      case 'FT':
-        result = 'FACTURA';
-        break;
-      case 'BL':
-        result = 'BOLETA';
-        break;
-      case 'NV':
-        result = 'NOTA DE VENTA';
-        break;
-    }
-    return result;
-  }
-
 }

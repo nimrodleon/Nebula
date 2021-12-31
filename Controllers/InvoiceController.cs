@@ -48,6 +48,8 @@ namespace Nebula.Controllers
         {
             var result = await _context.Invoices.AsNoTracking()
                 .Include(m => m.InvoiceDetails)
+                .Include(m => m.Tributos)
+                .Include(m => m.InvoiceAccounts)
                 .FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (result == null) return BadRequest();
             return Ok(result);

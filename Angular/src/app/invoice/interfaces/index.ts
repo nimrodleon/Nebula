@@ -6,3 +6,5 @@ export * from './voucher-query';
 export * from './cuota';
 export * from './cpe-base';
 export * from './cpe-detail';
+export * from './tributo';
+export * from './invoice-account';

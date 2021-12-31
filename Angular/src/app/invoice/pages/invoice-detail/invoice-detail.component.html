@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="row px-2">
       <div class="d-flex align-items-center justify-content-between bg-white my-2 py-3">
-        <h5 class="text-uppercase mb-0">{{invoice.typeDoc|docTypeInvoice}}: {{invoice.serie}}-{{invoice.number}}</h5>
+        <h5 class="text-uppercase mb-0">{{invoice.docType|docTypeInvoice}}: {{invoice.serie}}-{{invoice.number}}</h5>
         <div class="d-flex d-print-none">
           <button type="button" class="btn btn-danger me-2">
             <fa-icon [icon]="faTimes" class="me-1"></fa-icon>
@@ -61,53 +61,29 @@
               <td>{{item.ctdUnidadItem}}</td>
               <td>{{item.codUnidadMedida}}</td>
               <td>{{item.desItem}}</td>
-              <td>{{item.mtoValorUnitario|currency}}</td>
+              <td>{{item.mtoPrecioVentaUnitario.toFixed(2)}}</td>
               <td>{{item.nomTributoIgvItem}}({{item.porIgvItem|number}}%)</td>
-              <td>{{item.mtoValorVentaItem|currency}}</td>
-              <td>{{item.mtoTriIcbperItem|currency}}</td>
+              <td>{{item.mtoValorVentaItem.toFixed(2)}}</td>
+              <td>{{item.mtoTriIcbperItem.toFixed(2)}}</td>
             </tr>
             </tbody>
           </table>
         </div>
-        <div class="d-flex justify-content-between">
-          <div class="table-responsive">
-            <table class="table mb-0">
-              <thead>
-              <tr class="text-uppercase">
-                <th>Método de pago</th>
-                <th>Valor</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr>
-                <td>Total</td>
-                <td>{{invoice.sumImpVenta|currency}}</td>
-              </tr>
-              <tr>
-                <td>Total recibido</td>
-                <td>0</td>
-              </tr>
-              <tr>
-                <td>Cambio</td>
-                <td>0</td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
+        <div class="d-flex justify-content-end">
           <div class="table-responsive">
             <table class="table">
               <tbody>
               <tr>
-                <th class="bg-white">Subtotal</th>
-                <td class="bg-white">{{invoice.sumTotValVenta|currency}}</td>
+                <th class="bg-white">IMPORTE</th>
+                <td class="bg-white">{{invoice.sumTotValVenta.toFixed(2)}}</td>
               </tr>
               <tr>
                 <th class="bg-white">IGV (18%)</th>
-                <td class="bg-white">{{invoice.sumTotTributos|currency}}</td>
+                <td class="bg-white">{{invoice.sumTotTributos.toFixed(2)}}</td>
               </tr>
               <tr>
-                <th class="bg-white">Total</th>
-                <td class="bg-white">{{invoice.sumImpVenta|currency}}</td>
+                <th class="bg-white">TOTAL</th>
+                <td class="bg-white">{{invoice.sumImpVenta.toFixed(2)}}</td>
               </tr>
               </tbody>
             </table>

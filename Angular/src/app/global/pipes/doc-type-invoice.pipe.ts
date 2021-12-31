@@ -5,7 +5,7 @@ import {Pipe, PipeTransform} from '@angular/core';
 })
 export class DocTypeInvoicePipe implements PipeTransform {
 
-  transform(value: string, ...args: unknown[]): unknown {
+  transform(value: string): string {
     let result: string = '';
     switch (value) {
       case 'FT':
