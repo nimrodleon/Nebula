@@ -14,7 +14,7 @@ export class InvoiceSerieModalComponent implements OnInit {
   @Input()
   title: string = '';
   @Input()
-  invoiceSerie: InvoiceSerie | any;
+  invoiceSerie: InvoiceSerie = new InvoiceSerie();
   @Output()
   responseData = new EventEmitter<ResponseData<InvoiceSerie>>();
   faBars = faBars;

@@ -19,7 +19,7 @@ export class InventoryReasonListComponent implements OnInit {
   faEdit = faEdit;
   faTrashAlt = faTrashAlt;
   title: string = '';
-  currentInventoryReason: InventoryReason | any;
+  currentInventoryReason: InventoryReason = new InventoryReason();
   inventoryReasons: Array<InventoryReason> = new Array<InventoryReason>();
   queryForm: FormGroup = this.fb.group({
     query: [''],
@@ -50,7 +50,7 @@ export class InventoryReasonListComponent implements OnInit {
   // abrir modal motivos de inventario.
   public showInventoryReasonModal(): void {
     this.title = 'Agregar Motivo';
-    this.currentInventoryReason = null;
+    this.currentInventoryReason = new InventoryReason();
     this.inventoryReasonModal.show();
   }
 

@@ -19,7 +19,7 @@ export class InvoiceSerieListComponent implements OnInit {
   faEdit = faEdit;
   faTrashAlt = faTrashAlt;
   title: string = '';
-  currentInvoiceSerie: InvoiceSerie | any;
+  currentInvoiceSerie: InvoiceSerie = new InvoiceSerie();
   invoiceSeries: Array<InvoiceSerie> = new Array<InvoiceSerie>();
   invoiceSerieModal: any;
   query: FormControl = this.fb.control('');
@@ -51,7 +51,7 @@ export class InvoiceSerieListComponent implements OnInit {
   // abrir modal serie facturación.
   public showInvoiceSerieModal(): void {
     this.title = 'Agregar Serie';
-    this.currentInvoiceSerie = null;
+    this.currentInvoiceSerie = new InvoiceSerie();
     this.invoiceSerieModal.show();
   }
 

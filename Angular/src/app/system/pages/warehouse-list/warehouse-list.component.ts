@@ -19,7 +19,7 @@ export class WarehouseListComponent implements OnInit {
   faEdit = faEdit;
   faTrashAlt = faTrashAlt;
   title: string = '';
-  currentWarehouse: Warehouse | any;
+  currentWarehouse: Warehouse = new Warehouse();
   warehouses: Array<Warehouse> = new Array<Warehouse>();
   query: FormControl = this.fb.control('');
   warehouseModal: any;
@@ -50,7 +50,7 @@ export class WarehouseListComponent implements OnInit {
   // abrir modal almacén.
   public showWarehouseModal(): void {
     this.title = 'Agregar Almacén';
-    this.currentWarehouse = null;
+    this.currentWarehouse = new Warehouse();
     this.warehouseModal.show();
   }
 

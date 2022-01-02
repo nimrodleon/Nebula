@@ -14,7 +14,7 @@ export class WarehouseModalComponent implements OnInit {
   @Input()
   title: string = '';
   @Input()
-  warehouse: Warehouse | any;
+  warehouse: Warehouse = new Warehouse();
   @Output()
   responseData = new EventEmitter<ResponseData<Warehouse>>();
   faBars = faBars;
