@@ -12,7 +12,7 @@ namespace Nebula.Data.Models
         /// <summary>
         /// Id Almacén de Origen.
         /// </summary>
-        public Guid? OriginId { get; set; }
+        public int? OriginId { get; set; }
 
         /// <summary>
         /// Almacén Origen.
@@ -23,7 +23,7 @@ namespace Nebula.Data.Models
         /// <summary>
         /// Id Almacén de destino.
         /// </summary>
-        public Guid? TargetId { get; set; }
+        public int? TargetId { get; set; }
 
         /// <summary>
         /// Almacén Destino.

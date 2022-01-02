@@ -11,12 +11,12 @@ namespace Nebula.Data.ViewModels
         /// <summary>
         /// Id Almacén de origen.
         /// </summary>
-        public Guid Origin { get; set; }
+        public int Origin { get; set; }
 
         /// <summary>
         /// Id Almacén destino.
         /// </summary>
-        public Guid Target { get; set; }
+        public int Target { get; set; }
 
         /// <summary>
         /// Motivo del Traslado.

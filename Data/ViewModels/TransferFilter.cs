@@ -8,12 +8,12 @@
         /// <summary>
         /// Id Almacén Origen.
         /// </summary>
-        public string Origin { get; set; }
+        public int Origin { get; set; }
 
         /// <summary>
         /// Id Almacén destino.
         /// </summary>
-        public string Target { get; set; }
+        public int Target { get; set; }
 
         /// <summary>
         /// Año del Inventario.

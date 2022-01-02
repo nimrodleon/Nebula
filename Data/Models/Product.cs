@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http;
@@ -63,7 +62,7 @@ namespace Nebula.Data.Models
         /// <summary>
         /// Id unidad de medida.
         /// </summary>
-        public Guid? UndMedidaId { get; set; }
+        public int? UndMedidaId { get; set; }
 
         /// <summary>
         /// Propiedad de Relación, Unidad de Medida.

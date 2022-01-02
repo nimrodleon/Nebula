@@ -220,8 +220,8 @@ namespace Nebula.Data.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<Guid?>("InvoiceSerieId")
-                        .HasColumnType("uuid");
+                    b.Property<int?>("InvoiceSerieId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Month")
                         .HasColumnType("text");
@@ -240,13 +240,13 @@ namespace Nebula.Data.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<decimal>("TotalApertura")
+                    b.Property<decimal?>("TotalApertura")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("TotalCierre")
+                    b.Property<decimal?>("TotalCierre")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("TotalContabilizado")
+                    b.Property<decimal?>("TotalContabilizado")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Year")
@@ -471,8 +471,8 @@ namespace Nebula.Data.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<Guid?>("WarehouseId")
-                        .HasColumnType("uuid");
+                    b.Property<int?>("WarehouseId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Year")
                         .HasMaxLength(250)
@@ -983,21 +983,22 @@ namespace Nebula.Data.Migrations
 
             modelBuilder.Entity("Nebula.Data.Models.InvoiceSerie", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("Boleta")
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<int>("CounterBoleta")
+                    b.Property<int?>("CounterBoleta")
                         .HasColumnType("integer");
 
-                    b.Property<int>("CounterFactura")
+                    b.Property<int?>("CounterFactura")
                         .HasColumnType("integer");
 
-                    b.Property<int>("CounterNotaDeVenta")
+                    b.Property<int?>("CounterNotaDeVenta")
                         .HasColumnType("integer");
 
                     b.Property<string>("Factura")
@@ -1015,8 +1016,8 @@ namespace Nebula.Data.Migrations
                     b.Property<bool>("SoftDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid?>("WarehouseId")
-                        .HasColumnType("uuid");
+                    b.Property<int?>("WarehouseId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -1071,8 +1072,8 @@ namespace Nebula.Data.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<Guid?>("UndMedidaId")
-                        .HasColumnType("uuid");
+                    b.Property<int?>("UndMedidaId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -1098,8 +1099,8 @@ namespace Nebula.Data.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<Guid?>("OriginId")
-                        .HasColumnType("uuid");
+                    b.Property<int?>("OriginId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Remark")
                         .HasMaxLength(250)
@@ -1115,8 +1116,8 @@ namespace Nebula.Data.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<Guid?>("TargetId")
-                        .HasColumnType("uuid");
+                    b.Property<int?>("TargetId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Year")
                         .HasMaxLength(250)
@@ -1227,9 +1228,10 @@ namespace Nebula.Data.Migrations
 
             modelBuilder.Entity("Nebula.Data.Models.UndMedida", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("Name")
                         .HasMaxLength(250)
@@ -1249,9 +1251,10 @@ namespace Nebula.Data.Migrations
 
             modelBuilder.Entity("Nebula.Data.Models.Warehouse", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("Name")
                         .HasMaxLength(250)

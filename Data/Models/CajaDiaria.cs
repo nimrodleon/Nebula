@@ -11,7 +11,7 @@ namespace Nebula.Data.Models
         /// <summary>
         /// Clave foránea Serie de facturación.
         /// </summary>
-        public Guid? InvoiceSerieId { get; set; }
+        public int? InvoiceSerieId { get; set; }
 
         /// <summary>
         /// Propiedad de relación con Series de facturación.
@@ -40,17 +40,17 @@ namespace Nebula.Data.Models
         /// <summary>
         /// Monto Apertura.
         /// </summary>
-        public decimal TotalApertura { get; set; }
+        public decimal? TotalApertura { get; set; }
 
         /// <summary>
         /// Monto Contabilizado durante el dia.
         /// </summary>
-        public decimal TotalContabilizado { get; set; }
+        public decimal? TotalContabilizado { get; set; }
 
         /// <summary>
         /// Monto para el dia siguiente.
         /// </summary>
-        public decimal TotalCierre { get; set; }
+        public decimal? TotalCierre { get; set; }
 
         /// <summary>
         /// Año de registro.
