@@ -35,5 +35,4 @@ export class CategoryService {
   public delete(id: number): Observable<ResponseData<Category>> {
     return this.http.delete<ResponseData<Category>>(`${this.appURL}/Delete/${id}`);
   }
-
 }

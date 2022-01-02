@@ -45,5 +45,4 @@ export class ProductService {
   public delete(id: number): Observable<ResponseData<Product>> {
     return this.http.delete<ResponseData<Product>>(`${this.appURL}/Destroy/${id}`);
   }
-
 }

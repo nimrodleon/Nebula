@@ -43,7 +43,7 @@ export class ProductModalComponent implements OnInit {
   @Input()
   title: string = '';
   @Input()
-  product: Product | any;
+  product: Product = new Product();
   @Output()
   responseData = new EventEmitter<ResponseData<Product>>();
   categoryModal: any;

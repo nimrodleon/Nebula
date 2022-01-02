@@ -13,7 +13,7 @@ export class CategoryModalComponent implements OnInit {
   @Input()
   title: string = '';
   @Input()
-  category: Category | any;
+  category: Category = new Category();
   @Output()
   responseData = new EventEmitter<ResponseData<Category>>();
   categoryForm: FormGroup = this.fb.group({
