@@ -6,7 +6,7 @@ namespace Nebula.Data.ViewModels
     /// <summary>
     /// modelo para el punto de venta.
     /// </summary>
-    public class Sale : CpeBase
+    public class Venta : CpeBase
     {
         /// <summary>
         /// Medios de Pago.

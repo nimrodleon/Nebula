@@ -15,7 +15,7 @@ namespace Nebula.Data.Services
         private Configuration _configuration;
         private CajaDiaria _cajaDiaria;
         private Contact _contact;
-        private Sale _model;
+        private Venta _model;
 
         /// <summary>
         /// Constructor del Servicio.
@@ -29,7 +29,7 @@ namespace Nebula.Data.Services
         /// <summary>
         /// Establecer modelo.
         /// </summary>
-        public void SetModel(Sale model)
+        public void SetModel(Venta model)
         {
             _model = model;
             _logger.LogInformation($"Venta: {JsonSerializer.Serialize(model)}");
