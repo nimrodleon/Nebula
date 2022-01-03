@@ -1,4 +1,6 @@
-export interface Category {
-  id: number | null;
-  name: string;
+export class Category {
+  constructor(
+    public id: number | any = null,
+    public name: string = '') {
+  }
 }

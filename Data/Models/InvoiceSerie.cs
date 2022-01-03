@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Nebula.Data.Models
@@ -9,9 +8,7 @@ namespace Nebula.Data.Models
     /// </summary>
     public class InvoiceSerie
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Identificador Serie.
@@ -22,7 +19,7 @@ namespace Nebula.Data.Models
         /// <summary>
         /// Clave foránea Almacén.
         /// </summary>
-        public Guid? WarehouseId { get; set; }
+        public int? WarehouseId { get; set; }
 
         /// <summary>
         /// Propiedad de relación con el modelo Almacén.
@@ -39,7 +36,7 @@ namespace Nebula.Data.Models
         /// <summary>
         /// Contador Factura.
         /// </summary>
-        public int CounterFactura { get; set; }
+        public int? CounterFactura { get; set; }
 
         /// <summary>
         /// Serie Boleta.
@@ -50,7 +47,7 @@ namespace Nebula.Data.Models
         /// <summary>
         /// Contador Boleta.
         /// </summary>
-        public int CounterBoleta { get; set; }
+        public int? CounterBoleta { get; set; }
 
         /// <summary>
         /// Serie Nota de Venta.
@@ -61,6 +58,6 @@ namespace Nebula.Data.Models
         /// <summary>
         /// Contador Nota de Venta.
         /// </summary>
-        public int CounterNotaDeVenta { get; set; }
+        public int? CounterNotaDeVenta { get; set; }
     }
 }

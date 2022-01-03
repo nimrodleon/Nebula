@@ -232,7 +232,7 @@ namespace Nebula.Controllers
         }
 
         [HttpPost("SalePos/{id}")]
-        public async Task<IActionResult> SalePos(int id, [FromBody] Sale model)
+        public async Task<IActionResult> SalePos(int id, [FromBody] Venta model)
         {
             try
             {

@@ -15,7 +15,7 @@ export class UndMedidaModalComponent implements OnInit {
   @Input()
   title: string = '';
   @Input()
-  undMedida: UndMedida | any;
+  undMedida: UndMedida = new UndMedida();
   @Output()
   responseData = new EventEmitter<ResponseData<UndMedida>>();
   undMedidaForm: FormGroup = this.fb.group({

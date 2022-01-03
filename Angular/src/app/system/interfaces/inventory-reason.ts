@@ -1,5 +1,7 @@
-export interface InventoryReason {
-  id: number | null;
-  description: string;
-  type: string;
+export class InventoryReason {
+  constructor(
+    public id: number | any = null,
+    public description: string = '',
+    public type: string = '') {
+  }
 }

@@ -8,7 +8,7 @@ export class CpeBase {
   public ICBPER: number = 0;
 
   constructor(
-    public contactId: number | null = null,
+    public contactId: number | any = null,
     public docType: string = '', // tipo documento.
     public sumTotValVenta: number = 0, // subTotal.
     public sumTotTributos: number = 0, // IGV(18%).

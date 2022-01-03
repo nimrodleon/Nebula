@@ -16,7 +16,7 @@ namespace Nebula.Data.ViewModels
         /// <summary>
         /// Id del Almacén.
         /// </summary>
-        public Guid WarehouseId { get; set; }
+        public int WarehouseId { get; set; }
 
         /// <summary>
         /// Tipo de Nota (Ingreso|Salida).

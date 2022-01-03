@@ -23,7 +23,7 @@ namespace Nebula.Data.Models
         /// <summary>
         /// Id Almacén.
         /// </summary>
-        public Guid? WarehouseId { get; set; }
+        public int? WarehouseId { get; set; }
 
         /// <summary>
         /// Clave foránea Almacén.

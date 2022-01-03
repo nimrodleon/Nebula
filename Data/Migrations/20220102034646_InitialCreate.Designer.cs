@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Nebula.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211201215254_AddFormaPagoToInvoiceTable")]
-    partial class AddFormaPagoToInvoiceTable
+    [Migration("20220102034646_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -215,24 +215,6 @@ namespace Nebula.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Nebula.Data.Models.Caja", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(250)
-                        .HasColumnType("character varying(250)");
-
-                    b.Property<bool>("SoftDeleted")
-                        .HasColumnType("boolean");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Cajas");
-                });
-
             modelBuilder.Entity("Nebula.Data.Models.CajaDiaria", b =>
                 {
                     b.Property<int>("Id")
@@ -240,8 +222,8 @@ namespace Nebula.Data.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<Guid?>("CajaId")
-                        .HasColumnType("uuid");
+                    b.Property<int?>("InvoiceSerieId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Month")
                         .HasColumnType("text");
@@ -256,17 +238,17 @@ namespace Nebula.Data.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("State")
+                    b.Property<string>("Status")
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<decimal>("TotalApertura")
+                    b.Property<decimal?>("TotalApertura")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("TotalCierre")
+                    b.Property<decimal?>("TotalCierre")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal>("TotalContabilizado")
+                    b.Property<decimal?>("TotalContabilizado")
                         .HasColumnType("numeric");
 
                     b.Property<string>("Year")
@@ -274,7 +256,7 @@ namespace Nebula.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CajaId");
+                    b.HasIndex("InvoiceSerieId");
 
                     b.ToTable("CajasDiaria");
                 });
@@ -302,6 +284,9 @@ namespace Nebula.Data.Migrations
                         .HasColumnType("character varying(250)");
 
                     b.Property<int?>("InvoiceId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("PaymentMethod")
                         .HasColumnType("integer");
 
                     b.Property<bool>("SoftDeleted")
@@ -348,6 +333,72 @@ namespace Nebula.Data.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("Nebula.Data.Models.Configuration", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("CodLocalEmisor")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<int?>("ContactId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CpeSunat")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CuentaBancoDetraccion")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<string>("FileControl")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<string>("FileSunat")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<decimal?>("MontoDetraccion")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("PorcentajeIgv")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("Ruc")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<string>("RznSocial")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<bool>("SoftDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("TextoDetraccion")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<string>("TipMoneda")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<string>("UrlApi")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<decimal?>("ValorImpuestoBolsa")
+                        .HasColumnType("numeric");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Configuration");
+                });
+
             modelBuilder.Entity("Nebula.Data.Models.Contact", b =>
                 {
                     b.Property<int>("Id")
@@ -358,6 +409,9 @@ namespace Nebula.Data.Migrations
                     b.Property<string>("Address")
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
+
+                    b.Property<int?>("DocType")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Document")
                         .HasMaxLength(250)
@@ -371,9 +425,6 @@ namespace Nebula.Data.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<Guid?>("PeopleDocTypeId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
@@ -382,8 +433,6 @@ namespace Nebula.Data.Migrations
                         .HasColumnType("boolean");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PeopleDocTypeId");
 
                     b.ToTable("Contacts");
                 });
@@ -424,8 +473,8 @@ namespace Nebula.Data.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<Guid?>("WarehouseId")
-                        .HasColumnType("uuid");
+                    b.Property<int?>("WarehouseId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Year")
                         .HasMaxLength(250)
@@ -500,6 +549,14 @@ namespace Nebula.Data.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<string>("CodLocalEmisor")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<string>("DocType")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
                     b.Property<string>("FecEmision")
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
@@ -543,13 +600,7 @@ namespace Nebula.Data.Migrations
                     b.Property<bool>("SoftDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<decimal?>("SumDescTotal")
-                        .HasColumnType("numeric");
-
                     b.Property<decimal?>("SumImpVenta")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal?>("SumOtrosCargos")
                         .HasColumnType("numeric");
 
                     b.Property<decimal?>("SumPrecioVenta")
@@ -561,9 +612,6 @@ namespace Nebula.Data.Migrations
                     b.Property<decimal?>("SumTotValVenta")
                         .HasColumnType("numeric");
 
-                    b.Property<decimal?>("SumTotalAnticipos")
-                        .HasColumnType("numeric");
-
                     b.Property<string>("TipDocUsuario")
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
@@ -573,10 +621,6 @@ namespace Nebula.Data.Migrations
                         .HasColumnType("character varying(250)");
 
                     b.Property<string>("TipOperacion")
-                        .HasMaxLength(250)
-                        .HasColumnType("character varying(250)");
-
-                    b.Property<string>("TypeDoc")
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
@@ -609,7 +653,7 @@ namespace Nebula.Data.Migrations
                     b.Property<int?>("Cuota")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("DateEnd")
+                    b.Property<DateTime>("EndDate")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("InvoiceId")
@@ -706,6 +750,9 @@ namespace Nebula.Data.Migrations
                         .HasColumnType("numeric");
 
                     b.Property<decimal?>("MtoTriIcbperUnidad")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("MtoValorReferencialUnitario")
                         .HasColumnType("numeric");
 
                     b.Property<decimal?>("MtoValorUnitario")
@@ -936,26 +983,49 @@ namespace Nebula.Data.Migrations
                     b.ToTable("InvoiceNoteDetails");
                 });
 
-            modelBuilder.Entity("Nebula.Data.Models.PeopleDocType", b =>
+            modelBuilder.Entity("Nebula.Data.Models.InvoiceSerie", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("Description")
+                    b.Property<string>("Boleta")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<int?>("CounterBoleta")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("CounterFactura")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("CounterNotaDeVenta")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Factura")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<string>("NotaDeVenta")
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
                     b.Property<bool>("SoftDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("SunatCode")
-                        .HasMaxLength(250)
-                        .HasColumnType("character varying(250)");
+                    b.Property<int?>("WarehouseId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.ToTable("PeopleDocTypes");
+                    b.HasIndex("WarehouseId");
+
+                    b.ToTable("InvoiceSeries");
                 });
 
             modelBuilder.Entity("Nebula.Data.Models.Product", b =>
@@ -1004,8 +1074,8 @@ namespace Nebula.Data.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<Guid?>("UndMedidaId")
-                        .HasColumnType("uuid");
+                    b.Property<int?>("UndMedidaId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -1014,37 +1084,6 @@ namespace Nebula.Data.Migrations
                     b.HasIndex("UndMedidaId");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("Nebula.Data.Models.SerieInvoice", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<Guid?>("CajaId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int?>("Counter")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("DocType")
-                        .HasMaxLength(250)
-                        .HasColumnType("character varying(250)");
-
-                    b.Property<string>("Prefix")
-                        .HasMaxLength(250)
-                        .HasColumnType("character varying(250)");
-
-                    b.Property<bool>("SoftDeleted")
-                        .HasColumnType("boolean");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CajaId");
-
-                    b.ToTable("SerieInvoices");
                 });
 
             modelBuilder.Entity("Nebula.Data.Models.TransferNote", b =>
@@ -1062,8 +1101,8 @@ namespace Nebula.Data.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<Guid?>("OriginId")
-                        .HasColumnType("uuid");
+                    b.Property<int?>("OriginId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Remark")
                         .HasMaxLength(250)
@@ -1079,8 +1118,8 @@ namespace Nebula.Data.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<Guid?>("TargetId")
-                        .HasColumnType("uuid");
+                    b.Property<int?>("TargetId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Year")
                         .HasMaxLength(250)
@@ -1128,6 +1167,52 @@ namespace Nebula.Data.Migrations
                     b.ToTable("TransferNoteDetails");
                 });
 
+            modelBuilder.Entity("Nebula.Data.Models.Tributo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("CodTipTributo")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<string>("IdeTributo")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<int?>("InvoiceId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Month")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<decimal?>("MtoBaseImponible")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal?>("MtoTributo")
+                        .HasColumnType("numeric");
+
+                    b.Property<string>("NomTributo")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.Property<bool>("SoftDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Year")
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InvoiceId");
+
+                    b.ToTable("Tributos");
+                });
+
             modelBuilder.Entity("Nebula.Data.Models.TypeOperationSunat", b =>
                 {
                     b.Property<string>("Id")
@@ -1145,9 +1230,10 @@ namespace Nebula.Data.Migrations
 
             modelBuilder.Entity("Nebula.Data.Models.UndMedida", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("Name")
                         .HasMaxLength(250)
@@ -1167,9 +1253,10 @@ namespace Nebula.Data.Migrations
 
             modelBuilder.Entity("Nebula.Data.Models.Warehouse", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("Name")
                         .HasMaxLength(250)
@@ -1240,11 +1327,11 @@ namespace Nebula.Data.Migrations
 
             modelBuilder.Entity("Nebula.Data.Models.CajaDiaria", b =>
                 {
-                    b.HasOne("Nebula.Data.Models.Caja", "Caja")
-                        .WithMany("CajasDiaria")
-                        .HasForeignKey("CajaId");
+                    b.HasOne("Nebula.Data.Models.InvoiceSerie", "InvoiceSerie")
+                        .WithMany()
+                        .HasForeignKey("InvoiceSerieId");
 
-                    b.Navigation("Caja");
+                    b.Navigation("InvoiceSerie");
                 });
 
             modelBuilder.Entity("Nebula.Data.Models.CashierDetail", b =>
@@ -1260,15 +1347,6 @@ namespace Nebula.Data.Migrations
                     b.Navigation("CajaDiaria");
 
                     b.Navigation("Invoice");
-                });
-
-            modelBuilder.Entity("Nebula.Data.Models.Contact", b =>
-                {
-                    b.HasOne("Nebula.Data.Models.PeopleDocType", "PeopleDocType")
-                        .WithMany()
-                        .HasForeignKey("PeopleDocTypeId");
-
-                    b.Navigation("PeopleDocType");
                 });
 
             modelBuilder.Entity("Nebula.Data.Models.InventoryNote", b =>
@@ -1322,6 +1400,15 @@ namespace Nebula.Data.Migrations
                     b.Navigation("InvoiceNote");
                 });
 
+            modelBuilder.Entity("Nebula.Data.Models.InvoiceSerie", b =>
+                {
+                    b.HasOne("Nebula.Data.Models.Warehouse", "Warehouse")
+                        .WithMany()
+                        .HasForeignKey("WarehouseId");
+
+                    b.Navigation("Warehouse");
+                });
+
             modelBuilder.Entity("Nebula.Data.Models.Product", b =>
                 {
                     b.HasOne("Nebula.Data.Models.Category", "Category")
@@ -1329,21 +1416,12 @@ namespace Nebula.Data.Migrations
                         .HasForeignKey("CategoryId");
 
                     b.HasOne("Nebula.Data.Models.UndMedida", "UndMedida")
-                        .WithMany("Products")
+                        .WithMany()
                         .HasForeignKey("UndMedidaId");
 
                     b.Navigation("Category");
 
                     b.Navigation("UndMedida");
-                });
-
-            modelBuilder.Entity("Nebula.Data.Models.SerieInvoice", b =>
-                {
-                    b.HasOne("Nebula.Data.Models.Caja", "Caja")
-                        .WithMany("SerieInvoices")
-                        .HasForeignKey("CajaId");
-
-                    b.Navigation("Caja");
                 });
 
             modelBuilder.Entity("Nebula.Data.Models.TransferNote", b =>
@@ -1370,11 +1448,13 @@ namespace Nebula.Data.Migrations
                     b.Navigation("TransferNote");
                 });
 
-            modelBuilder.Entity("Nebula.Data.Models.Caja", b =>
+            modelBuilder.Entity("Nebula.Data.Models.Tributo", b =>
                 {
-                    b.Navigation("CajasDiaria");
+                    b.HasOne("Nebula.Data.Models.Invoice", "Invoice")
+                        .WithMany("Tributos")
+                        .HasForeignKey("InvoiceId");
 
-                    b.Navigation("SerieInvoices");
+                    b.Navigation("Invoice");
                 });
 
             modelBuilder.Entity("Nebula.Data.Models.InventoryNote", b =>
@@ -1387,6 +1467,8 @@ namespace Nebula.Data.Migrations
                     b.Navigation("InvoiceAccounts");
 
                     b.Navigation("InvoiceDetails");
+
+                    b.Navigation("Tributos");
                 });
 
             modelBuilder.Entity("Nebula.Data.Models.InvoiceNote", b =>
@@ -1397,11 +1479,6 @@ namespace Nebula.Data.Migrations
             modelBuilder.Entity("Nebula.Data.Models.TransferNote", b =>
                 {
                     b.Navigation("TransferNoteDetails");
-                });
-
-            modelBuilder.Entity("Nebula.Data.Models.UndMedida", b =>
-                {
-                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

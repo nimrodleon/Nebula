@@ -15,7 +15,7 @@ namespace Nebula.Data.Services
         private Configuration _configuration;
         private CajaDiaria _cajaDiaria;
         private Contact _contact;
-        private Sale _model;
+        private Venta _model;
 
         /// <summary>
         /// Constructor del Servicio.
@@ -29,7 +29,7 @@ namespace Nebula.Data.Services
         /// <summary>
         /// Establecer modelo.
         /// </summary>
-        public void SetModel(Sale model)
+        public void SetModel(Venta model)
         {
             _model = model;
             _logger.LogInformation($"Venta: {JsonSerializer.Serialize(model)}");
@@ -49,7 +49,7 @@ namespace Nebula.Data.Services
             try
             {
                 var invoice = _model.GetInvoice(_configuration, _contact);
-                var invoiceSerie = await GetInvoiceSerie(_cajaDiaria.InvoiceSerieId);
+                var invoiceSerie = await GetInvoiceSerie(Convert.ToInt32(_cajaDiaria.InvoiceSerieId));
 
                 int numComprobante = 0;
                 string THROW_MESSAGE = "Ingresa serie de comprobante!";
@@ -57,7 +57,7 @@ namespace Nebula.Data.Services
                 {
                     case "FT":
                         invoice.Serie = invoiceSerie.Factura;
-                        numComprobante = invoiceSerie.CounterFactura;
+                        numComprobante = Convert.ToInt32(invoiceSerie.CounterFactura);
                         if (numComprobante > 99999999)
                             throw new Exception(THROW_MESSAGE);
                         numComprobante = numComprobante + 1;
@@ -65,7 +65,7 @@ namespace Nebula.Data.Services
                         break;
                     case "BL":
                         invoice.Serie = invoiceSerie.Boleta;
-                        numComprobante = invoiceSerie.CounterBoleta;
+                        numComprobante = Convert.ToInt32(invoiceSerie.CounterBoleta);
                         if (numComprobante > 99999999)
                             throw new Exception(THROW_MESSAGE);
                         numComprobante = numComprobante + 1;
@@ -73,7 +73,7 @@ namespace Nebula.Data.Services
                         break;
                     case "NV":
                         invoice.Serie = invoiceSerie.NotaDeVenta;
-                        numComprobante = invoiceSerie.CounterNotaDeVenta;
+                        numComprobante = Convert.ToInt32(invoiceSerie.CounterNotaDeVenta);
                         if (numComprobante > 99999999)
                             throw new Exception(THROW_MESSAGE);
                         numComprobante = numComprobante + 1;
@@ -176,7 +176,7 @@ namespace Nebula.Data.Services
         /// <summary>
         /// Cargar series de facturación.
         /// </summary>
-        private async Task<InvoiceSerie> GetInvoiceSerie(Guid? id)
+        private async Task<InvoiceSerie> GetInvoiceSerie(int id)
         {
             var invoiceSerie = await _context.InvoiceSeries.SingleAsync(m => m.Id.Equals(id));
             if (invoiceSerie == null) throw new Exception("Serie comprobante no existe!");

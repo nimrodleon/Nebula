@@ -15,7 +15,7 @@ export class InventoryReasonModalComponent implements OnInit {
   @Input()
   title: string = '';
   @Input()
-  inventoryReason: InventoryReason | any;
+  inventoryReason: InventoryReason = new InventoryReason();
   @Output()
   responseData = new EventEmitter<ResponseData<InventoryReason>>();
   inventoryReasonForm: FormGroup = this.fb.group({

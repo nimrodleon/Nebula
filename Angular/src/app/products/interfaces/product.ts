@@ -1,15 +1,17 @@
-export interface Product {
-  id: number | null;
-  description: string;
-  barcode: string;
-  price1: number;
-  price2: number;
-  fromQty: number;
-  igvSunat: string;
-  icbper: string;
-  categoryId: string;
-  undMedidaId: string;
-  undMedida: any;
-  type: string;
-  pathImage: string;
+export class Product {
+  constructor(
+    public id: number | any = null,
+    public description: string = '',
+    public barcode: string = '',
+    public price1: number = 0,
+    public price2: number = 0,
+    public fromQty: number = 0,
+    public igvSunat: string = '',
+    public icbper: string = '',
+    public categoryId: number | any = null,
+    public undMedidaId: number | any = null,
+    public undMedida: any = undefined,
+    public type: string = '',
+    public pathImage: string = '') {
+  }
 }

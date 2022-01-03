@@ -19,7 +19,7 @@ export class CategoryListComponent implements OnInit {
   faEdit = faEdit;
   faTrashAlt = faTrashAlt;
   title: string = '';
-  currentCategory: Category | any;
+  currentCategory: Category = new Category();
   categories: Array<Category> = new Array<Category>();
   query: FormControl = this.fb.control('');
   categoryModal: any;
@@ -51,7 +51,7 @@ export class CategoryListComponent implements OnInit {
   // abrir modal categoría.
   public showCategoryModal(): void {
     this.title = 'Agregar Categoría';
-    this.currentCategory = null;
+    this.currentCategory = new Category();
     this.categoryModal.show();
   }
 
@@ -71,6 +71,4 @@ export class CategoryListComponent implements OnInit {
       this.categoryModal.hide();
     }
   }
-
-
 }

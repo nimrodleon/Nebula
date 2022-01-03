@@ -19,7 +19,7 @@ export class UndMedidaListComponent implements OnInit {
   faEdit = faEdit;
   faTrashAlt = faTrashAlt;
   title: string = '';
-  currentUndMedida: UndMedida | any;
+  currentUndMedida: UndMedida = new UndMedida();
   unidadesDeMedida: Array<UndMedida> = new Array<UndMedida>();
   query: FormControl = this.fb.control('');
   undMedidaModal: any;
@@ -51,7 +51,7 @@ export class UndMedidaListComponent implements OnInit {
   // abrir modal unidad de medida.
   public showUndMedidaModal(): void {
     this.title = 'Agregar Unidad Medida';
-    this.currentUndMedida = null;
+    this.currentUndMedida = new UndMedida();
     this.undMedidaModal.show();
   }
 
