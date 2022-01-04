@@ -118,7 +118,7 @@ export class TerminalService {
 
   // guardar cambios.
   public saveChanges(id: number): Observable<ResponseData<Sale>> {
-    return this.invoiceService.salePos(id, this._sale);
+    return this.invoiceService.createQuickSale(id, this._sale);
   }
 
 }

@@ -24,16 +24,24 @@ export class InvoiceService {
     return this.http.get<Invoice[]>(`${this.appURL}/Index/${type}`, {params: params});
   }
 
+  // obtener registro del comprobante.
   public show(id: number): Observable<Invoice> {
     return this.http.get<Invoice>(`${this.appURL}/Show/${id}`);
   }
 
-  public create(data: Comprobante): Observable<ResponseData<Comprobante>> {
-    return this.http.post<ResponseData<Comprobante>>(`${this.appURL}/Create`, data);
+  // registrar comprobante de venta.
+  public createSale(id: number, data: Comprobante): Observable<ResponseData<Comprobante>> {
+    return this.http.post<ResponseData<Comprobante>>(`${this.appURL}/CreateSale/${id}`, data);
   }
 
-  public salePos(id: number, sale: Sale): Observable<ResponseData<Sale>> {
-    return this.http.post<ResponseData<Sale>>(`${this.appURL}/SalePos/${id}`, sale);
+  // registrar venta rápida.
+  public createQuickSale(id: number, data: Sale): Observable<ResponseData<Sale>> {
+    return this.http.post<ResponseData<Sale>>(`${this.appURL}/CreateQuickSale/${id}`, data);
+  }
+
+  // registrar comprobante de compra.
+  public createPurchase(data: Comprobante): Observable<ResponseData<Comprobante>> {
+    return this.http.post<ResponseData<Comprobante>>(`${this.appURL}/CreatePurchase`, data);
   }
 
 }

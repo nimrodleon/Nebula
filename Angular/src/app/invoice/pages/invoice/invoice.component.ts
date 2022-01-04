@@ -8,7 +8,7 @@ import {
 import * as moment from 'moment';
 import {environment} from 'src/environments/environment';
 import {Comprobante, CpeDetail, Cuota, TypeOperationSunat} from '../../interfaces';
-import {InvoiceService, SunatService} from '../../services';
+import {FacturadorService, InvoiceService, SunatService} from '../../services';
 import {Contact} from 'src/app/contact/interfaces';
 import {confirmTask, ResponseData} from 'src/app/global/interfaces';
 import {InvoiceSerieService} from 'src/app/system/services';
@@ -31,8 +31,6 @@ export class InvoiceComponent implements OnInit {
   faArrowLeft = faArrowLeft;
   faIdCardAlt = faIdCardAlt;
   faEdit = faEdit;
-  invoiceType: string = '';
-  nomComprobante: string = '';
   private appURL: string = environment.applicationUrl;
   currentContact: Contact | any;
   contactModal: any;
@@ -64,23 +62,22 @@ export class InvoiceComponent implements OnInit {
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private invoiceSerieService: InvoiceSerieService,
+    private facturadorService: FacturadorService,
     private invoiceService: InvoiceService,
     private sunatService: SunatService) {
   }
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe(params => {
-      this.invoiceType = params.get('type') || '';
-      //  título del comprobante.
       switch (params.get('type')) {
         case 'purchase':
-          this.nomComprobante = 'Compra';
+          this.comprobante.invoiceType = 'COMPRA';
           this.serieId.disable();
           this.comprobanteForm.controls['serie'].setValidators([Validators.required]);
           this.comprobanteForm.controls['number'].setValidators([Validators.required]);
           break;
         case 'sale':
-          this.nomComprobante = 'Venta';
+          this.comprobante.invoiceType = 'VENTA';
           this.serieId.setValidators([Validators.required]);
           break;
       }
@@ -112,6 +109,56 @@ export class InvoiceComponent implements OnInit {
     this.itemComprobanteModal = new bootstrap.Modal(document.querySelector('#item-comprobante'));
     // modal cuota crédito.
     this.cuotaModal = new bootstrap.Modal(document.querySelector('#cuota-modal'));
+  }
+
+  // guardar comprobante de compra.
+  private guardarCompra(): void {
+    this.invoiceService.createPurchase(this.comprobante)
+      .subscribe(async (result) => {
+        if (result.ok) {
+          if (result.data) {
+            const {data} = result;
+            console.info(result.msg);
+            await this.router.navigate(['/invoice/detail', data?.invoiceId]);
+          }
+        }
+      });
+  }
+
+  // guardar comprobante de venta.
+  private guardarVenta(): void {
+    this.invoiceService.createSale(this.serieId.value, this.comprobante)
+      .subscribe(result => {
+        if (result.ok) {
+          if (result.data) {
+            const {data} = result;
+            console.info(result.msg);
+            this.crearXML(data);
+          }
+        }
+      });
+  }
+
+  // crear archivo XML facturador SUNAT.
+  private crearXML(data: Comprobante): void {
+    // cargar la Lista de archivos JSON.
+    this.facturadorService.ActualizarPantalla()
+      .subscribe(result => {
+        if (result.listaBandejaFacturador.length > 0) {
+          // generar fichero XML del comprobante.
+          this.facturadorService.GenerarComprobante(data?.invoiceId)
+            .subscribe(result => {
+              if (result.listaBandejaFacturador.length > 0) {
+                // generar fichero PDF del comprobante.
+                this.facturadorService.GenerarPdf(data?.invoiceId)
+                  .subscribe(async (result) => {
+                    console.info(result);
+                    await this.router.navigate(['/invoice/detail', data?.invoiceId]);
+                  });
+              }
+            });
+        }
+      });
   }
 
   // borrar item comprobante.
@@ -147,9 +194,11 @@ export class InvoiceComponent implements OnInit {
       this.comprobanteForm.markAllAsTouched();
       hasError = true;
     }
-    if (this.serieId.invalid) {
-      this.serieId.markAsTouched();
-      hasError = true;
+    if (this.comprobante.invoiceType === 'VENTA') {
+      if (this.serieId.invalid) {
+        this.serieId.markAsTouched();
+        hasError = true;
+      }
     }
     if (hasError) return;
     // validar detalle de factura.
@@ -186,30 +235,16 @@ export class InvoiceComponent implements OnInit {
       if (result.isConfirmed) {
         this.comprobante = {...this.comprobante, ...this.comprobanteForm.value};
         console.log(this.comprobante);
+        switch (this.comprobante.invoiceType) {
+          case 'COMPRA':
+            this.guardarCompra();
+            break;
+          case 'VENTA':
+            this.guardarVenta();
+            break;
+        }
       }
     });
-
-
-    // if (this.comprobanteForm.get('paymentType')?.value === 'Contado') {
-    //   this.comprobanteForm.controls['endDate'].setValue('1992-04-05');
-    // }
-    // this.invoiceService.create({
-    //   ...this.comprobanteForm.value, invoiceType: this.invoiceType,
-    //   details: this.detalleComprobante
-    // }).subscribe(result => {
-    //   let URI: string = '';
-    //   switch (this.invoiceType.toUpperCase()) {
-    //     case 'SALE':
-    //       URI = '/sales';
-    //       break;
-    //     case 'PURCHASE':
-    //       URI = '/shopping';
-    //       break;
-    //   }
-    //   if (result.ok) {
-    //     this.router.navigate([URI]);
-    //   }
-    // });
   }
 
   // abrir modal cuota.

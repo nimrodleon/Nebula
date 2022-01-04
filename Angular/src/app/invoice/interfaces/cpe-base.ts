@@ -14,6 +14,7 @@ export class CpeBase {
     public sumTotTributos: number = 0, // IGV(18%).
     public sumImpVenta: number = 0, // importe total.
     public remark: string = '', // observación.
+    public invoiceType: string = 'VENTA', // Tipo comprobante #COMPRA/VENTA.
     public details: Array<CpeDetail> = new Array<CpeDetail>(),
     public cuotas: Array<Cuota> = new Array<Cuota>(),
     public invoiceId: number | any = undefined) {

@@ -39,7 +39,7 @@ namespace Nebula.Data.ViewModels
         /// <summary>
         /// Tipo comprobante #COMPRA/VENTA.
         /// </summary>
-        public string InvoiceType { get; set; } = "SALE";
+        public string InvoiceType { get; set; } = "VENTA";
 
         /// <summary>
         /// Detalle de Venta.
