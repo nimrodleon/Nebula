@@ -189,52 +189,11 @@ export class InvoiceComponent implements OnInit {
 
   // registrar comprobante.
   public registerVoucher(): void {
-    let hasError: boolean = false;
-    if (this.comprobanteForm.invalid) {
-      this.comprobanteForm.markAllAsTouched();
-      hasError = true;
-    }
-    if (this.comprobante.invoiceType === 'VENTA') {
-      if (this.serieId.invalid) {
-        this.serieId.markAsTouched();
-        hasError = true;
-      }
-    }
-    if (hasError) return;
-    // validar detalle de factura.
-    if (this.comprobante.details.length <= 0) {
-      Swal.fire(
-        'Información',
-        'Debe existir al menos un Item para facturar!',
-        'info'
-      );
-      return;
-    }
-    // validar lista de cuotas si la factura es ha crédito.
-    if (this.comprobanteForm.get('formaPago')?.value === 'Credito') {
-      if (this.comprobante.cuotas.length <= 0) {
-        Swal.fire(
-          'Información',
-          'Debe existir al menos una Cuota para facturar!',
-          'info'
-        );
-        return;
-      }
-      // validar si existe fecha de vencimiento.
-      if (!this.comprobanteForm.get('endDate')?.value) {
-        Swal.fire(
-          'Información',
-          'Debe ingresar fecha de vencimiento!',
-          'info'
-        );
-        return;
-      }
-    }
+    if (this.validHasError()) return;
     // Guardar datos, sólo si es válido el formulario.
     confirmTask().then(result => {
       if (result.isConfirmed) {
         this.comprobante = {...this.comprobante, ...this.comprobanteForm.value};
-        console.log(this.comprobante);
         switch (this.comprobante.invoiceType) {
           case 'COMPRA':
             this.guardarCompra();
@@ -279,6 +238,62 @@ export class InvoiceComponent implements OnInit {
       this.comprobanteForm.controls['contactId'].setValue(response.data?.id);
       this.contactModal.hide();
     }
+  }
+
+  // volver una página atrás.
+  public historyBack(): void {
+    window.history.back();
+  }
+
+  // validar formulario.
+  private validHasError(): boolean {
+    let hasError: boolean = false;
+    if (this.comprobanteForm.invalid) {
+      this.comprobanteForm.markAllAsTouched();
+      hasError = true;
+    }
+    if (this.comprobante.invoiceType === 'VENTA') {
+      if (this.serieId.invalid) {
+        this.serieId.markAsTouched();
+        hasError = true;
+      }
+    }
+    if (hasError) return hasError;
+
+    // validar detalle de factura.
+    if (this.comprobante.details.length <= 0) {
+      Swal.fire(
+        'Información',
+        'Debe existir al menos un Item para facturar!',
+        'info'
+      );
+      hasError = true;
+    }
+    if (hasError) return hasError;
+
+    // validar lista de cuotas si la factura es ha crédito.
+    if (this.comprobanteForm.get('formaPago')?.value === 'Credito') {
+      if (this.comprobante.cuotas.length <= 0) {
+        Swal.fire(
+          'Información',
+          'Debe existir al menos una Cuota para facturar!',
+          'info'
+        );
+        hasError = true;
+      }
+      if (hasError) return hasError;
+
+      // validar si existe fecha de vencimiento.
+      if (!this.comprobanteForm.get('endDate')?.value) {
+        Swal.fire(
+          'Información',
+          'Debe ingresar fecha de vencimiento!',
+          'info'
+        );
+        hasError = true;
+      }
+    }
+    return hasError;
   }
 
 }

@@ -204,7 +204,7 @@
         </div>
       </ng-container>
       <div class="d-flex justify-content-center bg-white shadow-sm mb-2 py-3">
-        <button type="button" class="btn btn-danger btn-lg me-2">
+        <button type="button" (click)="historyBack()" class="btn btn-danger btn-lg me-2">
           <fa-icon [icon]="faArrowLeft"></fa-icon>
           <span class="text-uppercase ms-1">Cancelar</span>
         </button>

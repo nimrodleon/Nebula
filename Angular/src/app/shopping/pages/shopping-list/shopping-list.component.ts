@@ -33,7 +33,7 @@ export class ShoppingListComponent implements OnInit {
 
   // buscar comprobantes.
   public submitQuery(): void {
-    this.invoiceService.index('PURCHASE', this.queryForm.value)
+    this.invoiceService.index('COMPRA', this.queryForm.value)
       .subscribe(result => this.invoices = result);
   }
 

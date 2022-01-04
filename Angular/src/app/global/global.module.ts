@@ -5,12 +5,14 @@ import {RouterModule} from '@angular/router';
 import {DocTypeInvoicePipe} from './pipes/doc-type-invoice.pipe';
 import {NavbarComponent} from './navbar/navbar.component';
 import {SidebarComponent} from './sidebar/sidebar.component';
+import {FormaPagoPipe} from './pipes/forma-pago.pipe';
 
 @NgModule({
   declarations: [
     NavbarComponent,
     SidebarComponent,
-    DocTypeInvoicePipe
+    DocTypeInvoicePipe,
+    FormaPagoPipe
   ],
   imports: [
     CommonModule,
@@ -20,7 +22,8 @@ import {SidebarComponent} from './sidebar/sidebar.component';
   exports: [
     NavbarComponent,
     SidebarComponent,
-    DocTypeInvoicePipe
+    DocTypeInvoicePipe,
+    FormaPagoPipe
   ]
 })
 export class GlobalModule {

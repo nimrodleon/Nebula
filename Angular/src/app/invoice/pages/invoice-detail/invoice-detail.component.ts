@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {faEnvelope, faPrint, faStickyNote, faTimes} from '@fortawesome/free-solid-svg-icons';
 import {environment} from 'src/environments/environment';
 import {InvoiceService} from '../../services';
@@ -20,6 +20,7 @@ export class InvoiceDetailComponent implements OnInit {
   invoice: Invoice = new Invoice();
 
   constructor(
+    private router: Router,
     private activatedRoute: ActivatedRoute,
     private invoiceService: InvoiceService) {
   }
@@ -32,6 +33,12 @@ export class InvoiceDetailComponent implements OnInit {
           this.urlPdf = `${this.appURL}Facturador/GetPdf?invoice=${result.id}`;
         });
     });
+  }
+
+  // Imprimir comprobante.
+  public async print() {
+    if (this.invoice.invoiceType === 'COMPRA') window.print();
+    if (this.invoice.invoiceType === 'VENTA') await this.router.navigate([this.urlPdf]);
   }
 
 }

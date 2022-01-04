@@ -1,23 +1,25 @@
 <app-navbar></app-navbar>
 <div class="Wrapper">
   <app-sidebar></app-sidebar>
-  <div class="container-fluid">
+  <div id="content" class="container-fluid">
     <div class="row px-2">
       <div class="d-flex align-items-center justify-content-between bg-white my-2 py-3">
         <h5 class="text-uppercase mb-0">{{invoice.docType|docTypeInvoice}}: {{invoice.serie}}-{{invoice.number}}</h5>
         <div class="d-flex d-print-none">
-          <button type="button" class="btn btn-danger me-2">
-            <fa-icon [icon]="faTimes" class="me-1"></fa-icon>
-            <span class="text-uppercase">Anular</span>
-          </button>
-          <button type="button" [routerLink]="['/invoice/note', invoice.id]" class="btn btn-primary me-2">
-            <fa-icon [icon]="faStickyNote" class="me-1"></fa-icon>
-            <span class="text-uppercase">Nota Electrónica</span>
-          </button>
-          <a href="{{urlPdf}}" class="btn btn-success" target="_blank">
+          <ng-container *ngIf="invoice.docType !== 'NOTA'">
+            <button type="button" class="btn btn-danger me-2">
+              <fa-icon [icon]="faTimes" class="me-1"></fa-icon>
+              <span class="text-uppercase">Anular</span>
+            </button>
+            <button type="button" [routerLink]="['/invoice/note', invoice.id]" class="btn btn-primary me-2">
+              <fa-icon [icon]="faStickyNote" class="me-1"></fa-icon>
+              <span class="text-uppercase">Nota Electrónica</span>
+            </button>
+          </ng-container>
+          <button type="button" (click)="print()" class="btn btn-success">
             <fa-icon [icon]="faPrint" class="me-1"></fa-icon>
             <span class="text-uppercase">Imprimir</span>
-          </a>
+          </button>
         </div>
       </div>
       <div class="col-12 bg-white py-3">
@@ -37,8 +39,8 @@
               <td>{{invoice.fecEmision|date}}</td>
             </tr>
             <tr>
-              <th class="text-uppercase">Almacén</th>
-              <td>Almacén Principal</td>
+              <th class="text-uppercase">Forma de Pago</th>
+              <td>{{invoice.formaPago|formaPago}}</td>
             </tr>
             </tbody>
           </table>

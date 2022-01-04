@@ -54,7 +54,6 @@
               <th>Documento</th>
               <th>Proveedor</th>
               <th>Fecha</th>
-              <th>Estado</th>
               <th>Total</th>
               <th></th>
             </tr>
@@ -67,26 +66,7 @@
               </td>
               <td class="text-uppercase">{{item.rznSocialUsuario}}</td>
               <td>{{item.fecEmision|date}}</td>
-              <td><span class="badge bg-warning">CRÉDITO</span></td>
-              <td>{{item.sumImpVenta|currency}}</td>
-              <td>
-                <div class="actions ms-auto">
-                  <button type="button" class="btn btn-secondary btn-sm me-2">
-                    <fa-icon [icon]="faEdit"></fa-icon>
-                  </button>
-                  <button type="button" class="btn btn-danger btn-sm">
-                    <fa-icon [icon]="faTrashAlt"></fa-icon>
-                  </button>
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td>001</td>
-              <td>F001-4500</td>
-              <td class="text-uppercase">DELTRON S.A.C</td>
-              <td>2021-07-31</td>
-              <td><span class="badge bg-success">CONTADO</span></td>
-              <td>452.00</td>
+              <td>{{item.sumImpVenta.toFixed(2)}}</td>
               <td>
                 <div class="actions ms-auto">
                   <button type="button" class="btn btn-secondary btn-sm me-2">
