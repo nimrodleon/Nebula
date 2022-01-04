@@ -9,7 +9,7 @@ namespace Nebula.Data.Models
 
         /// <summary>
         /// Tipo documento para control interno.
-        /// FACTURA|BOLETA|NOTA DE VENTA, (FT|BL|NV).
+        /// FACTURA|BOLETA|NOTA DE VENTA, (FACTURA|BOLETA|NOTA).
         /// </summary>
         [MaxLength(250)]
         public string DocType { get; set; }

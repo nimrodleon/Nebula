@@ -32,12 +32,20 @@ namespace Nebula.Data.Services
         /// <summary>
         /// Establecer modelo comprobante.
         /// </summary>
-        public void SetModel(Comprobante model) => _comprobante = model;
+        public void SetModel(Comprobante model)
+        {
+            _comprobante = model;
+            _logger.LogInformation($"Comprobante: {JsonSerializer.Serialize(_comprobante)}");
+        }
 
         /// <summary>
         /// Establecer modelo venta.
         /// </summary>
-        public void SetModel(Venta model) => _venta = model;
+        public void SetModel(Venta model)
+        {
+            _venta = model;
+            _logger.LogInformation($"Venta: {JsonSerializer.Serialize(_venta)}");
+        }
 
         /// <summary>
         /// Guardar el Comprobante de venta.

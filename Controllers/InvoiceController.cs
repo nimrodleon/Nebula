@@ -145,8 +145,10 @@ namespace Nebula.Controllers
         [HttpPost("CreatePurchase")]
         public async Task<IActionResult> CreatePurchase([FromBody] Comprobante model)
         {
+            _logger.LogInformation("CreatePurchase antes de bloque Try");
             try
             {
+                _logger.LogInformation("CreatePurchase dentro del bloque Try");
                 _comprobanteService.SetModel(model);
                 var invoice = await _comprobanteService.SavePurchase();
                 model.InvoiceId = invoice.Id;

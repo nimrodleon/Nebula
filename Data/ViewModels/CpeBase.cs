@@ -230,6 +230,9 @@ namespace Nebula.Data.ViewModels
         /// </summary>
         public List<InvoiceAccount> GetInvoiceAccounts(Invoice invoice)
         {
+            string accountType = string.Empty;
+            if (invoice.InvoiceType.Equals("VENTA")) accountType = "COBRAR";
+            if (invoice.InvoiceType.Equals("COMPRA")) accountType = "PAGAR";
             var invoiceAccounts = new List<InvoiceAccount>();
             Cuotas.ForEach(item =>
             {
@@ -238,7 +241,7 @@ namespace Nebula.Data.ViewModels
                     InvoiceId = invoice.Id,
                     Serie = invoice.Serie,
                     Number = invoice.Number,
-                    AccountType = "Cobrar",
+                    AccountType = accountType,
                     Status = "PENDIENTE",
                     Cuota = item.NumCuota,
                     Amount = item.Amount,

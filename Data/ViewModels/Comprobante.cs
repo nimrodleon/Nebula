@@ -36,7 +36,7 @@ namespace Nebula.Data.ViewModels
         /// <summary>
         /// Fecha Vencimiento.
         /// </summary>
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         /// <summary>
         /// Configurar cabecera de venta.
@@ -50,14 +50,16 @@ namespace Nebula.Data.ViewModels
             string month = DateTime.Now.ToString("MM");
             string startDate = DateTime.Now.ToString("yyyy-MM-dd");
             string startTime = DateTime.Now.ToString("HH:mm:ss");
-            string fecVencimiento = EndDate.ToString("yyyy-MM-dd");
-            if (InvoiceType.Equals("PURCHASE"))
+            string fecVencimiento = "-";
+            if (FormaPago.Equals("Credito"))
+                if (EndDate != null)
+                    fecVencimiento = Convert.ToDateTime(EndDate).ToString("yyyy-MM-dd");
+            if (InvoiceType.Equals("COMPRA"))
             {
                 year = StartDate.ToString("yyyy");
                 month = StartDate.ToString("MM");
                 startDate = StartDate.ToString("yyyy-MM-dd");
                 startTime = "00:00:00";
-                fecVencimiento = "-";
             }
 
             // Devolver Configuración Factura.
@@ -83,7 +85,7 @@ namespace Nebula.Data.ViewModels
             };
 
             // configurar número y serie de facturación.
-            if (InvoiceType.Equals("PURCHASE"))
+            if (InvoiceType.Equals("COMPRA"))
             {
                 invoice.Number = Number;
                 invoice.Serie = Serie;

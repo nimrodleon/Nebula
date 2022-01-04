@@ -8,13 +8,13 @@ export class DocTypeInvoicePipe implements PipeTransform {
   transform(value: string): string {
     let result: string = '';
     switch (value) {
-      case 'FT':
+      case 'FACTURA':
         result = 'FACTURA';
         break;
-      case 'BL':
+      case 'BOLETA':
         result = 'BOLETA';
         break;
-      case 'NV':
+      case 'NOTA':
         result = 'NOTA DE VENTA';
         break;
     }
