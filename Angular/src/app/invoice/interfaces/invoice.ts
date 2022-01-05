@@ -15,6 +15,7 @@ export class Invoice {
     public fecVencimiento: string = '', // fecha de vencimiento. Formato: YYYY-MM-DD, an..10
     public codLocalEmisor: string = '', // Código del domicilio fiscal o de local anexo del emisor.
     public formaPago: string = '', // Forma de pago. Credito / Contado - a7
+    public contactId: number | any = undefined, // ID de contacto, Usado para editar el contacto del comprobante.
     public tipDocUsuario: string = '', // Tipo de documento de identidad del adquirente o usuario. Catálogo: 6, an1
     public numDocUsuario: string = '', // Número de documento de identidad del adquirente o usuario. an..15
     public rznSocialUsuario: string = '', // Apellidos y nombres, denominación o razón social del adquirente o usuario. an..1500

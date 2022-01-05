@@ -2,6 +2,7 @@ import {CpeDetail} from './cpe-detail';
 import {Cuota} from './cuota';
 import {Configuration} from '../../system/interfaces';
 import {Product} from '../../products/interfaces';
+import {InvoiceDetail} from './invoice-detail';
 
 // modelo comprobantes electrónicos.
 export class CpeBase {
@@ -105,6 +106,26 @@ export class CpeBase {
     item.valorIcbper = configuration.valorImpuestoBolsa;
     item.porcentajeIGV = configuration.porcentajeIgv;
     item.mtoTriIcbperUnidad = configuration.valorImpuestoBolsa;
+    return item;
+  }
+
+  // configurar item detalle desde una factura.
+  public static getItemDetail(invoiceDetail: InvoiceDetail): CpeDetail {
+    const item: CpeDetail = new CpeDetail();
+    item.productId = invoiceDetail.codProducto;
+    item.codUnidadMedida = invoiceDetail.codUnidadMedida;
+    item.codProductoSunat = invoiceDetail.codProductoSunat;
+    item.description = invoiceDetail.desItem;
+    item.price = invoiceDetail.mtoPrecioVentaUnitario;
+    item.quantity = invoiceDetail.ctdUnidadItem;
+    if (invoiceDetail.codTriIgv === '1000') item.igvSunat = 'GRAVADO';
+    if (invoiceDetail.codTriIgv === '9997') item.igvSunat = 'EXONERADO';
+    if (invoiceDetail.codTriIgv === '9996') item.igvSunat = 'GRATUITO';
+    item.valorIgv = Number(invoiceDetail.porIgvItem);
+    item.triIcbper = invoiceDetail.codTriIcbper !== '-';
+    item.valorIcbper = Number(invoiceDetail.mtoTriIcbperUnidad);
+    item.porcentajeIGV = Number(invoiceDetail.porIgvItem);
+    item.mtoTriIcbperUnidad = Number(invoiceDetail.mtoTriIcbperUnidad);
     return item;
   }
 

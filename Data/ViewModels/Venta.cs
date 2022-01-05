@@ -38,6 +38,7 @@ namespace Nebula.Data.ViewModels
                 HorEmision = DateTime.Now.ToString("HH:mm:ss"),
                 CodLocalEmisor = config.CodLocalEmisor,
                 FormaPago = "Contado",
+                ContactId = client.Id,
                 TipDocUsuario = client.DocType.ToString(),
                 NumDocUsuario = client.Document,
                 RznSocialUsuario = client.Name,

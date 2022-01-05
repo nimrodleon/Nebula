@@ -69,7 +69,8 @@
               <td>{{item.sumImpVenta.toFixed(2)}}</td>
               <td>
                 <div class="actions ms-auto">
-                  <button type="button" class="btn btn-secondary btn-sm me-2">
+                  <button type="button" [routerLink]="['/invoice/purchase', item.id]"
+                          class="btn btn-secondary btn-sm me-2">
                     <fa-icon [icon]="faEdit"></fa-icon>
                   </button>
                   <button type="button" class="btn btn-danger btn-sm">

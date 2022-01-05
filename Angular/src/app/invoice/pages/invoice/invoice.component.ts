@@ -2,18 +2,23 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
-  faArrowLeft, faEdit, faIdCardAlt, faPlus,
-  faSave, faSearch, faTrashAlt
+  faArrowLeft,
+  faEdit,
+  faIdCardAlt,
+  faPlus,
+  faSave,
+  faSearch,
+  faTrashAlt
 } from '@fortawesome/free-solid-svg-icons';
 import * as moment from 'moment';
+import Swal from 'sweetalert2';
 import {environment} from 'src/environments/environment';
-import {Comprobante, CpeDetail, Cuota, TypeOperationSunat} from '../../interfaces';
+import {Comprobante, CpeBase, CpeDetail, Cuota, TypeOperationSunat} from '../../interfaces';
 import {FacturadorService, InvoiceService, SunatService} from '../../services';
 import {Contact} from 'src/app/contact/interfaces';
 import {confirmTask, ResponseData} from 'src/app/global/interfaces';
 import {InvoiceSerieService} from 'src/app/system/services';
 import {InvoiceSerie} from 'src/app/system/interfaces';
-import Swal from 'sweetalert2';
 
 declare var jQuery: any;
 declare var bootstrap: any;
@@ -75,10 +80,12 @@ export class InvoiceComponent implements OnInit {
           this.serieId.disable();
           this.comprobanteForm.controls['serie'].setValidators([Validators.required]);
           this.comprobanteForm.controls['number'].setValidators([Validators.required]);
+          if (params.get('id')) this.cargarComprobante(<any>params.get('id'));
           break;
         case 'sale':
           this.comprobante.invoiceType = 'VENTA';
           this.serieId.setValidators([Validators.required]);
+          if (params.get('id')) this.historyBack();
           break;
       }
     });
@@ -109,6 +116,51 @@ export class InvoiceComponent implements OnInit {
     this.itemComprobanteModal = new bootstrap.Modal(document.querySelector('#item-comprobante'));
     // modal cuota crédito.
     this.cuotaModal = new bootstrap.Modal(document.querySelector('#cuota-modal'));
+  }
+
+  // cargar comprobante modo edición.
+  private cargarComprobante(id: number): void {
+    this.invoiceService.show(id).subscribe(result => {
+      // datos de contacto.
+      this.comprobante.contactId = result.contactId;
+      this.comprobanteForm.controls['contactId'].setValue(result.contactId);
+      const newOption = new Option(`${result.numDocUsuario} - ${result.rznSocialUsuario}`,
+        result.contactId, true, true);
+      jQuery('#contactId').append(newOption).trigger('change');
+      // fecha de emisión.
+      this.comprobante.startDate = result.fecEmision;
+      this.comprobanteForm.controls['startDate'].setValue(result.fecEmision);
+      // tipo comprobante.
+      this.comprobante.docType = result.docType;
+      this.comprobanteForm.controls['docType'].setValue(result.docType);
+      // forma de pago.
+      this.comprobante.formaPago = result.formaPago;
+      this.comprobanteForm.controls['formaPago'].setValue(result.formaPago);
+      // tipo de operación.
+      this.comprobante.typeOperation = result.tipOperacion;
+      this.comprobanteForm.controls['typeOperation'].setValue(result.tipOperacion);
+      // número y serie de comprobante.
+      this.comprobante.serie = result.serie;
+      this.comprobanteForm.controls['serie'].setValue(result.serie);
+      this.comprobante.number = result.number;
+      this.comprobanteForm.controls['number'].setValue(result.number);
+      // fecha de vencimiento.
+      if (result.formaPago === 'Credito') {
+        if (result.fecVencimiento && result.fecVencimiento !== '-') {
+          this.comprobante.endDate = result.fecVencimiento;
+          this.comprobanteForm.controls['endDate'].setValue(result.fecVencimiento);
+        }
+      }
+      // agregar detalles del comprobante.
+      result.invoiceDetails.forEach(item => {
+        const itemDetail: CpeDetail = CpeBase.getItemDetail(item);
+        itemDetail.calcularItem();
+
+      });
+
+
+      console.log(result);
+    });
   }
 
   // guardar comprobante de compra.

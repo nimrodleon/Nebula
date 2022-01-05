@@ -70,6 +70,12 @@ namespace Nebula.Data.Models
         public string FormaPago { get; set; } = "Contado";
 
         /// <summary>
+        /// ID de contacto.
+        /// Usado para editar el contacto del comprobante.
+        /// </summary>
+        public int? ContactId { get; set; }
+
+        /// <summary>
         /// Tipo de documento de identidad del adquirente o usuario. Catálogo: 6, an1
         /// </summary>
         [MaxLength(250)]
