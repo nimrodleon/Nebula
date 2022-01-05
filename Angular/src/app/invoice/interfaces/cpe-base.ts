@@ -14,7 +14,7 @@ export class CpeBase {
     public sumTotValVenta: number = 0, // subTotal.
     public sumTotTributos: number = 0, // IGV(18%).
     public sumImpVenta: number = 0, // importe total.
-    public remark: string = '', // observación.
+    public remark: string | any = undefined, // observación.
     public invoiceType: string = 'VENTA', // Tipo comprobante #COMPRA/VENTA.
     public details: Array<CpeDetail> = new Array<CpeDetail>(),
     public cuotas: Array<Cuota> = new Array<Cuota>(),
@@ -64,7 +64,7 @@ export class CpeBase {
       this.details.push(cpeDetail);
       this.calcImporteVenta();
     } else {
-      this.deleteItem(<any>cpeDetail.productId);
+      this.deleteItem(cpeDetail.productId);
       this.details.push(cpeDetail);
       this.calcImporteVenta();
     }
@@ -112,7 +112,7 @@ export class CpeBase {
   // configurar item detalle desde una factura.
   public static getItemDetail(invoiceDetail: InvoiceDetail): CpeDetail {
     const item: CpeDetail = new CpeDetail();
-    item.productId = invoiceDetail.codProducto;
+    item.productId = Number(invoiceDetail.codProducto);
     item.codUnidadMedida = invoiceDetail.codUnidadMedida;
     item.codProductoSunat = invoiceDetail.codProductoSunat;
     item.description = invoiceDetail.desItem;

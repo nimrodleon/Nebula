@@ -2,13 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
-  faArrowLeft,
-  faEdit,
-  faIdCardAlt,
-  faPlus,
-  faSave,
-  faSearch,
-  faTrashAlt
+  faArrowLeft, faEdit, faIdCardAlt,
+  faPlus, faSave, faSearch, faTrashAlt
 } from '@fortawesome/free-solid-svg-icons';
 import * as moment from 'moment';
 import Swal from 'sweetalert2';
@@ -121,6 +116,7 @@ export class InvoiceComponent implements OnInit {
   // cargar comprobante modo edición.
   private cargarComprobante(id: number): void {
     this.invoiceService.show(id).subscribe(result => {
+      this.comprobante.invoiceId = result.id;
       // datos de contacto.
       this.comprobante.contactId = result.contactId;
       this.comprobanteForm.controls['contactId'].setValue(result.contactId);
@@ -150,22 +146,42 @@ export class InvoiceComponent implements OnInit {
           this.comprobante.endDate = result.fecVencimiento;
           this.comprobanteForm.controls['endDate'].setValue(result.fecVencimiento);
         }
+        // agregar cuotas al comprobante.
+        result.invoiceAccounts.forEach(item => {
+          const cuota: Cuota = new Cuota();
+          cuota.id = item.id;
+          cuota.numCuota = item.cuota;
+          cuota.endDate = item.endDate;
+          cuota.amount = item.amount;
+          this.comprobante.addCuota(cuota);
+        });
       }
       // agregar detalles del comprobante.
       result.invoiceDetails.forEach(item => {
         const itemDetail: CpeDetail = CpeBase.getItemDetail(item);
         itemDetail.calcularItem();
-
+        this.comprobante.addItemWithData(itemDetail);
       });
-
-
-      console.log(result);
     });
   }
 
   // guardar comprobante de compra.
   private guardarCompra(): void {
     this.invoiceService.createPurchase(this.comprobante)
+      .subscribe(async (result) => {
+        if (result.ok) {
+          if (result.data) {
+            const {data} = result;
+            console.info(result.msg);
+            await this.router.navigate(['/invoice/detail', data?.invoiceId]);
+          }
+        }
+      });
+  }
+
+  // editar comprobante de compra.
+  private editarCompra(): void {
+    this.invoiceService.UpdatePurchase(this.comprobante)
       .subscribe(async (result) => {
         if (result.ok) {
           if (result.data) {
@@ -246,13 +262,19 @@ export class InvoiceComponent implements OnInit {
     confirmTask().then(result => {
       if (result.isConfirmed) {
         this.comprobante = {...this.comprobante, ...this.comprobanteForm.value};
-        switch (this.comprobante.invoiceType) {
-          case 'COMPRA':
-            this.guardarCompra();
-            break;
-          case 'VENTA':
-            this.guardarVenta();
-            break;
+        if (this.comprobante.invoiceId !== undefined) {
+          if (this.comprobante.invoiceType === 'COMPRA')
+            this.editarCompra();
+        } else {
+          // registrar comprobante.
+          switch (this.comprobante.invoiceType) {
+            case 'COMPRA':
+              this.guardarCompra();
+              break;
+            case 'VENTA':
+              this.guardarVenta();
+              break;
+          }
         }
       }
     });
@@ -347,5 +369,4 @@ export class InvoiceComponent implements OnInit {
     }
     return hasError;
   }
-
 }

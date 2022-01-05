@@ -44,4 +44,9 @@ export class InvoiceService {
     return this.http.post<ResponseData<Comprobante>>(`${this.appURL}/CreatePurchase`, data);
   }
 
+  // actualizar comprobante de compra.
+  public UpdatePurchase(data: Comprobante): Observable<ResponseData<Comprobante>> {
+    return this.http.put<ResponseData<Comprobante>>(`${this.appURL}/UpdatePurchase`, data);
+  }
+
 }

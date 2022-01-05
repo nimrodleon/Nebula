@@ -66,7 +66,7 @@ namespace Nebula.Controllers
             try
             {
                 _comprobanteService.SetModel(model);
-                var invoice = await _comprobanteService.SaveSale(id);
+                var invoice = await _comprobanteService.CreateSale(id);
                 model.InvoiceId = invoice.Id;
                 bool fileExist = false;
 
@@ -106,7 +106,7 @@ namespace Nebula.Controllers
             try
             {
                 _comprobanteService.SetModel(model);
-                var invoice = await _comprobanteService.SaveQuickSale(id);
+                var invoice = await _comprobanteService.CreateQuickSale(id);
                 bool fileExist = false;
 
                 // generar fichero JSON según tipo comprobante.
@@ -145,18 +145,42 @@ namespace Nebula.Controllers
         [HttpPost("CreatePurchase")]
         public async Task<IActionResult> CreatePurchase([FromBody] Comprobante model)
         {
-            _logger.LogInformation("CreatePurchase antes de bloque Try");
             try
             {
-                _logger.LogInformation("CreatePurchase dentro del bloque Try");
                 _comprobanteService.SetModel(model);
-                var invoice = await _comprobanteService.SavePurchase();
+                var invoice = await _comprobanteService.CreatePurchase();
                 model.InvoiceId = invoice.Id;
 
                 return Ok(new
                 {
                     Ok = true, Data = model,
                     Msg = $"{invoice.Serie} - {invoice.Number} ha sido registrado!"
+                });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return BadRequest(new {Ok = false, Msg = e.Message});
+            }
+        }
+
+        /// <summary>
+        /// Actualizar comprobante de compra.
+        /// </summary>
+        /// <param name="model">Comprobante</param>
+        /// <returns>IActionResult</returns>
+        [HttpPut("UpdatePurchase")]
+        public async Task<IActionResult> UpdatePurchase([FromBody] Comprobante model)
+        {
+            try
+            {
+                _comprobanteService.SetModel(model);
+                var invoice = await _comprobanteService.UpdatePurchase();
+
+                return Ok(new
+                {
+                    Ok = true, Data = model,
+                    Msg = $"{invoice.Serie} - {invoice.Number} ha sido actualizar!"
                 });
             }
             catch (Exception e)

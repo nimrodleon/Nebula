@@ -236,7 +236,7 @@ namespace Nebula.Data.ViewModels
             var invoiceAccounts = new List<InvoiceAccount>();
             Cuotas.ForEach(item =>
             {
-                invoiceAccounts.Add(new InvoiceAccount()
+                var cuota = new InvoiceAccount()
                 {
                     InvoiceId = invoice.Id,
                     Serie = invoice.Serie,
@@ -249,7 +249,9 @@ namespace Nebula.Data.ViewModels
                     EndDate = item.EndDate,
                     Year = item.EndDate.ToString("yyyy"),
                     Month = item.EndDate.ToString("MM")
-                });
+                };
+                if (item.Id != null) cuota.Id = Convert.ToInt32(item.Id);
+                invoiceAccounts.Add(cuota);
             });
             return invoiceAccounts;
         }

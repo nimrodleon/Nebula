@@ -1,6 +1,4 @@
-/**
- * Detalle del Comprobante Electrónico.
- */
+// Detalle del Comprobante Electrónico.
 export class CpeDetail {
   private _porcentajeIGV: number = 0;
   private _mtoTriIcbperUnidad: number = 0;

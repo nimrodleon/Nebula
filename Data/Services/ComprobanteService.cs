@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -50,7 +52,7 @@ namespace Nebula.Data.Services
         /// <summary>
         /// Guardar el Comprobante de venta.
         /// </summary>
-        public async Task<Invoice> SaveSale(int serie)
+        public async Task<Invoice> CreateSale(int serie)
         {
             await GetConfiguration();
             await GetContact(_comprobante.ContactId);
@@ -110,7 +112,7 @@ namespace Nebula.Data.Services
         /// <summary>
         /// Guardar comprobante de venta rápida.
         /// </summary>
-        public async Task<Invoice> SaveQuickSale(int caja)
+        public async Task<Invoice> CreateQuickSale(int caja)
         {
             await GetConfiguration();
             await GetContact(_venta.ContactId);
@@ -168,7 +170,7 @@ namespace Nebula.Data.Services
         /// <summary>
         /// Guardar el Comprobante de compra.
         /// </summary>
-        public async Task<Invoice> SavePurchase()
+        public async Task<Invoice> CreatePurchase()
         {
             await GetConfiguration();
             await GetContact(_comprobante.ContactId);
@@ -200,6 +202,100 @@ namespace Nebula.Data.Services
                     _context.InvoiceAccounts.AddRange(invoiceAccounts);
                     await _context.SaveChangesAsync();
                     _logger.LogInformation("Cuentas por pagar agregado!");
+                }
+
+                // confirmar transacción.
+                await transaction.CommitAsync();
+                _logger.LogInformation("Transacción confirmada!");
+                return invoice;
+            }
+            catch (Exception e)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogInformation("La transacción ha sido cancelada!");
+                _logger.LogError(e.Message);
+            }
+
+            throw new Exception("Hubo un error en la emisión del comprobante!");
+        }
+
+        /// <summary>
+        /// Editar comprobante de compra.
+        /// </summary>
+        public async Task<Invoice> UpdatePurchase()
+        {
+            await GetConfiguration();
+            await GetContact(_comprobante.ContactId);
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                if (_comprobante.InvoiceId == null)
+                    throw new Exception("No existe ID del comprobante");
+                if (!_comprobante.InvoiceType.Equals("COMPRA"))
+                    throw new Exception("No es un comprobante de compra!");
+
+                // Editar Información del comprobante.
+                var invoice = await _context.Invoices.FindAsync(_comprobante.InvoiceId);
+                UpdateInvoiceData(ref invoice);
+                _context.Invoices.Update(invoice);
+                await _context.SaveChangesAsync();
+                _logger.LogInformation("Información del comprobante actualizado!");
+
+                // Editar detalles del comprobante.
+                var invoiceDetails = await _context.InvoiceDetails.AsNoTracking()
+                    .Where(m => m.InvoiceId.Equals(invoice.Id)).ToListAsync();
+                _context.InvoiceDetails.RemoveRange(invoiceDetails);
+                await _context.SaveChangesAsync();
+                _context.InvoiceDetails.AddRange(_comprobante.GetInvoiceDetail(invoice.Id));
+                await _context.SaveChangesAsync();
+                _logger.LogInformation("Detalle del comprobante actualizado!");
+
+                // Editar Tributos de Factura.
+                var tributos = await _context.Tributos.AsNoTracking()
+                    .Where(m => m.InvoiceId.Equals(invoice.Id)).ToListAsync();
+                _context.Tributos.RemoveRange(tributos);
+                await _context.SaveChangesAsync();
+                _context.Tributos.AddRange(_comprobante.GetTributo(invoice.Id));
+                await _context.SaveChangesAsync();
+                _logger.LogInformation("Tributos de factura actualizado!");
+
+                // editar cuentas por pagar si la factura es a crédito.
+                if (_comprobante.FormaPago.Equals("Credito"))
+                {
+                    var nuevosRegistros = _comprobante.GetInvoiceAccounts(invoice);
+                    var registrosAntiguos = await _context.InvoiceAccounts.AsNoTracking()
+                        .Where(m => m.InvoiceId.Equals(invoice.Id)).ToListAsync();
+
+                    var registrosParaBorrar = new List<InvoiceAccount>();
+                    var registrosEditados = new List<InvoiceAccount>();
+                    registrosAntiguos.ForEach(item =>
+                    {
+                        if (!nuevosRegistros.Exists(x => x.Id.Equals(item.Id)))
+                            registrosParaBorrar.Add(item);
+                        if (nuevosRegistros.Exists(x => x.Id.Equals(item.Id)))
+                        {
+                            var objTmp = nuevosRegistros.Find(x => x.Id.Equals(item.Id));
+                            if (objTmp != null)
+                            {
+                                item.Cuota = objTmp.Cuota;
+                                item.Amount = objTmp.Amount;
+                                item.EndDate = objTmp.EndDate;
+                                item.Year = objTmp.Year;
+                                item.Month = objTmp.Month;
+                                registrosEditados.Add(item);
+                                nuevosRegistros.Remove(objTmp);
+                            }
+                        }
+                    });
+
+                    // actualizar cuotas de factura en la base de datos.
+                    _context.InvoiceAccounts.RemoveRange(registrosParaBorrar);
+                    await _context.SaveChangesAsync();
+                    _context.InvoiceAccounts.UpdateRange(registrosEditados);
+                    await _context.SaveChangesAsync();
+                    _context.InvoiceAccounts.AddRange(nuevosRegistros);
+                    await _context.SaveChangesAsync();
+                    _logger.LogInformation("Cuentas por pagar actualizado!");
                 }
 
                 // confirmar transacción.
@@ -314,6 +410,31 @@ namespace Nebula.Data.Services
                 Type = "ENTRADA",
                 Total = invoice.SumImpVenta
             };
+        }
+
+        /// <summary>
+        /// Actualizar Información del Comprobante.
+        /// </summary>
+        private void UpdateInvoiceData(ref Invoice invoice)
+        {
+            var result = _comprobante.GetInvoice(_configuration, _contact);
+            invoice.DocType = result.DocType;
+            invoice.Serie = result.Serie;
+            invoice.Number = result.Number;
+            invoice.TipOperacion = result.TipOperacion;
+            invoice.FecEmision = result.FecEmision;
+            invoice.FecVencimiento = result.FecVencimiento;
+            invoice.FormaPago = result.FormaPago;
+            invoice.ContactId = result.ContactId;
+            invoice.TipDocUsuario = result.TipDocUsuario;
+            invoice.NumDocUsuario = result.NumDocUsuario;
+            invoice.RznSocialUsuario = result.RznSocialUsuario;
+            invoice.SumTotTributos = result.SumTotTributos;
+            invoice.SumTotValVenta = result.SumTotValVenta;
+            invoice.SumPrecioVenta = result.SumPrecioVenta;
+            invoice.SumImpVenta = result.SumImpVenta;
+            invoice.Year = result.Year;
+            invoice.Month = result.Month;
         }
     }
 }

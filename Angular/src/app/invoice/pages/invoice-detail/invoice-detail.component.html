@@ -27,19 +27,19 @@
           <table class="table">
             <tbody>
             <tr>
-              <th class="text-uppercase">Estado</th>
+              <th class="text-uppercase thWidth">Estado</th>
               <td>Cobrado</td>
             </tr>
             <tr>
-              <th class="text-uppercase">Cliente</th>
-              <td>{{invoice.numDocUsuario}}-{{invoice.rznSocialUsuario}}</td>
+              <th class="text-uppercase thWidth">Cliente</th>
+              <td>{{invoice.numDocUsuario}} - {{invoice.rznSocialUsuario}}</td>
             </tr>
             <tr>
-              <th class="text-uppercase">Fecha de emisión</th>
+              <th class="text-uppercase thWidth">Fecha de emisión</th>
               <td>{{invoice.fecEmision|date}}</td>
             </tr>
             <tr>
-              <th class="text-uppercase">Forma de Pago</th>
+              <th class="text-uppercase thWidth">Forma de Pago</th>
               <td>{{invoice.formaPago|formaPago}}</td>
             </tr>
             </tbody>
@@ -63,10 +63,10 @@
               <td>{{item.ctdUnidadItem}}</td>
               <td>{{item.codUnidadMedida}}</td>
               <td>{{item.desItem}}</td>
-              <td>{{item.mtoPrecioVentaUnitario.toFixed(2)}}</td>
+              <td>{{item.mtoPrecioVentaUnitario.toFixed(4)|currency}}</td>
               <td>{{item.nomTributoIgvItem}}({{item.porIgvItem|number}}%)</td>
-              <td>{{item.mtoValorVentaItem.toFixed(2)}}</td>
-              <td>{{item.mtoTriIcbperItem.toFixed(2)}}</td>
+              <td>{{item.mtoValorVentaItem.toFixed(4)|currency}}</td>
+              <td>{{item.mtoTriIcbperItem.toFixed(4)|currency}}</td>
             </tr>
             </tbody>
           </table>
@@ -77,15 +77,15 @@
               <tbody>
               <tr>
                 <th class="bg-white">IMPORTE</th>
-                <td class="bg-white">{{invoice.sumTotValVenta.toFixed(2)}}</td>
+                <td class="bg-white">{{invoice.sumTotValVenta.toFixed(4)|currency}}</td>
               </tr>
               <tr>
                 <th class="bg-white">IGV (18%)</th>
-                <td class="bg-white">{{invoice.sumTotTributos.toFixed(2)}}</td>
+                <td class="bg-white">{{invoice.sumTotTributos.toFixed(4)|currency}}</td>
               </tr>
               <tr>
                 <th class="bg-white">TOTAL</th>
-                <td class="bg-white">{{invoice.sumImpVenta.toFixed(2)}}</td>
+                <td class="bg-white">{{invoice.sumImpVenta.toFixed(4)|currency}}</td>
               </tr>
               </tbody>
             </table>

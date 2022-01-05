@@ -7,6 +7,8 @@ namespace Nebula.Data.ViewModels
     /// </summary>
     public class Cuota
     {
+        public int? Id { get; set; }
+
         /// <summary>
         /// Número de cuota.
         /// </summary>

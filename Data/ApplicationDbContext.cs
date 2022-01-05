@@ -178,8 +178,6 @@ namespace Nebula.Data
             modelBuilder.Entity<CashierDetail>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<Invoice>().Property<bool>("SoftDeleted");
             modelBuilder.Entity<Invoice>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
-            modelBuilder.Entity<InvoiceDetail>().Property<bool>("SoftDeleted");
-            modelBuilder.Entity<InvoiceDetail>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<InvoiceNote>().Property<bool>("SoftDeleted");
             modelBuilder.Entity<InvoiceNote>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<InvoiceNoteDetail>().Property<bool>("SoftDeleted");
@@ -198,8 +196,6 @@ namespace Nebula.Data
             modelBuilder.Entity<Configuration>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<InvoiceSerie>().Property<bool>("SoftDeleted");
             modelBuilder.Entity<InvoiceSerie>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
-            modelBuilder.Entity<Tributo>().Property<bool>("SoftDeleted");
-            modelBuilder.Entity<Tributo>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             base.OnModelCreating(modelBuilder);
         }
     }
