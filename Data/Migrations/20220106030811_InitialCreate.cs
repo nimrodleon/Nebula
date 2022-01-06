@@ -171,6 +171,7 @@ namespace Nebula.Data.Migrations
                     FecVencimiento = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
                     CodLocalEmisor = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
                     FormaPago = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
+                    ContactId = table.Column<int>(type: "integer", nullable: true),
                     TipDocUsuario = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
                     NumDocUsuario = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
                     RznSocialUsuario = table.Column<string>(type: "character varying(1500)", maxLength: 1500, nullable: true),
@@ -383,8 +384,7 @@ namespace Nebula.Data.Migrations
                 name: "InvoiceAccounts",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     InvoiceId = table.Column<int>(type: "integer", nullable: true),
                     Serie = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
                     Number = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
@@ -395,8 +395,7 @@ namespace Nebula.Data.Migrations
                     Balance = table.Column<decimal>(type: "numeric", nullable: true),
                     EndDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     Year = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
-                    Month = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
-                    SoftDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                    Month = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -413,8 +412,7 @@ namespace Nebula.Data.Migrations
                 name: "InvoiceDetails",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     InvoiceId = table.Column<int>(type: "integer", nullable: true),
                     CodUnidadMedida = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
                     CtdUnidadItem = table.Column<decimal>(type: "numeric", nullable: true),
@@ -438,8 +436,7 @@ namespace Nebula.Data.Migrations
                     MtoTriIcbperUnidad = table.Column<decimal>(type: "numeric", nullable: true),
                     MtoPrecioVentaUnitario = table.Column<decimal>(type: "numeric", nullable: true),
                     MtoValorVentaItem = table.Column<decimal>(type: "numeric", nullable: true),
-                    MtoValorReferencialUnitario = table.Column<decimal>(type: "numeric", nullable: true),
-                    SoftDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                    MtoValorReferencialUnitario = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -456,8 +453,7 @@ namespace Nebula.Data.Migrations
                 name: "Tributos",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     InvoiceId = table.Column<int>(type: "integer", nullable: true),
                     IdeTributo = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
                     NomTributo = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
@@ -465,8 +461,7 @@ namespace Nebula.Data.Migrations
                     MtoBaseImponible = table.Column<decimal>(type: "numeric", nullable: true),
                     MtoTributo = table.Column<decimal>(type: "numeric", nullable: true),
                     Year = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
-                    Month = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
-                    SoftDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                    Month = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true)
                 },
                 constraints: table =>
                 {

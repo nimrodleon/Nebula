@@ -7,7 +7,9 @@ namespace Nebula.Data.Models
 {
     public class InvoiceAccount
     {
-        public int Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid Id { get; set; }
 
         /// <summary>
         /// foreignKey in db.

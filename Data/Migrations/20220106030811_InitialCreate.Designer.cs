@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Nebula.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220104230924_AddContactIdColumnToInvoiceTable")]
-    partial class AddContactIdColumnToInvoiceTable
+    [Migration("20220106030811_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -638,10 +638,9 @@ namespace Nebula.Data.Migrations
 
             modelBuilder.Entity("Nebula.Data.Models.InvoiceAccount", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("uuid");
 
                     b.Property<string>("AccountType")
                         .HasMaxLength(250)
@@ -674,9 +673,6 @@ namespace Nebula.Data.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<bool>("SoftDeleted")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("Status")
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
@@ -694,10 +690,9 @@ namespace Nebula.Data.Migrations
 
             modelBuilder.Entity("Nebula.Data.Models.InvoiceDetail", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("uuid");
 
                     b.Property<string>("CodProducto")
                         .HasMaxLength(250)
@@ -775,9 +770,6 @@ namespace Nebula.Data.Migrations
                     b.Property<string>("PorIgvItem")
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
-
-                    b.Property<bool>("SoftDeleted")
-                        .HasColumnType("boolean");
 
                     b.Property<decimal?>("SumTotTributosItem")
                         .HasColumnType("numeric");
@@ -1172,10 +1164,9 @@ namespace Nebula.Data.Migrations
 
             modelBuilder.Entity("Nebula.Data.Models.Tributo", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("uuid");
 
                     b.Property<string>("CodTipTributo")
                         .HasMaxLength(250)
@@ -1201,9 +1192,6 @@ namespace Nebula.Data.Migrations
                     b.Property<string>("NomTributo")
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
-
-                    b.Property<bool>("SoftDeleted")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("Year")
                         .HasMaxLength(250)
