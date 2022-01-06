@@ -6,10 +6,12 @@ import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {ShoppingRoutingModule} from './shopping-routing.module';
 import {ShoppingListComponent} from './pages/shopping-list/shopping-list.component';
 import {GlobalModule} from '../global/global.module';
+import {InvoiceNoteListComponent} from './pages/invoice-note-list/invoice-note-list.component';
 
 @NgModule({
   declarations: [
-    ShoppingListComponent
+    ShoppingListComponent,
+    InvoiceNoteListComponent
   ],
   imports: [
     CommonModule,

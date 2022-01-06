@@ -341,8 +341,7 @@ namespace Nebula.Data.Migrations
                 name: "InvoiceNoteDetails",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     InvoiceNoteId = table.Column<int>(type: "integer", nullable: true),
                     CodUnidadMedida = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
                     CtdUnidadItem = table.Column<decimal>(type: "numeric", nullable: true),
@@ -366,8 +365,7 @@ namespace Nebula.Data.Migrations
                     MtoTriIcbperUnidad = table.Column<decimal>(type: "numeric", nullable: true),
                     MtoPrecioVentaUnitario = table.Column<decimal>(type: "numeric", nullable: true),
                     MtoValorVentaItem = table.Column<decimal>(type: "numeric", nullable: true),
-                    MtoValorReferencialUnitario = table.Column<decimal>(type: "numeric", nullable: true),
-                    SoftDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                    MtoValorReferencialUnitario = table.Column<decimal>(type: "numeric", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -608,8 +606,7 @@ namespace Nebula.Data.Migrations
                 name: "InventoryNoteDetails",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     InventoryNoteId = table.Column<int>(type: "integer", nullable: true),
                     ProductId = table.Column<int>(type: "integer", nullable: true),
                     Description = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
@@ -660,8 +657,7 @@ namespace Nebula.Data.Migrations
                 name: "TransferNoteDetails",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     TransferNoteId = table.Column<int>(type: "integer", nullable: true),
                     ProductId = table.Column<int>(type: "integer", nullable: true),
                     Description = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
