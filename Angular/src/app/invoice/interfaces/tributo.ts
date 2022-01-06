@@ -1,6 +1,6 @@
 export class Tributo {
   constructor(
-    public id: number | any = null,
+    public id: string | any = null,
     public invoiceId: number | any = null, // Clave foránea.
     public ideTributo: string = '', // Identificador de tributo.
     public nomTributo: string = '', // Nombre de tributo.

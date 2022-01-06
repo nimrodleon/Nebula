@@ -1,6 +1,6 @@
 export class InvoiceAccount {
   constructor(
-    public id: number | any = null,
+    public id: string | any = null,
     public invoiceId: number | any = null, // Clave foránea.
     public serie: string = '', // Serie comprobante.
     public number: string = '', // Número comprobante.

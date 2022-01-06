@@ -250,7 +250,7 @@ namespace Nebula.Data.ViewModels
                     Year = item.EndDate.ToString("yyyy"),
                     Month = item.EndDate.ToString("MM")
                 };
-                if (item.Id != null) cuota.Id = Convert.ToInt32(item.Id);
+                if (item.Id != null) cuota.Id = Guid.Parse(item.Id);
                 invoiceAccounts.Add(cuota);
             });
             return invoiceAccounts;

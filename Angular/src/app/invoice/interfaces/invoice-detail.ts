@@ -1,6 +1,6 @@
 export class InvoiceDetail {
   constructor(
-    public id: number | any = null,
+    public id: string | any = null,
     public invoiceId: number | any = null, // Clave foránea.
     public codUnidadMedida: string = '', // Código de unidad de medida por ítem. Catálogo: 3, an..3
     public ctdUnidadItem: number = 0, //  Cantidad de unidades por ítem. an..23|n(12,10)

@@ -636,10 +636,9 @@ namespace Nebula.Data.Migrations
 
             modelBuilder.Entity("Nebula.Data.Models.InvoiceAccount", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("uuid");
 
                     b.Property<string>("AccountType")
                         .HasMaxLength(250)
@@ -672,9 +671,6 @@ namespace Nebula.Data.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
 
-                    b.Property<bool>("SoftDeleted")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("Status")
                         .HasMaxLength(250)
                         .HasColumnType("character varying(250)");
@@ -692,10 +688,9 @@ namespace Nebula.Data.Migrations
 
             modelBuilder.Entity("Nebula.Data.Models.InvoiceDetail", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("uuid");
 
                     b.Property<string>("CodProducto")
                         .HasMaxLength(250)
@@ -1167,10 +1162,9 @@ namespace Nebula.Data.Migrations
 
             modelBuilder.Entity("Nebula.Data.Models.Tributo", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("uuid");
 
                     b.Property<string>("CodTipTributo")
                         .HasMaxLength(250)
