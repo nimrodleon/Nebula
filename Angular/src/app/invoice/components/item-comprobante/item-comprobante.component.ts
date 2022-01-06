@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {faBars} from '@fortawesome/free-solid-svg-icons';
 import {environment} from 'src/environments/environment';
@@ -21,7 +21,9 @@ export class ItemComprobanteComponent implements OnInit {
   faBars = faBars;
   private appURL: string = environment.applicationUrl;
   private configuration: Configuration = new Configuration();
-  currentProduct: Product | any;
+  currentProduct: Product = new Product();
+  @Input()
+  productId: number = 0;
   @Output()
   responseData = new EventEmitter<CpeDetail>();
   detalleVenta: CpeDetail = new CpeDetail();
@@ -57,16 +59,13 @@ export class ItemComprobanteComponent implements OnInit {
       }
     }).on('select2:select', (e: any) => {
       const data = e.params.data;
-      this.productService.show(data.id).subscribe(result => {
-        this.detalleVenta = CpeBase.configItemDetail(this.configuration, result);
-        this.detalleVenta.calcularItem();
-        this.itemComprobanteForm.reset({...this.detalleVenta});
-      });
+      this.cargarProducto(data.id);
     });
     // resetear formulario.
     const myModal: any = document.querySelector('#item-comprobante');
     myModal.addEventListener('shown.bs.modal', () => {
       this.detalleVenta = new CpeDetail();
+      if (this.productId > 0) this.cargarProducto(this.productId);
     });
     myModal.addEventListener('hide.bs.modal', () => {
       this.itemComprobanteForm.reset();
@@ -74,9 +73,24 @@ export class ItemComprobanteComponent implements OnInit {
     });
   }
 
+  // cargar producto al modelo y formulario.
+  private cargarProducto(id: number): void {
+    this.productService.show(id).subscribe(result => {
+      this.detalleVenta = CpeBase.configItemDetail(this.configuration, result);
+      this.detalleVenta.calcularItem();
+      this.itemComprobanteForm.reset({...this.detalleVenta});
+      // validar modo de edición.
+      if (this.productId > 0) {
+        const newOption = new Option(result.description, <any>result.id, true, true);
+        jQuery('#productId').append(newOption).trigger('change');
+      }
+    });
+  }
+
   // mostrar modal producto.
   public showProductModal(e: any): void {
     e.preventDefault();
+    this.currentProduct = new Product();
     this.productModal.show();
   }
 

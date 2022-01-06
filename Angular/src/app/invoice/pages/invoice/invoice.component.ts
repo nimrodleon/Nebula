@@ -32,7 +32,7 @@ export class InvoiceComponent implements OnInit {
   faIdCardAlt = faIdCardAlt;
   faEdit = faEdit;
   private appURL: string = environment.applicationUrl;
-  currentContact: Contact | any;
+  currentContact: Contact = new Contact();
   contactModal: any;
   // datos del comprobante.
   comprobante: Comprobante = new Comprobante();
@@ -55,6 +55,7 @@ export class InvoiceComponent implements OnInit {
     remark: [''],
   });
   itemComprobanteModal: any;
+  productId: number = 0;
   cuotaModal: any;
 
   constructor(
@@ -241,6 +242,13 @@ export class InvoiceComponent implements OnInit {
 
   // abrir modal item-comprobante.
   public showItemComprobanteModal(): void {
+    this.productId = 0;
+    this.itemComprobanteModal.show();
+  }
+
+  // editar modal item-comprobante.
+  public editItemComprobanteModal(id: number): void {
+    this.productId = id;
     this.itemComprobanteModal.show();
   }
 
@@ -300,7 +308,7 @@ export class InvoiceComponent implements OnInit {
 
   // abrir modal agregar contacto.
   public showContactModal(): void {
-    this.currentContact = null;
+    this.currentContact = new Contact();
     this.contactModal.show();
   }
 
@@ -308,7 +316,7 @@ export class InvoiceComponent implements OnInit {
   public hideContactModal(response: ResponseData<Contact>): void {
     if (response.ok) {
       const newOption = new Option(response.data?.name, <any>response.data?.id, true, true);
-      jQuery('#clientId').append(newOption).trigger('change');
+      jQuery('#contactId').append(newOption).trigger('change');
       this.comprobanteForm.controls['contactId'].setValue(response.data?.id);
       this.contactModal.hide();
     }

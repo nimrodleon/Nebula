@@ -76,15 +76,15 @@
             <table class="table mb-0">
               <tbody>
               <tr>
-                <th class="bg-white">IMPORTE</th>
+                <th class="bg-white text-end">IMPORTE</th>
                 <td class="bg-white">{{invoice.sumTotValVenta.toFixed(4)|currency}}</td>
               </tr>
               <tr>
-                <th class="bg-white">IGV (18%)</th>
+                <th class="bg-white text-end">IGV (18%)</th>
                 <td class="bg-white">{{invoice.sumTotTributos.toFixed(4)|currency}}</td>
               </tr>
               <tr>
-                <th class="bg-white">TOTAL</th>
+                <th class="bg-white text-end">TOTAL</th>
                 <td class="bg-white">{{invoice.sumImpVenta.toFixed(4)|currency}}</td>
               </tr>
               </tbody>

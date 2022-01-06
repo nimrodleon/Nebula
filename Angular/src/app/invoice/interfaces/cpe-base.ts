@@ -94,7 +94,7 @@ export class CpeBase {
   // configurar item detalle.
   public static configItemDetail(configuration: Configuration, product: Product): CpeDetail {
     const item: CpeDetail = new CpeDetail();
-    item.productId = product.id;
+    item.productId = Number(product.id);
     item.codUnidadMedida = product.undMedida.sunatCode;
     item.codProductoSunat = product.barcode.length > 0 ? product.barcode : '-';
     item.description = product.description;
