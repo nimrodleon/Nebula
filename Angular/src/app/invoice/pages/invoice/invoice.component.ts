@@ -56,6 +56,7 @@ export class InvoiceComponent implements OnInit {
   });
   itemComprobanteModal: any;
   productId: number = 0;
+  currentCuota: Cuota = new Cuota();
   cuotaModal: any;
 
   constructor(
@@ -290,14 +291,35 @@ export class InvoiceComponent implements OnInit {
 
   // abrir modal cuota.
   public showCuotaModal(): void {
+    this.currentCuota = new Cuota();
+    this.cuotaModal.show();
+  }
+
+  // editar modal cuota.
+  public editCuotaModal(numCuota: number): void {
+    const objTmp = this.comprobante.cuotas.find(x => x.numCuota === numCuota);
+    if (objTmp) {
+      objTmp.endDate = moment(objTmp.endDate).format('YYYY-MM-DD');
+      this.currentCuota = objTmp;
+    }
     this.cuotaModal.show();
   }
 
   // ocultar modal cuota.
   public hideCuotaModal(data: Cuota): void {
     if (data) {
-      this.comprobante.addCuota(data);
-      this.cuotaModal.hide();
+      if (!data.numCuota) {
+        this.comprobante.addCuota(data);
+        this.cuotaModal.hide();
+      } else {
+        this.comprobante.cuotas.forEach(item => {
+          if (item.numCuota === data.numCuota) {
+            item.endDate = data.endDate;
+            item.amount = data.amount;
+            this.cuotaModal.hide();
+          }
+        });
+      }
     }
   }
 

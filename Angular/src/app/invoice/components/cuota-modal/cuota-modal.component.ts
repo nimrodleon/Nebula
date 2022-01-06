@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {faBars, faPlus} from '@fortawesome/free-solid-svg-icons';
 import {Cuota} from '../../interfaces';
@@ -11,6 +11,8 @@ import {Cuota} from '../../interfaces';
 export class CuotaModalComponent implements OnInit {
   faPlus = faPlus;
   faBars = faBars;
+  @Input()
+  cuota: Cuota = new Cuota();
   cuotaForm: FormGroup = this.fb.group({
     endDate: [null],
     amount: [0],
@@ -25,13 +27,14 @@ export class CuotaModalComponent implements OnInit {
   ngOnInit(): void {
     const myModal: any = document.querySelector('#cuota-modal');
     myModal.addEventListener('shown.bs.modal', () => {
-      this.cuotaForm.reset({endDate: null, amount: 0});
+      this.cuotaForm.reset({...this.cuota});
     });
   }
 
   // guardar cambios.
   public saveChanges(): void {
-    this.responseData.emit(this.cuotaForm.value);
+    this.cuota = {...this.cuota, ...this.cuotaForm.value};
+    this.responseData.emit(this.cuota);
   }
 
 }

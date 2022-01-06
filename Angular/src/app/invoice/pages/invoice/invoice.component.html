@@ -182,7 +182,7 @@
             <table class="table table-striped">
               <thead>
               <tr class="text-uppercase">
-                <th># Cuota</th>
+                <th>Cuota</th>
                 <th>Fecha Venc.</th>
                 <th>Monto</th>
                 <th></th>
@@ -195,7 +195,7 @@
                 <td>{{item.amount.toFixed(2)}}</td>
                 <td class="text-end">
                   <div class="actions ms-auto">
-                    <button type="button" class="btn btn-secondary btn-sm me-2">
+                    <button type="button" (click)="editCuotaModal(item.numCuota)" class="btn btn-secondary btn-sm me-2">
                       <fa-icon [icon]="faEdit"></fa-icon>
                     </button>
                     <button type="button" (click)="deleteCuota(item.numCuota)" class="btn btn-danger btn-sm">
@@ -244,5 +244,6 @@
 </app-item-comprobante>
 
 <app-cuota-modal
+  [cuota]="currentCuota"
   (responseData)="hideCuotaModal($event)">
 </app-cuota-modal>
