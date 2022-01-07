@@ -487,7 +487,62 @@ namespace Nebula.Data.Services
                 _logger.LogError(e.Message);
             }
 
-            throw new Exception("Hubo un error en la emisión de la Nota!");
+            throw new Exception($"Hubo un error en la emisión de la Nota!");
+        }
+
+        /// <summary>
+        /// Actualizar Nota crédito/débito.
+        /// </summary>
+        public async Task<InvoiceNote> UpdateNote(int id)
+        {
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                string tipoNota = string.Empty;
+                if (_notaComprobante.DocType.Equals("NC")) tipoNota = "crédito";
+                if (_notaComprobante.DocType.Equals("ND")) tipoNota = "débito";
+
+                var invoiceNote = await _context.InvoiceNotes.FindAsync(id);
+                if (invoiceNote == null) throw new Exception($"No existe la Nota {tipoNota}");
+
+                if (invoiceNote.InvoiceType.Equals("COMPRA"))
+                {
+                    var invoice = await _context.Invoices.AsNoTracking()
+                        .FirstOrDefaultAsync(m => m.Id.Equals(_notaComprobante.InvoiceId));
+                    if (invoice == null) throw new Exception("No existe comprobante!");
+
+                    var objTmp = invoiceNote;
+                    invoiceNote = _notaComprobante.GetInvoiceNote(invoice);
+                    invoiceNote.Id = objTmp.Id;
+
+                    // Editar Información de la Nota crédito/débito.
+                    _context.InvoiceNotes.Update(invoiceNote);
+                    await _context.SaveChangesAsync();
+                    _logger.LogInformation($"Información de la Nota {tipoNota} actualizado!");
+
+                    // Editar detalles de la Nota crédito/débito.
+                    var invoiceNoteDetails = await _context.InvoiceNoteDetails.AsNoTracking()
+                        .Where(m => m.InvoiceNoteId.Equals(invoiceNote.Id)).ToListAsync();
+                    _context.InvoiceNoteDetails.RemoveRange(invoiceNoteDetails);
+                    await _context.SaveChangesAsync();
+                    _context.InvoiceNoteDetails.AddRange(_notaComprobante.GetInvoiceNoteDetail(invoiceNote.Id));
+                    await _context.SaveChangesAsync();
+                    _logger.LogInformation($"Detalle de la nota {tipoNota} actualizado!");
+
+                    // confirmar transacción.
+                    await transaction.CommitAsync();
+                    _logger.LogInformation("Transacción confirmada!");
+                    return invoiceNote;
+                }
+            }
+            catch (Exception e)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogInformation("La transacción ha sido cancelada!");
+                _logger.LogError(e.Message);
+            }
+
+            throw new Exception("Hubo un error en la actualización de la Nota!");
         }
     }
 }

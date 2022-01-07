@@ -14,5 +14,6 @@ namespace Nebula.Data.Services
         public Task<Invoice> CreatePurchase();
         public Task<Invoice> UpdatePurchase();
         public Task<InvoiceNote> CreateNote();
+        public Task<InvoiceNote> UpdateNote(int id);
     }
 }
