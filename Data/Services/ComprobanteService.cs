@@ -452,7 +452,42 @@ namespace Nebula.Data.Services
         /// </summary>
         public async Task<InvoiceNote> CreateNote()
         {
-            
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                var invoice = await _context.Invoices.AsNoTracking()
+                    .FirstOrDefaultAsync(m => m.Id.Equals(_notaComprobante.InvoiceId));
+                if (invoice == null) throw new Exception("No existe comprobante!");
+
+                string tipoNota = string.Empty;
+                if (_notaComprobante.DocType.Equals("NC")) tipoNota = "crédito";
+                if (_notaComprobante.DocType.Equals("ND")) tipoNota = "débito";
+
+                // Agregar Información de la Nota crédito/débito.
+                var invoiceNote = _notaComprobante.GetInvoiceNote(invoice);
+                _context.InvoiceNotes.Add(invoiceNote);
+                await _context.SaveChangesAsync();
+                _logger.LogInformation($"Información de la Nota {tipoNota} agregado!");
+
+                // Agregar detalles de la Nota crédito/débito.
+                var invoiceNoteDetails = _notaComprobante.GetInvoiceNoteDetail(invoiceNote.Id);
+                _context.InvoiceNoteDetails.AddRange(invoiceNoteDetails);
+                await _context.SaveChangesAsync();
+                _logger.LogInformation($"Detalle de la Nota {tipoNota} agregado!");
+
+                // confirmar transacción.
+                await transaction.CommitAsync();
+                _logger.LogInformation("Transacción confirmada!");
+                return invoiceNote;
+            }
+            catch (Exception e)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogInformation("La transacción ha sido cancelada!");
+                _logger.LogError(e.Message);
+            }
+
+            throw new Exception("Hubo un error en la emisión de la Nota!");
         }
     }
 }
