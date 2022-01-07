@@ -21,6 +21,7 @@ namespace Nebula.Data.Services
         private Contact _contact;
         private Comprobante _comprobante;
         private Venta _venta;
+        private NotaComprobante _notaComprobante;
 
         /// <summary>
         /// Constructor del Servicio.
@@ -435,6 +436,23 @@ namespace Nebula.Data.Services
             invoice.SumImpVenta = result.SumImpVenta;
             invoice.Year = result.Year;
             invoice.Month = result.Month;
+        }
+
+        /// <summary>
+        /// Establecer modelo Nota comprobante.
+        /// </summary>
+        public void SetModel(NotaComprobante model)
+        {
+            _notaComprobante = model;
+            _logger.LogInformation($"Nota Comprobante: {JsonSerializer.Serialize(_notaComprobante)}");
+        }
+
+        /// <summary>
+        /// Registrar Nota de Crédito/Débito.
+        /// </summary>
+        public async Task<InvoiceNote> CreateNote()
+        {
+            
         }
     }
 }
