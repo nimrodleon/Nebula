@@ -8,6 +8,35 @@ namespace Nebula.Data.Models
         public int Id { get; set; }
 
         /// <summary>
+        /// Identificador Comprobante.
+        /// </summary>
+        public int? InvoiceId { get; set; }
+
+        /// <summary>
+        /// Tipo doc. NOTA: (CRÉDITO/DÉBITO) => (NC/ND).
+        /// </summary>
+        [MaxLength(250)]
+        public string DocType { get; set; }
+
+        /// <summary>
+        /// Tipo factura (Compra|Venta)
+        /// </summary>
+        [MaxLength(250)]
+        public string InvoiceType { get; set; }
+
+        /// <summary>
+        /// Serie Nota.
+        /// </summary>
+        [MaxLength(250)]
+        public string Serie { get; set; }
+
+        /// <summary>
+        /// Número Nota.
+        /// </summary>
+        [MaxLength(250)]
+        public string Number { get; set; }
+
+        /// <summary>
         /// Tipo de operación. Catálogo: 51, n2
         /// </summary>
         [MaxLength(250)]
