@@ -124,21 +124,6 @@ namespace Nebula.Data.Models
         public decimal? SumPrecioVenta { get; set; }
 
         /// <summary>
-        /// Total descuentos. Formato: n(12,2), an..15
-        /// </summary>
-        public decimal? SumDescTotal { get; set; }
-
-        /// <summary>
-        /// Sumatoria otros Cargos. Formato: n(12,2), an..15
-        /// </summary>
-        public decimal? SumOtrosCargos { get; set; }
-
-        /// <summary>
-        /// Total Anticipos. Formato: n(12,2), an..15
-        /// </summary>
-        public decimal? SumTotalAnticipos { get; set; }
-
-        /// <summary>
         /// Importe total de la venta, cesión en uso o del servicio prestado. Formato: n(12,2), an..15
         /// </summary>
         public decimal? SumImpVenta { get; set; }

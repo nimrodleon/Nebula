@@ -88,6 +88,51 @@ namespace Nebula.Data.ViewModels
         {
             CalcImporteVenta();
 
+            var invoiceNote = new InvoiceNote()
+            {
+                InvoiceId = invoice.Id,
+                DocType = DocType,
+                InvoiceType = invoice.InvoiceType,
+                TipOperacion = invoice.TipOperacion,
+                CodLocalEmisor = invoice.CodLocalEmisor,
+                TipDocUsuario = invoice.TipDocUsuario,
+                NumDocUsuario = invoice.NumDocUsuario,
+                RznSocialUsuario = invoice.RznSocialUsuario,
+                TipMoneda = invoice.TipMoneda,
+                CodMotivo = CodMotivo,
+                DesMotivo = DesMotivo,
+                NumDocAfectado = $"{invoice.Serie}-{invoice.Number}",
+                SumTotTributos = SumTotTributos,
+                SumTotValVenta = SumTotValVenta,
+                SumPrecioVenta = 0,
+                SumImpVenta = SumImpVenta
+            };
+
+            if (invoice.DocType.Equals("FACTURA")) invoiceNote.TipDocAfectado = "01";
+            if (invoice.DocType.Equals("BOLETA")) invoiceNote.TipDocAfectado = "03";
+
+            // configurar fecha de registro.
+            string year = DateTime.Now.ToString("yyyy");
+            string month = DateTime.Now.ToString("MM");
+            string startDate = DateTime.Now.ToString("yyyy-MM-dd");
+            string startTime = DateTime.Now.ToString("HH:mm:ss");
+
+            if (invoiceNote.InvoiceType.Equals("COMPRA"))
+            {
+                invoiceNote.Serie = Serie;
+                invoiceNote.Number = Number;
+                year = StartDate.ToString("yyyy");
+                month = StartDate.ToString("MM");
+                startDate = StartDate.ToString("yyyy-MM-dd");
+                startTime = "00:00:00";
+            }
+
+            invoiceNote.FecEmision = startDate;
+            invoiceNote.HorEmision = startTime;
+            invoiceNote.Year = year;
+            invoiceNote.Month = month;
+
+            return invoiceNote;
         }
 
         /// <summary>
