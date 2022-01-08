@@ -3,7 +3,7 @@ import {faArrowLeft, faEdit, faIdCardAlt, faPlus, faSave, faTrashAlt} from '@for
 import {ActivatedRoute} from '@angular/router';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import * as moment from 'moment';
-import {CpeDetail, Invoice, InvoiceDetail, Note} from '../../interfaces';
+import {CpeDetail, CpeGeneric, Invoice, InvoiceDetail, NotaComprobante} from '../../interfaces';
 import {InvoiceService} from '../../services';
 
 declare var bootstrap: any;
@@ -20,8 +20,7 @@ export class InvoiceNoteComponent implements OnInit {
   faEdit = faEdit;
   faTrashAlt = faTrashAlt;
   faIdCardAlt = faIdCardAlt;
-  invoice: Invoice = new Invoice();
-  note: Note = new Note();
+  notaComprobante: NotaComprobante = new NotaComprobante();
   invoiceNote: FormGroup = this.fb.group({
     startDate: [moment().format('YYYY-MM-DD')],
     docType: ['NC'],
@@ -29,8 +28,8 @@ export class InvoiceNoteComponent implements OnInit {
     serie: [''],
     number: [''],
     desMotivo: [''],
-    remark: ['']
   });
+  productId: number = 0;
   itemComprobanteModal: any;
 
   constructor(
@@ -41,18 +40,12 @@ export class InvoiceNoteComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe(params => {
-      this.invoiceService.show(<any>params.get('id'))
+      this.invoiceService.show(<any>params.get('invoiceId'))
         .subscribe(result => {
-          this.invoice = result;
-          this.invoiceNote.controls['serie'].setValue(result.serie);
-          this.invoiceNote.controls['number'].setValue(result.number);
-          // detalle notas de crédito/débito.
-          result.invoiceDetails.forEach((value: InvoiceDetail, index: number) => {
-            // this.invoiceNoteDetail.push({
-            //   numItem: index + 1, productId: Number(value.codProducto),
-            //   description: value.desItem, price: value.mtoValorUnitario, quantity: value.ctdUnidadItem,
-            //   amount: value.mtoValorVentaItem
-            // });
+          result.invoiceDetails.forEach(item => {
+            const itemDetail = CpeGeneric.getItemDetail(item);
+            itemDetail.calcularItem();
+            this.notaComprobante.addItemWithData(itemDetail);
           });
         });
     });
@@ -60,14 +53,32 @@ export class InvoiceNoteComponent implements OnInit {
     this.itemComprobanteModal = new bootstrap.Modal(document.querySelector('#item-comprobante'));
   }
 
+  // borrar item comprobante.
+  public deleteItem(prodId: number | any): void {
+    this.notaComprobante.deleteItem(prodId);
+  }
+
+  // volver una página atrás.
+  public historyBack(): void {
+    window.history.back();
+  }
+
   // abrir item comprobante modal.
   public showItemComprobanteModal(): void {
+    this.productId = 0;
     this.itemComprobanteModal.show();
   }
 
-  // // ocultar item comprobante modal.
-  // public hideItemComprobanteModal(data: DetailComprobante): void {
-  //
-  // }
+  // editar modal item-comprobante.
+  public editItemComprobanteModal(id: number): void {
+    this.productId = id;
+    this.itemComprobanteModal.show();
+  }
+
+  // ocultar item comprobante modal.
+  public hideItemComprobanteModal(data: CpeDetail): void {
+    this.notaComprobante.addItemWithData(data);
+    this.itemComprobanteModal.hide();
+  }
 
 }

@@ -48,9 +48,9 @@
               <div class="col-4">
                 <div class="input-group">
                   <input type="text" formControlName="serie" class="form-control"
-                         placeholder="F001" style="max-width: 74px;" readonly>
+                         placeholder="NC01" style="max-width: 74px;">
                   <span class="input-group-text fw-bold">#</span>
-                  <input type="text" formControlName="number" class="form-control" placeholder="99999999" readonly>
+                  <input type="text" formControlName="number" class="form-control" placeholder="99999999">
                 </div>
               </div>
             </div>
@@ -76,31 +76,34 @@
                 </tr>
                 </thead>
                 <tbody>
-                <!--<tr *ngFor="let item of invoiceNoteDetail">
+                <tr *ngFor="let item of notaComprobante.details">
                   <td>{{item.quantity}}</td>
                   <td>
-                    <div class="d-flex justify-content-between">
-                      <span class="text-uppercase">{{item.description}}</span>
-                      <a href="#">
+                    <span class="text-uppercase">{{item.description}}</span>
+                  </td>
+                  <td>{{item.price.toFixed(2)}}</td>
+                  <td>{{item.amount.toFixed(2)}}</td>
+                  <td class="text-end">
+                    <div class="actions ms-auto">
+                      <button type="button" (click)="editItemComprobanteModal(item.productId)"
+                              class="btn btn-secondary btn-sm me-2">
                         <fa-icon [icon]="faEdit"></fa-icon>
-                      </a>
+                      </button>
+                      <button type="button" (click)="deleteItem(item.productId)" class="btn btn-danger btn-sm">
+                        <fa-icon [icon]="faTrashAlt"></fa-icon>
+                      </button>
                     </div>
                   </td>
-                  <td>{{item.price|currency}}</td>
-                  <td>{{item.amount|currency}}</td>
-                  <td class="text-end">
-                    <button type="button" class="btn btn-danger btn-sm">
-                      <fa-icon [icon]="faTrashAlt"></fa-icon>
-                    </button>
-                  </td>
-                </tr>-->
+                </tr>
                 </tbody>
               </table>
             </div>
-            <div class="d-flex align-items-stretch justify-content-between">
+            <div class="d-flex justify-content-between">
               <div class="w-50">
-                <label class="form-label text-uppercase">Observación</label>
-                <textarea formControlName="remark" class="form-control"></textarea>
+                <button type="button" (click)="showItemComprobanteModal()" class="btn btn-secondary">
+                  <fa-icon [icon]="faPlus"></fa-icon>
+                  <span class="text-uppercase ms-1">Agregar Item Nota</span>
+                </button>
               </div>
               <div class="table-responsive">
                 <table class="table">
@@ -108,27 +111,27 @@
                   <tr>
                     <th class="bg-white text-end">IMPORTE</th>
                     <td class="bg-white">
-                      <input type="number" [value]="invoiceNote.get('sumTotValVenta')?.value|currency"
+                      <input type="number" [value]="notaComprobante.sumTotValVenta.toFixed(2)"
                              class="text-end" readonly>
                     </td>
                   </tr>
                   <tr>
                     <th class="bg-white text-end">IGV (18%)</th>
                     <td class="bg-white">
-                      <input type="number" [value]="invoiceNote.get('sumTotTributos')?.value|currency"
+                      <input type="number" [value]="notaComprobante.sumTotTributos.toFixed(2)"
                              class="text-end" readonly>
                     </td>
                   </tr>
                   <tr>
                     <th class="bg-white text-end">ICBPER</th>
                     <td class="bg-white">
-                      <input type="number" value="0.00" class="text-end" readonly>
+                      <input type="number" [value]="notaComprobante.ICBPER.toFixed(2)" class="text-end" readonly>
                     </td>
                   </tr>
                   <tr>
                     <th class="bg-white text-end">TOTAL</th>
                     <td class="bg-white">
-                      <input type="number" [value]="invoiceNote.get('sumImpVenta')?.value|currency"
+                      <input type="number" [value]="notaComprobante.sumImpVenta.toFixed(2)"
                              class="text-end" readonly>
                     </td>
                   </tr>
@@ -138,13 +141,9 @@
             </div>
           </div>
         </form>
-        <button type="button" (click)="showItemComprobanteModal()" class="btn btn-dark">
-          <fa-icon [icon]="faPlus"></fa-icon>
-          <span class="text-uppercase ms-1">Agregar Item Nota</span>
-        </button>
       </div>
       <div class="d-flex justify-content-center bg-white shadow-sm mb-2 py-3">
-        <button type="button" class="btn btn-danger btn-lg me-2">
+        <button type="button" (click)="historyBack()" class="btn btn-danger btn-lg me-2">
           <fa-icon [icon]="faArrowLeft"></fa-icon>
           <span class="text-uppercase ms-1">Cancelar</span>
         </button>
@@ -156,12 +155,12 @@
     </div>
 
     <pre>{{invoiceNote.value|json}}</pre>
-    <pre>{{note|json}}</pre>
-    <pre>{{invoice|json}}</pre>
+    <pre>{{notaComprobante|json}}</pre>
 
   </div>
 </div>
 
-<!--<app-item-comprobante-->
-<!--  (responseData)="hideItemComprobanteModal($event)">-->
-<!--</app-item-comprobante>-->
+<app-item-comprobante
+  [productId]="productId"
+  (responseData)="hideItemComprobanteModal($event)">
+</app-item-comprobante>

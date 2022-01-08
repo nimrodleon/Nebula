@@ -8,6 +8,7 @@ export * from './cpe-base';
 export * from './cpe-detail';
 export * from './tributo';
 export * from './invoice-account';
-export * from './note';
 export * from './invoice-note';
 export * from './invoice-note-detail';
+export * from './nota-comprobante';
+export * from './cpe-generic';
