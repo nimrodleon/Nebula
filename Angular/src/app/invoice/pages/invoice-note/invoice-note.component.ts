@@ -1,10 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {faArrowLeft, faEdit, faIdCardAlt, faPlus, faSave, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import * as moment from 'moment';
 import {CpeDetail, CpeGeneric, NotaComprobante} from '../../interfaces';
-import {InvoiceService} from '../../services';
+import {InvoiceNoteService, InvoiceService} from '../../services';
+import {confirmTask} from '../../../global/interfaces';
 
 declare var bootstrap: any;
 
@@ -29,19 +30,24 @@ export class InvoiceNoteComponent implements OnInit {
     number: ['', [Validators.required]],
     desMotivo: ['', [Validators.required]],
   });
+  invoiceNoteId: number = 0;
   productId: number = 0;
   itemComprobanteModal: any;
 
   constructor(
+    private router: Router,
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private invoiceService: InvoiceService) {
+    private invoiceService: InvoiceService,
+    private invoiceNoteService: InvoiceNoteService) {
   }
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe(params => {
+      this.invoiceNoteId = Number(params.get('id'));
       this.invoiceService.show(<any>params.get('invoiceId'))
         .subscribe(result => {
+          this.notaComprobante.invoiceId = params.get('invoiceId');
           if (result.invoiceType === 'VENTA') {
             this.invoiceNoteForm.controls['startDate'].disable();
             this.invoiceNoteForm.controls['serie'].disable();
@@ -98,8 +104,20 @@ export class InvoiceNoteComponent implements OnInit {
       return;
     }
     // Guardar datos, sólo si es válido el formulario.
-    this.notaComprobante = {...this.notaComprobante, ...this.invoiceNoteForm.value};
-    console.log(this.notaComprobante);
+    confirmTask().then(result => {
+      if (result.isConfirmed) {
+        this.notaComprobante = {...this.notaComprobante, ...this.invoiceNoteForm.value};
+        if (this.invoiceNoteId > 0) {
+          // actualizar nota crédito/débito.
+        } else {
+          // registrar nota crédito/débito.
+          this.invoiceNoteService.create(this.notaComprobante)
+            .subscribe(async (result) => {
+              if (result.ok) await this.router.navigate(['/invoice/detail', result.data?.invoiceId]);
+            });
+        }
+      }
+    });
   }
 
 }

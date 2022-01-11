@@ -8,6 +8,7 @@ const routes: Routes = [{
   path: '',
   children: [
     {path: 'note/:invoiceId', component: InvoiceNoteComponent},
+    {path: 'note/:invoiceId/:id', component: InvoiceNoteComponent},
     {path: 'detail/:id', component: InvoiceDetailComponent},
     {path: ':type', component: InvoiceComponent},
     {path: ':type/:id', component: InvoiceComponent},
