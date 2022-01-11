@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {faArrowLeft, faEdit, faIdCardAlt, faPlus, faSave, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {ActivatedRoute} from '@angular/router';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import * as moment from 'moment';
-import {CpeDetail, CpeGeneric, Invoice, InvoiceDetail, NotaComprobante} from '../../interfaces';
+import {CpeDetail, CpeGeneric, NotaComprobante} from '../../interfaces';
 import {InvoiceService} from '../../services';
 
 declare var bootstrap: any;
@@ -21,13 +21,13 @@ export class InvoiceNoteComponent implements OnInit {
   faTrashAlt = faTrashAlt;
   faIdCardAlt = faIdCardAlt;
   notaComprobante: NotaComprobante = new NotaComprobante();
-  invoiceNote: FormGroup = this.fb.group({
-    startDate: [moment().format('YYYY-MM-DD')],
-    docType: ['NC'],
-    codMotivo: ['01'],
-    serie: [''],
-    number: [''],
-    desMotivo: [''],
+  invoiceNoteForm: FormGroup = this.fb.group({
+    startDate: [moment().format('YYYY-MM-DD'), [Validators.required]],
+    docType: ['NC', [Validators.required]],
+    codMotivo: ['01', [Validators.required]],
+    serie: ['', [Validators.required]],
+    number: ['', [Validators.required]],
+    desMotivo: ['', [Validators.required]],
   });
   productId: number = 0;
   itemComprobanteModal: any;
@@ -42,6 +42,11 @@ export class InvoiceNoteComponent implements OnInit {
     this.activatedRoute.paramMap.subscribe(params => {
       this.invoiceService.show(<any>params.get('invoiceId'))
         .subscribe(result => {
+          if (result.invoiceType === 'VENTA') {
+            this.invoiceNoteForm.controls['startDate'].disable();
+            this.invoiceNoteForm.controls['serie'].disable();
+            this.invoiceNoteForm.controls['number'].disable();
+          }
           result.invoiceDetails.forEach(item => {
             const itemDetail = CpeGeneric.getItemDetail(item);
             itemDetail.calcularItem();
@@ -79,6 +84,22 @@ export class InvoiceNoteComponent implements OnInit {
   public hideItemComprobanteModal(data: CpeDetail): void {
     this.notaComprobante.addItemWithData(data);
     this.itemComprobanteModal.hide();
+  }
+
+  // Verificar campo invalido.
+  public inputIsInvalid(field: string) {
+    return this.invoiceNoteForm.controls[field].errors && this.invoiceNoteForm.controls[field].touched;
+  }
+
+  // registrar nota crédito/débito.
+  public registerNote(): void {
+    if (this.invoiceNoteForm.invalid) {
+      this.invoiceNoteForm.markAllAsTouched();
+      return;
+    }
+    // Guardar datos, sólo si es válido el formulario.
+    this.notaComprobante = {...this.notaComprobante, ...this.invoiceNoteForm.value};
+    console.log(this.notaComprobante);
   }
 
 }

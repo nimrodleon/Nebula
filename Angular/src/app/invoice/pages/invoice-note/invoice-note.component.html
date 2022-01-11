@@ -6,16 +6,18 @@
       <div class="col-12 bg-white shadow-sm my-2 py-3">
         <h5 class="text-uppercase">Emisión Nota Electrónica</h5>
         <hr>
-        <form [formGroup]="invoiceNote" class="row">
+        <form [formGroup]="invoiceNoteForm" class="row">
           <div class="col-8">
             <div class="row mb-3">
               <label class="col-3 col-form-label text-uppercase text-end">Fecha Emisión</label>
               <div class="col-4">
-                <input type="date" formControlName="startDate" class="form-control">
+                <input type="date" formControlName="startDate" class="form-control"
+                       [ngClass]="{'is-invalid': inputIsInvalid('startDate')}">
               </div>
               <label class="col-1 col-form-label text-uppercase text-end">Doc</label>
               <div class="col-4">
-                <select formControlName="docType" class="form-select text-uppercase">
+                <select formControlName="docType" class="form-select text-uppercase"
+                        [ngClass]="{'is-invalid': inputIsInvalid('docType')}">
                   <option value="NC">Nota de Crédito</option>
                   <option value="ND">Nota de Débito</option>
                 </select>
@@ -24,8 +26,9 @@
             <div class="row mb-3">
               <label class="col-3 col-form-label text-uppercase text-end">Tipo Nota</label>
               <div class="col-4">
-                <select formControlName="codMotivo" class="form-select text-uppercase">
-                  <ng-container *ngIf="invoiceNote.get('docType')?.value === 'NC'">
+                <select formControlName="codMotivo" class="form-select text-uppercase"
+                        [ngClass]="{'is-invalid': inputIsInvalid('codMotivo')}">
+                  <ng-container *ngIf="invoiceNoteForm.get('docType')?.value === 'NC'">
                     <option value="01">01 - Anulación de la operación</option>
                     <option value="02">02 - Anulación por error en el RUC</option>
                     <option value="03">03 - Corrección por error en la descripción</option>
@@ -37,7 +40,7 @@
                     <option value="09">09 - Disminución en el valor</option>
                     <option value="10">10 - Otros Conceptos</option>
                   </ng-container>
-                  <ng-container *ngIf="invoiceNote.get('docType')?.value === 'ND'">
+                  <ng-container *ngIf="invoiceNoteForm.get('docType')?.value === 'ND'">
                     <option value="01">01 - Intereses por mora</option>
                     <option value="02">02 - Aumento en el valor</option>
                     <option value="03">03 - Penalidades/ otros conceptos</option>
@@ -48,9 +51,11 @@
               <div class="col-4">
                 <div class="input-group">
                   <input type="text" formControlName="serie" class="form-control"
+                         [ngClass]="{'is-invalid': inputIsInvalid('serie')}"
                          placeholder="NC01" style="max-width: 74px;">
                   <span class="input-group-text fw-bold">#</span>
-                  <input type="text" formControlName="number" class="form-control" placeholder="99999999">
+                  <input type="text" formControlName="number" class="form-control"
+                         [ngClass]="{'is-invalid': inputIsInvalid('number')}" placeholder="99999999">
                 </div>
               </div>
             </div>
@@ -59,7 +64,8 @@
             <div class="row">
               <label class="col-2 col-form-label text-uppercase text-end">Motivo</label>
               <div class="col-9">
-                <input type="text" formControlName="desMotivo" class="form-control">
+                <input type="text" formControlName="desMotivo" class="form-control"
+                       [ngClass]="{'is-invalid': inputIsInvalid('desMotivo')}">
               </div>
             </div>
           </div>
@@ -147,14 +153,14 @@
           <fa-icon [icon]="faArrowLeft"></fa-icon>
           <span class="text-uppercase ms-1">Cancelar</span>
         </button>
-        <button type="button" class="btn btn-primary btn-lg">
+        <button type="button" (click)="registerNote()" class="btn btn-primary btn-lg">
           <fa-icon [icon]="faSave"></fa-icon>
           <span class="text-uppercase ms-1">Registrar</span>
         </button>
       </div>
     </div>
 
-    <pre>{{invoiceNote.value|json}}</pre>
+    <pre>{{invoiceNoteForm.value|json}}</pre>
     <pre>{{notaComprobante|json}}</pre>
 
   </div>

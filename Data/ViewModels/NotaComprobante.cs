@@ -17,7 +17,7 @@ namespace Nebula.Data.ViewModels
         /// <summary>
         /// Fecha de registro.
         /// </summary>
-        public DateTime StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
 
         /// <summary>
         /// Tipo documento NOTA: (CRÉDITO/DÉBITO) => (NC/ND).
@@ -121,9 +121,9 @@ namespace Nebula.Data.ViewModels
             {
                 invoiceNote.Serie = Serie;
                 invoiceNote.Number = Number;
-                year = StartDate.ToString("yyyy");
-                month = StartDate.ToString("MM");
-                startDate = StartDate.ToString("yyyy-MM-dd");
+                year = Convert.ToDateTime(StartDate).ToString("yyyy");
+                month = Convert.ToDateTime(StartDate).ToString("MM");
+                startDate = Convert.ToDateTime(StartDate).ToString("yyyy-MM-dd");
                 startTime = "00:00:00";
             }
 
