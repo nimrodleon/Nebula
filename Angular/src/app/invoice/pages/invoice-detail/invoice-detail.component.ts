@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {faEnvelope, faPrint, faStickyNote, faTimes} from '@fortawesome/free-solid-svg-icons';
+import {faEdit, faEnvelope, faPrint, faStickyNote, faTimes, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {environment} from 'src/environments/environment';
 import {InvoiceService} from '../../services';
-import {Invoice} from '../../interfaces';
+import {Invoice, InvoiceNote} from '../../interfaces';
 
 @Component({
   selector: 'app-invoice-detail',
@@ -16,8 +16,11 @@ export class InvoiceDetailComponent implements OnInit {
   faTimes = faTimes;
   faEnvelope = faEnvelope;
   faPrint = faPrint;
+  faEdit = faEdit;
+  faTrashAlt = faTrashAlt;
   faStickyNote = faStickyNote;
   invoice: Invoice = new Invoice();
+  invoiceNotes: Array<InvoiceNote> = new Array<InvoiceNote>();
 
   constructor(
     private router: Router,
@@ -32,6 +35,8 @@ export class InvoiceDetailComponent implements OnInit {
           this.invoice = result;
           this.urlPdf = `${this.appURL}Facturador/GetPdf?invoice=${result.id}`;
         });
+      this.invoiceService.notes(<any>params.get('id'))
+        .subscribe(result => this.invoiceNotes = result);
     });
   }
 

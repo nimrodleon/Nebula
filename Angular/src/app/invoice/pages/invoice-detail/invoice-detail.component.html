@@ -22,7 +22,7 @@
           </button>
         </div>
       </div>
-      <div class="col-12 bg-white py-3">
+      <div class="col-12 bg-white mb-2 py-3">
         <div class="table-responsive">
           <table class="table">
             <tbody>
@@ -92,6 +92,47 @@
           </div>
         </div>
       </div>
+      <!-- ## NOTAS CRÉDITO/DÉBITO ## -->
+      <ng-container *ngIf="invoiceNotes.length > 0">
+        <div class="col-12 bg-white mb-2 py-3">
+          <div class="table-responsive">
+            <table class="table mb-0">
+              <thead>
+              <tr class="text-uppercase">
+                <th>Tipo</th>
+                <th>Fecha</th>
+                <th>Documento</th>
+                <th>Código</th>
+                <th>Motivo</th>
+                <th>Total</th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody class="text-uppercase">
+              <tr *ngFor="let item of invoiceNotes">
+                <td>{{item.docType|noteType}}</td>
+                <td>{{item.fecEmision|date}}</td>
+                <td>{{item.serie}}-{{item.number}}</td>
+                <td>{{item.codMotivo}}</td>
+                <td>{{item.desMotivo}}</td>
+                <td>{{item.sumImpVenta.toFixed(4)|currency}}</td>
+                <td class="text-end">
+                  <div class="actions ms-auto">
+                    <button type="button" [routerLink]="['/invoice/note', item.invoiceId, item.id]"
+                            class="btn btn-secondary btn-sm me-2">
+                      <fa-icon [icon]="faEdit"></fa-icon>
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm">
+                      <fa-icon [icon]="faTrashAlt"></fa-icon>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </ng-container>
     </div>
   </div>
 </div>

@@ -3,6 +3,11 @@ import {InvoiceNoteDetail} from './invoice-note-detail';
 export class InvoiceNote {
   constructor(
     public id: number | any = null,
+    public invoiceId: number | any = null, //Identificador Comprobante.
+    public docType: string = '', // Tipo doc. NOTA: (CRÉDITO/DÉBITO) => (NC/ND).
+    public invoiceType: string = '', // Tipo factura (Compra|Venta)
+    public serie: string = '', // Serie Nota.
+    public number: string = '', // Número Nota.
     public tipOperacion: string = '', // Tipo de operación. Catálogo: 51, n2
     public fecEmision: string = '', // Fecha de emisión. Formato: YYYY-MM-DD, an..10
     public horEmision: string = '', // Hora de Emisión. Formato: HH:MM:SS, an..14
@@ -18,9 +23,6 @@ export class InvoiceNote {
     public sumTotTributos: number = 0, // Sumatoria Tributos. Formato: n(12,2), an..15
     public sumTotValVenta: number = 0, // Total valor de venta. Formato: n(12,2), an..15
     public sumPrecioVenta: number = 0, // Total Precio de Venta. Formato: n(12,2), an..15
-    public sumDescTotal: number = 0, // Total descuentos. Formato: n(12,2), an..15
-    public sumOtrosCargos: number = 0, // Sumatoria otros Cargos. Formato: n(12,2), an..15
-    public sumTotalAnticipos: number = 0, // Total Anticipos. Formato: n(12,2), an..15
     public sumImpVenta: number = 0, // Importe total de la venta, cesión en uso o del servicio prestado. Formato: n(12,2), an..15
     public invoiceNoteDetails: Array<InvoiceNoteDetail> = new Array<InvoiceNoteDetail>()) {
   }

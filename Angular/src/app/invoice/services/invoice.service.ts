@@ -3,7 +3,7 @@ import {environment} from 'src/environments/environment';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {ResponseData} from '../../global/interfaces';
-import {Comprobante, Invoice, VoucherQuery} from '../interfaces';
+import {Comprobante, Invoice, InvoiceNote, VoucherQuery} from '../interfaces';
 import {Sale} from '../../cashier/interfaces';
 
 @Injectable({
@@ -27,6 +27,11 @@ export class InvoiceService {
   // obtener registro del comprobante.
   public show(id: number): Observable<Invoice> {
     return this.http.get<Invoice>(`${this.appURL}/Show/${id}`);
+  }
+
+  // notas de crédito/débito.
+  public notes(id: number): Observable<Array<InvoiceNote>> {
+    return this.http.get<Array<InvoiceNote>>(`${this.appURL}/Notes/${id}`);
   }
 
   // registrar comprobante de venta.

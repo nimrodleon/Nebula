@@ -55,6 +55,19 @@ namespace Nebula.Controllers
         }
 
         /// <summary>
+        /// Notas de Crédito/Débito.
+        /// </summary>
+        /// <param name="id">Id factura</param>
+        /// <returns>IActionResult</returns>
+        [HttpGet("Notes/{id}")]
+        public async Task<IActionResult> Notes(int id)
+        {
+            var result = await _context.InvoiceNotes.AsNoTracking()
+                .Where(m => m.InvoiceId.Equals(id)).ToListAsync();
+            return Ok(result);
+        }
+
+        /// <summary>
         /// registrar comprobante de venta.
         /// </summary>
         /// <param name="id">ID serie de facturación</param>

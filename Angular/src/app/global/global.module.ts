@@ -6,13 +6,15 @@ import {DocTypeInvoicePipe} from './pipes/doc-type-invoice.pipe';
 import {NavbarComponent} from './navbar/navbar.component';
 import {SidebarComponent} from './sidebar/sidebar.component';
 import {FormaPagoPipe} from './pipes/forma-pago.pipe';
+import {NoteTypePipe} from './pipes/note-type.pipe';
 
 @NgModule({
   declarations: [
     NavbarComponent,
     SidebarComponent,
     DocTypeInvoicePipe,
-    FormaPagoPipe
+    FormaPagoPipe,
+    NoteTypePipe
   ],
   imports: [
     CommonModule,
@@ -23,7 +25,8 @@ import {FormaPagoPipe} from './pipes/forma-pago.pipe';
     NavbarComponent,
     SidebarComponent,
     DocTypeInvoicePipe,
-    FormaPagoPipe
+    FormaPagoPipe,
+    NoteTypePipe
   ]
 })
 export class GlobalModule {
