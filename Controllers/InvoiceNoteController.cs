@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,20 @@ namespace Nebula.Controllers
             _logger = logger;
             _context = context;
             _comprobanteService = comprobanteService;
+        }
+
+        [HttpGet("Index/{type}")]
+        public async Task<IActionResult> Index(string type, [FromQuery] VoucherQuery model)
+        {
+            if (type == null) return BadRequest();
+            var result = from m in _context.InvoiceNotes.Where(m =>
+                    m.InvoiceType.Equals(type) && m.Year.Equals(model.Year) && m.Month.Equals(model.Month))
+                select m;
+            if (!string.IsNullOrWhiteSpace(model.Query))
+                result = result.Where(m => m.RznSocialUsuario.ToUpper().Contains(model.Query.ToUpper()));
+            result = result.OrderByDescending(m => m.Id);
+            var responseData = await result.AsNoTracking().ToListAsync();
+            return Ok(responseData);
         }
 
         [HttpGet("Show/{id}")]

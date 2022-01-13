@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {environment} from 'src/environments/environment';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {InvoiceNote, NotaComprobante} from '../interfaces';
-import {ResponseData} from '../../global/interfaces';
+import {InvoiceNote, NotaComprobante, VoucherQuery} from '../interfaces';
+import {ResponseData} from 'src/app/global/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +12,15 @@ export class InvoiceNoteService {
   private appURL: string = environment.applicationUrl + 'InvoiceNote';
 
   constructor(private http: HttpClient) {
+  }
+
+  // listar notas de crédito/débito.
+  public index(type: string, query: VoucherQuery): Observable<Array<InvoiceNote>> {
+    let params = new HttpParams();
+    params = params.append('Year', query.year);
+    params = params.append('Month', query.month);
+    params = params.append('Query', query.query);
+    return this.http.get<Array<InvoiceNote>>(`${this.appURL}/Index/${type}`, {params});
   }
 
   // cargar información de la nota de crédito/débito.
