@@ -24,4 +24,9 @@ export class InvoiceNoteService {
     return this.http.post<ResponseData<NotaComprobante>>(`${this.appURL}/Create`, data);
   }
 
+  // actualizar registro nota de crédito/débito.
+  public update(id: number, data: NotaComprobante): Observable<ResponseData<NotaComprobante>> {
+    return this.http.put<ResponseData<NotaComprobante>>(`${this.appURL}/Update/${id}`, data);
+  }
+
 }

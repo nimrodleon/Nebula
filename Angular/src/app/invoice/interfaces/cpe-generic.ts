@@ -2,6 +2,7 @@ import {CpeDetail} from './cpe-detail';
 import {Configuration} from '../../system/interfaces';
 import {Product} from '../../products/interfaces';
 import {InvoiceDetail} from './invoice-detail';
+import {InvoiceNoteDetail} from './invoice-note-detail';
 
 // modelo genérico comprobante.
 // usado solo para el calculo del detalle del comprobante y los subTotales.
@@ -104,7 +105,7 @@ export class CpeGeneric {
   }
 
   // configurar item detalle desde una factura.
-  public static getItemDetail(invoiceDetail: InvoiceDetail): CpeDetail {
+  public static getItemDetail(invoiceDetail: InvoiceDetail | InvoiceNoteDetail): CpeDetail {
     const item: CpeDetail = new CpeDetail();
     item.productId = Number(invoiceDetail.codProducto);
     item.codUnidadMedida = invoiceDetail.codUnidadMedida;

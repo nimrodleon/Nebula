@@ -502,7 +502,8 @@ namespace Nebula.Data.Services
                 if (_notaComprobante.DocType.Equals("NC")) tipoNota = "crédito";
                 if (_notaComprobante.DocType.Equals("ND")) tipoNota = "débito";
 
-                var invoiceNote = await _context.InvoiceNotes.FindAsync(id);
+                var invoiceNote = await _context.InvoiceNotes.AsNoTracking()
+                    .FirstOrDefaultAsync(m => m.Id.Equals(id));
                 if (invoiceNote == null) throw new Exception($"No existe la Nota {tipoNota}");
 
                 if (invoiceNote.InvoiceType.Equals("COMPRA"))

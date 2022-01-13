@@ -56,6 +56,7 @@ export class InvoiceNoteComponent implements OnInit {
           // cargar cabecera de nota crédito/débito.
           if (this.invoiceNoteId > 0) {
             if (result.invoiceType === 'COMPRA') {
+              const factura = result;
               this.invoiceNoteService.show(<any>params.get('id'))
                 .subscribe(result => {
                   this.invoiceNoteForm.controls['startDate'].setValue(result.fecEmision);
@@ -64,15 +65,32 @@ export class InvoiceNoteComponent implements OnInit {
                   this.invoiceNoteForm.controls['serie'].setValue(result.serie);
                   this.invoiceNoteForm.controls['number'].setValue(result.number);
                   this.invoiceNoteForm.controls['desMotivo'].setValue(result.desMotivo);
+                  if (result.invoiceNoteDetails.length > 0) {
+                    // cargar detalle desde la nota de crédito/débito.
+                    result.invoiceNoteDetails.forEach(item => {
+                      const itemDetail = CpeGeneric.getItemDetail(item);
+                      itemDetail.calcularItem();
+                      this.notaComprobante.addItemWithData(itemDetail);
+                    });
+                  } else {
+                    // cargar detalle desde la factura/boleta.
+                    factura.invoiceDetails.forEach(item => {
+                      const itemDetail = CpeGeneric.getItemDetail(item);
+                      itemDetail.calcularItem();
+                      this.notaComprobante.addItemWithData(itemDetail);
+                    });
+                  }
                 });
             }
+          } else {
+            // detalle de nota crédito/débito.
+            // cargar detalle de factura/boleta.
+            result.invoiceDetails.forEach(item => {
+              const itemDetail = CpeGeneric.getItemDetail(item);
+              itemDetail.calcularItem();
+              this.notaComprobante.addItemWithData(itemDetail);
+            });
           }
-          // detalle de nota crédito/débito.
-          result.invoiceDetails.forEach(item => {
-            const itemDetail = CpeGeneric.getItemDetail(item);
-            itemDetail.calcularItem();
-            this.notaComprobante.addItemWithData(itemDetail);
-          });
         });
     });
     // item comprobante modal.
@@ -124,6 +142,10 @@ export class InvoiceNoteComponent implements OnInit {
         this.notaComprobante = {...this.notaComprobante, ...this.invoiceNoteForm.value};
         if (this.invoiceNoteId > 0) {
           // actualizar nota crédito/débito.
+          this.invoiceNoteService.update(this.invoiceNoteId, this.notaComprobante)
+            .subscribe(async (result) => {
+              if (result.ok) await this.router.navigate(['/invoice/detail', result.data?.invoiceId]);
+            });
         } else {
           // registrar nota crédito/débito.
           this.invoiceNoteService.create(this.notaComprobante)
