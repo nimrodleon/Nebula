@@ -3,9 +3,9 @@ import {faArrowLeft, faEdit, faIdCardAlt, faPlus, faSave, faTrashAlt} from '@for
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import * as moment from 'moment';
+import {confirmTask} from 'src/app/global/interfaces';
 import {CpeDetail, CpeGeneric, NotaComprobante} from '../../interfaces';
 import {InvoiceNoteService, InvoiceService} from '../../services';
-import {confirmTask} from '../../../global/interfaces';
 
 declare var bootstrap: any;
 
@@ -53,6 +53,21 @@ export class InvoiceNoteComponent implements OnInit {
             this.invoiceNoteForm.controls['serie'].disable();
             this.invoiceNoteForm.controls['number'].disable();
           }
+          // cargar cabecera de nota crédito/débito.
+          if (this.invoiceNoteId > 0) {
+            if (result.invoiceType === 'COMPRA') {
+              this.invoiceNoteService.show(<any>params.get('id'))
+                .subscribe(result => {
+                  this.invoiceNoteForm.controls['startDate'].setValue(result.fecEmision);
+                  this.invoiceNoteForm.controls['docType'].setValue(result.docType);
+                  this.invoiceNoteForm.controls['codMotivo'].setValue(result.codMotivo);
+                  this.invoiceNoteForm.controls['serie'].setValue(result.serie);
+                  this.invoiceNoteForm.controls['number'].setValue(result.number);
+                  this.invoiceNoteForm.controls['desMotivo'].setValue(result.desMotivo);
+                });
+            }
+          }
+          // detalle de nota crédito/débito.
           result.invoiceDetails.forEach(item => {
             const itemDetail = CpeGeneric.getItemDetail(item);
             itemDetail.calcularItem();

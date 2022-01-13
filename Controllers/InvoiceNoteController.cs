@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Nebula.Data;
 using Nebula.Data.Services;
@@ -25,6 +26,14 @@ namespace Nebula.Controllers
             _logger = logger;
             _context = context;
             _comprobanteService = comprobanteService;
+        }
+
+        [HttpGet("Show/{id}")]
+        public async Task<IActionResult> Show(int id)
+        {
+            var result = await _context.InvoiceNotes.AsNoTracking()
+                .FirstOrDefaultAsync(m => m.Id.Equals(id));
+            return Ok(result);
         }
 
         [HttpPost("Create")]
