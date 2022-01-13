@@ -55,7 +55,7 @@
             </thead>
             <tbody class="text-uppercase">
             <tr *ngFor="let item of invoiceNotes">
-              <td>{{item.docType}}</td>
+              <td>{{item.docType|noteType}}</td>
               <td>{{item.fecEmision|date}}</td>
               <td>{{item.serie}}-{{item.number}}</td>
               <td>{{item.rznSocialUsuario}}</td>
