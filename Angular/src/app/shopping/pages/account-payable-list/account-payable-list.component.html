@@ -29,7 +29,11 @@
             </select>
           </div>
           <div class="col-auto">
-            <input type="search" formControlName="query" class="form-control" placeholder="PROVEEDOR">
+            <select formControlName="query" class="form-select">
+              <option value="PENDIENTE">PENDIENTE</option>
+              <option value="COBRADO">COBRADO</option>
+              <option value="ANULADO">ANULADO</option>
+            </select>
           </div>
           <div class="col-auto">
             <button type="submit" class="btn btn-success">
@@ -40,30 +44,42 @@
         </form>
       </div>
       <div class="col-12 bg-white py-3">
-        <h5 class="fw-bold text-uppercase">Listado de Notas Crédito/Débito</h5>
+        <h5 class="fw-bold text-uppercase">Listado de Cuentas por Pagar</h5>
         <div class="table-responsive">
           <table class="table table-striped mb-0">
             <thead>
             <tr class="text-uppercase">
-              <th>Tipo</th>
-              <th>Fecha</th>
               <th>Documento</th>
-              <th>Cliente</th>
-              <th>Total</th>
+              <th>Cuota</th>
+              <th>Vencimiento</th>
+              <th>Días Mora</th>
+              <th>Pagar</th>
+              <th>Estado</th>
+              <th>Monto</th>
+              <th>Saldo</th>
               <th></th>
             </tr>
             </thead>
-            <tbody class="text-uppercase">
-            <tr *ngFor="let item of invoiceNotes">
-              <td>{{item.docType|noteType}}</td>
-              <td>{{item.fecEmision|date}}</td>
-              <td>{{item.serie}}-{{item.number}}</td>
-              <td>{{item.rznSocialUsuario}}</td>
-              <td>{{item.sumImpVenta.toFixed(4)|currency}}</td>
+            <tbody>
+            <tr *ngFor="let item of invoiceAccounts">
+              <td>
+                <a [routerLink]="['/invoice/detail', item.invoiceId]">{{item.serie}}-{{item.number}}</a>
+              </td>
+              <td>{{item.cuota}}</td>
+              <td>{{item.endDate|date}}</td>
+              <td>{{diasMora(item.endDate)}}</td>
+              <td class="text-start">
+                <button type="button" class="btn btn-primary btn-sm">
+                  <fa-icon [icon]="faCoins" class="me-1"></fa-icon>
+                  <span class="text-uppercase">Pagar</span>
+                </button>
+              </td>
+              <td>{{item.status}}</td>
+              <td>{{item.amount.toFixed(4)|currency}}</td>
+              <td>{{item.balance.toFixed(4)|currency}}</td>
               <td class="text-end">
                 <div class="actions ms-auto">
-                  <button type="button" [routerLink]="['/invoice/note', item.invoiceId, item.id]"
-                          class="btn btn-secondary btn-sm me-2">
+                  <button type="button" class="btn btn-secondary btn-sm me-2">
                     <fa-icon [icon]="faEdit"></fa-icon>
                   </button>
                   <button type="button" class="btn btn-danger btn-sm">
@@ -77,5 +93,8 @@
         </div>
       </div>
     </div>
+
+    <pre>{{invoiceAccounts|json}}</pre>
+
   </div>
 </div>
