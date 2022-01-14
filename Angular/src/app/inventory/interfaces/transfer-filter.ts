@@ -1,6 +1,6 @@
 export interface TransferFilter {
-  origin: string;
-  target: string;
+  origin: number;
+  target: number;
   year: string;
   month: string;
 }

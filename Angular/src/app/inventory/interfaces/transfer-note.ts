@@ -1,15 +1,16 @@
 import {TransferNoteDetail} from './transfer-note-detail';
 import {Warehouse} from '../../system/interfaces';
 
-export interface TransferNote {
-  id: number | null;
-  origin: Warehouse | any;
-  originId: string;
-  target: Warehouse | any;
-  targetId: string;
-  motivo: string;
-  startDate: any;
-  remark: string;
-  status: string;
-  transferNoteDetails: Array<TransferNoteDetail>;
+export class TransferNote {
+  constructor(
+    public id: number | any = null, //
+    public origin: Warehouse | any = undefined, // Almacén Origen.
+    public originId: number = 0, // Id Almacén de Origen.
+    public target: Warehouse | any = undefined, // Almacén Destino.
+    public targetId: number = 0, // Id Almacén de destino.
+    public motivo: string = '', // Motivo de Inventario.
+    public startDate: any = null, // Fecha de registro.
+    public status: string = '', // Estado de la Transferencia.
+    public transferNoteDetails: Array<TransferNoteDetail> = new Array<TransferNoteDetail>()) {
+  }
 }

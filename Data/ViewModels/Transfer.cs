@@ -29,11 +29,6 @@ namespace Nebula.Data.ViewModels
         public DateTime StartDate { get; set; }
 
         /// <summary>
-        /// Observación.
-        /// </summary>
-        public string Remark { get; set; }
-
-        /// <summary>
         /// Detalle de Transferencia.
         /// </summary>
         public List<ItemNote> ItemNotes { get; set; }

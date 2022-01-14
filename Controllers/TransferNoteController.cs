@@ -30,23 +30,23 @@ namespace Nebula.Controllers
             var result = await _context.TransferNotes.AsNoTracking()
                 .Include(m => m.Origin)
                 .Include(m => m.Target)
-                .Where(m => m.OriginId.ToString().Equals(filter.Origin)
-                            && m.TargetId.ToString().Equals(filter.Target) && m.Year.Equals(filter.Year) &&
-                            m.Month.Equals(filter.Month)).ToListAsync();
+                .Where(m => m.OriginId.Equals(filter.Origin)
+                            && m.TargetId.Equals(filter.Target) && m.Year.Equals(filter.Year)
+                            && m.Month.Equals(filter.Month))
+                .OrderByDescending(m => m.Id).ToListAsync();
             return Ok(result);
         }
 
         [HttpGet("Show/{id}")]
-        public async Task<IActionResult> Show(int? id)
+        public async Task<IActionResult> Show(int id)
         {
-            if (id == null) return BadRequest();
             var result = await _context.TransferNotes.IgnoreQueryFilters().AsNoTracking()
                 .Include(m => m.TransferNoteDetails).FirstOrDefaultAsync(m => m.Id.Equals(id));
             return Ok(result);
         }
 
-        [HttpPost("Store")]
-        public async Task<IActionResult> Store([FromBody] Transfer model)
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create([FromBody] Transfer model)
         {
             await using (var transaction = await _context.Database.BeginTransactionAsync())
             {
@@ -62,7 +62,6 @@ namespace Nebula.Controllers
                         TargetId = model.Target,
                         Motivo = $"{motivo.Id}|{motivo.Description}",
                         StartDate = model.StartDate,
-                        Remark = model.Remark,
                         Status = "BORRADOR",
                         Year = model.StartDate.ToString("yyyy"),
                         Month = model.StartDate.ToString("MM")
@@ -76,7 +75,7 @@ namespace Nebula.Controllers
                     {
                         transferNoteDetails.Add(new TransferNoteDetail()
                         {
-                            TransferNote = transfer,
+                            TransferNoteId = transfer.Id,
                             ProductId = item.ProductId,
                             Description = item.Description,
                             Price = item.Price,
@@ -112,9 +111,10 @@ namespace Nebula.Controllers
         }
 
         [HttpPut("Update/{id}")]
-        public async Task<IActionResult> Update(int? id, [FromBody] Transfer model)
+        public async Task<IActionResult> Update(int id, [FromBody] Transfer model)
         {
-            var result = await _context.TransferNotes.Include(m => m.TransferNoteDetails)
+            var result = await _context.TransferNotes.AsNoTracking()
+                .Include(m => m.TransferNoteDetails)
                 .FirstOrDefaultAsync(m => m.Id.Equals(id));
             if (result == null) return BadRequest(new {Ok = false, Msg = "No existe la Transferencia de Inventario!"});
             await using (var transaction = await _context.Database.BeginTransactionAsync())
@@ -129,7 +129,6 @@ namespace Nebula.Controllers
                     result.TargetId = model.Target;
                     result.Motivo = $"{motivo.Id}|{motivo.Description}";
                     result.StartDate = model.StartDate;
-                    result.Remark = model.Remark;
                     result.Status = "BORRADOR";
                     result.Year = model.StartDate.ToString("yyyy");
                     result.Month = model.StartDate.ToString("MM");

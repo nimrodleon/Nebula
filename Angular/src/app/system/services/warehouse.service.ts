@@ -17,7 +17,7 @@ export class WarehouseService {
   public index(query: string = ''): Observable<Warehouse[]> {
     let params = new HttpParams();
     params = params.append('query', query);
-    return this.http.get<Warehouse[]>(`${this.appURL}/Index`, {params: params});
+    return this.http.get<Warehouse[]>(`${this.appURL}/Index`, {params});
   }
 
   public show(id: string): Observable<Warehouse> {

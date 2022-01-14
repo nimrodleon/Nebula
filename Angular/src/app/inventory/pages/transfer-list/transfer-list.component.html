@@ -8,23 +8,23 @@
         <hr class="mt-1 mb-2">
         <form [formGroup]="filterForm" (ngSubmit)="getTransferNotes()" class="row">
           <div class="col-2">
-            <label class="form-label fw-bold">Almacén Origen</label>
+            <label class="form-label text-uppercase fw-bold">Almacén Origen</label>
             <select formControlName="origin" (change)="changeOriginWarehouses()" class="form-select">
               <option *ngFor="let item of warehouses" [value]="item.id">{{item.name}}</option>
             </select>
           </div>
           <div class="col-2">
-            <label class="form-label fw-bold">Almacén Destino</label>
+            <label class="form-label text-uppercase fw-bold">Almacén Destino</label>
             <select formControlName="target" class="form-select">
               <option *ngFor="let item of targetWarehouses" [value]="item.id">{{item.name}}</option>
             </select>
           </div>
           <div class="col-2">
-            <label class="form-label fw-bold">Año</label>
+            <label class="form-label text-uppercase fw-bold">Año Reg.</label>
             <input type="number" formControlName="year" step="1" class="form-control">
           </div>
           <div class="col-2">
-            <label class="form-label fw-bold">Mes</label>
+            <label class="form-label text-uppercase fw-bold">Mes Reg.</label>
             <select formControlName="month" class="form-select">
               <option value="01">ENERO</option>
               <option value="02">FEBRERO</option>
@@ -64,25 +64,31 @@
           <table class="table table-striped mb-0">
             <thead>
             <tr class="text-uppercase">
+              <th>#</th>
               <th>Fecha</th>
               <th>Almacén Origen</th>
               <th>Almacén Destino</th>
               <th>Motivo</th>
-              <th>Glosa</th>
               <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let item of transferNotes">
+              <td>{{item.id}}</td>
               <td>{{item.startDate|date}}</td>
               <td>{{item.origin.name}}</td>
               <td>{{item.target.name}}</td>
               <td>{{item.motivo.split('|')[1]}}</td>
-              <td>{{item.remark}}</td>
               <td class="text-end">
-                <button type="button" [routerLink]="['/inventory/transfer/form', item.id]" class="btn btn-primary btn-sm">
-                  <span class="text-uppercase">Detalle</span>
-                </button>
+                <div class="actions ms-auto">
+                  <button type="button" [routerLink]="['/inventory/transfer/form', item.id]"
+                          class="btn btn-secondary btn-sm me-2">
+                    <fa-icon [icon]="faEdit"></fa-icon>
+                  </button>
+                  <button type="button" class="btn btn-danger btn-sm">
+                    <fa-icon [icon]="faTrashAlt"></fa-icon>
+                  </button>
+                </div>
               </td>
             </tr>
             </tbody>

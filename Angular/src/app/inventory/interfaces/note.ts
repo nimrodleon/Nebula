@@ -1,11 +1,12 @@
 import {ItemNote} from './item-note';
 
-export interface Note {
-  contactId: number;
-  warehouseId: string;
-  noteType: string;
-  motivo: number;
-  startDate: any;
-  remark: string;
-  itemNotes: Array<ItemNote>;
+export class Note {
+  constructor(
+    public contactId: number = 0,
+    public warehouseId: number = 0,
+    public noteType: string = '',
+    public motivo: number | string = 0,
+    public startDate: any = null,
+    public itemNotes: Array<ItemNote> = new Array<ItemNote>()) {
+  }
 }

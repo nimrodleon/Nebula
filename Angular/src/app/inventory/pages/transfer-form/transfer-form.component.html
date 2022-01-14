@@ -11,13 +11,16 @@
             <div class="row mb-3">
               <label class="col-1 col-form-label text-uppercase text-end">Origen</label>
               <div class="col-3">
-                <select formControlName="origin" (change)="changeOriginWarehouse()" class="form-select">
+                <select formControlName="origin" (change)="changeOriginWarehouse()"
+                        [ngClass]="{'is-invalid': inputIsInvalid('origin')}" class="form-select">
                   <option *ngFor="let item of warehouses" [value]="item.id">{{item.name}}</option>
                 </select>
               </div>
               <label class="col-1 col-form-label text-uppercase text-end">Destino</label>
               <div class="col-3">
-                <select formControlName="target" class="form-select">
+                <select formControlName="target"
+                        [ngClass]="{'is-invalid': inputIsInvalid('target')}"
+                        class="form-select">
                   <option *ngFor="let item of targetWarehouses" [value]="item.id">{{item.name}}</option>
                 </select>
               </div>
@@ -27,13 +30,17 @@
             <div class="row mb-3">
               <label class="col-1 col-form-label text-uppercase text-end">Motivo</label>
               <div class="col-3">
-                <select formControlName="motivo" class="form-select">
+                <select formControlName="motivo"
+                        [ngClass]="{'is-invalid': inputIsInvalid('motivo')}"
+                        class="form-select">
                   <option *ngFor="let item of motivos" [value]="item.id">{{item.description}}</option>
                 </select>
               </div>
               <label class="col-1 col-form-label text-uppercase text-end">Fecha</label>
               <div class="col-3">
-                <input type="date" formControlName="startDate" class="form-control">
+                <input type="date" formControlName="startDate"
+                       [ngClass]="{'is-invalid': inputIsInvalid('startDate')}"
+                       class="form-control">
               </div>
             </div>
           </div>
@@ -75,22 +82,16 @@
               </table>
             </div>
           </div>
-          <div class="col-12 mb-2">
-            <button type="button" (click)="showItemComprobanteModal()" class="btn btn-dark">
+          <div class="col-12">
+            <button type="button" (click)="showItemComprobanteModal()" class="btn btn-secondary">
               <fa-icon [icon]="faPlus" class="me-1"></fa-icon>
-              <span class="text-uppercase">Agregar Item Producto</span>
+              <span class="text-uppercase">Agregar Item</span>
             </button>
-          </div>
-          <div class="col-8">
-            <div class="mb-3">
-              <label class="form-label text-uppercase">Glosa</label>
-              <textarea formControlName="remark" class="form-control"></textarea>
-            </div>
           </div>
         </form>
       </div>
       <div class="d-flex justify-content-center bg-white shadow-sm mb-2 py-3">
-        <button type="button" class="btn btn-danger btn-lg me-2">
+        <button type="button" (click)="historyBack()" class="btn btn-danger btn-lg me-2">
           <fa-icon [icon]="faArrowLeft"></fa-icon>
           <span class="text-uppercase ms-1">Cancelar</span>
         </button>

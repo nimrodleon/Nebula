@@ -44,12 +44,6 @@ namespace Nebula.Data.Models
         public DateTime StartDate { get; set; }
 
         /// <summary>
-        /// Observación.
-        /// </summary>
-        [MaxLength(250)]
-        public string Remark { get; set; }
-
-        /// <summary>
         /// Estado de la Transferencia.
         /// </summary>
         [MaxLength(250)]

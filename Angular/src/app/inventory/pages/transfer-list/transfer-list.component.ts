@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {faPlus, faSearch, faSignOutAlt, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {faEdit, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import * as moment from 'moment';
 import {TransferNote} from '../../interfaces';
@@ -15,8 +15,8 @@ import {WarehouseService} from 'src/app/system/services';
 export class TransferListComponent implements OnInit {
   faSearch = faSearch;
   faPlus = faPlus;
-  faSignOutAlt = faSignOutAlt;
   faTrashAlt = faTrashAlt;
+  faEdit = faEdit;
   transferNotes: Array<TransferNote> = new Array<TransferNote>();
   warehouses: Array<Warehouse> = new Array<Warehouse>();
   targetWarehouses: Array<Warehouse> = new Array<Warehouse>();
@@ -37,13 +37,13 @@ export class TransferListComponent implements OnInit {
     // cargar almacenes de origen.
     this.warehouseService.index().subscribe(result => this.warehouses = result);
     // cargar lista de transferencias.
-    this.getTransferNotes();
+    // this.getTransferNotes();
   }
 
   // cargar lista de almacenes de destino.
   public changeOriginWarehouses(): void {
     if (this.filterForm.get('origin')?.value) {
-      const origin = this.filterForm.get('origin')?.value;
+      const origin = Number(this.filterForm.get('origin')?.value);
       this.targetWarehouses = new Array<Warehouse>();
       this.warehouses.forEach(item => {
         if (item.id !== origin) {

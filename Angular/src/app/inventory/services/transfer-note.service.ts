@@ -21,15 +21,15 @@ export class TransferNoteService {
     params = params.append('target', filter.target);
     params = params.append('year', filter.year);
     params = params.append('month', filter.month);
-    return this.http.get<TransferNote[]>(`${this.appURL}/Index`, {params: params});
+    return this.http.get<TransferNote[]>(`${this.appURL}/Index`, {params});
   }
 
   public show(id: number): Observable<TransferNote> {
     return this.http.get<TransferNote>(`${this.appURL}/Show/${id}`);
   }
 
-  public store(data: Transfer): Observable<ResponseData<Transfer>> {
-    return this.http.post<ResponseData<Transfer>>(`${this.appURL}/Store`, data);
+  public create(data: Transfer): Observable<ResponseData<Transfer>> {
+    return this.http.post<ResponseData<Transfer>>(`${this.appURL}/Create`, data);
   }
 
   public update(id: number, data: Transfer): Observable<ResponseData<Transfer>> {
