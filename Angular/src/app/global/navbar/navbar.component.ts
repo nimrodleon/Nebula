@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {faBars, faBox, faCashRegister, faCog, faSignOutAlt, faUserCircle} from '@fortawesome/free-solid-svg-icons';
+import {faBars, faBox, faCog, faSignOutAlt, faThList, faUserCircle} from '@fortawesome/free-solid-svg-icons';
 import {AuthService} from '../../user/services';
 import {EnumBoolean, EnumMenu} from '../interfaces';
 import {ConfigurationService} from '../../system/services';
@@ -14,7 +14,7 @@ export class NavbarComponent implements OnInit {
   faUserCircle = faUserCircle;
   faSignOutAlt = faSignOutAlt;
   faCog = faCog;
-  faCashRegister = faCashRegister;
+  faThList = faThList;
   faBars = faBars;
   faBox = faBox;
   mainMenu: any;

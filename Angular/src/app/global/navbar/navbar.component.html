@@ -1,9 +1,7 @@
-<nav class="navbar navbar-expand navbar-dark d-print-none" style="background-color: #1a67a3;">
+<nav class="navbar navbar-expand navbar-light bg-light shadow-sm d-print-none">
   <div class="container-fluid">
-    <a (click)="mainMenuToggle($event)" href="#" class="navbar-brand">
-      <fa-icon [icon]="faBars"></fa-icon>
-    </a>
-    <a (click)="homePage($event)" href="#" class="navbar-brand">
+    <a routerLink="/" class="navbar-brand">
+      <fa-icon [icon]="faThList" class="text-success me-1"></fa-icon>
       <span class="text-uppercase">{{companyName || 'DEMO S.A.C.'}}</span>
     </a>
     <div class="collapse navbar-collapse">
@@ -16,8 +14,8 @@
         </li>
         <li class="nav-item">
           <button (click)="logout()" class="nav-link btn btn-danger btn-sm px-4">
-            <fa-icon [icon]="faSignOutAlt"></fa-icon>
-            <span class="text-uppercase ms-1">Salir</span>
+            <fa-icon [icon]="faSignOutAlt" class="text-white me-1"></fa-icon>
+            <span class="text-uppercase text-white">Salir</span>
           </button>
         </li>
       </ul>

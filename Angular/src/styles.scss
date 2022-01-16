@@ -3,6 +3,13 @@
 @import "~select2/src/scss/core";
 @import "~select2-bootstrap-5-theme/src/include-all";
 
+.page-wrapper {
+  position: absolute;
+  width: calc(100% - 7rem);
+  left: 7rem;
+  top: 0;
+}
+
 .Wrapper {
   // display: flex;
   // min-height: calc(100vh - 56px);
