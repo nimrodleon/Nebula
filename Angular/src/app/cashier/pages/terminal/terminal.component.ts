@@ -3,7 +3,7 @@ import {FormBuilder, FormControl} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {
   faBarcode, faCogs, faCoins, faIdCardAlt, faMinus, faPlus,
-  faSearch, faSignOutAlt, faTags, faThLarge, faTimes, faTrashAlt, faUserCircle
+  faSearch, faSignOutAlt, faTags, faThList, faTimes, faTrashAlt, faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import {environment} from 'src/environments/environment';
@@ -38,7 +38,7 @@ export class TerminalComponent implements OnInit {
   faIdCardAlt = faIdCardAlt;
   faTimes = faTimes;
   faCogs = faCogs;
-  faThLarge = faThLarge;
+  faThList = faThList;
   // ====================================================================================================
   cajaDiariaId: number = 0;
   cobrarModal: any;

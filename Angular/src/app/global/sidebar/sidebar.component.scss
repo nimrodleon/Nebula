@@ -1,77 +1,72 @@
-$mainMenuWidth: 270px;
-
-#mainMenu {
-  width: $mainMenuWidth;
-  min-width: $mainMenuWidth;
+.menu-wrapper {
+  background-color: #212529;
+  position: relative;
   min-height: calc(100vh - 56px);
-  height: 100%;
-  overflow-x: hidden;
-  border-right: 0 solid #eaeaea;
-  background-color: #333739;
-  font-size: 1.2rem;
+  width: 7rem;
 
-  a {
-    text-decoration: none;
-    display: block;
-    line-height: 40px;
-    color: white;
-  }
+  .menubar {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
 
-  fa-icon {
-    margin: 0 15px;
-  }
-}
+    .level-0 {
+      &:hover {
+        .submenu {
+          display: block;
+        }
+      }
 
-// reset ul classes.
-@mixin ul-class {
-  padding-left: 0;
-  margin-bottom: 0;
-  list-style: none;
-}
+      a {
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        text-decoration: none;
+        padding: 4px 0;
+        color: white;
+        width: 100%;
 
-.menu-root {
-  @include ul-class;
+        &:hover {
+          background-color: #1a67a3;
+        }
 
-  li {
-    display: list-item;
-  }
-}
-
-// menuItem class.
-.mainItemWrapper {
-  display: flex;
-  width: $mainMenuWidth;
-  min-width: $mainMenuWidth;
-  justify-content: space-between;
-
-  a {
-    &:hover {
-      background-color: #175a8e;
-      // hermano adyacente.
-      + .toggler {
-        background-color: #175a8e;
+        fa-icon {
+          font-size: 2rem;
+        }
       }
     }
   }
-}
 
-// menu children.
-.menuChildren {
-  @include ul-class;
-  // cabecera menu children.
-  .header {
-    display: flex;
-    // icono flecha.
-    .toggler {
-      padding-left: 0;
+  .submenu {
+    display: none;
+    padding: 15px;
+    background-color: #333739;
+    position: absolute;
+    min-height: calc(100vh - 56px);
+    width: 17rem;
+    z-index: 999;
+    left: 7rem;
+    top: 0;
+
+    strong {
+      color: white;
+      display: block;
+      padding: 15px;
+      text-transform: uppercase;
+      font-size: 1.2rem;
     }
-  }
 
-  a {
-    padding-left: 15px;
+    ul {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 0;
+    }
 
-    &:hover {
-      background-color: #175a8e;
+    .level-1 {
+      a {
+        padding: 8px 15px;
+        text-transform: uppercase;
+        text-align: start;
+      }
     }
   }
 }

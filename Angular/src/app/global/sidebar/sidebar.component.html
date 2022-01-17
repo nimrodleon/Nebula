@@ -1,214 +1,114 @@
-<div id="mainMenu">
-  <ng-container *ngIf="checkMenuRoot()">
-    <ul class="menu-root">
-      <li>
-        <div class="mainItemWrapper">
-          <a routerLink="/contacts" class="w-100">
-            <fa-icon [icon]="faAddressBook"></fa-icon>
-            <span class="">Contactos</span>
-          </a>
-        </div>
-      </li>
-      <li>
-        <div class="mainItemWrapper">
-          <a routerLink="/products" class="w-100">
-            <fa-icon [icon]="faBox"></fa-icon>
-            <span class="">Productos</span>
-          </a>
-        </div>
-      </li>
-      <li>
-        <div class="mainItemWrapper">
-          <a routerLink="/cashier" class="w-100">
-            <fa-icon [icon]="faCashRegister"></fa-icon>
-            <span class="">Punto de Venta</span>
-          </a>
-        </div>
-      </li>
-      <li>
-        <div class="mainItemWrapper">
-          <a (click)="mnInventory($event)" href="#" class="w-100">
-            <fa-icon [icon]="faArchive"></fa-icon>
-            <span class="">Inventario</span>
-          </a>
-          <a (click)="mnInventory($event, true)" href="#" class="toggler">
-            <fa-icon [icon]="faArrowRight"></fa-icon>
-          </a>
-        </div>
-      </li>
-      <li>
-        <div class="mainItemWrapper">
-          <a (click)="mnShopping($event)" href="#" class="w-100">
-            <fa-icon [icon]="faShoppingBasket"></fa-icon>
-            <span class="">Compras</span>
-          </a>
-          <a (click)="mnShopping($event, true)" href="#" class="toggler">
-            <fa-icon [icon]="faArrowRight"></fa-icon>
-          </a>
-        </div>
-      </li>
-      <li>
-        <div class="mainItemWrapper">
-          <a (click)="mnSales($event)" href="#" class="w-100">
-            <fa-icon [icon]="faWallet"></fa-icon>
-            <span class="">Ventas</span>
-          </a>
-          <a (click)="mnSales($event, true)" href="#" class="toggler">
-            <fa-icon [icon]="faArrowRight"></fa-icon>
-          </a>
-        </div>
-      </li>
-      <li>
-        <div class="mainItemWrapper">
-          <a (click)="mnConfig($event)" href="#" class="w-100">
-            <fa-icon [icon]="faCogs"></fa-icon>
-            <span class="">Configuración</span>
-          </a>
-          <a (click)="mnConfig($event, true)" href="#" class="toggler">
-            <fa-icon [icon]="faArrowRight"></fa-icon>
-          </a>
-        </div>
-      </li>
-    </ul>
-  </ng-container>
-  <!-- SubMenu Inventario -->
-  <ng-container *ngIf="checkMenuChildInventory()">
-    <ul class="menuChildren">
-      <li>
-        <div class="header">
-          <a (click)="mnBack($event)" href="#" class="toggler">
-            <fa-icon [icon]="faArrowLeft"></fa-icon>
-          </a>
-          <a routerLink="/inventory" class="w-100">
-            <span class="">Inventario</span>
-          </a>
-        </div>
-      </li>
-      <li>
-        <a routerLink="/inventory/transfer" class="w-100">
-          <span class="">Transferencias</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/inventory/input-note" class="w-100">
-          <span class="">Nota de Ingreso</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/inventory/output-note" class="w-100">
-          <span class="">Nota de Salida</span>
-        </a>
-      </li>
-    </ul>
-  </ng-container>
-  <!-- SubMenu Compras -->
-  <ng-container *ngIf="checkMenuChildShopping()">
-    <ul class="menuChildren">
-      <li>
-        <div class="header">
-          <a (click)="mnBack($event)" href="#" class="toggler">
-            <fa-icon [icon]="faArrowLeft"></fa-icon>
-          </a>
-          <a routerLink="/shopping" class="w-100">
-            <span class="">Compras</span>
-          </a>
-        </div>
-      </li>
-      <li>
-        <a routerLink="/shopping" class="w-100">
-          <span class="">Comprobantes</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/shopping/invoice-notes" class="w-100">
-          <span class="">Notas Créd/Débito</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/shopping/account-payable" class="w-100">
-          <span class="">Cuentas por Pagar</span>
-        </a>
-      </li>
-    </ul>
-  </ng-container>
-  <!-- SubMenu Ventas -->
-  <ng-container *ngIf="checkMenuChildSales()">
-    <ul class="menuChildren">
-      <li>
-        <div class="header">
-          <a (click)="mnBack($event)" href="#" class="toggler">
-            <fa-icon [icon]="faArrowLeft"></fa-icon>
-          </a>
-          <a routerLink="/sales" class="w-100">
-            <span class="">Ventas</span>
-          </a>
-        </div>
-      </li>
-      <li>
-        <a routerLink="/sales" class="w-100">
-          <span class="">Comprobantes</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/sales/invoice-notes" class="w-100">
-          <span class="">Notas Créd/Débito</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/sales/account-receivable" class="w-100">
-          <span class="">Cuentas por Cobrar</span>
-        </a>
-      </li>
-    </ul>
-  </ng-container>
-  <!-- SubMenu Configuración -->
-  <ng-container *ngIf="checkMenuChildConfig()">
-    <ul class="menuChildren">
-      <li>
-        <div class="header">
-          <a (click)="mnBack($event)" href="#" class="toggler">
-            <fa-icon [icon]="faArrowLeft"></fa-icon>
-          </a>
-          <a routerLink="/system" class="w-100">
-            <span class="">Configuración</span>
-          </a>
-        </div>
-      </li>
-      <li>
-        <a routerLink="/user" class="w-100">
-          <span class="">Lista de Usuarios</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/system/configuration" class="w-100">
-          <span class="">Configurar Empresa</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/system/warehouse" class="w-100">
-          <span class="">Lista de Almacenes</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/system/invoice-serie" class="w-100">
-          <span class="">Series de Facturación</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/system/inventory-reason" class="w-100">
-          <span class="">Motivos de Inventario</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/products/category" class="w-100">
-          <span class="">Categoria de Productos</span>
-        </a>
-      </li>
-      <li>
-        <a routerLink="/system/und-medida" class="w-100">
-          <span class="">Unidades de Medida</span>
-        </a>
-      </li>
-    </ul>
-  </ng-container>
+<div class="menu-wrapper d-print-none">
+  <ul class="menubar">
+    <li class="level-0">
+      <a routerLink="/contacts">
+        <fa-icon [icon]="faAddressBook"></fa-icon>
+        <span class="text-uppercase">Contacto</span>
+      </a>
+    </li>
+    <li class="level-0">
+      <a routerLink="/products">
+        <fa-icon [icon]="faBox"></fa-icon>
+        <span class="text-uppercase">Producto</span>
+      </a>
+    </li>
+    <li class="level-0">
+      <a routerLink="/cashier">
+        <fa-icon [icon]="faCashRegister"></fa-icon>
+        <span class="text-uppercase">Terminal</span>
+      </a>
+    </li>
+    <li class="level-0">
+      <a (click)="$event.preventDefault()" href="#">
+        <fa-icon [icon]="faArchive"></fa-icon>
+        <span class="text-uppercase">Inventario</span>
+      </a>
+      <div class="submenu">
+        <strong>Inventario</strong>
+        <ul>
+          <li class="level-1">
+            <a routerLink="/inventory/transfer">Transferencias</a>
+          </li>
+          <li class="level-1">
+            <a routerLink="/inventory/input-note">Nota de Ingreso</a>
+          </li>
+          <li class="level-1">
+            <a routerLink="/inventory/output-note">Nota de Salida</a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <li class="level-0">
+      <a (click)="$event.preventDefault()" href="#">
+        <fa-icon [icon]="faShoppingBasket"></fa-icon>
+        <span class="text-uppercase">Compras</span>
+      </a>
+      <div class="submenu">
+        <strong>Compras</strong>
+        <ul>
+          <li class="level-1">
+            <a routerLink="/shopping">Comprobantes</a>
+          </li>
+          <li class="level-1">
+            <a routerLink="/shopping/invoice-notes">Notas Créd/Débito</a>
+          </li>
+          <li class="level-1">
+            <a routerLink="/shopping/account-payable">Cuentas por Pagar</a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <li class="level-0">
+      <a (click)="$event.preventDefault()" href="#">
+        <fa-icon [icon]="faWallet"></fa-icon>
+        <span class="text-uppercase">Ventas</span>
+      </a>
+      <div class="submenu">
+        <strong>Ventas</strong>
+        <ul>
+          <li class="level-1">
+            <a routerLink="/sales">Comprobantes</a>
+          </li>
+          <li class="level-1">
+            <a routerLink="/sales/invoice-notes">Notas Créd/Débito</a>
+          </li>
+          <li class="level-1">
+            <a routerLink="/sales/account-receivable">Cuentas por Cobrar</a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <li class="level-0">
+      <a (click)="$event.preventDefault()" href="#">
+        <fa-icon [icon]="faCogs"></fa-icon>
+        <span class="text-uppercase">Sistema</span>
+      </a>
+      <div class="submenu">
+        <strong>Sistema</strong>
+        <ul>
+          <li class="level-1">
+            <a routerLink="/user">Lista de Usuarios</a>
+          </li>
+          <li class="level-1">
+            <a routerLink="/system/configuration">Configurar Empresa</a>
+          </li>
+          <li class="level-1">
+            <a routerLink="/system/warehouse">Lista de Almacenes</a>
+          </li>
+          <li class="level-1">
+            <a routerLink="/system/invoice-serie">Series de Facturación</a>
+          </li>
+          <li class="level-1">
+            <a routerLink="/system/inventory-reason">Motivos de Inventario</a>
+          </li>
+          <li class="level-1">
+            <a routerLink="/products/category">Categoría de Productos</a>
+          </li>
+          <li class="level-1">
+            <a routerLink="/system/und-medida">Unidades de Medida</a>
+          </li>
+        </ul>
+      </div>
+    </li>
+  </ul>
 </div>
