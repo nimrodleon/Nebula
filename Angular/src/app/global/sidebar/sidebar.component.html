@@ -1,24 +1,24 @@
 <div class="menu-wrapper d-print-none">
   <ul class="menubar">
-    <li class="level-0">
+    <li class="level-0" routerLinkActive="active-menu">
       <a routerLink="/contacts">
         <fa-icon [icon]="faAddressBook"></fa-icon>
         <span class="text-uppercase">Contacto</span>
       </a>
     </li>
-    <li class="level-0">
+    <li class="level-0" routerLinkActive="active-menu">
       <a routerLink="/products">
         <fa-icon [icon]="faBox"></fa-icon>
         <span class="text-uppercase">Producto</span>
       </a>
     </li>
-    <li class="level-0">
+    <li class="level-0" routerLinkActive="active-menu">
       <a routerLink="/cashier">
         <fa-icon [icon]="faCashRegister"></fa-icon>
         <span class="text-uppercase">Terminal</span>
       </a>
     </li>
-    <li class="level-0">
+    <li class="level-0" routerLinkActive="active-menu">
       <a (click)="$event.preventDefault()" href="#">
         <fa-icon [icon]="faArchive"></fa-icon>
         <span class="text-uppercase">Inventario</span>
@@ -38,7 +38,7 @@
         </ul>
       </div>
     </li>
-    <li class="level-0">
+    <li class="level-0" routerLinkActive="active-menu">
       <a (click)="$event.preventDefault()" href="#">
         <fa-icon [icon]="faShoppingBasket"></fa-icon>
         <span class="text-uppercase">Compras</span>
@@ -57,8 +57,12 @@
           </li>
         </ul>
       </div>
+      <!-- ### NONE ### -->
+      <a routerLink="/invoice/purchase" class="d-none">&nbsp;</a>
+      <a routerLink="/invoice/detail/purchase" class="d-none">&nbsp;</a>
+      <a routerLink="/invoice/note/purchase" class="d-none">&nbsp;</a>
     </li>
-    <li class="level-0">
+    <li class="level-0" routerLinkActive="active-menu">
       <a (click)="$event.preventDefault()" href="#">
         <fa-icon [icon]="faWallet"></fa-icon>
         <span class="text-uppercase">Ventas</span>
@@ -77,8 +81,12 @@
           </li>
         </ul>
       </div>
+      <!-- ### NONE ### -->
+      <a routerLink="/invoice/sale" class="d-none">&nbsp;</a>
+      <a routerLink="/invoice/detail/sale" class="d-none">&nbsp;</a>
+      <a routerLink="/invoice/note/sale" class="d-none">&nbsp;</a>
     </li>
-    <li class="level-0">
+    <li class="level-0" routerLinkActive="active-menu">
       <a (click)="$event.preventDefault()" href="#">
         <fa-icon [icon]="faCogs"></fa-icon>
         <span class="text-uppercase">Sistema</span>
