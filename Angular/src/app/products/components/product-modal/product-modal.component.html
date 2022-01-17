@@ -14,49 +14,50 @@
           <div class="col-7">
             <div class="pb-1">
               <label class="col-form-label-sm text-uppercase">Descripción producto</label>
-              <input type="text" formControlName="description" class="form-control">
-              <div class="invalid-feedback">La descripción es requerido.</div>
+              <input type="text" formControlName="description" class="form-control"
+                     [ngClass]="{'is-invalid': inputIsInvalid('description')}">
             </div>
             <div class="row">
               <div class="col-6 pb-1">
                 <label class="col-form-label-sm text-uppercase">GS1/GTIN-13 (EAN-13)</label>
-                <input type="text" formControlName="barcode" class="form-control">
+                <input type="text" formControlName="barcode" class="form-control"
+                       [ngClass]="{'is-invalid': inputIsInvalid('barcode')}">
               </div>
               <div class="col-6 mb-1">
                 <label class="col-form-label-sm text-uppercase">Precio Total</label>
-                <input type="number" formControlName="price1" step="0.1" class="form-control">
-                <div class="invalid-feedback">El precio es requerido.</div>
+                <input type="number" formControlName="price1" step="0.1" class="form-control"
+                       [ngClass]="{'is-invalid': inputIsInvalid('price1')}">
               </div>
             </div>
             <div class="row">
               <div class="col-6 pb-1">
                 <label class="col-form-label-sm text-uppercase">Precio Mayoreo</label>
-                <input type="number" formControlName="price2" step="0.1" class="form-control">
-                <div class="invalid-feedback">El precio es requerido.</div>
+                <input type="number" formControlName="price2" step="0.1" class="form-control"
+                       [ngClass]="{'is-invalid': inputIsInvalid('price2')}">
               </div>
               <div class="col-6 pb-1">
                 <label class="col-form-label-sm text-uppercase">A partir ## Und</label>
-                <input type="number" formControlName="fromQty" step="0.1" class="form-control">
-                <div class="invalid-feedback">El precio es requerido.</div>
+                <input type="number" formControlName="fromQty" step="0.1" class="form-control"
+                       [ngClass]="{'is-invalid': inputIsInvalid('fromQty')}">
               </div>
             </div>
             <div class="row">
               <div class="col-6">
                 <label class="col-form-label-sm text-uppercase">Tipo de Impuesto</label>
-                <select formControlName="igvSunat" class="form-select">
+                <select formControlName="igvSunat" class="form-select"
+                        [ngClass]="{'is-invalid': inputIsInvalid('igvSunat')}">
                   <option value="GRAVADO">IMPUESTO GENERAL A LAS VENTAS</option>
                   <option value="EXONERADO">EXONERADO</option>
                   <option value="GRATUITO">GRATUITO</option>
                 </select>
-                <div class="invalid-feedback">El IGV es requerido.</div>
               </div>
               <div class="col-6">
                 <label class="col-form-label-sm text-uppercase">IMPUESTO ICBPER</label>
-                <select formControlName="icbper" class="form-select">
+                <select formControlName="icbper" class="form-select"
+                        [ngClass]="{'is-invalid': inputIsInvalid('icbper')}">
                   <option value="NO">NO</option>
                   <option value="SI">SI, IMPUESTO BOLSAS PLÁSTICAS</option>
                 </select>
-                <div class="invalid-feedback">El impuesto de bolsas es requerido.</div>
               </div>
             </div>
           </div>
@@ -67,22 +68,23 @@
                 <a href="#" (click)="showCategoryModal($event)"
                    class="text-uppercase text-decoration-none">[ Agregar ]</a>
               </label>
-              <select id="categoryId" class="form-select"></select>
+              <select id="categoryId" class="form-select"
+                      [ngClass]="{'is-invalid': inputIsInvalid('categoryId')}"></select>
             </div>
             <div class="mb-1">
               <label class="col-form-label-sm text-uppercase">Unidad de medida</label>
-              <select formControlName="undMedidaId" class="form-select">
+              <select formControlName="undMedidaId" class="form-select"
+                      [ngClass]="{'is-invalid': inputIsInvalid('undMedidaId')}">
                 <option *ngFor="let item of undMedidas" [value]="item.id">{{item.name}}</option>
               </select>
-              <div class="invalid-feedback">La unidad de medida es requerido.</div>
             </div>
             <div class="mb-1">
               <label class="col-form-label-sm text-uppercase">Tipo ítem</label>
-              <select formControlName="type" class="form-select">
+              <select formControlName="type" class="form-select"
+                      [ngClass]="{'is-invalid': inputIsInvalid('type')}">
                 <option value="BIEN">BIEN</option>
                 <option value="SERVICIO">SERVICIO</option>
               </select>
-              <div class="invalid-feedback">El tipo de ítem es requerido.</div>
             </div>
             <label class="col-form-label-sm text-uppercase">Imagen del producto</label>
             <input class="form-control" type="file" #inputFile (change)="selectedImage($event)">

@@ -1,12 +1,12 @@
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {faBars, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {environment} from 'src/environments/environment';
 import {CategoryService, ProductService} from '../../services';
 import {Category, Product} from '../../interfaces';
-import {ResponseData} from '../../../global/interfaces';
-import {UndMedida} from '../../../system/interfaces';
-import {UndMedidaService} from '../../../system/services';
+import {ResponseData} from 'src/app/global/interfaces';
+import {UndMedida} from 'src/app/system/interfaces';
+import {UndMedidaService} from 'src/app/system/services';
 
 declare var jQuery: any;
 declare var bootstrap: any;
@@ -25,16 +25,16 @@ export class ProductModalComponent implements OnInit {
   undMedidas: Array<UndMedida> = new Array<UndMedida>();
   productForm: FormGroup = this.fb.group({
     id: [null],
-    description: [''],
-    barcode: [''],
-    price1: [0],
-    price2: [0],
-    fromQty: [0],
-    igvSunat: [''],
-    icbper: [''],
-    categoryId: [''],
-    undMedidaId: [''],
-    type: [''],
+    description: ['', [Validators.required]],
+    barcode: ['', [Validators.required]],
+    price1: [0, [Validators.required, Validators.min(0)]],
+    price2: [0, [Validators.required, Validators.min(0)]],
+    fromQty: [0, [Validators.required, Validators.min(0)]],
+    igvSunat: ['', [Validators.required]],
+    icbper: ['', [Validators.required]],
+    categoryId: ['', [Validators.required]],
+    undMedidaId: ['', [Validators.required]],
+    type: ['', [Validators.required]],
   });
   fileImage: any;
   @ViewChild('inputFile')
@@ -104,8 +104,18 @@ export class ProductModalComponent implements OnInit {
     this.fileImage = event.target.files[0];
   }
 
+  // Verificar campo invalido.
+  public inputIsInvalid(field: string) {
+    return this.productForm.controls[field].errors && this.productForm.controls[field].touched;
+  }
+
   // guardar todos los cambios.
   public saveChanges(): void {
+    if (this.productForm.invalid) {
+      this.productForm.markAllAsTouched();
+      return;
+    }
+    // Guardar datos, sólo si es válido el formulario.
     const formData = new FormData();
     formData.append('description', this.productForm.get('description')?.value);
     formData.append('barcode', this.productForm.get('barcode')?.value);
