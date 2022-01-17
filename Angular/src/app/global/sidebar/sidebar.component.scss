@@ -2,6 +2,7 @@
   background-color: #212529;
   position: relative;
   min-height: calc(100vh - 56px);
+  height: 100%;
   width: 7rem;
 
   .menubar {
@@ -31,6 +32,11 @@
 
         fa-icon {
           font-size: 2rem;
+        }
+
+        span {
+          font-size: 14px;
+          font-weight: bold;
         }
       }
     }
