@@ -13,40 +13,40 @@
           <div class="row">
             <div class="col-6 pb-1">
               <label class="col-form-label-sm text-uppercase">Número (D.N.I/R.U.C)</label>
-              <input type="text" formControlName="document" class="form-control">
-              <div class="invalid-feedback">El D.N.I. es requerido.</div>
+              <input type="text" formControlName="document" class="form-control"
+                     [ngClass]="{'is-invalid': inputIsInvalid('document')}">
             </div>
             <div class="col-6 mb-1">
               <label class="col-form-label-sm text-uppercase">Tipo documento</label>
-              <select formControlName="docType" class="form-select">
+              <select formControlName="docType" class="form-select"
+                      [ngClass]="{'is-invalid': inputIsInvalid('docType')}">
                 <option value="0">0 - SIN DEFINIR</option>
                 <option value="1">1 - D.N.I</option>
                 <option value="6">6 - R.U.C</option>
                 <option value="7">7 - PASAPORTE</option>
               </select>
-              <div class="invalid-feedback">El tipo documento es requerido.</div>
             </div>
           </div>
           <div class="pb-1">
             <label class="col-form-label-sm text-uppercase">Razón social o nombre completo</label>
-            <input type="text" formControlName="name" class="form-control">
-            <div class="invalid-feedback">La razón social es requerido.</div>
+            <input type="text" formControlName="name" class="form-control"
+                   [ngClass]="{'is-invalid': inputIsInvalid('name')}">
           </div>
           <div class="pb-1">
             <label class="col-form-label-sm text-uppercase">Dirección completa</label>
-            <input type="text" formControlName="address" class="form-control">
-            <div class="invalid-feedback">La dirección es requerido.</div>
+            <input type="text" formControlName="address" class="form-control"
+                   [ngClass]="{'is-invalid': inputIsInvalid('address')}">
           </div>
           <div class="row">
             <div class="col-6">
               <label class="col-form-label-sm text-uppercase">Teléfono</label>
-              <input type="text" formControlName="phoneNumber" class="form-control">
-              <div class="invalid-feedback">El Teléfono es requerido.</div>
+              <input type="text" formControlName="phoneNumber" class="form-control"
+                     [ngClass]="{'is-invalid': inputIsInvalid('phoneNumber')}">
             </div>
             <div class="col-6">
               <label class="col-form-label-sm text-uppercase">Correo electrónico</label>
-              <input type="text" formControlName="email" class="form-control">
-              <div class="invalid-feedback">Ingrese un correo electrónico valido.</div>
+              <input type="text" formControlName="email" class="form-control"
+                     [ngClass]="{'is-invalid': inputIsInvalid('email')}">
             </div>
           </div>
         </form>
