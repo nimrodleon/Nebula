@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {faBars} from '@fortawesome/free-solid-svg-icons';
 import {WarehouseService} from '../../services';
 import {ResponseData} from '../../../global/interfaces';
@@ -20,8 +20,8 @@ export class WarehouseModalComponent implements OnInit {
   faBars = faBars;
   warehouseForm: FormGroup = this.fb.group({
     id: [null],
-    name: [''],
-    remark: ['']
+    name: ['', [Validators.required]],
+    remark: ['', [Validators.required]]
   });
 
   constructor(
@@ -43,8 +43,18 @@ export class WarehouseModalComponent implements OnInit {
     });
   }
 
+  // Verificar campo invalido.
+  public inputIsInvalid(field: string) {
+    return this.warehouseForm.controls[field].errors && this.warehouseForm.controls[field].touched;
+  }
+
   // guardar los cambios establecidos.
   public saveChanges(): void {
+    if (this.warehouseForm.invalid) {
+      this.warehouseForm.markAllAsTouched();
+      return;
+    }
+    // Guardar datos, sólo si es válido el formulario.
     if (this.warehouseForm.get('id')?.value === null) {
       this.warehouseForm.removeControl('id');
       this.warehouseService.store(this.warehouseForm.value)

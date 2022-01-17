@@ -12,17 +12,15 @@
         <form [formGroup]="warehouseForm">
           <div class="mb-3">
             <label class="form-label text-uppercase">Nombre</label>
-            <input type="text" formControlName="name" class="form-control">
+            <input type="text" formControlName="name" class="form-control"
+                   [ngClass]="{'is-invalid': inputIsInvalid('name')}">
           </div>
           <div class="mb-0">
             <label class="form-label text-uppercase">Observación</label>
-            <textarea formControlName="remark" class="form-control"></textarea>
+            <textarea formControlName="remark" class="form-control"
+                      [ngClass]="{'is-invalid': inputIsInvalid('remark')}"></textarea>
           </div>
         </form>
-
-        <pre>{{warehouseForm.value|json}}</pre>
-        <pre>{{warehouse|json}}</pre>
-
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">

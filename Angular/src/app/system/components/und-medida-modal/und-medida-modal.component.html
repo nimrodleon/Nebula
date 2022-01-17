@@ -12,16 +12,15 @@
         <form [formGroup]="undMedidaForm">
           <div class="mb-3">
             <label class="form-label text-uppercase">Nombre</label>
-            <input type="text" formControlName="name" class="form-control">
+            <input type="text" formControlName="name"
+                   [ngClass]="{'is-invalid': inputIsInvalid('name')}" class="form-control">
           </div>
           <div class="mb-0">
             <label class="form-label text-uppercase">Código Sunat</label>
-            <input type="text" formControlName="sunatCode" class="form-control">
+            <input type="text" formControlName="sunatCode"
+                   [ngClass]="{'is-invalid': inputIsInvalid('sunatCode')}" class="form-control">
           </div>
         </form>
-
-        <pre>{{undMedidaForm.value|json}}</pre>
-
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">

@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {faBars} from '@fortawesome/free-solid-svg-icons';
 import {InvoiceSerieService, WarehouseService} from '../../services';
 import {InvoiceSerie, Warehouse} from '../../interfaces';
@@ -21,14 +21,14 @@ export class InvoiceSerieModalComponent implements OnInit {
   warehouses: Array<Warehouse> = new Array<Warehouse>();
   invoiceSerieForm: FormGroup = this.fb.group({
     id: [null],
-    name: [''],
-    warehouseId: [null],
-    factura: [''],
-    counterFactura: [0],
-    boleta: [''],
-    counterBoleta: [0],
-    notaDeVenta: [''],
-    counterNotaDeVenta: [0]
+    name: ['', [Validators.required]],
+    warehouseId: [null, [Validators.required]],
+    factura: ['', [Validators.required]],
+    counterFactura: [0, [Validators.required, Validators.min(0)]],
+    boleta: ['', [Validators.required]],
+    counterBoleta: [0, [Validators.required, Validators.min(0)]],
+    notaDeVenta: ['', [Validators.required]],
+    counterNotaDeVenta: [0, [Validators.required, Validators.min(0)]]
   });
 
   constructor(
@@ -53,8 +53,18 @@ export class InvoiceSerieModalComponent implements OnInit {
     });
   }
 
+  // Verificar campo invalido.
+  public inputIsInvalid(field: string) {
+    return this.invoiceSerieForm.controls[field].errors && this.invoiceSerieForm.controls[field].touched;
+  }
+
   // guardar cambios.
   public saveChanges(): void {
+    if (this.invoiceSerieForm.invalid) {
+      this.invoiceSerieForm.markAllAsTouched();
+      return;
+    }
+    // Guardar datos, sólo si es válido el formulario.
     if (this.invoiceSerieForm.get('id')?.value === null) {
       this.invoiceSerieForm.removeControl('id');
       this.invoiceSerieService.create(this.invoiceSerieForm.value)

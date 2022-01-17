@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, Validator, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {faArrowLeft, faClipboardList, faFolderOpen, faSave, faThumbtack} from '@fortawesome/free-solid-svg-icons';
 import {environment} from 'src/environments/environment';
@@ -23,20 +23,20 @@ export class ConfigurationComponent implements OnInit {
   private appURL: string = environment.applicationUrl;
   configForm: FormGroup = this.fb.group({
     id: [0],
-    ruc: [''],
-    rznSocial: [''],
-    codLocalEmisor: [''],
-    tipMoneda: [''],
-    porcentajeIgv: [0],
-    valorImpuestoBolsa: [0],
-    cpeSunat: ['SFS'],
+    ruc: ['', [Validators.required]],
+    rznSocial: ['', [Validators.required]],
+    codLocalEmisor: ['', [Validators.required]],
+    tipMoneda: ['', [Validators.required]],
+    porcentajeIgv: [0, [Validators.required]],
+    valorImpuestoBolsa: [0, [Validators.required]],
+    cpeSunat: ['SFS', [Validators.required]],
     cuentaBancoDetraccion: [''],
     textoDetraccion: [''],
     montoDetraccion: [0],
-    contactId: [null],
-    urlApi: [''],
-    fileSunat: [''],
-    fileControl: ['']
+    contactId: [null, [Validators.required]],
+    urlApi: ['', [Validators.required]],
+    fileSunat: ['', [Validators.required]],
+    fileControl: ['', [Validators.required]]
   });
 
   constructor(
@@ -76,16 +76,27 @@ export class ConfigurationComponent implements OnInit {
     window.history.back();
   }
 
+  // Verificar campo invalido.
+  public inputIsInvalid(field: string) {
+    return this.configForm.controls[field].errors && this.configForm.controls[field].touched;
+  }
+
   // guardar cambios.
   public async saveChanges() {
+    if (this.configForm.invalid) {
+      this.configForm.markAllAsTouched();
+      return;
+    }
+    // Guardar datos, sólo si es válido el formulario.
     const id = this.configForm.get('id')?.value;
-    this.configurationService.update(id, this.configForm.value).subscribe(result => {
-      Swal.fire(
-        'Información',
-        result.msg || '',
-        'info'
-      );
-    });
+    this.configurationService.update(id, this.configForm.value)
+      .subscribe(result => {
+        Swal.fire(
+          'Información',
+          result.msg || '',
+          'info'
+        );
+      });
   }
 
 }

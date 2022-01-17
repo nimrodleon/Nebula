@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {faBars} from '@fortawesome/free-solid-svg-icons';
 import {InventoryReason} from '../../interfaces';
 import {ResponseData} from '../../../global/interfaces';
@@ -20,8 +20,8 @@ export class InventoryReasonModalComponent implements OnInit {
   responseData = new EventEmitter<ResponseData<InventoryReason>>();
   inventoryReasonForm: FormGroup = this.fb.group({
     id: [null],
-    description: [''],
-    type: ['']
+    description: ['', [Validators.required]],
+    type: ['', [Validators.required]]
   });
 
   constructor(
@@ -42,8 +42,18 @@ export class InventoryReasonModalComponent implements OnInit {
     });
   }
 
+  // Verificar campo invalido.
+  public inputIsInvalid(field: string) {
+    return this.inventoryReasonForm.controls[field].errors && this.inventoryReasonForm.controls[field].touched;
+  }
+
   // guardar cambios.
   public saveChanges(): void {
+    if (this.inventoryReasonForm.invalid) {
+      this.inventoryReasonForm.markAllAsTouched();
+      return;
+    }
+    // Guardar datos, sólo si es válido el formulario.
     if (this.inventoryReasonForm.get('id')?.value === null) {
       this.inventoryReasonForm.removeControl('id');
       this.inventoryReasonService.create(this.inventoryReasonForm.value)

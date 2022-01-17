@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {CategoryService} from '../../services';
 import {ResponseData} from '../../../global/interfaces';
 import {Category} from '../../interfaces';
@@ -18,7 +18,7 @@ export class CategoryModalComponent implements OnInit {
   responseData = new EventEmitter<ResponseData<Category>>();
   categoryForm: FormGroup = this.fb.group({
     id: [null],
-    name: ['']
+    name: ['', [Validators.required]]
   });
 
   constructor(
@@ -39,8 +39,18 @@ export class CategoryModalComponent implements OnInit {
     });
   }
 
+  // Verificar campo invalido.
+  public inputIsInvalid(field: string) {
+    return this.categoryForm.controls[field].errors && this.categoryForm.controls[field].touched;
+  }
+
   // guardar cambios.
   public saveChanges(): void {
+    if (this.categoryForm.invalid) {
+      this.categoryForm.markAllAsTouched();
+      return;
+    }
+    // Guardar datos, sólo si es válido el formulario.
     if (this.categoryForm.get('id')?.value === null) {
       this.categoryForm.removeControl('id');
       this.categoryService.create(this.categoryForm.value)

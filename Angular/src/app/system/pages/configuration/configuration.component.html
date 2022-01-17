@@ -14,13 +14,15 @@
                 <div class="row mb-3">
                   <label class="col-2 col-form-label text-end fw-bold">R.U.C</label>
                   <div class="col-3">
-                    <input type="text" formControlName="ruc" class="form-control">
+                    <input type="text" formControlName="ruc" class="form-control"
+                           [ngClass]="{'is-invalid': inputIsInvalid('ruc')}">
                   </div>
                 </div>
                 <div class="row mb-3">
                   <label class="col-2 col-form-label text-end fw-bold">Razón Social</label>
                   <div class="col-6">
-                    <input type="text" formControlName="rznSocial" class="form-control">
+                    <input type="text" formControlName="rznSocial" class="form-control"
+                           [ngClass]="{'is-invalid': inputIsInvalid('rznSocial')}">
                   </div>
                 </div>
                 <div class="mb-3">
@@ -32,31 +34,37 @@
                 <div class="row mb-3">
                   <label class="col-2 col-form-label text-end fw-bold">Cod Local Emisor</label>
                   <div class="col-3">
-                    <input type="text" formControlName="codLocalEmisor" class="form-control">
+                    <input type="text" formControlName="codLocalEmisor" class="form-control"
+                           [ngClass]="{'is-invalid': inputIsInvalid('codLocalEmisor')}">
                   </div>
                   <label class="col-2 col-form-label text-end fw-bold">Cod Tipo Moneda</label>
                   <div class="col-3">
-                    <input type="text" formControlName="tipMoneda" class="form-control">
+                    <input type="text" formControlName="tipMoneda" class="form-control"
+                           [ngClass]="{'is-invalid': inputIsInvalid('tipMoneda')}">
                   </div>
                 </div>
                 <div class="row mb-3">
                   <label class="col-2 col-form-label text-end fw-bold">Porcentaje IGV</label>
                   <div class="col-3">
-                    <input type="number" formControlName="porcentajeIgv" step="0.1" class="form-control">
+                    <input type="number" formControlName="porcentajeIgv" step="0.1" class="form-control"
+                           [ngClass]="{'is-invalid': inputIsInvalid('porcentajeIgv')}">
                   </div>
                   <label class="col-2 col-form-label text-end fw-bold">Impuesto por Bolsa</label>
                   <div class="col-3">
-                    <input type="number" formControlName="valorImpuestoBolsa" step="0.1" class="form-control">
+                    <input type="number" formControlName="valorImpuestoBolsa" step="0.1" class="form-control"
+                           [ngClass]="{'is-invalid': inputIsInvalid('valorImpuestoBolsa')}">
                   </div>
                 </div>
                 <div class="row mb-3">
                   <label class="col-2 col-form-label text-end fw-bold">Público General</label>
                   <div class="col-3">
-                    <select id="contactId" class="form-select"></select>
+                    <select id="contactId" class="form-select"
+                            [ngClass]="{'is-invalid': inputIsInvalid('contactId')}"></select>
                   </div>
                   <label class="col-2 col-form-label text-end fw-bold">Emisión Electrónica</label>
                   <div class="col-3">
-                    <select formControlName="cpeSunat" class="form-select">
+                    <select formControlName="cpeSunat" class="form-select"
+                            [ngClass]="{'is-invalid': inputIsInvalid('cpeSunat')}">
                       <option value="SFS">Facturador SUNAT</option>
                     </select>
                   </div>
@@ -92,19 +100,22 @@
                 <div class="row mb-3">
                   <label class="col-2 col-form-label text-end fw-bold">URL Api</label>
                   <div class="col-8">
-                    <input type="text" formControlName="urlApi" class="form-control">
+                    <input type="text" formControlName="urlApi" class="form-control"
+                           [ngClass]="{'is-invalid': inputIsInvalid('urlApi')}">
                   </div>
                 </div>
                 <div class="row mb-3">
                   <label class="col-2 col-form-label text-end fw-bold">Archivos SUNAT</label>
                   <div class="col-8">
-                    <input type="text" formControlName="fileSunat" class="form-control">
+                    <input type="text" formControlName="fileSunat" class="form-control"
+                           [ngClass]="{'is-invalid': inputIsInvalid('fileSunat')}">
                   </div>
                 </div>
                 <div class="row">
                   <label class="col-2 col-form-label text-end fw-bold">Archivos Control</label>
                   <div class="col-8">
-                    <input type="text" formControlName="fileControl" class="form-control">
+                    <input type="text" formControlName="fileControl" class="form-control"
+                           [ngClass]="{'is-invalid': inputIsInvalid('fileControl')}">
                   </div>
                 </div>
               </form>

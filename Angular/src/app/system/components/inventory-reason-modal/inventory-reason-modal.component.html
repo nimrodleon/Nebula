@@ -12,20 +12,19 @@
         <form [formGroup]="inventoryReasonForm">
           <div class="mb-3">
             <label class="form-label text-uppercase">Descripción</label>
-            <input type="text" formControlName="description" class="form-control">
+            <input type="text" formControlName="description" class="form-control"
+                   [ngClass]="{'is-invalid': inputIsInvalid('description')}">
           </div>
           <div class="mb-0">
             <label class="form-label text-uppercase">Tipo de Inventario</label>
-            <select formControlName="type" class="form-select text-uppercase">
+            <select formControlName="type" class="form-select text-uppercase"
+                    [ngClass]="{'is-invalid': inputIsInvalid('type')}">
               <option value="Transfer">Transferencias</option>
               <option value="Input">Ingreso</option>
               <option value="Output">Salida</option>
             </select>
           </div>
         </form>
-
-        <pre>{{inventoryReasonForm.value|json}}</pre>
-
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">

@@ -8,11 +8,9 @@
       <div class="modal-body">
         <form [formGroup]="categoryForm">
           <label class="form-label text-uppercase">Nombre</label>
-          <input type="text" formControlName="name" class="form-control">
+          <input type="text" formControlName="name" class="form-control"
+                 [ngClass]="{'is-invalid': inputIsInvalid('name')}">
         </form>
-
-        <pre>{{categoryForm.value|json}}</pre>
-
       </div>
       <div class="modal-footer bg-light">
         <button type="button" class="btn btn-secondary text-uppercase" data-bs-dismiss="modal">Cerrar</button>

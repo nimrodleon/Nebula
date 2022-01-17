@@ -1,9 +1,9 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {faBars} from '@fortawesome/free-solid-svg-icons';
 import {ResponseData} from 'src/app/global/interfaces';
-import {UndMedida} from '../../interfaces';
 import {UndMedidaService} from '../../services';
+import {UndMedida} from '../../interfaces';
 
 @Component({
   selector: 'app-und-medida-modal',
@@ -20,8 +20,8 @@ export class UndMedidaModalComponent implements OnInit {
   responseData = new EventEmitter<ResponseData<UndMedida>>();
   undMedidaForm: FormGroup = this.fb.group({
     id: [null],
-    name: [''],
-    sunatCode: ['']
+    name: ['', [Validators.required]],
+    sunatCode: ['', [Validators.required]]
   });
 
   constructor(
@@ -42,8 +42,18 @@ export class UndMedidaModalComponent implements OnInit {
     });
   }
 
+  // Verificar campo invalido.
+  public inputIsInvalid(field: string) {
+    return this.undMedidaForm.controls[field].errors && this.undMedidaForm.controls[field].touched;
+  }
+
   // guardar cambios.
   public saveChanges(): void {
+    if (this.undMedidaForm.invalid) {
+      this.undMedidaForm.markAllAsTouched();
+      return;
+    }
+    // Guardar datos, sólo si es válido el formulario.
     if (this.undMedidaForm.get('id')?.value === null) {
       this.undMedidaForm.removeControl('id');
       this.undMedidaService.create(this.undMedidaForm.value)
