@@ -1,130 +1,132 @@
 <app-navbar></app-navbar>
-<div class="Wrapper">
+<main class="position-relative">
   <app-sidebar></app-sidebar>
-  <div class="container-fluid">
-    <div class="row px-2">
-      <div class="col-12 bg-white my-2 py-3">
-        <form (ngSubmit)="cargarCajasDiarias()"
-              [formGroup]="queryForm" class="row row-cols-auto g-2">
-          <div class="col-auto">
-            <label class="col-form-label fw-bold">Filtrar por:</label>
-          </div>
-          <div class="col-auto">
-            <input type="number" formControlName="year" step="1" value="2021" class="form-control">
-          </div>
-          <div class="col-auto">
-            <select formControlName="month" class="form-select">
-              <option value="01">ENERO</option>
-              <option value="02">FEBRERO</option>
-              <option value="03">MARZO</option>
-              <option value="04">ABRIL</option>
-              <option value="05">MAYO</option>
-              <option value="06">JUNIO</option>
-              <option value="07">JULIO</option>
-              <option value="08">AGOSTO</option>
-              <option value="09">SEPTIEMBRE</option>
-              <option value="10">OCTUBRE</option>
-              <option value="11">NOVIEMBRE</option>
-              <option value="12">DICIEMBRE</option>
-            </select>
-          </div>
-          <div class="col-auto">
-            <button type="submit" class="btn btn-success">
-              <fa-icon [icon]="faSyncAlt"></fa-icon>
-              <span class="text-uppercase ms-1">Cargar</span>
-            </button>
-          </div>
-          <div class="col-auto">
-            <button type="button" (click)="aperturaCajaClick()" class="btn btn-primary">
-              <fa-icon [icon]="faPlus"></fa-icon>
-              <span class="text-uppercase ms-1">Apertura</span>
-            </button>
-          </div>
-        </form>
-      </div>
-      <div class="col-12 bg-white py-3">
-        <h5 class="fw-bold text-uppercase">Registro de Caja diaria</h5>
-        <div class="table-responsive">
-          <table class="table table-striped mb-0">
-            <thead>
-            <tr class="text-uppercase">
-              <th>Punto de Venta</th>
-              <th>Fecha</th>
-              <th>Estado</th>
-              <th>Total Apertura</th>
-              <th>Total Contabilizado</th>
-              <th>Total Cierre</th>
-              <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let item of cajasDiarias">
-              <td class="fw-bold">
-                <a [routerLink]="['/cashier/detail', item.id]" class="text-decoration-none">
-                  <span class="text-uppercase">{{item.name}}</span>
-                </a>
-              </td>
-              <td>{{item.startDate|date}}</td>
-              <td class="text-uppercase">
-                <span *ngIf="item.status === 'ABIERTO'" class="badge bg-success">{{item.status}}</span>
-                <span *ngIf="item.status === 'CERRADO'" class="badge bg-danger">{{item.status}}</span>
-              </td>
-              <td>{{item.totalApertura|currency}}</td>
-              <td>{{item.totalContabilizado|currency}}</td>
-              <td>{{item.totalCierre|currency}}</td>
-              <td>
-                <div class="text-end">
-                  <button type="button" class="btn btn-danger btn-sm">
-                    <fa-icon [icon]="faTrashAlt"></fa-icon>
-                  </button>
-                </div>
-              </td>
-            </tr>
-            </tbody>
-          </table>
+  <div class="page-wrapper">
+    <div class="container-fluid">
+      <div class="row px-2">
+        <div class="col-12 bg-white my-2 py-3">
+          <form (ngSubmit)="cargarCajasDiarias()"
+                [formGroup]="queryForm" class="row row-cols-auto g-2">
+            <div class="col-auto">
+              <label class="col-form-label fw-bold">Filtrar por:</label>
+            </div>
+            <div class="col-auto">
+              <input type="number" formControlName="year" step="1" value="2021" class="form-control">
+            </div>
+            <div class="col-auto">
+              <select formControlName="month" class="form-select">
+                <option value="01">ENERO</option>
+                <option value="02">FEBRERO</option>
+                <option value="03">MARZO</option>
+                <option value="04">ABRIL</option>
+                <option value="05">MAYO</option>
+                <option value="06">JUNIO</option>
+                <option value="07">JULIO</option>
+                <option value="08">AGOSTO</option>
+                <option value="09">SEPTIEMBRE</option>
+                <option value="10">OCTUBRE</option>
+                <option value="11">NOVIEMBRE</option>
+                <option value="12">DICIEMBRE</option>
+              </select>
+            </div>
+            <div class="col-auto">
+              <button type="submit" class="btn btn-success">
+                <fa-icon [icon]="faSyncAlt"></fa-icon>
+                <span class="text-uppercase ms-1">Cargar</span>
+              </button>
+            </div>
+            <div class="col-auto">
+              <button type="button" (click)="aperturaCajaClick()" class="btn btn-primary">
+                <fa-icon [icon]="faPlus"></fa-icon>
+                <span class="text-uppercase ms-1">Apertura</span>
+              </button>
+            </div>
+          </form>
         </div>
-      </div>
-    </div>
-    <!-- # MODAL APERTURA DE CAJA -->
-    <div class="modal fade" id="aperturaCaja" tabindex="-1">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">
-              <fa-icon [icon]="faBars"></fa-icon>
-              <span class="text-uppercase ms-1">Apertura de caja</span>
-            </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form [formGroup]="aperturaForm">
-              <div class="row mb-3">
-                <label class="col-3 col-form-label fw-bold text-uppercase text-end">Serie</label>
-                <div class="col-6">
-                  <select formControlName="serieId" class="form-select">
-                    <option *ngFor="let item of invoiceSeries" [value]="item.id">{{item.name}}</option>
-                  </select>
-                </div>
-              </div>
-              <div class="row mb-0">
-                <label class="col-3 col-form-label fw-bold text-uppercase text-end">Monto</label>
-                <div class="col-6">
-                  <input type="number" formControlName="total" step="0.1" class="form-control w-100">
-                </div>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-              <span class="text-uppercase">Cerrar</span>
-            </button>
-            <button type="button" (click)="guardarAperturaCaja()" class="btn btn-primary">
-              <span class="text-uppercase">Guardar Cambios</span>
-            </button>
+        <div class="col-12 bg-white py-3">
+          <h5 class="fw-bold text-uppercase">Registro de Caja diaria</h5>
+          <div class="table-responsive">
+            <table class="table table-striped mb-0">
+              <thead>
+              <tr class="text-uppercase">
+                <th>Punto de Venta</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Total Apertura</th>
+                <th>Total Contabilizado</th>
+                <th>Total Cierre</th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let item of cajasDiarias">
+                <td class="fw-bold">
+                  <a [routerLink]="['/cashier/detail', item.id]" class="text-decoration-none">
+                    <span class="text-uppercase">{{item.name}}</span>
+                  </a>
+                </td>
+                <td>{{item.startDate|date}}</td>
+                <td class="text-uppercase">
+                  <span *ngIf="item.status === 'ABIERTO'" class="badge bg-success">{{item.status}}</span>
+                  <span *ngIf="item.status === 'CERRADO'" class="badge bg-danger">{{item.status}}</span>
+                </td>
+                <td>{{item.totalApertura|currency}}</td>
+                <td>{{item.totalContabilizado|currency}}</td>
+                <td>{{item.totalCierre|currency}}</td>
+                <td>
+                  <div class="text-end">
+                    <button type="button" class="btn btn-danger btn-sm">
+                      <fa-icon [icon]="faTrashAlt"></fa-icon>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
+      <!-- # MODAL APERTURA DE CAJA -->
+      <div class="modal fade" id="aperturaCaja" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">
+                <fa-icon [icon]="faBars"></fa-icon>
+                <span class="text-uppercase ms-1">Apertura de caja</span>
+              </h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form [formGroup]="aperturaForm">
+                <div class="row mb-3">
+                  <label class="col-3 col-form-label fw-bold text-uppercase text-end">Serie</label>
+                  <div class="col-6">
+                    <select formControlName="serieId" class="form-select">
+                      <option *ngFor="let item of invoiceSeries" [value]="item.id">{{item.name}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row mb-0">
+                  <label class="col-3 col-form-label fw-bold text-uppercase text-end">Monto</label>
+                  <div class="col-6">
+                    <input type="number" formControlName="total" step="0.1" class="form-control w-100">
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <span class="text-uppercase">Cerrar</span>
+              </button>
+              <button type="button" (click)="guardarAperturaCaja()" class="btn btn-primary">
+                <span class="text-uppercase">Guardar Cambios</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- # MODAL APERTURA DE CAJA -->
     </div>
-    <!-- # MODAL APERTURA DE CAJA -->
   </div>
-</div>
+</main>

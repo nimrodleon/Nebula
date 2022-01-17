@@ -1,87 +1,89 @@
 <app-navbar></app-navbar>
-<div class="Wrapper">
+<main class="position-relative">
   <app-sidebar></app-sidebar>
-  <div class="container-fluid">
-    <div class="row px-2">
-      <div class="col-12 bg-white my-2 py-3">
-        <form (submit)="submitSearch($event)" class="row row-cols-auto g-2">
-          <div class="col-auto">
-            <label class="col-form-label fw-bold">Filtrar por:</label>
-          </div>
-          <div class="col-auto">
-            <div class="input-group">
+  <div class="page-wrapper">
+    <div class="container-fluid">
+      <div class="row px-2">
+        <div class="col-12 bg-white my-2 py-3">
+          <form (submit)="submitSearch($event)" class="row row-cols-auto g-2">
+            <div class="col-auto">
+              <label class="col-form-label fw-bold">Filtrar por:</label>
+            </div>
+            <div class="col-auto">
+              <div class="input-group">
               <span class="input-group-text">
                 <fa-icon [icon]="faFilter"></fa-icon>
               </span>
-              <input type="search" [formControl]="query" class="form-control" placeholder="DOC/CONTACTO">
+                <input type="search" [formControl]="query" class="form-control" placeholder="DOC/CONTACTO">
+              </div>
             </div>
+            <div class="col-auto">
+              <button type="submit" class="btn btn-success">
+                <fa-icon [icon]="faSearch"></fa-icon>
+                <span class="text-uppercase ms-1">Buscar</span>
+              </button>
+            </div>
+            <div class="col-auto">
+              <button type="button" (click)="openTerminal()" class="btn btn-primary">
+                <fa-icon [icon]="faCashRegister"></fa-icon>
+                <span class="text-uppercase ms-1">Terminal</span>
+              </button>
+            </div>
+            <div class="col-auto">
+              <button type="button" (click)="showCerrarCajaModal()" class="btn btn-danger">
+                <fa-icon [icon]="faLock"></fa-icon>
+                <span class="text-uppercase ms-1">Cerrar</span>
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="col-12 bg-white py-3">
+          <h5 class="fw-bold text-uppercase">Operaciones de Caja</h5>
+          <div class="table-responsive">
+            <table class="table table-striped mb-0">
+              <thead>
+              <tr class="text-uppercase">
+                <th>Fecha</th>
+                <th>Documento</th>
+                <th>Contacto</th>
+                <th>Glosa</th>
+                <th>Tipo</th>
+                <th>Monto</th>
+                <td></td>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let item of cashierDetails">
+                <td>{{item.startDate|date}}</td>
+                <td>
+                  <ng-container *ngIf="item.typeOperation === 0 else comprobante">
+                    {{item.document}}
+                  </ng-container>
+                  <ng-template #comprobante>
+                    <a [routerLink]="['/invoice/detail', item.invoiceId]">{{item.document}}</a>
+                  </ng-template>
+                </td>
+                <td>{{item.contact}}</td>
+                <td>{{item.glosa}}</td>
+                <td class="text-uppercase">
+                  <span *ngIf="item.type === 'ENTRADA'" class="badge bg-success">{{item.type}}</span>
+                  <span *ngIf="item.type === 'SALIDA'" class="badge bg-danger">{{item.type}}</span>
+                </td>
+                <td>{{item.total|currency}}</td>
+                <td class="text-end">
+                  <button type="button" class="btn btn-danger btn-sm">
+                    <fa-icon [icon]="faTrashAlt"></fa-icon>
+                  </button>
+                </td>
+              </tr>
+              </tbody>
+            </table>
           </div>
-          <div class="col-auto">
-            <button type="submit" class="btn btn-success">
-              <fa-icon [icon]="faSearch"></fa-icon>
-              <span class="text-uppercase ms-1">Buscar</span>
-            </button>
-          </div>
-          <div class="col-auto">
-            <button type="button" (click)="openTerminal()" class="btn btn-primary">
-              <fa-icon [icon]="faCashRegister"></fa-icon>
-              <span class="text-uppercase ms-1">Terminal</span>
-            </button>
-          </div>
-          <div class="col-auto">
-            <button type="button" (click)="showCerrarCajaModal()" class="btn btn-danger">
-              <fa-icon [icon]="faLock"></fa-icon>
-              <span class="text-uppercase ms-1">Cerrar</span>
-            </button>
-          </div>
-        </form>
-      </div>
-      <div class="col-12 bg-white py-3">
-        <h5 class="fw-bold text-uppercase">Operaciones de Caja</h5>
-        <div class="table-responsive">
-          <table class="table table-striped mb-0">
-            <thead>
-            <tr class="text-uppercase">
-              <th>Fecha</th>
-              <th>Documento</th>
-              <th>Contacto</th>
-              <th>Glosa</th>
-              <th>Tipo</th>
-              <th>Monto</th>
-              <td></td>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let item of cashierDetails">
-              <td>{{item.startDate|date}}</td>
-              <td>
-                <ng-container *ngIf="item.typeOperation === 0 else comprobante">
-                  {{item.document}}
-                </ng-container>
-                <ng-template #comprobante>
-                  <a [routerLink]="['/invoice/detail', item.invoiceId]">{{item.document}}</a>
-                </ng-template>
-              </td>
-              <td>{{item.contact}}</td>
-              <td>{{item.glosa}}</td>
-              <td class="text-uppercase">
-                <span *ngIf="item.type === 'ENTRADA'" class="badge bg-success">{{item.type}}</span>
-                <span *ngIf="item.type === 'SALIDA'" class="badge bg-danger">{{item.type}}</span>
-              </td>
-              <td>{{item.total|currency}}</td>
-              <td class="text-end">
-                <button type="button" class="btn btn-danger btn-sm">
-                  <fa-icon [icon]="faTrashAlt"></fa-icon>
-                </button>
-              </td>
-            </tr>
-            </tbody>
-          </table>
         </div>
       </div>
     </div>
   </div>
-</div>
+</main>
 
 <app-cerrar-caja
   [cajaDiariaId]="cajaDiariaId"
