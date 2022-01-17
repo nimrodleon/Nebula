@@ -1,100 +1,102 @@
 <app-navbar></app-navbar>
-<div class="Wrapper">
+<main class="position-relative">
   <app-sidebar></app-sidebar>
-  <div class="container-fluid">
-    <div class="row px-2">
-      <div class="col-12 bg-white my-2 py-3">
-        <form [formGroup]="queryForm" (ngSubmit)="submitQuery()" class="row row-cols-auto g-2">
-          <div class="col-auto">
-            <label class="col-form-label fw-bold">Filtrar por:</label>
+  <div class="page-wrapper">
+    <div class="container-fluid">
+      <div class="row px-2">
+        <div class="col-12 bg-white my-2 py-3">
+          <form [formGroup]="queryForm" (ngSubmit)="submitQuery()" class="row row-cols-auto g-2">
+            <div class="col-auto">
+              <label class="col-form-label fw-bold">Filtrar por:</label>
+            </div>
+            <div class="col-auto">
+              <input type="number" formControlName="year" step="1" class="form-control">
+            </div>
+            <div class="col-auto">
+              <select formControlName="month" class="form-select">
+                <option value="01">ENERO</option>
+                <option value="02">FEBRERO</option>
+                <option value="03">MARZO</option>
+                <option value="04">ABRIL</option>
+                <option value="05">MAYO</option>
+                <option value="06">JUNIO</option>
+                <option value="07">JULIO</option>
+                <option value="08">AGOSTO</option>
+                <option value="09">SEPTIEMBRE</option>
+                <option value="10">OCTUBRE</option>
+                <option value="11">NOVIEMBRE</option>
+                <option value="12">DICIEMBRE</option>
+              </select>
+            </div>
+            <div class="col-auto">
+              <input type="search" formControlName="query" class="form-control" placeholder="CLIENTE">
+            </div>
+            <div class="col-auto">
+              <button type="submit" class="btn btn-success">
+                <fa-icon [icon]="faSearch"></fa-icon>
+                <span class="text-uppercase ms-1">Buscar</span>
+              </button>
+            </div>
+            <div class="col-auto">
+              <button type="button" routerLink="/invoice/sale" class="btn btn-primary">
+                <fa-icon [icon]="faPlus"></fa-icon>
+                <span class="text-uppercase ms-1">Agregar</span>
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="col-12 bg-white py-3">
+          <h5 class="fw-bold text-uppercase">Listado de Ventas</h5>
+          <div class="table-responsive">
+            <table class="table table-striped mb-0">
+              <thead>
+              <tr class="text-uppercase">
+                <th>Tipo</th>
+                <th>Documento</th>
+                <th>Cliente</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Total</th>
+                <th>PDF</th>
+                <th>XML</th>
+                <th>CDR</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let item of invoices">
+                <td>{{item.docType|docTypeInvoice}}</td>
+                <td>
+                  <a [routerLink]="['/invoice/detail', item.id]">{{item.serie}}-{{item.number}}</a>
+                </td>
+                <td class="text-uppercase">{{item.rznSocialUsuario}}</td>
+                <td>{{item.fecEmision|date}}</td>
+                <td><span class="badge bg-warning">CRÉDITO</span></td>
+                <td>{{item.sumImpVenta|currency}}</td>
+                <td>
+                  <a href="#">
+                    <img src="/assets/pdf_cpe.svg" class="img-fluid" alt="PDF">
+                  </a>
+                </td>
+                <td>
+                  <a href="#">
+                    <img src="/assets/xml_cpe.svg" class="img-fluid" alt="XML">
+                  </a>
+                </td>
+                <td>
+                  <a href="#">
+                    <img src="/assets/xml_cdr.svg" class="img-fluid" alt="CDR">
+                  </a>
+                </td>
+              </tr>
+              </tbody>
+            </table>
           </div>
-          <div class="col-auto">
-            <input type="number" formControlName="year" step="1" class="form-control">
-          </div>
-          <div class="col-auto">
-            <select formControlName="month" class="form-select">
-              <option value="01">ENERO</option>
-              <option value="02">FEBRERO</option>
-              <option value="03">MARZO</option>
-              <option value="04">ABRIL</option>
-              <option value="05">MAYO</option>
-              <option value="06">JUNIO</option>
-              <option value="07">JULIO</option>
-              <option value="08">AGOSTO</option>
-              <option value="09">SEPTIEMBRE</option>
-              <option value="10">OCTUBRE</option>
-              <option value="11">NOVIEMBRE</option>
-              <option value="12">DICIEMBRE</option>
-            </select>
-          </div>
-          <div class="col-auto">
-            <input type="search" formControlName="query" class="form-control" placeholder="CLIENTE">
-          </div>
-          <div class="col-auto">
-            <button type="submit" class="btn btn-success">
-              <fa-icon [icon]="faSearch"></fa-icon>
-              <span class="text-uppercase ms-1">Buscar</span>
-            </button>
-          </div>
-          <div class="col-auto">
-            <button type="button" routerLink="/invoice/sale" class="btn btn-primary">
-              <fa-icon [icon]="faPlus"></fa-icon>
-              <span class="text-uppercase ms-1">Agregar</span>
-            </button>
-          </div>
-        </form>
-      </div>
-      <div class="col-12 bg-white py-3">
-        <h5 class="fw-bold text-uppercase">Listado de Ventas</h5>
-        <div class="table-responsive">
-          <table class="table table-striped mb-0">
-            <thead>
-            <tr class="text-uppercase">
-              <th>Tipo</th>
-              <th>Documento</th>
-              <th>Cliente</th>
-              <th>Fecha</th>
-              <th>Estado</th>
-              <th>Total</th>
-              <th>PDF</th>
-              <th>XML</th>
-              <th>CDR</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let item of invoices">
-              <td>{{item.docType|docTypeInvoice}}</td>
-              <td>
-                <a [routerLink]="['/invoice/detail', item.id]">{{item.serie}}-{{item.number}}</a>
-              </td>
-              <td class="text-uppercase">{{item.rznSocialUsuario}}</td>
-              <td>{{item.fecEmision|date}}</td>
-              <td><span class="badge bg-warning">CRÉDITO</span></td>
-              <td>{{item.sumImpVenta|currency}}</td>
-              <td>
-                <a href="#">
-                  <img src="/assets/pdf_cpe.svg" class="img-fluid" alt="PDF">
-                </a>
-              </td>
-              <td>
-                <a href="#">
-                  <img src="/assets/xml_cpe.svg" class="img-fluid" alt="XML">
-                </a>
-              </td>
-              <td>
-                <a href="#">
-                  <img src="/assets/xml_cdr.svg" class="img-fluid" alt="CDR">
-                </a>
-              </td>
-            </tr>
-            </tbody>
-          </table>
         </div>
       </div>
+
+      <pre>{{queryForm.value|json}}</pre>
+      <pre>{{invoices|json}}</pre>
+
     </div>
-
-    <pre>{{queryForm.value|json}}</pre>
-    <pre>{{invoices|json}}</pre>
-
   </div>
-</div>
+</main>

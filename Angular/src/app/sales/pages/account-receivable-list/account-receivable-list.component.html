@@ -1,91 +1,93 @@
 <app-navbar></app-navbar>
-<div class="Wrapper">
+<main class="position-relative">
   <app-sidebar></app-sidebar>
-  <div class="container-fluid">
-    <div class="row px-2">
-      <div class="col-12 bg-white my-2 py-3">
-        <form class="row row-cols-auto g-2">
-          <div class="col-auto">
-            <label class="col-form-label fw-bold">Filtrar por:</label>
+  <div class="page-wrapper">
+    <div class="container-fluid">
+      <div class="row px-2">
+        <div class="col-12 bg-white my-2 py-3">
+          <form class="row row-cols-auto g-2">
+            <div class="col-auto">
+              <label class="col-form-label fw-bold">Filtrar por:</label>
+            </div>
+            <div class="col-auto">
+              <input type="number" step="1" class="form-control">
+            </div>
+            <div class="col-auto">
+              <select class="form-select">
+                <option value="01">ENERO</option>
+                <option value="02">FEBRERO</option>
+                <option value="03">MARZO</option>
+                <option value="04">ABRIL</option>
+                <option value="05">MAYO</option>
+                <option value="06">JUNIO</option>
+                <option value="07">JULIO</option>
+                <option value="08">AGOSTO</option>
+                <option value="09">SEPTIEMBRE</option>
+                <option value="10">OCTUBRE</option>
+                <option value="11">NOVIEMBRE</option>
+                <option value="12">DICIEMBRE</option>
+              </select>
+            </div>
+            <div class="col-auto">
+              <select class="form-select">
+                <option value="PENDIENTE">PENDIENTE</option>
+                <option value="COBRADO">COBRADO</option>
+                <option value="ANULADO">ANULADO</option>
+              </select>
+            </div>
+            <div class="col-auto">
+              <button type="submit" class="btn btn-success">
+                <fa-icon [icon]="faSearch"></fa-icon>
+                <span class="text-uppercase ms-1">Buscar</span>
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="col-12 bg-white py-3">
+          <h5 class="fw-bold text-uppercase">Listado de Cuentas por Cobrar</h5>
+          <div class="table-responsive">
+            <table class="table table-striped mb-0">
+              <thead>
+              <tr class="text-uppercase">
+                <th>Documento</th>
+                <th>Cuota</th>
+                <th>Vencimiento</th>
+                <th>Días Mora</th>
+                <th>Detalle</th>
+                <th>Estado</th>
+                <th>Monto</th>
+                <th>Saldo</th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>F001-000241</td>
+                <td>1</td>
+                <td>2021-11-02</td>
+                <td>0</td>
+                <td>
+                  <button type="button" class="btn btn-secondary btn-sm">
+                    <span class="text-uppercase">Detalle</span>
+                  </button>
+                </td>
+                <td>PENDIENTE</td>
+                <td>200</td>
+                <td>200</td>
+                <td class="text-end">
+                  <button type="button" (click)="showCobranzaModal()" class="btn btn-warning btn-sm">
+                    <fa-icon [icon]="faCoins" class="me-1"></fa-icon>
+                    <span class="text-uppercase">Registrar</span>
+                  </button>
+                </td>
+              </tr>
+              </tbody>
+            </table>
           </div>
-          <div class="col-auto">
-            <input type="number" step="1" class="form-control">
-          </div>
-          <div class="col-auto">
-            <select class="form-select">
-              <option value="01">ENERO</option>
-              <option value="02">FEBRERO</option>
-              <option value="03">MARZO</option>
-              <option value="04">ABRIL</option>
-              <option value="05">MAYO</option>
-              <option value="06">JUNIO</option>
-              <option value="07">JULIO</option>
-              <option value="08">AGOSTO</option>
-              <option value="09">SEPTIEMBRE</option>
-              <option value="10">OCTUBRE</option>
-              <option value="11">NOVIEMBRE</option>
-              <option value="12">DICIEMBRE</option>
-            </select>
-          </div>
-          <div class="col-auto">
-            <select class="form-select">
-              <option value="PENDIENTE">PENDIENTE</option>
-              <option value="COBRADO">COBRADO</option>
-              <option value="ANULADO">ANULADO</option>
-            </select>
-          </div>
-          <div class="col-auto">
-            <button type="submit" class="btn btn-success">
-              <fa-icon [icon]="faSearch"></fa-icon>
-              <span class="text-uppercase ms-1">Buscar</span>
-            </button>
-          </div>
-        </form>
-      </div>
-      <div class="col-12 bg-white py-3">
-        <h5 class="fw-bold text-uppercase">Listado de Cuentas por Cobrar</h5>
-        <div class="table-responsive">
-          <table class="table table-striped mb-0">
-            <thead>
-            <tr class="text-uppercase">
-              <th>Documento</th>
-              <th>Cuota</th>
-              <th>Vencimiento</th>
-              <th>Días Mora</th>
-              <th>Detalle</th>
-              <th>Estado</th>
-              <th>Monto</th>
-              <th>Saldo</th>
-              <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td>F001-000241</td>
-              <td>1</td>
-              <td>2021-11-02</td>
-              <td>0</td>
-              <td>
-                <button type="button" class="btn btn-secondary btn-sm">
-                  <span class="text-uppercase">Detalle</span>
-                </button>
-              </td>
-              <td>PENDIENTE</td>
-              <td>200</td>
-              <td>200</td>
-              <td class="text-end">
-                <button type="button" (click)="showCobranzaModal()" class="btn btn-warning btn-sm">
-                  <fa-icon [icon]="faCoins" class="me-1"></fa-icon>
-                  <span class="text-uppercase">Registrar</span>
-                </button>
-              </td>
-            </tr>
-            </tbody>
-          </table>
         </div>
       </div>
     </div>
   </div>
-</div>
+</main>
 
 <app-cobranza-modal></app-cobranza-modal>

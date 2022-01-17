@@ -3,7 +3,6 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
 import {faArrowLeft, faClipboardList, faFolderOpen, faSave, faThumbtack} from '@fortawesome/free-solid-svg-icons';
 import {environment} from 'src/environments/environment';
-import {EnumBoolean, EnumMenu} from 'src/app/global/interfaces';
 import {ContactService} from 'src/app/contact/services';
 import {ConfigurationService} from '../../services';
 import Swal from 'sweetalert2';
@@ -72,13 +71,9 @@ export class ConfigurationComponent implements OnInit {
     });
   }
 
-  // botón cancelar.
-  public async cancel() {
-    localStorage.setItem(EnumMenu.rootMenu, EnumBoolean.true);
-    localStorage.setItem(EnumMenu.childMenuConfiguration, EnumBoolean.false);
-    const mainMenu: any = document.getElementById('mainMenu');
-    mainMenu.classList.remove('hiddenNavigation');
-    await this.router.navigate(['/']);
+  // volver una página atrás.
+  public historyBack(): void {
+    window.history.back();
   }
 
   // guardar cambios.

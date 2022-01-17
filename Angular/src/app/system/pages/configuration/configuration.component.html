@@ -1,127 +1,129 @@
 <app-navbar></app-navbar>
-<div class="Wrapper">
+<main class="position-relative">
   <app-sidebar></app-sidebar>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-12 my-2">
-        <div class="card">
-          <div class="card-header">
-            <h5 class="fw-bold mb-0">CONFIGURACIÓN DE EMPRESA</h5>
-          </div>
-          <div class="card-body">
-            <form [formGroup]="configForm">
-              <div class="row mb-3">
-                <label class="col-2 col-form-label text-end fw-bold">R.U.C</label>
-                <div class="col-3">
-                  <input type="text" formControlName="ruc" class="form-control">
+  <div class="page-wrapper">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12 my-2">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="fw-bold mb-0">CONFIGURACIÓN DE EMPRESA</h5>
+            </div>
+            <div class="card-body">
+              <form [formGroup]="configForm">
+                <div class="row mb-3">
+                  <label class="col-2 col-form-label text-end fw-bold">R.U.C</label>
+                  <div class="col-3">
+                    <input type="text" formControlName="ruc" class="form-control">
+                  </div>
                 </div>
+                <div class="row mb-3">
+                  <label class="col-2 col-form-label text-end fw-bold">Razón Social</label>
+                  <div class="col-6">
+                    <input type="text" formControlName="rznSocial" class="form-control">
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <h5 class="title mb-0">
+                    <fa-icon [icon]="faClipboardList" class="me-1"></fa-icon>
+                    <span>Configuración para la venta</span>
+                  </h5>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-2 col-form-label text-end fw-bold">Cod Local Emisor</label>
+                  <div class="col-3">
+                    <input type="text" formControlName="codLocalEmisor" class="form-control">
+                  </div>
+                  <label class="col-2 col-form-label text-end fw-bold">Cod Tipo Moneda</label>
+                  <div class="col-3">
+                    <input type="text" formControlName="tipMoneda" class="form-control">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-2 col-form-label text-end fw-bold">Porcentaje IGV</label>
+                  <div class="col-3">
+                    <input type="number" formControlName="porcentajeIgv" step="0.1" class="form-control">
+                  </div>
+                  <label class="col-2 col-form-label text-end fw-bold">Impuesto por Bolsa</label>
+                  <div class="col-3">
+                    <input type="number" formControlName="valorImpuestoBolsa" step="0.1" class="form-control">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-2 col-form-label text-end fw-bold">Público General</label>
+                  <div class="col-3">
+                    <select id="contactId" class="form-select"></select>
+                  </div>
+                  <label class="col-2 col-form-label text-end fw-bold">Emisión Electrónica</label>
+                  <div class="col-3">
+                    <select formControlName="cpeSunat" class="form-select">
+                      <option value="SFS">Facturador SUNAT</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <h5 class="title mb-0">
+                    <fa-icon [icon]="faThumbtack" class="me-1"></fa-icon>
+                    <span>Detracción</span>
+                  </h5>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-2 col-form-label text-end fw-bold">Cuenta Banco</label>
+                  <div class="col-3">
+                    <input type="text" formControlName="cuentaBancoDetraccion" class="form-control">
+                  </div>
+                  <label class="col-2 col-form-label text-end fw-bold">Monto Detracción</label>
+                  <div class="col-3">
+                    <input type="number" formControlName="montoDetraccion" step="0.1" class="form-control">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-2 col-form-label text-end fw-bold">Texto Detracción</label>
+                  <div class="col-8">
+                    <input type="text" formControlName="textoDetraccion" class="form-control">
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <h5 class="title mb-0">
+                    <fa-icon [icon]="faFolderOpen" class="me-1"></fa-icon>
+                    <span>Facturador SUNAT</span>
+                  </h5>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-2 col-form-label text-end fw-bold">URL Api</label>
+                  <div class="col-8">
+                    <input type="text" formControlName="urlApi" class="form-control">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-2 col-form-label text-end fw-bold">Archivos SUNAT</label>
+                  <div class="col-8">
+                    <input type="text" formControlName="fileSunat" class="form-control">
+                  </div>
+                </div>
+                <div class="row">
+                  <label class="col-2 col-form-label text-end fw-bold">Archivos Control</label>
+                  <div class="col-8">
+                    <input type="text" formControlName="fileControl" class="form-control">
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="card-footer">
+              <div class="d-flex justify-content-center py-2">
+                <button type="button" (click)="historyBack()" class="btn btn-danger btn-lg me-2">
+                  <fa-icon [icon]="faArrowLeft"></fa-icon>
+                  <span class="text-uppercase ms-1">Cancelar</span>
+                </button>
+                <button type="button" (click)="saveChanges()" class="btn btn-primary btn-lg">
+                  <fa-icon [icon]="faSave"></fa-icon>
+                  <span class="text-uppercase ms-1">Actualizar</span>
+                </button>
               </div>
-              <div class="row mb-3">
-                <label class="col-2 col-form-label text-end fw-bold">Razón Social</label>
-                <div class="col-6">
-                  <input type="text" formControlName="rznSocial" class="form-control">
-                </div>
-              </div>
-              <div class="mb-3">
-                <h5 class="title mb-0">
-                  <fa-icon [icon]="faClipboardList" class="me-1"></fa-icon>
-                  <span>Configuración para la venta</span>
-                </h5>
-              </div>
-              <div class="row mb-3">
-                <label class="col-2 col-form-label text-end fw-bold">Cod Local Emisor</label>
-                <div class="col-3">
-                  <input type="text" formControlName="codLocalEmisor" class="form-control">
-                </div>
-                <label class="col-2 col-form-label text-end fw-bold">Cod Tipo Moneda</label>
-                <div class="col-3">
-                  <input type="text" formControlName="tipMoneda" class="form-control">
-                </div>
-              </div>
-              <div class="row mb-3">
-                <label class="col-2 col-form-label text-end fw-bold">Porcentaje IGV</label>
-                <div class="col-3">
-                  <input type="number" formControlName="porcentajeIgv" step="0.1" class="form-control">
-                </div>
-                <label class="col-2 col-form-label text-end fw-bold">Impuesto por Bolsa</label>
-                <div class="col-3">
-                  <input type="number" formControlName="valorImpuestoBolsa" step="0.1" class="form-control">
-                </div>
-              </div>
-              <div class="row mb-3">
-                <label class="col-2 col-form-label text-end fw-bold">Público General</label>
-                <div class="col-3">
-                  <select id="contactId" class="form-select"></select>
-                </div>
-                <label class="col-2 col-form-label text-end fw-bold">Emisión Electrónica</label>
-                <div class="col-3">
-                  <select formControlName="cpeSunat" class="form-select">
-                    <option value="SFS">Facturador SUNAT</option>
-                  </select>
-                </div>
-              </div>
-              <div class="mb-3">
-                <h5 class="title mb-0">
-                  <fa-icon [icon]="faThumbtack" class="me-1"></fa-icon>
-                  <span>Detracción</span>
-                </h5>
-              </div>
-              <div class="row mb-3">
-                <label class="col-2 col-form-label text-end fw-bold">Cuenta Banco</label>
-                <div class="col-3">
-                  <input type="text" formControlName="cuentaBancoDetraccion" class="form-control">
-                </div>
-                <label class="col-2 col-form-label text-end fw-bold">Monto Detracción</label>
-                <div class="col-3">
-                  <input type="number" formControlName="montoDetraccion" step="0.1" class="form-control">
-                </div>
-              </div>
-              <div class="row mb-3">
-                <label class="col-2 col-form-label text-end fw-bold">Texto Detracción</label>
-                <div class="col-8">
-                  <input type="text" formControlName="textoDetraccion" class="form-control">
-                </div>
-              </div>
-              <div class="mb-3">
-                <h5 class="title mb-0">
-                  <fa-icon [icon]="faFolderOpen" class="me-1"></fa-icon>
-                  <span>Facturador SUNAT</span>
-                </h5>
-              </div>
-              <div class="row mb-3">
-                <label class="col-2 col-form-label text-end fw-bold">URL Api</label>
-                <div class="col-8">
-                  <input type="text" formControlName="urlApi" class="form-control">
-                </div>
-              </div>
-              <div class="row mb-3">
-                <label class="col-2 col-form-label text-end fw-bold">Archivos SUNAT</label>
-                <div class="col-8">
-                  <input type="text" formControlName="fileSunat" class="form-control">
-                </div>
-              </div>
-              <div class="row">
-                <label class="col-2 col-form-label text-end fw-bold">Archivos Control</label>
-                <div class="col-8">
-                  <input type="text" formControlName="fileControl" class="form-control">
-                </div>
-              </div>
-            </form>
-          </div>
-          <div class="card-footer">
-            <div class="d-flex justify-content-center py-2">
-              <button type="button" (click)="cancel()" class="btn btn-danger btn-lg me-2">
-                <fa-icon [icon]="faArrowLeft"></fa-icon>
-                <span class="text-uppercase ms-1">Cancelar</span>
-              </button>
-              <button type="button" (click)="saveChanges()" class="btn btn-primary btn-lg">
-                <fa-icon [icon]="faSave"></fa-icon>
-                <span class="text-uppercase ms-1">Actualizar</span>
-              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+</main>

@@ -1,130 +1,206 @@
 <app-navbar></app-navbar>
-<div class="Wrapper">
+<main class="position-relative">
   <app-sidebar></app-sidebar>
-  <div class="container-fluid">
-    <div class="row px-2">
-      <div class="col-12 bg-white shadow-sm my-2 py-3">
-        <h5 class="text-uppercase">Comprobante de {{comprobante.invoiceType}}</h5>
-        <hr>
-        <form [formGroup]="comprobanteForm" class="row">
-          <div class="col-8">
-            <div class="row mb-3">
-              <label class="col-3 col-form-label text-uppercase text-end">Contacto</label>
-              <div class="col-6">
-                <div class="input-group has-validation me-1">
+  <div class="page-wrapper">
+    <div class="container-fluid">
+      <div class="row px-2">
+        <div class="col-12 bg-white shadow-sm my-2 py-3">
+          <h5 class="text-uppercase">Comprobante de {{comprobante.invoiceType}}</h5>
+          <hr>
+          <form [formGroup]="comprobanteForm" class="row">
+            <div class="col-8">
+              <div class="row mb-3">
+                <label class="col-3 col-form-label text-uppercase text-end">Contacto</label>
+                <div class="col-6">
+                  <div class="input-group has-validation me-1">
                   <span class="input-group-text">
                     <fa-icon [icon]="faIdCardAlt"></fa-icon>
                   </span>
-                  <select id="contactId" class="form-select"
-                          [ngClass]="{'is-invalid': inputIsInvalid('contactId')}">
+                    <select id="contactId" class="form-select"
+                            [ngClass]="{'is-invalid': inputIsInvalid('contactId')}">
+                    </select>
+                  </div>
+                </div>
+                <div class="col-3">
+                  <button type="button" (click)="showContactModal()" class="btn btn-success">
+                    <fa-icon [icon]="faPlus"></fa-icon>
+                    <span class="text-uppercase ms-1">Agregar</span>
+                  </button>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label class="col-3 col-form-label text-uppercase text-end">Comprobante</label>
+                <div class="col-4">
+                  <select formControlName="docType" class="form-select"
+                          [ngClass]="{'is-invalid': inputIsInvalid('docType')}">
+                    <option value="BOLETA">BOLETA</option>
+                    <option value="FACTURA">FACTURA</option>
+                    <option value="NOTA">NOTA DE VENTA</option>
+                  </select>
+                </div>
+                <label class="col-1 col-form-label text-uppercase text-end">Serie</label>
+                <div class="col-4">
+                  <select class="form-select" [formControl]="serieId"
+                          [ngClass]="{'is-invalid': serieId.errors && serieId.touched}">
+                    <option *ngFor="let item of invoiceSeries" [value]="item.id">{{item.name}}</option>
                   </select>
                 </div>
               </div>
-              <div class="col-3">
-                <button type="button" (click)="showContactModal()" class="btn btn-success">
-                  <fa-icon [icon]="faPlus"></fa-icon>
-                  <span class="text-uppercase ms-1">Agregar</span>
-                </button>
-              </div>
-            </div>
-            <div class="row mb-3">
-              <label class="col-3 col-form-label text-uppercase text-end">Comprobante</label>
-              <div class="col-4">
-                <select formControlName="docType" class="form-select"
-                        [ngClass]="{'is-invalid': inputIsInvalid('docType')}">
-                  <option value="BOLETA">BOLETA</option>
-                  <option value="FACTURA">FACTURA</option>
-                  <option value="NOTA">NOTA DE VENTA</option>
-                </select>
-              </div>
-              <label class="col-1 col-form-label text-uppercase text-end">Serie</label>
-              <div class="col-4">
-                <select class="form-select" [formControl]="serieId"
-                        [ngClass]="{'is-invalid': serieId.errors && serieId.touched}">
-                  <option *ngFor="let item of invoiceSeries" [value]="item.id">{{item.name}}</option>
-                </select>
-              </div>
-            </div>
-            <div class="row">
-              <label class="col-3 col-form-label text-uppercase text-end">Tipo operación</label>
-              <div class="col-4">
-                <select formControlName="typeOperation" class="form-select text-uppercase"
-                        [ngClass]="{'is-invalid': inputIsInvalid('typeOperation')}">
-                  <option *ngFor="let item of typeOperation" [value]="item.id">{{item.description}}</option>
-                </select>
-              </div>
-              <label class="col-1 col-form-label text-uppercase text-end">Serie</label>
-              <div class="col-4">
-                <div class="input-group mb-3">
-                  <input type="text" formControlName="serie" class="form-control" placeholder="F001"
-                         [readOnly]="comprobante.invoiceType==='VENTA'" style="max-width: 74px;"
-                         [ngClass]="{'is-invalid': inputIsInvalid('serie')}">
-                  <span class="input-group-text fw-bold">#</span>
-                  <input type="text" class="form-control" formControlName="number"
-                         placeholder="99999999" [readOnly]="comprobante.invoiceType==='VENTA'"
-                         [ngClass]="{'is-invalid': inputIsInvalid('number')}">
+              <div class="row">
+                <label class="col-3 col-form-label text-uppercase text-end">Tipo operación</label>
+                <div class="col-4">
+                  <select formControlName="typeOperation" class="form-select text-uppercase"
+                          [ngClass]="{'is-invalid': inputIsInvalid('typeOperation')}">
+                    <option *ngFor="let item of typeOperation" [value]="item.id">{{item.description}}</option>
+                  </select>
+                </div>
+                <label class="col-1 col-form-label text-uppercase text-end">Serie</label>
+                <div class="col-4">
+                  <div class="input-group mb-3">
+                    <input type="text" formControlName="serie" class="form-control" placeholder="F001"
+                           [readOnly]="comprobante.invoiceType==='VENTA'" style="max-width: 74px;"
+                           [ngClass]="{'is-invalid': inputIsInvalid('serie')}">
+                    <span class="input-group-text fw-bold">#</span>
+                    <input type="text" class="form-control" formControlName="number"
+                           placeholder="99999999" [readOnly]="comprobante.invoiceType==='VENTA'"
+                           [ngClass]="{'is-invalid': inputIsInvalid('number')}">
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="col-4">
-            <div class="row mb-3">
-              <label class="col-4 col-form-label text-uppercase text-end">Emisión</label>
-              <div class="col-8">
-                <input type="date" formControlName="startDate" class="form-control"
-                       [ngClass]="{'is-invalid': inputIsInvalid('startDate')}">
+            <div class="col-4">
+              <div class="row mb-3">
+                <label class="col-4 col-form-label text-uppercase text-end">Emisión</label>
+                <div class="col-8">
+                  <input type="date" formControlName="startDate" class="form-control"
+                         [ngClass]="{'is-invalid': inputIsInvalid('startDate')}">
+                </div>
+              </div>
+              <div class="row mb-3">
+                <label class="col-4 col-form-label text-uppercase text-end">F.Pago</label>
+                <div class="col-8">
+                  <select formControlName="formaPago" class="form-select"
+                          [ngClass]="{'is-invalid': inputIsInvalid('formaPago')}">
+                    <option value="Credito">CRÉDITO</option>
+                    <option value="Contado">CONTADO</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <label class="col-4 col-form-label text-uppercase text-end">Vencimiento</label>
+                <div class="col-8">
+                  <input type="date" formControlName="endDate" class="form-control">
+                </div>
               </div>
             </div>
-            <div class="row mb-3">
-              <label class="col-4 col-form-label text-uppercase text-end">F.Pago</label>
-              <div class="col-8">
-                <select formControlName="formaPago" class="form-select"
-                        [ngClass]="{'is-invalid': inputIsInvalid('formaPago')}">
-                  <option value="Credito">CRÉDITO</option>
-                  <option value="Contado">CONTADO</option>
-                </select>
+            <div class="col-12">
+              <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                  <tr class="text-uppercase">
+                    <th>Cantidad</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Importe</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let item of comprobante.details">
+                    <td>{{item.quantity}}</td>
+                    <td>
+                      <span class="text-uppercase">{{item.description}}</span>
+                      <!--<div class="d-flex justify-content-between">
+                        <span class="text-uppercase">{{item.description}}</span>
+                        <a href="#">
+                          <fa-icon [icon]="faEdit"></fa-icon>
+                        </a>
+                      </div>-->
+                    </td>
+                    <td>{{item.price.toFixed(2)}}</td>
+                    <td>{{item.amount.toFixed(2)}}</td>
+                    <td class="text-end">
+                      <div class="tblBtn ms-auto">
+                        <button type="button" (click)="editItemComprobanteModal(item.productId)"
+                                class="btn btn-secondary btn-sm me-2">
+                          <fa-icon [icon]="faEdit"></fa-icon>
+                        </button>
+                        <button type="button" (click)="deleteItem(item.productId)" class="btn btn-danger btn-sm">
+                          <fa-icon [icon]="faTrashAlt"></fa-icon>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="d-flex justify-content-between">
+                <div class="w-50">
+                  <button type="button" (click)="showItemComprobanteModal()" class="btn btn-secondary">
+                    <fa-icon [icon]="faPlus"></fa-icon>
+                    <span class="text-uppercase ms-1">Agregar Item</span>
+                  </button>
+                </div>
+                <div class="table-responsive">
+                  <table class="table mb-0">
+                    <tbody>
+                    <tr>
+                      <th class="bg-white text-end">IMPORTE</th>
+                      <td class="bg-white">
+                        <input type="number" class="text-end" [value]="comprobante.sumTotValVenta.toFixed(2)" readonly>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="bg-white text-end">IGV (18%)</th>
+                      <td class="bg-white">
+                        <input type="number" class="text-end" [value]="comprobante.sumTotTributos.toFixed(2)" readonly>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="bg-white text-end">ICBPER</th>
+                      <td class="bg-white">
+                        <input type="number" class="text-end" [value]="comprobante.ICBPER.toFixed(2)" readonly>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th class="bg-white text-end">TOTAL</th>
+                      <td class="bg-white">
+                        <input type="number" class="text-end" [value]="comprobante.sumImpVenta.toFixed(2)" readonly>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
-            <div class="row">
-              <label class="col-4 col-form-label text-uppercase text-end">Vencimiento</label>
-              <div class="col-8">
-                <input type="date" formControlName="endDate" class="form-control">
-              </div>
-            </div>
-          </div>
-          <div class="col-12">
+          </form>
+        </div>
+        <ng-container *ngIf="checkFormaPago()">
+          <div class="col-12 bg-white shadow-sm mb-2 py-3">
+            <h5 class="text-uppercase">Listado de Cuotas de Crédito</h5>
+            <hr>
             <div class="table-responsive">
               <table class="table table-striped">
                 <thead>
                 <tr class="text-uppercase">
-                  <th>Cantidad</th>
-                  <th>Descripción</th>
-                  <th>Precio</th>
-                  <th>Importe</th>
+                  <th>Cuota</th>
+                  <th>Fecha Venc.</th>
+                  <th>Monto</th>
                   <th></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr *ngFor="let item of comprobante.details">
-                  <td>{{item.quantity}}</td>
-                  <td>
-                    <span class="text-uppercase">{{item.description}}</span>
-                    <!--<div class="d-flex justify-content-between">
-                      <span class="text-uppercase">{{item.description}}</span>
-                      <a href="#">
-                        <fa-icon [icon]="faEdit"></fa-icon>
-                      </a>
-                    </div>-->
-                  </td>
-                  <td>{{item.price.toFixed(2)}}</td>
+                <tr *ngFor="let item of comprobante.cuotas">
+                  <td>{{item.numCuota}}</td>
+                  <td>{{item.endDate|date}}</td>
                   <td>{{item.amount.toFixed(2)}}</td>
                   <td class="text-end">
-                    <div class="actions ms-auto">
-                      <button type="button" (click)="editItemComprobanteModal(item.productId)"
+                    <div class="tblBtn ms-auto">
+                      <button type="button" (click)="editCuotaModal(item.numCuota)"
                               class="btn btn-secondary btn-sm me-2">
                         <fa-icon [icon]="faEdit"></fa-icon>
                       </button>
-                      <button type="button" (click)="deleteItem(item.productId)" class="btn btn-danger btn-sm">
+                      <button type="button" (click)="deleteCuota(item.numCuota)" class="btn btn-danger btn-sm">
                         <fa-icon [icon]="faTrashAlt"></fa-icon>
                       </button>
                     </div>
@@ -133,104 +209,31 @@
                 </tbody>
               </table>
             </div>
-            <div class="d-flex justify-content-between">
-              <div class="w-50">
-                <button type="button" (click)="showItemComprobanteModal()" class="btn btn-secondary">
-                  <fa-icon [icon]="faPlus"></fa-icon>
-                  <span class="text-uppercase ms-1">Agregar Item</span>
-                </button>
-              </div>
-              <div class="table-responsive">
-                <table class="table mb-0">
-                  <tbody>
-                  <tr>
-                    <th class="bg-white text-end">IMPORTE</th>
-                    <td class="bg-white">
-                      <input type="number" class="text-end" [value]="comprobante.sumTotValVenta.toFixed(2)" readonly>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="bg-white text-end">IGV (18%)</th>
-                    <td class="bg-white">
-                      <input type="number" class="text-end" [value]="comprobante.sumTotTributos.toFixed(2)" readonly>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="bg-white text-end">ICBPER</th>
-                    <td class="bg-white">
-                      <input type="number" class="text-end" [value]="comprobante.ICBPER.toFixed(2)" readonly>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="bg-white text-end">TOTAL</th>
-                    <td class="bg-white">
-                      <input type="number" class="text-end" [value]="comprobante.sumImpVenta.toFixed(2)" readonly>
-                    </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            <button type="button" (click)="showCuotaModal()" class="btn btn-secondary">
+              <fa-icon [icon]="faPlus"></fa-icon>
+              <span class="text-uppercase ms-1">Agregar Cuota</span>
+            </button>
           </div>
-        </form>
-      </div>
-      <ng-container *ngIf="checkFormaPago()">
-        <div class="col-12 bg-white shadow-sm mb-2 py-3">
-          <h5 class="text-uppercase">Listado de Cuotas de Crédito</h5>
-          <hr>
-          <div class="table-responsive">
-            <table class="table table-striped">
-              <thead>
-              <tr class="text-uppercase">
-                <th>Cuota</th>
-                <th>Fecha Venc.</th>
-                <th>Monto</th>
-                <th></th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr *ngFor="let item of comprobante.cuotas">
-                <td>{{item.numCuota}}</td>
-                <td>{{item.endDate|date}}</td>
-                <td>{{item.amount.toFixed(2)}}</td>
-                <td class="text-end">
-                  <div class="actions ms-auto">
-                    <button type="button" (click)="editCuotaModal(item.numCuota)" class="btn btn-secondary btn-sm me-2">
-                      <fa-icon [icon]="faEdit"></fa-icon>
-                    </button>
-                    <button type="button" (click)="deleteCuota(item.numCuota)" class="btn btn-danger btn-sm">
-                      <fa-icon [icon]="faTrashAlt"></fa-icon>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              </tbody>
-            </table>
-          </div>
-          <button type="button" (click)="showCuotaModal()" class="btn btn-secondary">
-            <fa-icon [icon]="faPlus"></fa-icon>
-            <span class="text-uppercase ms-1">Agregar Cuota</span>
+        </ng-container>
+        <div class="d-flex justify-content-center bg-white shadow-sm mb-2 py-3">
+          <button type="button" (click)="historyBack()" class="btn btn-danger btn-lg me-2">
+            <fa-icon [icon]="faArrowLeft"></fa-icon>
+            <span class="text-uppercase ms-1">Cancelar</span>
+          </button>
+          <button type="button" (click)="registerVoucher()" class="btn btn-primary btn-lg">
+            <fa-icon [icon]="faSave"></fa-icon>
+            <span class="text-uppercase ms-1">Registrar</span>
           </button>
         </div>
-      </ng-container>
-      <div class="d-flex justify-content-center bg-white shadow-sm mb-2 py-3">
-        <button type="button" (click)="historyBack()" class="btn btn-danger btn-lg me-2">
-          <fa-icon [icon]="faArrowLeft"></fa-icon>
-          <span class="text-uppercase ms-1">Cancelar</span>
-        </button>
-        <button type="button" (click)="registerVoucher()" class="btn btn-primary btn-lg">
-          <fa-icon [icon]="faSave"></fa-icon>
-          <span class="text-uppercase ms-1">Registrar</span>
-        </button>
       </div>
+      <!-- TESTING DATA -->
+      <pre><strong>SERIE:</strong>{{serieId.value|json}}</pre>
+      <pre><strong>FORMULARIO:</strong>{{comprobanteForm.value|json}}</pre>
+      <pre><strong>COMPROBANTE:</strong>{{comprobante|json}}</pre>
+      <!-- END TESTING -->
     </div>
-    <!-- TESTING DATA -->
-    <pre><strong>SERIE:</strong>{{serieId.value|json}}</pre>
-    <pre><strong>FORMULARIO:</strong>{{comprobanteForm.value|json}}</pre>
-    <pre><strong>COMPROBANTE:</strong>{{comprobante|json}}</pre>
-    <!-- END TESTING -->
   </div>
-</div>
+</main>
 
 <app-contact-modal
   [title]="'Agregar Contacto'"

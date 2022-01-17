@@ -3,34 +3,18 @@
 @import "~select2/src/scss/core";
 @import "~select2-bootstrap-5-theme/src/include-all";
 
+main.position-relative {
+  display: flex;
+}
+
 .page-wrapper {
-  position: absolute;
-  width: calc(100% - 7rem);
-  left: 7rem;
-  top: 0;
+  width: 100%;
 }
 
-.Wrapper {
-  // display: flex;
-  // min-height: calc(100vh - 56px);
-  display: grid;
-  grid-template-columns: auto 1fr;
-  z-index: 20;
-  overflow: auto;
-}
-
-// Ocultar menu principal.
-.hiddenNavigation {
-  width: 0 !important;
-  min-width: 0 !important;
-}
-
-// color de fondo body.
 body {
   background-color: #f7fafc;
 }
 
-// botón acciones.
-.actions {
+.tblBtn {
   width: 75px;
 }

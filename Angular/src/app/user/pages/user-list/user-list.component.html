@@ -1,76 +1,78 @@
 <app-navbar></app-navbar>
-<div class="Wrapper">
+<main class="position-relative">
   <app-sidebar></app-sidebar>
-  <div class="container-fluid">
-    <div class="row px-2">
-      <div class="col-12 bg-white my-2 py-3">
-        <form class="row row-cols-auto g-2">
-          <div class="col-auto">
-            <label class="col-form-label fw-bold">Filtrar por:</label>
-          </div>
-          <div class="col-auto">
-            <div class="input-group">
+  <div class="page-wrapper">
+    <div class="container-fluid">
+      <div class="row px-2">
+        <div class="col-12 bg-white my-2 py-3">
+          <form class="row row-cols-auto g-2">
+            <div class="col-auto">
+              <label class="col-form-label fw-bold">Filtrar por:</label>
+            </div>
+            <div class="col-auto">
+              <div class="input-group">
               <span class="input-group-text">
                 <fa-icon [icon]="faFilter"></fa-icon>
               </span>
-              <input type="search" class="form-control" placeholder="USUARIO">
+                <input type="search" class="form-control" placeholder="USUARIO">
+              </div>
             </div>
-          </div>
-          <div class="col-auto">
-            <button type="submit" class="btn btn-success">
-              <fa-icon [icon]="faSearch"></fa-icon>
-              <span class="text-uppercase ms-1">Buscar</span>
-            </button>
-          </div>
-          <div class="col-auto">
-            <button type="button" (click)="showUserModal()" class="btn btn-primary">
-              <fa-icon [icon]="faPlus"></fa-icon>
-              <span class="text-uppercase ms-1">Agregar</span>
-            </button>
-          </div>
-        </form>
-      </div>
-      <div class="col-12 bg-white py-3">
-        <h5 class="fw-bold text-uppercase">Lista de Usuarios</h5>
-        <div class="table-responsive">
-          <table class="table table-striped mb-0">
-            <thead>
-            <tr class="text-uppercase">
-              <th>Usuario</th>
-              <th>E-Mail</th>
-              <th>Contraseña</th>
-              <th>Rol</th>
-              <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td>user2021</td>
-              <td>user2021@local.pe</td>
-              <td>
-                <button type="button" (click)="showChangePassword()" class="btn btn-info btn-sm">
-                  <span class="text-uppercase">Establecer</span>
-                </button>
-              </td>
-              <td>ADMIN</td>
-              <td>
-                <div class="actions ms-auto">
-                  <button type="button" class="btn btn-secondary btn-sm me-2">
-                    <fa-icon [icon]="faEdit"></fa-icon>
+            <div class="col-auto">
+              <button type="submit" class="btn btn-success">
+                <fa-icon [icon]="faSearch"></fa-icon>
+                <span class="text-uppercase ms-1">Buscar</span>
+              </button>
+            </div>
+            <div class="col-auto">
+              <button type="button" (click)="showUserModal()" class="btn btn-primary">
+                <fa-icon [icon]="faPlus"></fa-icon>
+                <span class="text-uppercase ms-1">Agregar</span>
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="col-12 bg-white py-3">
+          <h5 class="fw-bold text-uppercase">Lista de Usuarios</h5>
+          <div class="table-responsive">
+            <table class="table table-striped mb-0">
+              <thead>
+              <tr class="text-uppercase">
+                <th>Usuario</th>
+                <th>E-Mail</th>
+                <th>Contraseña</th>
+                <th>Rol</th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>user2021</td>
+                <td>user2021@local.pe</td>
+                <td>
+                  <button type="button" (click)="showChangePassword()" class="btn btn-info btn-sm">
+                    <span class="text-uppercase">Establecer</span>
                   </button>
-                  <button type="button" class="btn btn-danger btn-sm">
-                    <fa-icon [icon]="faTrashAlt"></fa-icon>
-                  </button>
-                </div>
-              </td>
-            </tr>
-            </tbody>
-          </table>
+                </td>
+                <td>ADMIN</td>
+                <td>
+                  <div class="tblBtn ms-auto">
+                    <button type="button" class="btn btn-secondary btn-sm me-2">
+                      <fa-icon [icon]="faEdit"></fa-icon>
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm">
+                      <fa-icon [icon]="faTrashAlt"></fa-icon>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+</main>
 
 <app-user-modal [title]="title"></app-user-modal>
 <app-change-password></app-change-password>

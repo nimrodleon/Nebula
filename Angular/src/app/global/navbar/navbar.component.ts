@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {faBars, faBox, faCog, faSignOutAlt, faThList, faUserCircle} from '@fortawesome/free-solid-svg-icons';
 import {AuthService} from '../../user/services';
-import {EnumBoolean, EnumMenu} from '../interfaces';
 import {ConfigurationService} from '../../system/services';
 
 @Component({
@@ -17,7 +16,6 @@ export class NavbarComponent implements OnInit {
   faThList = faThList;
   faBars = faBars;
   faBox = faBox;
-  mainMenu: any;
   companyName: string = '';
 
   constructor(
@@ -27,34 +25,9 @@ export class NavbarComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (document.getElementById('mainMenu')) {
-      this.mainMenu = document.getElementById('mainMenu');
-    }
     // cargar nombre empresa.
-    this.companyService.show().subscribe(result => this.companyName = result.rznSocial);
-  }
-
-  public async homePage(e: any) {
-    e.preventDefault();
-    if (this.mainMenu) {
-      localStorage.setItem(EnumMenu.rootMenu, EnumBoolean.true);
-      localStorage.setItem(EnumMenu.childMenuInventory, EnumBoolean.false);
-      localStorage.setItem(EnumMenu.childMenuShopping, EnumBoolean.false);
-      localStorage.setItem(EnumMenu.childMenuSales, EnumBoolean.false);
-      localStorage.setItem(EnumMenu.childMenuConfiguration, EnumBoolean.false);
-      this.mainMenu.classList.remove('hiddenNavigation');
-      localStorage.setItem('classMainMenu', this.mainMenu.classList.value);
-    }
-    await this.router.navigate(['/']);
-  }
-
-  // Toggle menu principal.
-  public mainMenuToggle(e: any): void {
-    e.preventDefault();
-    if (this.mainMenu) {
-      this.mainMenu.classList.toggle('hiddenNavigation');
-      localStorage.setItem('classMainMenu', this.mainMenu.classList.value);
-    }
+    this.companyService.show()
+      .subscribe(result => this.companyName = result.rznSocial);
   }
 
   public logout(): void {
