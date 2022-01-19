@@ -1,7 +1,16 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormBuilder, FormControl} from '@angular/forms';
-import {faCashRegister, faCog, faFilter, faLock, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {
+  faCashRegister,
+  faChartBar,
+  faCog,
+  faFilter,
+  faLock,
+  faPlus,
+  faSearch,
+  faTrashAlt
+} from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import {CajaDiaria, CashierDetail} from '../../interfaces';
 import {CajaDiariaService, CashierDetailService} from '../../services';
@@ -22,6 +31,7 @@ export class CashDetailComponent implements OnInit {
   faCashRegister = faCashRegister;
   faCog = faCog;
   faFilter = faFilter;
+  faChartBar = faChartBar;
   // ====================================================================================================
   cajaDiariaId: number | any;
   currentCajaDiaria: CajaDiaria | any;
