@@ -62,8 +62,8 @@ namespace Nebula.Controllers
                 .FirstOrDefaultAsync(m => m.Id.Equals(invoice));
             _logger.LogInformation(JsonSerializer.Serialize(comprobante));
             string tipDocu = string.Empty;
-            if (comprobante.DocType.Equals("FT")) tipDocu = "01";
-            if (comprobante.DocType.Equals("BL")) tipDocu = "03";
+            if (comprobante.DocType.Equals("FACTURA")) tipDocu = "01";
+            if (comprobante.DocType.Equals("BOLETA")) tipDocu = "03";
             var data = JsonSerializer.Serialize(new
             {
                 num_ruc = config.Ruc,
@@ -86,8 +86,8 @@ namespace Nebula.Controllers
                 .SingleAsync(m => m.Id.Equals(invoice));
             _logger.LogInformation(JsonSerializer.Serialize(comprobante));
             string tipDocu = string.Empty;
-            if (comprobante.DocType.Equals("FT")) tipDocu = "01";
-            if (comprobante.DocType.Equals("BL")) tipDocu = "03";
+            if (comprobante.DocType.Equals("FACTURA")) tipDocu = "01";
+            if (comprobante.DocType.Equals("BOLETA")) tipDocu = "03";
             var data = JsonSerializer.Serialize(new
             {
                 num_ruc = config.Ruc,
@@ -110,8 +110,8 @@ namespace Nebula.Controllers
                 .SingleAsync(m => m.Id.Equals(invoice));
             _logger.LogInformation(JsonSerializer.Serialize(comprobante));
             string tipDocu = string.Empty;
-            if (comprobante.DocType.Equals("FT")) tipDocu = "01";
-            if (comprobante.DocType.Equals("BL")) tipDocu = "03";
+            if (comprobante.DocType.Equals("FACTURA")) tipDocu = "01";
+            if (comprobante.DocType.Equals("BOLETA")) tipDocu = "03";
             // 20520485750-03-B001-00000015
             string nomArch = $"{config.Ruc}-{tipDocu}-{comprobante.Serie}-{comprobante.Number}";
             _logger.LogInformation(JsonSerializer.Serialize(nomArch));
@@ -131,8 +131,8 @@ namespace Nebula.Controllers
             var comprobante = await _context.Invoices.AsNoTracking()
                 .SingleAsync(m => m.Id.Equals(invoice));
             string tipDocu = string.Empty;
-            if (comprobante.DocType.Equals("FT")) tipDocu = "01";
-            if (comprobante.DocType.Equals("BL")) tipDocu = "03";
+            if (comprobante.DocType.Equals("FACTURA")) tipDocu = "01";
+            if (comprobante.DocType.Equals("BOLETA")) tipDocu = "03";
             // 20520485750-03-B001-00000015
             string nomArch = $"{config.Ruc}-{tipDocu}-{comprobante.Serie}-{comprobante.Number}";
             var file = Path.Combine("REPO", $"{nomArch}.pdf");
@@ -151,8 +151,8 @@ namespace Nebula.Controllers
             var comprobante = await _context.Invoices.AsNoTracking()
                 .SingleAsync(m => m.Id.Equals(invoice));
             string tipDocu = string.Empty;
-            if (comprobante.DocType.Equals("FT")) tipDocu = "01";
-            if (comprobante.DocType.Equals("BL")) tipDocu = "03";
+            if (comprobante.DocType.Equals("FACTURA")) tipDocu = "01";
+            if (comprobante.DocType.Equals("BOLETA")) tipDocu = "03";
             // 20520485750-03-B001-00000015
             string nomArch = $"{config.Ruc}-{tipDocu}-{comprobante.Serie}-{comprobante.Number}";
             var fileData = $"{nomArch}.json";

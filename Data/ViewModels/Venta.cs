@@ -46,7 +46,7 @@ namespace Nebula.Data.ViewModels
                 SumTotValVenta = SumTotValVenta,
                 SumTotTributos = SumTotTributos,
                 SumImpVenta = SumImpVenta,
-                InvoiceType = "SALE",
+                InvoiceType = "VENTA",
                 Year = DateTime.Now.ToString("yyyy"),
                 Month = DateTime.Now.ToString("MM"),
             };

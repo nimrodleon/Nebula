@@ -11,13 +11,20 @@
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body position-relative">
+        <div *ngIf="statusProgress" class="progress-sale">
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <h5 class="mt-2">En proceso...</h5>
+        </div>
         <form [formGroup]="cobrarForm">
           <ng-container *ngIf="formReg else successTpl">
             <div class="row mb-3">
               <label class="col-4 col-form-label text-uppercase text-end">Medios de Pago</label>
               <div class="col-6">
-                <select formControlName="paymentMethod" class="form-select text-uppercase">
+                <select formControlName="paymentMethod" class="form-select text-uppercase"
+                        [ngClass]="{'is-invalid': inputIsInvalid('paymentMethod')}">
                   <option value="0">Dinero en efectivo</option>
                   <option value="1">Depósito en cuenta</option>
                   <option value="2">Billetera digital</option>
@@ -27,17 +34,19 @@
             <div class="row mb-3">
               <label class="col-4 col-form-label text-uppercase text-end">Numeración</label>
               <div class="col-6">
-                <select formControlName="docType" class="form-select">
-                  <option value="BL">BOLETA</option>
-                  <option value="FT">FACTURA</option>
-                  <option value="NV">NOTA DE VENTA</option>
+                <select formControlName="docType" class="form-select"
+                        [ngClass]="{'is-invalid': inputIsInvalid('docType')}">
+                  <option value="BOLETA">BOLETA</option>
+                  <option value="FACTURA">FACTURA</option>
+                  <option value="NOTA">NOTA DE VENTA</option>
                 </select>
               </div>
             </div>
             <div class="row mb-3">
               <label class="col-4 col-form-label text-uppercase text-end">Monto Caja</label>
               <div class="col-6">
-                <input type="number" formControlName="montoTotal" step="0.1" class="form-control">
+                <input type="number" formControlName="montoTotal" step="0.1" class="form-control"
+                       [ngClass]="{'is-invalid': inputIsInvalid('montoTotal')}">
               </div>
             </div>
             <label for="remark" class="form-label text-uppercase">Observaciones</label>
@@ -46,8 +55,8 @@
           <ng-template #successTpl>
             <div class="div-success">
               <fa-icon [icon]="faCheckSquare"></fa-icon>
-              <span class="d-block">TOTAL: {{sale.sumImpVenta|currency}}</span>
-              <span class="d-block text-danger">VUELTO: {{sale.vuelto|currency}}</span>
+              <span class="d-block">TOTAL: {{sale.sumImpVenta.toFixed(4)|currency}}</span>
+              <span class="d-block text-danger">VUELTO: {{sale.vuelto.toFixed(4)|currency}}</span>
             </div>
             <div class="sendEmail">
               <label class="form-label fw-bold">ENVIAR POR WHATSAPP</label>
@@ -61,14 +70,13 @@
             </div>
           </ng-template>
         </form>
-        <pre>{{cobrarForm.value|json}}</pre>
       </div>
       <div class="modal-footer justify-content-center">
         <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">
           <span class="text-uppercase">Cerrar</span>
         </button>
         <ng-container *ngIf="formReg else print">
-          <button type="button" (click)="cobrarVenta()" class="btn btn-primary btn-lg">
+          <button type="button" (click)="cobrarVenta()" class="btn btn-primary btn-lg" [disabled]="statusProgress">
             <span class="text-uppercase">Cobrar</span>
           </button>
         </ng-container>

@@ -32,7 +32,9 @@ export class CpeGeneric {
   // agregar item al detalle de venta.
   public addItemDetail(configuration: Configuration, product: Product): void {
     if (this.details.length <= 0) {
-      this.details.push(CpeGeneric.configItemDetail(configuration, product));
+      const itemVenta = CpeGeneric.configItemDetail(configuration, product);
+      itemVenta.calcularItem();
+      this.details.push(itemVenta);
       this.calcImporteVenta();
     } else {
       let changeQuantity: boolean = false;
@@ -47,7 +49,9 @@ export class CpeGeneric {
       });
       // ejecutar si no hay coincidencias.
       if (!changeQuantity) {
-        this.details.push(CpeGeneric.configItemDetail(configuration, product));
+        const itemVenta = CpeGeneric.configItemDetail(configuration, product);
+        itemVenta.calcularItem();
+        this.details.push(itemVenta);
         this.calcImporteVenta();
       }
     }

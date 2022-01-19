@@ -105,21 +105,21 @@
             <tbody>
             <tr>
               <th>IMPORTE:</th>
-              <td>{{sale.sumTotValVenta|currency}}</td>
+              <td>{{sale.sumTotValVenta.toFixed(4)|currency}}</td>
             </tr>
             <tr>
-              <th>IGV({{config?.porcentajeIgv|number}}%):</th>
-              <td>{{sale.sumTotTributos|currency}}</td>
+              <th>IGV({{configuration?.porcentajeIgv|number}}%):</th>
+              <td>{{sale.sumTotTributos.toFixed(4)|currency}}</td>
             </tr>
             <tr>
               <th>ICBPER:</th>
-              <td>{{sale.ICBPER|currency}}</td>
+              <td>{{sale.ICBPER.toFixed(4)|currency}}</td>
             </tr>
             </tbody>
           </table>
           <span class="text-uppercase text-lg total">Total</span>
           <div>
-            <span class="d-block fw-bold text-lg text-center">{{sale.sumImpVenta|currency}}</span>
+            <span class="d-block fw-bold text-lg text-center">{{sale.sumImpVenta.toFixed(4)|currency}}</span>
             <button (click)="btnCobrarClick()" class="btn btn-success btn-lg">
               <span class="text-uppercase fw-bold px-5">Cobrar</span>
             </button>
@@ -186,7 +186,7 @@
 </app-cash-in-out-modal>
 
 <app-cobrar-modal
-  [cajaDiariaId]="cajaDiariaId"
+  [cajaDiariaId]="cajaDiariaId" [sale]="sale"
   (responseData)="hideCobrarModal($event)">
 </app-cobrar-modal>
 

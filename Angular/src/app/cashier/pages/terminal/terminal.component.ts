@@ -11,8 +11,8 @@ import {ProductService} from 'src/app/products/services';
 import {deleteConfirm, ResponseData} from 'src/app/global/interfaces';
 import {Product} from '../../../products/interfaces';
 import {Contact} from '../../../contact/interfaces';
-import {CajaDiaria, CashierDetail} from '../../interfaces';
-import {CajaDiariaService, TerminalService} from '../../services';
+import {CajaDiaria, CashierDetail, Sale} from '../../interfaces';
+import {CajaDiariaService} from '../../services';
 import {Configuration} from '../../../system/interfaces';
 import {ConfigurationService} from '../../../system/services';
 import {ContactService} from '../../../contact/services';
@@ -48,17 +48,17 @@ export class TerminalComponent implements OnInit {
   // ====================================================================================================
   private appURL: string = environment.applicationUrl;
   queryProduct: FormControl = this.fb.control('');
-  config: Configuration | any;
-  cajaDiaria: CajaDiaria | any;
-  currentProduct: Product | any;
-  currentContact: Contact | any;
+  configuration: Configuration = new Configuration();
+  cajaDiaria: CajaDiaria = new CajaDiaria();
+  currentProduct: Product = new Product();
+  currentContact: Contact = new Contact();
   products: Array<Product> = new Array<Product>();
+  sale: Sale = new Sale();
 
   constructor(
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private productService: ProductService,
-    private terminalService: TerminalService,
     private cajaDiariaService: CajaDiariaService,
     private configurationService: ConfigurationService,
     private contactService: ContactService) {
@@ -84,7 +84,7 @@ export class TerminalComponent implements OnInit {
         }
       }).on('select2:select', (e: any) => {
         const data = e.params.data;
-        this.terminalService.setContactId(data.id);
+        this.sale.contactId = data.id;
       });
     // limpiar el cliente seleccionado.
     const myModal: any = document.querySelector('#cobrar-modal');
@@ -94,7 +94,7 @@ export class TerminalComponent implements OnInit {
       }
     });
     // cargar valor inicial.
-    this.terminalService.deleteSale();
+    this.sale = new Sale();
     // cargar parámetros del configuración.
     this.getDefaultParams();
     // cargar lista de productos.
@@ -111,24 +111,16 @@ export class TerminalComponent implements OnInit {
 
   // Cargar parámetros por defecto.
   private getDefaultParams(): void {
-    this.configurationService.show()
-      .subscribe(result => {
-        this.config = result;
-        this.terminalService.setConfig(result);
-        // cargar cliente por defecto.
-        this.contactService.show(result.contactId)
-          .subscribe(result => {
-            this.terminalService.setContactId(<any>result.id);
-            const newOption = new Option(`${result.document} - ${result.name}`,
-              <any>result.id, true, true);
-            jQuery('#clientId').append(newOption).trigger('change');
-          });
+    this.configurationService.show().subscribe(result => {
+      this.configuration = result;
+      // cargar cliente por defecto.
+      this.contactService.show(result.contactId).subscribe(result => {
+        this.sale.contactId = result.id;
+        const newOption = new Option(`${result.document} - ${result.name}`,
+          <any>result.id, true, true);
+        jQuery('#clientId').append(newOption).trigger('change');
       });
-  }
-
-  // información de la venta.
-  public get sale() {
-    return this.terminalService.sale;
+    });
   }
 
   // buscar productos.
@@ -139,7 +131,7 @@ export class TerminalComponent implements OnInit {
 
   // agregar nuevo producto.
   public addProductModal(): void {
-    this.currentProduct = null;
+    this.currentProduct = new Product();
     this.productModal.show();
   }
 
@@ -153,7 +145,7 @@ export class TerminalComponent implements OnInit {
 
   // agregar contacto.
   public addContactModal(): void {
-    this.currentContact = null;
+    this.currentContact = new Contact();
     this.contactModal.show();
   }
 
@@ -163,7 +155,7 @@ export class TerminalComponent implements OnInit {
       const newOption = new Option(`${result.data?.document} - ${result.data?.name}`,
         <any>result.data?.id, true, true);
       jQuery('#clientId').append(newOption).trigger('change');
-      this.terminalService.setContactId(<any>result.data?.id);
+      this.sale.contactId = result.data?.id;
       this.contactModal.hide();
     }
   }
@@ -205,6 +197,7 @@ export class TerminalComponent implements OnInit {
   public hideCobrarModal(value: boolean): void {
     if (!value) {
       this.getDefaultParams();
+      this.sale = new Sale();
     }
   }
 
@@ -212,20 +205,22 @@ export class TerminalComponent implements OnInit {
   public deleteSale(): void {
     deleteConfirm().then(result => {
       if (result.isConfirmed) {
-        this.terminalService.deleteSale();
+        this.sale = new Sale();
       }
     });
   }
 
   // agregar producto a la tabla.
   public addItem(prodId: any): void {
-    this.terminalService.addItem(prodId);
+    this.productService.show(prodId).subscribe(result => {
+      this.sale.addItemDetail(this.configuration, result);
+    });
   }
 
   // cambiar la cantidad del item de la tabla.
   public changeQuantity(prodId: any, target: any): void {
     const value: number = Number(target.value);
-    this.terminalService.changeQuantity(prodId, value);
+    this.sale.changeQuantity(prodId, value);
   }
 
   // cambiar precio del Item.
@@ -236,7 +231,7 @@ export class TerminalComponent implements OnInit {
 
   // borrar item de la tabla.
   public deleteItem(prodId: any): void {
-    this.terminalService.deleteItem(prodId);
+    this.sale.deleteItem(prodId);
   }
 
 }

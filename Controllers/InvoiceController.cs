@@ -131,6 +131,9 @@ namespace Nebula.Controllers
                     case "FACTURA":
                         fileExist = await _cpeService.CreateFacturaJson(invoice.Id);
                         break;
+                    case "NOTA":
+                        fileExist = true;
+                        break;
                 }
 
                 // Configurar valor de retorno.
