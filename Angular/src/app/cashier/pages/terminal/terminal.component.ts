@@ -54,6 +54,7 @@ export class TerminalComponent implements OnInit {
   currentContact: Contact = new Contact();
   products: Array<Product> = new Array<Product>();
   sale: Sale = new Sale();
+  toastText: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -224,9 +225,23 @@ export class TerminalComponent implements OnInit {
   }
 
   // cambiar precio del Item.
-  public changePrice(e: Event): void {
+  public changePrice(e: Event, id: number): void {
     e.preventDefault();
-    alert('Cambiar precio');
+    const toastSuccess = new bootstrap.Toast(document.querySelector('#toast-success'));
+    const toastDanger = new bootstrap.Toast(document.querySelector('#toast-danger'));
+    const item = this.sale.details.find(x => x.productId === id);
+    if (item) {
+      this.productService.show(item.productId).subscribe(result => {
+        if (item.quantity >= result.fromQty) {
+          this.sale.changePrice(result.id, result.price2);
+          this.toastText = 'El precio se ha cambiado correctamente!';
+          toastSuccess.show();
+        } else {
+          this.toastText = `La cantidad debe ser mayor o igual que ${result.fromQty}!`;
+          toastDanger.show();
+        }
+      });
+    }
   }
 
   // borrar item de la tabla.

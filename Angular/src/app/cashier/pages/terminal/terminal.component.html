@@ -78,13 +78,13 @@
               </td>
               <td style="width: 124px;">
                 <div class="d-flex align-items-center justify-content-between">
-                  {{item.price|currency}}
-                  <a href="#" (click)="changePrice($event)">
+                  {{item.price.toFixed(4)|currency}}
+                  <a href="#" (click)="changePrice($event, item.productId)" title="Cambiar precio!">
                     <fa-icon [icon]="faTags"></fa-icon>
                   </a>
                 </div>
               </td>
-              <td style="width: 124px;">{{item.amount|currency}}</td>
+              <td style="width: 124px;">{{item.amount.toFixed(4)|currency}}</td>
               <td style="width: 50px;" class="text-center">
                 <button type="button" (click)="deleteItem(item.productId)" class="btn btn-danger btn-sm">
                   <fa-icon [icon]="faTrashAlt"></fa-icon>
@@ -151,7 +151,7 @@
             </tr>
             <tr>
               <th class="fw-normal">Precio:</th>
-              <td class="fw-bold">{{item.price1|currency}}</td>
+              <td class="fw-bold">{{item.price1.toFixed(4)|currency}}</td>
             </tr>
             <tr>
               <th class="fw-normal">Stock:</th>
@@ -164,6 +164,21 @@
           </button>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+<!-- ### Toasts ### -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+  <div id="toast-success" class="toast align-items-center text-white bg-success border-0" role="alert">
+    <div class="d-flex">
+      <div class="toast-body fw-bold">{{toastText}}</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
+  <div id="toast-danger" class="toast align-items-center text-white bg-danger border-0" role="alert">
+    <div class="d-flex">
+      <div class="toast-body fw-bold">{{toastText}}</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
     </div>
   </div>
 </div>
@@ -190,4 +205,4 @@
   (responseData)="hideCobrarModal($event)">
 </app-cobrar-modal>
 
-<pre>{{sale|json}}</pre>
+<!--<pre>{{sale|json}}</pre>-->

@@ -80,6 +80,17 @@ export class CpeGeneric {
     });
   }
 
+  // cambiar precio del producto.
+  public changePrice(prodId: number, value: number): void {
+    this.details.forEach((item: CpeDetail) => {
+      if (item.productId === prodId) {
+        item.price = value;
+        item.calcularItem();
+        this.calcImporteVenta();
+      }
+    });
+  }
+
   // borrar item detalle comprobante.
   public deleteItem(prodId: number | any): void {
     this.details.forEach((value: CpeDetail, index: number, array: CpeDetail[]) => {
