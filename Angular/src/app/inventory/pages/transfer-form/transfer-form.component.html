@@ -63,7 +63,7 @@
                     <td class="max-width">
                       <input type="number" [value]="item.quantity"
                              (change)="changeQuantity(item.productId, $event.target)"
-                             step="0.1" class="form-control">
+                             class="form-control">
                     </td>
                     <td class="max-width">
                       <input type="number" [value]="item.price"
@@ -102,11 +102,6 @@
           </button>
         </div>
       </div>
-
-      <pre>{{transferId|json}}</pre>
-      <pre>{{transferForm.value|json}}</pre>
-      <pre>{{itemNotes|json}}</pre>
-
     </div>
   </div>
 </main>

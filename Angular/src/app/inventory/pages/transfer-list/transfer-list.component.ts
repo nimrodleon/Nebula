@@ -7,6 +7,8 @@ import {TransferNoteService} from '../../services';
 import {Warehouse} from 'src/app/system/interfaces';
 import {WarehouseService} from 'src/app/system/services';
 
+declare var bootstrap: any;
+
 @Component({
   selector: 'app-transfer-list',
   templateUrl: './transfer-list.component.html',
@@ -17,12 +19,14 @@ export class TransferListComponent implements OnInit {
   faPlus = faPlus;
   faTrashAlt = faTrashAlt;
   faEdit = faEdit;
+  // TODO: depurar <transferNotes>.
   transferNotes: Array<TransferNote> = new Array<TransferNote>();
   warehouses: Array<Warehouse> = new Array<Warehouse>();
   targetWarehouses: Array<Warehouse> = new Array<Warehouse>();
+  // TODO: depurar <filterForm>.
   filterForm: FormGroup = this.fb.group({
-    origin: [''],
-    target: [''],
+    origin: [localStorage.getItem('transfer_origin') || ''],
+    target: [localStorage.getItem('transfer_target') || ''],
     year: [moment().format('YYYY')],
     month: [moment().format('MM')]
   });
@@ -35,9 +39,17 @@ export class TransferListComponent implements OnInit {
 
   ngOnInit(): void {
     // cargar almacenes de origen.
-    this.warehouseService.index().subscribe(result => this.warehouses = result);
-    // cargar lista de transferencias.
-    // this.getTransferNotes();
+    this.warehouseService.index()
+      .subscribe(result => {
+        this.warehouses = result;
+        this.changeOriginWarehouses();
+        this.getTransferNotes();
+      });
+    // suscripción a cambios del formulario.
+    this.filterForm.valueChanges.subscribe(({origin, target}) => {
+      localStorage.setItem('transfer_origin', origin);
+      localStorage.setItem('transfer_target', target);
+    });
   }
 
   // cargar lista de almacenes de destino.
@@ -55,8 +67,14 @@ export class TransferListComponent implements OnInit {
 
   // cargar lista de transferencias.
   public getTransferNotes(): void {
-    this.transferNoteService.index(this.filterForm.value)
-      .subscribe(result => this.transferNotes = result);
+    const {origin, target} = this.filterForm.value;
+    if (origin === target) {
+      const toastDanger = new bootstrap.Toast(document.querySelector('#toast-danger'));
+      toastDanger.show();
+    } else {
+      this.transferNoteService.index(this.filterForm.value)
+        .subscribe(result => this.transferNotes = result);
+    }
   }
 
 }

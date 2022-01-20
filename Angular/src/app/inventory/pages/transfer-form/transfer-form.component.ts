@@ -9,7 +9,7 @@ import {TransferNoteService} from '../../services';
 import {InventoryReason, Warehouse} from 'src/app/system/interfaces';
 import {InventoryReasonService, WarehouseService} from 'src/app/system/services';
 import {CpeDetail} from 'src/app/invoice/interfaces';
-import {confirmTask} from '../../../global/interfaces';
+import {confirmTask} from 'src/app/global/interfaces';
 
 declare var bootstrap: any;
 
@@ -25,16 +25,19 @@ export class TransferFormComponent implements OnInit {
   faTrashAlt = faTrashAlt;
   faSave = faSave;
   faIdCardAlt = faIdCardAlt;
+  // TODO: depurar <transferId>.
   transferId: number | null = null;
   warehouses: Array<Warehouse> = new Array<Warehouse>();
   targetWarehouses: Array<Warehouse> = new Array<Warehouse>();
   motivos: Array<InventoryReason> = new Array<InventoryReason>();
+  // TODO: depurar <transferForm>.
   transferForm: FormGroup = this.fb.group({
     origin: ['', [Validators.required]],
     target: ['', [Validators.required]],
     motivo: ['', [Validators.required]],
     startDate: [moment().format('YYYY-MM-DD'), [Validators.required]]
   });
+  // TODO: depurar <itemNotes>.
   itemNotes: Array<ItemNote> = new Array<ItemNote>();
   itemComprobanteModal: any;
 
@@ -146,6 +149,15 @@ export class TransferFormComponent implements OnInit {
   public async register() {
     if (this.transferForm.invalid) {
       this.transferForm.markAllAsTouched();
+      return;
+    }
+    // validar detalle de transferencia.
+    if (this.itemNotes.length <= 0) {
+      await Swal.fire(
+        'Información',
+        'Debe existir al menos un Item para registrar!',
+        'info'
+      );
       return;
     }
     // Guardar datos, sólo si es válido el formulario.
