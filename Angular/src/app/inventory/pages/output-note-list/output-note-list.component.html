@@ -9,17 +9,17 @@
           <hr class="mt-1 mb-2">
           <form [formGroup]="filterForm" (ngSubmit)="getInventoryNotes()" class="row">
             <div class="col-2">
-              <label class="form-label fw-bold">Almacén</label>
+              <label class="form-label fw-bold text-uppercase">Almacén</label>
               <select formControlName="warehouseId" class="form-select">
                 <option *ngFor="let item of warehouses" [value]="item.id">{{item.name}}</option>
               </select>
             </div>
             <div class="col-2">
-              <label class="form-label fw-bold">Año</label>
+              <label class="form-label fw-bold text-uppercase">Año Registro</label>
               <input type="number" formControlName="year" step="1" class="form-control">
             </div>
             <div class="col-2">
-              <label class="form-label fw-bold">Mes</label>
+              <label class="form-label fw-bold text-uppercase">Mes Registro</label>
               <select formControlName="month" class="form-select">
                 <option value="01">ENERO</option>
                 <option value="02">FEBRERO</option>
