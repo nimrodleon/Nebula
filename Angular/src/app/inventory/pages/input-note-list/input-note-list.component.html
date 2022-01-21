@@ -59,6 +59,7 @@
             <table class="table table-striped mb-0">
               <thead>
               <tr class="text-uppercase">
+                <td>#</td>
                 <th>Fecha</th>
                 <th>Almacén</th>
                 <th>Contacto</th>
@@ -70,6 +71,7 @@
               </thead>
               <tbody>
               <tr *ngFor="let item of inventoryNotes">
+                <td>{{item.id}}</td>
                 <td>{{item.startDate|date}}</td>
                 <td>{{item.warehouse.name}}</td>
                 <td>{{item.contact.name}}</td>
@@ -77,11 +79,15 @@
                 <td>{{item.motivo.split('|')[1]}}</td>
                 <td>{{item.remark}}</td>
                 <td class="text-end">
-                  <button type="button"
-                          [routerLink]="['/inventory/note-form/input', item.id]"
-                          class="btn btn-primary btn-sm">
-                    <span class="text-uppercase">Detalle</span>
-                  </button>
+                  <div class="tblBtn ms-auto">
+                    <button type="button" [routerLink]="['/inventory/note-form/input', item.id]"
+                            class="btn btn-secondary btn-sm me-2">
+                      <fa-icon [icon]="faEdit"></fa-icon>
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm">
+                      <fa-icon [icon]="faTrashAlt"></fa-icon>
+                    </button>
+                  </div>
                 </td>
               </tr>
               </tbody>
@@ -89,10 +95,6 @@
           </div>
         </div>
       </div>
-
-      <pre>{{filterForm.value|json}}</pre>
-      <pre>{{inventoryNotes|json}}</pre>
-
     </div>
   </div>
 </main>

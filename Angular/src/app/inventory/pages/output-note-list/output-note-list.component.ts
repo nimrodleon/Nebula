@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {faPlus, faSearch, faSignOutAlt, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {faEdit, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import * as moment from 'moment';
 import {InventoryNoteService} from '../../services';
@@ -15,12 +15,14 @@ import {WarehouseService} from 'src/app/system/services';
 export class OutputNoteListComponent implements OnInit {
   faSearch = faSearch;
   faPlus = faPlus;
-  faSignOutAlt = faSignOutAlt;
   faTrashAlt = faTrashAlt;
+  faEdit = faEdit;
+  // TODO: depurar <inventoryNotes>.
   inventoryNotes: Array<InventoryNote> = new Array<InventoryNote>();
   warehouses: Array<Warehouse> = new Array<Warehouse>();
+  // TODO: depurar <filterForm>.
   filterForm: FormGroup = this.fb.group({
-    warehouseId: [''],
+    warehouseId: [localStorage.getItem('warehouse_output_note') || ''],
     year: [moment().format('YYYY')],
     month: [moment().format('MM')],
   });
@@ -34,6 +36,12 @@ export class OutputNoteListComponent implements OnInit {
   ngOnInit(): void {
     // cargar lista de almacenes.
     this.warehouseService.index().subscribe(result => this.warehouses = result);
+    // guardar almacén seleccionado.
+    this.filterForm.valueChanges.subscribe(({warehouseId}) => {
+      localStorage.setItem('warehouse_output_note', warehouseId);
+    });
+    // cargar lista de notas.
+    this.getInventoryNotes();
   }
 
   // cargar lista de notas.
