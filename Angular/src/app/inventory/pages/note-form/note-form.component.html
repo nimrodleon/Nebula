@@ -12,7 +12,8 @@
               <div class="row mb-3">
                 <label class="col-1 col-form-label text-uppercase text-end">Almacén</label>
                 <div class="col-3">
-                  <select formControlName="warehouseId" class="form-select">
+                  <select formControlName="warehouseId" class="form-select"
+                          [ngClass]="{'is-invalid': inputIsInvalid('warehouseId')}">
                     <option *ngFor="let item of warehouses" [value]="item.id">{{item.name}}</option>
                   </select>
                 </div>
@@ -22,7 +23,8 @@
                   <span class="input-group-text">
                     <fa-icon [icon]="faIdCardAlt"></fa-icon>
                   </span>
-                    <select id="contactId" class="form-select"></select>
+                    <select id="contactId" class="form-select"
+                            [ngClass]="{'is-invalid': inputIsInvalid('contactId')}"></select>
                   </div>
                 </div>
               </div>
@@ -31,13 +33,15 @@
               <div class="row mb-3">
                 <label class="col-1 col-form-label text-uppercase text-end">Motivo</label>
                 <div class="col-3">
-                  <select formControlName="motivo" class="form-select">
+                  <select formControlName="motivo" class="form-select"
+                          [ngClass]="{'is-invalid': inputIsInvalid('motivo')}">
                     <option *ngFor="let item of motivos" [value]="item.id">{{item.description}}</option>
                   </select>
                 </div>
                 <label class="col-1 col-form-label text-uppercase text-end">Fecha</label>
                 <div class="col-3">
-                  <input type="date" formControlName="startDate" class="form-control">
+                  <input type="date" formControlName="startDate" class="form-control"
+                         [ngClass]="{'is-invalid': inputIsInvalid('startDate')}">
                 </div>
               </div>
             </div>
@@ -98,11 +102,7 @@
           </button>
         </div>
       </div>
-
-      <pre>{{noteId|json}}</pre>
-      <pre>{{noteForm.value|json}}</pre>
-      <pre>{{itemNotes|json}}</pre>
-
+      <!-- $DEBUG -->
     </div>
   </div>
 </main>

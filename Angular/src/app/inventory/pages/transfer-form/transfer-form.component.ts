@@ -25,19 +25,19 @@ export class TransferFormComponent implements OnInit {
   faTrashAlt = faTrashAlt;
   faSave = faSave;
   faIdCardAlt = faIdCardAlt;
-  // TODO: depurar <transferId>.
+  // TODO: debug -> $transferId
   transferId: number | null = null;
   warehouses: Array<Warehouse> = new Array<Warehouse>();
   targetWarehouses: Array<Warehouse> = new Array<Warehouse>();
   motivos: Array<InventoryReason> = new Array<InventoryReason>();
-  // TODO: depurar <transferForm>.
+  // TODO: debug -> $transferForm
   transferForm: FormGroup = this.fb.group({
     origin: ['', [Validators.required]],
     target: ['', [Validators.required]],
     motivo: ['', [Validators.required]],
     startDate: [moment().format('YYYY-MM-DD'), [Validators.required]]
   });
-  // TODO: depurar <itemNotes>.
+  // TODO: debug -> $itemNotes
   itemNotes: Array<ItemNote> = new Array<ItemNote>();
   itemComprobanteModal: any;
 

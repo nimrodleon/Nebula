@@ -69,6 +69,7 @@
                 <th>Fecha</th>
                 <th>Almacén Origen</th>
                 <th>Almacén Destino</th>
+                <th>Estado</th>
                 <th>Motivo</th>
                 <th></th>
               </tr>
@@ -79,6 +80,7 @@
                 <td>{{item.startDate|date}}</td>
                 <td>{{item.origin.name}}</td>
                 <td>{{item.target.name}}</td>
+                <td>{{item.status}}</td>
                 <td>{{item.motivo.split('|')[1]}}</td>
                 <td class="text-end">
                   <div class="tblBtn ms-auto">
