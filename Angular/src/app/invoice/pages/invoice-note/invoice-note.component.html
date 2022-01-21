@@ -5,7 +5,11 @@
     <div class="container-fluid">
       <div class="row px-2">
         <div class="col-12 bg-white shadow-sm my-2 py-3">
-          <h5 class="text-uppercase">Emisión Nota Electrónica</h5>
+          <h5 class="text-uppercase">
+            <span class="me-1">Emisión Nota Electrónica</span>|
+            <a [routerLink]="['/invoice/detail', noteType, notaComprobante.invoiceId]"
+               class="text-decoration-none">{{title}}</a>
+          </h5>
           <hr>
           <form [formGroup]="invoiceNoteForm" class="row">
             <div class="col-8">
@@ -53,7 +57,7 @@
                   <div class="input-group">
                     <input type="text" formControlName="serie" class="form-control"
                            [ngClass]="{'is-invalid': inputIsInvalid('serie')}"
-                           placeholder="NC01" style="max-width: 74px;">
+                           placeholder="NC01" style="max-width: 90px;">
                     <span class="input-group-text fw-bold">#</span>
                     <input type="text" formControlName="number" class="form-control"
                            [ngClass]="{'is-invalid': inputIsInvalid('number')}" placeholder="99999999">
@@ -160,11 +164,7 @@
           </button>
         </div>
       </div>
-
-      <pre>ID: {{invoiceNoteId}}</pre>
-      <pre>{{invoiceNoteForm.value|json}}</pre>
-      <pre>{{notaComprobante|json}}</pre>
-
+      <!-- $DEBUG -->
     </div>
   </div>
 </main>

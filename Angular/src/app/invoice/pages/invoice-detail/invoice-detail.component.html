@@ -119,7 +119,7 @@
                   <td>{{item.sumImpVenta.toFixed(4)|currency}}</td>
                   <td class="text-end d-print-none">
                     <div class="tblBtn ms-auto">
-                      <button type="button" [routerLink]="['/invoice/note', item.invoiceId, item.id]"
+                      <button type="button" [routerLink]="['/invoice/note', this.invoiceType, item.invoiceId, item.id]"
                               class="btn btn-secondary btn-sm me-2">
                         <fa-icon [icon]="faEdit"></fa-icon>
                       </button>
@@ -135,7 +135,7 @@
           </div>
         </ng-container>
       </div>
+      <!-- $DEBUG -->
     </div>
   </div>
 </main>
-

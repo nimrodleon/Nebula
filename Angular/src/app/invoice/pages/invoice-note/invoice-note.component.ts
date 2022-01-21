@@ -6,6 +6,7 @@ import * as moment from 'moment';
 import {confirmTask} from 'src/app/global/interfaces';
 import {CpeDetail, CpeGeneric, NotaComprobante} from '../../interfaces';
 import {InvoiceNoteService, InvoiceService} from '../../services';
+import Swal from 'sweetalert2';
 
 declare var bootstrap: any;
 
@@ -21,7 +22,10 @@ export class InvoiceNoteComponent implements OnInit {
   faEdit = faEdit;
   faTrashAlt = faTrashAlt;
   faIdCardAlt = faIdCardAlt;
+  noteType: string = '';
+  // TODO: debug -> $noteType
   notaComprobante: NotaComprobante = new NotaComprobante();
+  // TODO: debug -> $invoiceNoteForm
   invoiceNoteForm: FormGroup = this.fb.group({
     startDate: [moment().format('YYYY-MM-DD'), [Validators.required]],
     docType: ['NC', [Validators.required]],
@@ -30,9 +34,11 @@ export class InvoiceNoteComponent implements OnInit {
     number: ['', [Validators.required]],
     desMotivo: ['', [Validators.required]],
   });
+  // TODO: debug -> $invoiceNoteId
   invoiceNoteId: number = 0;
   productId: number = 0;
   itemComprobanteModal: any;
+  title: string = '';
 
   constructor(
     private router: Router,
@@ -44,9 +50,11 @@ export class InvoiceNoteComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe(params => {
+      this.noteType = params.get('type') || '';
       this.invoiceNoteId = Number(params.get('id'));
       this.invoiceService.show(<any>params.get('invoiceId'))
         .subscribe(result => {
+          this.title = `${result.docType}: ${result.serie}-${result.number}`;
           this.notaComprobante.invoiceId = params.get('invoiceId');
           if (result.invoiceType === 'VENTA') {
             this.invoiceNoteForm.controls['startDate'].disable();
@@ -131,9 +139,18 @@ export class InvoiceNoteComponent implements OnInit {
   }
 
   // registrar nota crédito/débito.
-  public registerNote(): void {
+  public async registerNote() {
     if (this.invoiceNoteForm.invalid) {
       this.invoiceNoteForm.markAllAsTouched();
+      return;
+    }
+    // verificar detalle de la nota.
+    if (this.notaComprobante.details.length <= 0) {
+      await Swal.fire(
+        'Información',
+        'Debe existir al menos un Item para registrar!',
+        'info'
+      );
       return;
     }
     // Guardar datos, sólo si es válido el formulario.
@@ -144,13 +161,13 @@ export class InvoiceNoteComponent implements OnInit {
           // actualizar nota crédito/débito.
           this.invoiceNoteService.update(this.invoiceNoteId, this.notaComprobante)
             .subscribe(async (result) => {
-              if (result.ok) await this.router.navigate(['/invoice/detail', result.data?.invoiceId]);
+              if (result.ok) await this.router.navigate(['/invoice/detail', this.noteType, result.data?.invoiceId]);
             });
         } else {
           // registrar nota crédito/débito.
           this.invoiceNoteService.create(this.notaComprobante)
             .subscribe(async (result) => {
-              if (result.ok) await this.router.navigate(['/invoice/detail', result.data?.invoiceId]);
+              if (result.ok) await this.router.navigate(['/invoice/detail', this.noteType, result.data?.invoiceId]);
             });
         }
       }

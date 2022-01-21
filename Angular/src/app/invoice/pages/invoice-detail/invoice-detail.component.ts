@@ -21,6 +21,8 @@ export class InvoiceDetailComponent implements OnInit {
   faStickyNote = faStickyNote;
   invoice: Invoice = new Invoice();
   invoiceNotes: Array<InvoiceNote> = new Array<InvoiceNote>();
+  // TODO: debug -> $invoiceType
+  invoiceType: string = '';
 
   constructor(
     private router: Router,
@@ -30,6 +32,7 @@ export class InvoiceDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe(params => {
+      this.invoiceType = params.get('type') || '';
       this.invoiceService.show(<any>params.get('id'))
         .subscribe(result => {
           this.invoice = result;
