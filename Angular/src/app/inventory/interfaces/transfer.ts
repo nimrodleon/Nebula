@@ -1,10 +1,11 @@
 import {ItemNote} from './item-note';
 
-export interface Transfer {
-  origin: string;
-  target: string;
-  motivo: number;
-  startDate: any;
-  remark: string;
-  itemNotes: Array<ItemNote>;
+export class Transfer {
+  constructor(
+    public origin: number = 0, // Id Almacén de origen.
+    public target: number = 0, // Id Almacén destino.
+    public motivo: number = 0, // Motivo del Traslado.
+    public startDate: any = null, // Fecha de registro.
+    public itemNotes: Array<ItemNote> = new Array<ItemNote>()) {
+  }
 }

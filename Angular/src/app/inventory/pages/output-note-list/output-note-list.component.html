@@ -63,8 +63,8 @@
                 <th>Fecha</th>
                 <th>Almacén</th>
                 <th>Contacto</th>
+                <th>Estado</th>
                 <th>Motivo</th>
-                <th>Glosa</th>
                 <th></th>
               </tr>
               </thead>
@@ -74,8 +74,8 @@
                 <td>{{item.startDate|date}}</td>
                 <td>{{item.warehouse.name}}</td>
                 <td>{{item.contact.name}}</td>
+                <td>{{item.status}}</td>
                 <td>{{item.motivo.split('|')[1]}}</td>
-                <td>{{item.remark}}</td>
                 <td class="text-end">
                   <div class="tblBtn ms-auto">
                     <button type="button" [routerLink]="['/inventory/note-form/output', item.id]"

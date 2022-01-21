@@ -73,7 +73,6 @@ export class NoteFormComponent implements OnInit {
           this.noteForm.controls['warehouseId'].setValue(result.warehouseId);
           this.noteForm.controls['motivo'].setValue(result.motivo.split('|')[0]);
           this.noteForm.controls['startDate'].setValue(moment(result.startDate).format('YYYY-MM-DD'));
-          this.noteForm.controls['remark'].setValue(result.remark);
           // cargar items nota de inventario.
           result.inventoryNoteDetails.forEach(item => {
             this.itemNotes.push({

@@ -66,7 +66,6 @@ namespace Nebula.Controllers
                         NoteType = model.NoteType.ToUpper(),
                         Motivo = $"{motivo.Id}|{motivo.Description}",
                         StartDate = model.StartDate,
-                        Remark = model.Remark,
                         Status = "BORRADOR",
                         Year = model.StartDate.ToString("yyyy"),
                         Month = model.StartDate.ToString("MM")
@@ -134,7 +133,6 @@ namespace Nebula.Controllers
                     result.NoteType = model.NoteType.ToUpper();
                     result.Motivo = $"{motivo.Id}|{motivo.Description}";
                     result.StartDate = model.StartDate;
-                    result.Remark = model.Remark;
                     result.Status = "BORRADOR";
                     result.Year = model.StartDate.ToString("yyyy");
                     result.Month = model.StartDate.ToString("MM");
