@@ -19,11 +19,11 @@ export class TransferListComponent implements OnInit {
   faPlus = faPlus;
   faTrashAlt = faTrashAlt;
   faEdit = faEdit;
-  // TODO: depurar <transferNotes>.
+  // TODO: debug -> $transferNotes
   transferNotes: Array<TransferNote> = new Array<TransferNote>();
   warehouses: Array<Warehouse> = new Array<Warehouse>();
   targetWarehouses: Array<Warehouse> = new Array<Warehouse>();
-  // TODO: depurar <filterForm>.
+  // TODO: debug -> $filterForm
   filterForm: FormGroup = this.fb.group({
     origin: [localStorage.getItem('transfer_origin') || ''],
     target: [localStorage.getItem('transfer_target') || ''],

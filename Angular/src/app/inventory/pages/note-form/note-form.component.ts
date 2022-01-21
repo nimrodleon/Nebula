@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {faArrowLeft, faEdit, faIdCardAlt, faPlus, faSave, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {ActivatedRoute, Router} from '@angular/router';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import * as moment from 'moment';
 import Swal from 'sweetalert2';
 import {environment} from 'src/environments/environment';
@@ -9,6 +9,7 @@ import {ItemNote} from '../../interfaces';
 import {InventoryNoteService} from '../../services';
 import {InventoryReason, Warehouse} from 'src/app/system/interfaces';
 import {InventoryReasonService, WarehouseService} from 'src/app/system/services';
+import {confirmTask} from '../../../global/interfaces';
 
 declare var jQuery: any;
 declare var bootstrap: any;
@@ -25,18 +26,20 @@ export class NoteFormComponent implements OnInit {
   faTrashAlt = faTrashAlt;
   faSave = faSave;
   faIdCardAlt = faIdCardAlt;
+  // TODO: debug -> $noteType
   noteType: string = '';
   private appURL: string = environment.applicationUrl;
   noteId: number | null = null;
   warehouses: Array<Warehouse> = new Array<Warehouse>();
   motivos: Array<InventoryReason> = new Array<InventoryReason>();
+  // TODO: debug -> $noteForm
   noteForm: FormGroup = this.fb.group({
-    contactId: [''],
-    warehouseId: [''],
-    motivo: [''],
-    startDate: [moment().format('YYYY-MM-DD')],
-    remark: ['']
+    contactId: ['', [Validators.required]],
+    warehouseId: ['', [Validators.required]],
+    motivo: ['', [Validators.required]],
+    startDate: [moment().format('YYYY-MM-DD'), [Validators.required]]
   });
+  // TODO: debug -> $itemNotes
   itemNotes: Array<ItemNote> = new Array<ItemNote>();
   itemComprobanteModal: any;
 
@@ -161,25 +164,48 @@ export class NoteFormComponent implements OnInit {
     });
   }
 
+  // Verificar campo invalido.
+  public inputIsInvalid(field: string) {
+    return this.noteForm.controls[field].errors && this.noteForm.controls[field].touched;
+  }
+
   // botón registrar.
   public async register() {
-    if (this.noteId === null) {
-      this.inventoryNoteService.store({
-        ...this.noteForm.value, noteType: this.noteType, itemNotes: this.itemNotes
-      }).subscribe(result => {
-        if (result.ok) {
-          this.router.navigate([`/inventory/${this.noteType}-note`]);
-        }
-      });
-    } else {
-      this.inventoryNoteService.update(this.noteId, {
-        ...this.noteForm.value, noteType: this.noteType, itemNotes: this.itemNotes
-      }).subscribe(result => {
-        if (result.ok) {
-          this.router.navigate([`/inventory/${this.noteType}-note`]);
-        }
-      });
+    if (this.noteForm.invalid) {
+      this.noteForm.markAllAsTouched();
+      return;
     }
+    // validar detalle de transferencia.
+    if (this.itemNotes.length <= 0) {
+      await Swal.fire(
+        'Información',
+        'Debe existir al menos un Item para registrar!',
+        'info'
+      );
+      return;
+    }
+    // Guardar datos, sólo si es válido el formulario.
+    confirmTask().then(result => {
+      if (result.isConfirmed) {
+        if (this.noteId === null) {
+          this.inventoryNoteService.store({
+            ...this.noteForm.value, noteType: this.noteType, itemNotes: this.itemNotes
+          }).subscribe(result => {
+            if (result.ok) {
+              this.router.navigate([`/inventory/${this.noteType}-note`]);
+            }
+          });
+        } else {
+          this.inventoryNoteService.update(this.noteId, {
+            ...this.noteForm.value, noteType: this.noteType, itemNotes: this.itemNotes
+          }).subscribe(result => {
+            if (result.ok) {
+              this.router.navigate([`/inventory/${this.noteType}-note`]);
+            }
+          });
+        }
+      }
+    });
   }
 
 }

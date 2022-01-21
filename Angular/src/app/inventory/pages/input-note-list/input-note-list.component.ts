@@ -18,10 +18,10 @@ export class InputNoteListComponent implements OnInit {
   faTrashAlt = faTrashAlt;
   faIdCardAlt = faIdCardAlt;
   faEdit = faEdit;
-  // TODO: depurar <inventoryNotes>.
+  // TODO: debug -> $inventoryNotes
   inventoryNotes: Array<InventoryNote> = new Array<InventoryNote>();
   warehouses: Array<Warehouse> = new Array<Warehouse>();
-  // TODO: depurar <filterForm>.
+  // TODO: debug -> filterForm
   filterForm: FormGroup = this.fb.group({
     warehouseId: [localStorage.getItem('warehouse_input_note') || ''],
     year: [moment().format('YYYY')],
