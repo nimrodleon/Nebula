@@ -58,7 +58,7 @@
                 <div class="col-4">
                   <div class="input-group mb-3">
                     <input type="text" formControlName="serie" class="form-control" placeholder="F001"
-                           [readOnly]="comprobante.invoiceType==='VENTA'" style="max-width: 74px;"
+                           [readOnly]="comprobante.invoiceType==='VENTA'" style="max-width: 90px;"
                            [ngClass]="{'is-invalid': inputIsInvalid('serie')}">
                     <span class="input-group-text fw-bold">#</span>
                     <input type="text" class="form-control" formControlName="number"
@@ -226,11 +226,7 @@
           </button>
         </div>
       </div>
-      <!-- TESTING DATA -->
-      <pre><strong>SERIE:</strong>{{serieId.value|json}}</pre>
-      <pre><strong>FORMULARIO:</strong>{{comprobanteForm.value|json}}</pre>
-      <pre><strong>COMPROBANTE:</strong>{{comprobante|json}}</pre>
-      <!-- END TESTING -->
+      <!-- $DEBUG -->
     </div>
   </div>
 </main>

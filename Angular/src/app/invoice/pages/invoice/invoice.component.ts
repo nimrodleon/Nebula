@@ -34,14 +34,17 @@ export class InvoiceComponent implements OnInit {
   private appURL: string = environment.applicationUrl;
   currentContact: Contact = new Contact();
   contactModal: any;
+  // TODO: debug -> $comprobante
   // datos del comprobante.
   comprobante: Comprobante = new Comprobante();
   // lista series de facturación.
   invoiceSeries: Array<InvoiceSerie> = new Array<InvoiceSerie>();
   // lista tipos de operación.
   typeOperation: Array<TypeOperationSunat> = new Array<TypeOperationSunat>();
+  // TODO: debug -> $serieId
   // ID de la serie de facturación, se usa solo si es una venta.
   serieId: FormControl = this.fb.control('', [Validators.required]);
+  // TODO: debug -> $comprobanteForm
   // formulario comprobante.
   comprobanteForm: FormGroup = this.fb.group({
     contactId: [null, [Validators.required]],
@@ -175,7 +178,7 @@ export class InvoiceComponent implements OnInit {
           if (result.data) {
             const {data} = result;
             console.info(result.msg);
-            await this.router.navigate(['/invoice/detail', data?.invoiceId]);
+            await this.router.navigate(['/invoice/detail/purchase', data?.invoiceId]);
           }
         }
       });
@@ -189,7 +192,7 @@ export class InvoiceComponent implements OnInit {
           if (result.data) {
             const {data} = result;
             console.info(result.msg);
-            await this.router.navigate(['/invoice/detail', data?.invoiceId]);
+            await this.router.navigate(['/invoice/detail/purchase', data?.invoiceId]);
           }
         }
       });
@@ -223,7 +226,7 @@ export class InvoiceComponent implements OnInit {
                 this.facturadorService.GenerarPdf(data?.invoiceId)
                   .subscribe(async (result) => {
                     console.info(result);
-                    await this.router.navigate(['/invoice/detail', data?.invoiceId]);
+                    await this.router.navigate(['/invoice/detail/sale', data?.invoiceId]);
                   });
               }
             });

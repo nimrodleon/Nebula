@@ -15,7 +15,9 @@ export class ShoppingListComponent implements OnInit {
   faPlus = faPlus;
   faTrashAlt = faTrashAlt;
   faEdit = faEdit;
+  // TODO: debug -> $invoices
   invoices: Array<Invoice> = new Array<Invoice>();
+  // TODO: debug -> $queryForm
   queryForm: FormGroup = this.fb.group({
     year: [moment().format('YYYY')],
     month: [moment().format('MM')],
