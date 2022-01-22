@@ -5,6 +5,8 @@ import * as moment from 'moment';
 import {InvoiceAccountService} from 'src/app/invoice/services';
 import {InvoiceAccount} from 'src/app/invoice/interfaces';
 
+declare var bootstrap: any;
+
 @Component({
   selector: 'app-account-payable-list',
   templateUrl: './account-payable-list.component.html',
@@ -21,6 +23,7 @@ export class AccountPayableListComponent implements OnInit {
     month: [moment().format('MM')],
     query: ['PENDIENTE']
   });
+  cobranzaModal: any;
 
   constructor(
     private fb: FormBuilder,
@@ -29,6 +32,8 @@ export class AccountPayableListComponent implements OnInit {
 
   ngOnInit(): void {
     this.submitQuery();
+    // formulario de cobranza.
+    this.cobranzaModal = new bootstrap.Modal(document.querySelector('#cobranza-modal'));
   }
 
   // buscar cuentas por pagar.
@@ -47,6 +52,11 @@ export class AccountPayableListComponent implements OnInit {
       fecha.getFullYear(), fecha.getMonth(), fecha.getDate()
     ]), 'days');
     return dias > 0 ? dias : 0;
+  }
+
+  // abrir modal cobranza.
+  public showCobranzaModal(): void {
+    this.cobranzaModal.show();
   }
 
 }

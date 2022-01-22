@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {faBars} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -8,6 +8,8 @@ import {faBars} from '@fortawesome/free-solid-svg-icons';
 })
 export class CobranzaModalComponent implements OnInit {
   faBars = faBars;
+  @Input()
+  title: string = '';
 
   constructor() {
   }
