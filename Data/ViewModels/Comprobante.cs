@@ -72,7 +72,8 @@ namespace Nebula.Data.ViewModels
                 FecVencimiento = fecVencimiento,
                 CodLocalEmisor = config.CodLocalEmisor,
                 FormaPago = FormaPago,
-                ContactId = client.Id,
+                // TODO: corregir esta linea de código. se ha cambiado el tipo int a string.
+                // ContactId = client.Id,
                 TipDocUsuario = client.DocType.ToString(),
                 NumDocUsuario = client.Document,
                 RznSocialUsuario = client.Name,

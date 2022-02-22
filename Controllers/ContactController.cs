@@ -1,13 +1,11 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Nebula.Data;
-using Nebula.Data.Helpers;
 using Nebula.Data.Models;
-using Nebula.Data.Services;
 using Nebula.Data.ViewModels;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Linq;
 
 namespace Nebula.Controllers
 {
@@ -15,93 +13,91 @@ namespace Nebula.Controllers
     [ApiController]
     public class ContactController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IUriService _uriService;
+        private readonly IRavenDbContext _context;
 
-        public ContactController(ApplicationDbContext context, IUriService uriService)
+        public ContactController(IRavenDbContext context)
         {
             _context = context;
-            _uriService = uriService;
         }
 
         [HttpGet("Index")]
-        public async Task<IActionResult> Index([FromQuery] PaginationFilter filter)
+        public async Task<IActionResult> Index([FromQuery] string query)
         {
-            var route = Request.Path.Value;
-            var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.Query);
-            var skip = (validFilter.PageNumber - 1) * validFilter.PageSize;
-            var result = from c in _context.Contacts select c;
-            if (!string.IsNullOrWhiteSpace(filter.Query))
-                result = result.Where(m => m.Document.Contains(filter.Query)
-                                           || m.Name.ToLower().Contains(filter.Query.ToLower()));
-            result = result.OrderByDescending(m => m.Id);
-            var pagedData = await result.AsNoTracking().Skip(skip).Take(validFilter.PageSize).ToListAsync();
-            var totalRecords = await result.CountAsync();
-            var pagedResponse =
-                PaginationHelper.CreatePagedResponse(pagedData, validFilter, totalRecords, _uriService, route);
-            return Ok(pagedResponse);
+            using var session = _context.Store.OpenAsyncSession();
+            IRavenQueryable<Contact> contacts = from m in session.Query<Contact>() select m;
+            if (!string.IsNullOrWhiteSpace(query))
+                contacts = contacts.Search(m => m.Name, $"*{query.ToUpper()}*");
+            var responseData = await contacts.Take(25).ToListAsync();
+            return Ok(responseData);
         }
 
         [HttpGet("Show/{id}")]
-        public async Task<IActionResult> Show(int? id)
+        public async Task<IActionResult> Show(string id)
         {
-            if (id == null) return BadRequest();
-            var result = await _context.Contacts.IgnoreQueryFilters()
-                .AsNoTracking().FirstOrDefaultAsync(m => m.Id.Equals(id));
-            if (result == null) return BadRequest();
-            return Ok(result);
+            using var session = _context.Store.OpenAsyncSession();
+            Contact contact = await session.LoadAsync<Contact>(id);
+            return Ok(contact);
         }
 
-        // [HttpGet("Select2")]
-        // public async Task<IActionResult> Select2([FromQuery] string term)
-        // {
-        //     var result = from c in _context.Contacts select c;
-        //     if (!string.IsNullOrWhiteSpace(term))
-        //         result = result.Where(m =>
-        //             m.Document.Contains(term) || m.Name.ToLower().Contains(term.ToLower()));
-        //     result = result.OrderByDescending(m => m.Id);
-        //     var responseData = await result.AsNoTracking().Take(10).ToListAsync();
-        //     var data = new List<Select2>();
-        //     responseData.ForEach(item =>
-        //     {
-        //         data.Add(new Select2() {Id = item.Id, Text = $"{item.Document} - {item.Name}"});
-        //     });
-        //     return Ok(new {Results = data});
-        // }
+        [HttpGet("Select2")]
+        public async Task<IActionResult> Select2([FromQuery] string term)
+        {
+            using var session = _context.Store.OpenAsyncSession();
+            IRavenQueryable<Contact> contacts = from m in session.Query<Contact>() select m;
+            if (!string.IsNullOrWhiteSpace(term))
+                contacts = contacts.Search(m => m.Name, $"*{term.ToUpper()}*");
+            var responseData = await contacts.Take(10).ToListAsync();
+            var data = new List<Select2>();
+            responseData.ForEach(item =>
+            {
+                data.Add(new Select2() {Id = item.Id, Text = $"{item.Document} - {item.Name}"});
+            });
+            return Ok(new {Results = data});
+        }
 
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] Contact model)
         {
-            _context.Contacts.Add(model);
-            await _context.SaveChangesAsync();
+            using var session = _context.Store.OpenAsyncSession();
+            model.Id = string.Empty;
+            model.Name = model.Name.ToUpper();
+            await session.StoreAsync(model);
+            await session.SaveChangesAsync();
             return Ok(new
             {
                 Ok = true, Data = model,
-                Msg = $"{model.Document} - {model.Name} ha sido registrado!"
+                Msg = $"El contacto {model.Name} ha sido registrado!"
             });
         }
 
         [HttpPut("Update/{id}")]
-        public async Task<IActionResult> Update(int? id, [FromBody] Contact model)
+        public async Task<IActionResult> Update(string id, [FromBody] Contact model)
         {
             if (id != model.Id) return BadRequest();
-            _context.Contacts.Update(model);
-            await _context.SaveChangesAsync();
+            using var session = _context.Store.OpenAsyncSession();
+            Contact contact = await session.LoadAsync<Contact>(id);
+            contact.Document = model.Document;
+            contact.DocType = model.DocType;
+            contact.Name = model.Name.ToUpper();
+            contact.Address = model.Address;
+            contact.PhoneNumber = model.PhoneNumber;
+            contact.Email = model.Email;
+            await session.SaveChangesAsync();
             return Ok(new
             {
-                Ok = true, Data = model,
-                Msg = $"{model.Document} - {model.Name} ha sido actualizado!"
+                Ok = true, Data = contact,
+                Msg = $"El contacto {contact.Name} ha sido actualizado!"
             });
         }
 
         [HttpDelete("Delete/{id}")]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string id)
         {
-            var result = await _context.Contacts.FirstOrDefaultAsync(m => m.Id.Equals(id));
-            if (result == null) return BadRequest();
-            _context.Contacts.Remove(result);
-            await _context.SaveChangesAsync();
-            return Ok(new {Ok = true, Data = result, Msg = "El contacto ha sido borrado!"});
+            using var session = _context.Store.OpenAsyncSession();
+            Contact contact = await session.LoadAsync<Contact>(id);
+            session.Delete(contact);
+            await session.SaveChangesAsync();
+            return Ok(new {Ok = true, Data = contact, Msg = "El contacto ha sido borrado!"});
         }
     }
 }

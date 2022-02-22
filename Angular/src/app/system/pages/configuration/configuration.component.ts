@@ -64,10 +64,11 @@ export class ConfigurationComponent implements OnInit {
     // establecer valores por defecto.
     this.configurationService.show().subscribe(result => {
       this.configForm.reset(result);
-      this.contactService.show(result.contactId).subscribe(result => {
-        const newOption = new Option(`${result.document} - ${result.name}`, <any>result.id, true, true);
-        contactId.append(newOption).trigger('change');
-      });
+      // TODO: corregir esta linea de código.
+      // this.contactService.show(result.contactId).subscribe(result => {
+      //   const newOption = new Option(`${result.document} - ${result.name}`, <any>result.id, true, true);
+      //   contactId.append(newOption).trigger('change');
+      // });
     });
   }
 

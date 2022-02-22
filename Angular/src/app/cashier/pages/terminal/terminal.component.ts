@@ -115,12 +115,13 @@ export class TerminalComponent implements OnInit {
     this.configurationService.show().subscribe(result => {
       this.configuration = result;
       // cargar cliente por defecto.
-      this.contactService.show(result.contactId).subscribe(result => {
-        this.sale.contactId = result.id;
-        const newOption = new Option(`${result.document} - ${result.name}`,
-          <any>result.id, true, true);
-        jQuery('#clientId').append(newOption).trigger('change');
-      });
+      // TODO: corregir esta linea de código.
+      // this.contactService.show(result.contactId).subscribe(result => {
+      //   this.sale.contactId = result.id;
+      //   const newOption = new Option(`${result.document} - ${result.name}`,
+      //     <any>result.id, true, true);
+      //   jQuery('#clientId').append(newOption).trigger('change');
+      // });
     });
   }
 

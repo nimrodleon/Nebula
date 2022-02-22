@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl} from '@angular/forms';
 import {faEdit, faFilter, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {ContactService} from '../../services';
-import {PagedResponse, ResponseData} from '../../../global/interfaces';
+import {ResponseData} from 'src/app/global/interfaces';
 import {Contact} from '../../interfaces';
 
 declare var bootstrap: any;
@@ -20,10 +20,8 @@ export class ContactListComponent implements OnInit {
   faFilter = faFilter;
   // ====================================================================================================
   currentContact: Contact = new Contact();
-  contacts: PagedResponse<Contact> = new PagedResponse<Contact>();
+  contacts: Array<Contact> = new Array<Contact>();
   query: FormControl = this.fb.control('');
-  pageNumber: number = 1;
-  pageSize: number = 25;
   contactModal: any;
   title: string = '';
 
@@ -47,7 +45,7 @@ export class ContactListComponent implements OnInit {
 
   // cargar lista de contactos.
   private loadContactList(): void {
-    this.contactService.index(this.pageNumber, this.pageSize, this.query.value)
+    this.contactService.index(this.query.value)
       .subscribe(result => this.contacts = result);
   }
 
