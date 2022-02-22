@@ -105,7 +105,8 @@ export class CpeGeneric {
   public static configItemDetail(configuration: Configuration, product: Product): CpeDetail {
     const item: CpeDetail = new CpeDetail();
     item.productId = Number(product.id);
-    item.codUnidadMedida = product.undMedida.sunatCode;
+    // TODO: Corregir esta linea de código.
+    // item.codUnidadMedida = product.undMedida.sunatCode;
     item.codProductoSunat = product.barcode.length > 0 ? product.barcode : '-';
     item.description = product.description;
     item.price = product.price1;

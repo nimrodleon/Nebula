@@ -5,8 +5,6 @@ import {environment} from 'src/environments/environment';
 import {CategoryService, ProductService} from '../../services';
 import {Category, Product} from '../../interfaces';
 import {ResponseData} from 'src/app/global/interfaces';
-import {UndMedida} from 'src/app/system/interfaces';
-import {UndMedidaService} from 'src/app/system/services';
 
 declare var jQuery: any;
 declare var bootstrap: any;
@@ -22,7 +20,6 @@ export class ProductModalComponent implements OnInit {
   faTrashAlt = faTrashAlt;
   // ====================================================================================================
   private appURL: string = environment.applicationUrl;
-  undMedidas: Array<UndMedida> = new Array<UndMedida>();
   productForm: FormGroup = this.fb.group({
     id: [null],
     description: ['', [Validators.required]],
@@ -51,8 +48,7 @@ export class ProductModalComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private productService: ProductService,
-    private categoryService: CategoryService,
-    private undMedidaService: UndMedidaService) {
+    private categoryService: CategoryService) {
   }
 
   ngOnInit(): void {
@@ -72,8 +68,6 @@ export class ProductModalComponent implements OnInit {
         const data = e.params.data;
         this.productForm.controls['categoryId'].setValue(data.id);
       });
-    // cargar las unidades de medidas.
-    this.undMedidaService.index().subscribe(result => this.undMedidas = result);
     // cargar valores por defecto.
     if (document.querySelector('#product-modal')) {
       const myModal: any = document.querySelector('#product-modal');

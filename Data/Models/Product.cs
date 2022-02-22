@@ -65,10 +65,9 @@ namespace Nebula.Data.Models
         public int? UndMedidaId { get; set; }
 
         /// <summary>
-        /// Propiedad de Relación, Unidad de Medida.
+        /// Unidad de Medida.
         /// </summary>
-        [ForeignKey("UndMedidaId")]
-        public UndMedida UndMedida { get; set; }
+        public string UndMedida { get; set; }
 
         /// <summary>
         /// Tipo de Bien/Servicio.

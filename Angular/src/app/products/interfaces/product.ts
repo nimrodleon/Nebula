@@ -9,8 +9,7 @@ export class Product {
     public igvSunat: string = '',
     public icbper: string = '',
     public categoryId: number | any = null,
-    public undMedidaId: number | any = null,
-    public undMedida: any = undefined,
+    public undMedida: string = '',
     public type: string = '',
     public pathImage: string = '') {
   }

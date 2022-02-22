@@ -24,11 +24,6 @@ namespace Nebula.Data
         public DbSet<CajaDiaria> CajasDiaria { get; set; }
 
         /// <summary>
-        /// Unidades de Medida.
-        /// </summary>
-        public DbSet<UndMedida> UndMedida { get; set; }
-
-        /// <summary>
         /// Lista de Productos.
         /// </summary>
         public DbSet<Product> Products { get; set; }
@@ -170,8 +165,6 @@ namespace Nebula.Data
             modelBuilder.Entity<Contact>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<CajaDiaria>().Property<bool>("SoftDeleted");
             modelBuilder.Entity<CajaDiaria>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
-            modelBuilder.Entity<UndMedida>().Property<bool>("SoftDeleted");
-            modelBuilder.Entity<UndMedida>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<Product>().Property<bool>("SoftDeleted");
             modelBuilder.Entity<Product>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<CashierDetail>().Property<bool>("SoftDeleted");
