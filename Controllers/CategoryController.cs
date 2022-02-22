@@ -1,7 +1,9 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Data;
 using Nebula.Data.Models;
+using Nebula.Data.ViewModels;
 using Raven.Client.Documents;
 using Raven.Client.Documents.Linq;
 
@@ -25,7 +27,6 @@ namespace Nebula.Controllers
             IRavenQueryable<Category> categories = from m in session.Query<Category>() select m;
             if (!string.IsNullOrWhiteSpace(query))
                 categories = categories.Search(m => m.Name, $"*{query.ToUpper()}*");
-            categories = categories.OrderByDescending(m => m.Id);
             var responseData = await categories.Take(25).ToListAsync();
             return Ok(responseData);
         }
@@ -38,29 +39,31 @@ namespace Nebula.Controllers
             return Ok(category);
         }
 
-        // [HttpGet("Select2")]
-        // public async Task<IActionResult> Select2([FromQuery] string term)
-        // {
-        //     var result = from m in _context.Categories select m;
-        //     if (!string.IsNullOrWhiteSpace(term))
-        //         result = result.Where(m => m.Name.ToLower().Contains(term.ToLower()));
-        //     result = result.OrderByDescending(m => m.Id);
-        //     var responseData = await result.AsNoTracking().Take(10).ToListAsync();
-        //     var data = new List<Select2>();
-        //     responseData.ForEach(item =>
-        //     {
-        //         data.Add(new Select2()
-        //         {
-        //             Id = item.Id, Text = item.Name
-        //         });
-        //     });
-        //     return Ok(new {Results = data});
-        // }
+        [HttpGet("Select2")]
+        public async Task<IActionResult> Select2([FromQuery] string term)
+        {
+            using var session = _context.Store.OpenAsyncSession();
+            IRavenQueryable<Category> categories = from m in session.Query<Category>() select m;
+            if (!string.IsNullOrWhiteSpace(term))
+                categories = categories.Search(m => m.Name, $"*{term.ToUpper()}*");
+            var responseData = await categories.Take(10).ToListAsync();
+            var data = new List<Select2>();
+            responseData.ForEach(item =>
+            {
+                data.Add(new Select2()
+                {
+                    Id = item.Id, Text = item.Name
+                });
+            });
+            return Ok(new {Results = data});
+        }
 
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] Category model)
         {
             using var session = _context.Store.OpenAsyncSession();
+            // database will create a GUID value for it
+            model.Id = string.Empty;
             model.Name = model.Name.ToUpper();
             await session.StoreAsync(model);
             await session.SaveChangesAsync();

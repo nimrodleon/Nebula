@@ -52,22 +52,22 @@ namespace Nebula.Controllers
             return Ok(result);
         }
 
-        [HttpGet("Select2")]
-        public async Task<IActionResult> Select2([FromQuery] string term)
-        {
-            var result = from c in _context.Contacts select c;
-            if (!string.IsNullOrWhiteSpace(term))
-                result = result.Where(m =>
-                    m.Document.Contains(term) || m.Name.ToLower().Contains(term.ToLower()));
-            result = result.OrderByDescending(m => m.Id);
-            var responseData = await result.AsNoTracking().Take(10).ToListAsync();
-            var data = new List<Select2>();
-            responseData.ForEach(item =>
-            {
-                data.Add(new Select2() {Id = item.Id, Text = $"{item.Document} - {item.Name}"});
-            });
-            return Ok(new {Results = data});
-        }
+        // [HttpGet("Select2")]
+        // public async Task<IActionResult> Select2([FromQuery] string term)
+        // {
+        //     var result = from c in _context.Contacts select c;
+        //     if (!string.IsNullOrWhiteSpace(term))
+        //         result = result.Where(m =>
+        //             m.Document.Contains(term) || m.Name.ToLower().Contains(term.ToLower()));
+        //     result = result.OrderByDescending(m => m.Id);
+        //     var responseData = await result.AsNoTracking().Take(10).ToListAsync();
+        //     var data = new List<Select2>();
+        //     responseData.ForEach(item =>
+        //     {
+        //         data.Add(new Select2() {Id = item.Id, Text = $"{item.Document} - {item.Name}"});
+        //     });
+        //     return Ok(new {Results = data});
+        // }
 
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] Contact model)
