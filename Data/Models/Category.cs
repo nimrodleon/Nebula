@@ -1,15 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Nebula.Data.Models
+﻿namespace Nebula.Data.Models
 {
+    /// <summary>
+    /// categoría de productos.
+    /// </summary>
     public class Category
     {
-        public int Id { get; set; }
-
-        /// <summary>
-        /// Nombre categoría.
-        /// </summary>
-        [MaxLength(250)]
+        public string Id { get; set; }
         public string Name { get; set; }
     }
 }

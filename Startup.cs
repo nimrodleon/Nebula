@@ -31,6 +31,8 @@ namespace Nebula
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<PersistenceSettings>(Configuration.GetSection("RavenDb"));
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -64,6 +66,7 @@ namespace Nebula
             });
 
             services.AddHttpContextAccessor();
+            services.AddSingleton<IRavenDbContext, RavenDbContext>();
             services.AddScoped<ITerminalService, TerminalService>();
             services.AddScoped<IComprobanteService, ComprobanteService>();
             services.AddScoped<ICpeService, CpeService>();
