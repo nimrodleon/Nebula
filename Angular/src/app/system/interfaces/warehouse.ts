@@ -1,6 +1,6 @@
 export class Warehouse {
   constructor(
-    public id: number | any = null,
+    public id: string | any = undefined,
     public name: string = '',
     public remark: string = '') {
   }

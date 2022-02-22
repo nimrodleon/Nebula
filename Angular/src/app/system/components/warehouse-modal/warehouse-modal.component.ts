@@ -57,7 +57,7 @@ export class WarehouseModalComponent implements OnInit {
     // Guardar datos, sólo si es válido el formulario.
     if (this.warehouseForm.get('id')?.value === null) {
       this.warehouseForm.removeControl('id');
-      this.warehouseService.store(this.warehouseForm.value)
+      this.warehouseService.create(this.warehouseForm.value)
         .subscribe(result => {
           this.responseData.emit(result);
         });

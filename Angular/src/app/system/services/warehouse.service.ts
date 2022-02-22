@@ -24,8 +24,8 @@ export class WarehouseService {
     return this.http.get<Warehouse>(`${this.appURL}/Show/${id}`);
   }
 
-  public store(data: Warehouse): Observable<ResponseData<Warehouse>> {
-    return this.http.post<ResponseData<Warehouse>>(`${this.appURL}/Store`, data);
+  public create(data: Warehouse): Observable<ResponseData<Warehouse>> {
+    return this.http.post<ResponseData<Warehouse>>(`${this.appURL}/Create`, data);
   }
 
   public update(id: string, data: Warehouse): Observable<ResponseData<Warehouse>> {
@@ -33,7 +33,7 @@ export class WarehouseService {
   }
 
   public delete(id: string): Observable<ResponseData<Warehouse>> {
-    return this.http.delete<ResponseData<Warehouse>>(`${this.appURL}/Destroy/${id}`);
+    return this.http.delete<ResponseData<Warehouse>>(`${this.appURL}/Delete/${id}`);
   }
 
 }

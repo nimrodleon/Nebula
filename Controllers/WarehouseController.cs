@@ -1,9 +1,9 @@
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Nebula.Data;
 using Nebula.Data.Models;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Linq;
 
 namespace Nebula.Controllers
 {
@@ -11,9 +11,9 @@ namespace Nebula.Controllers
     [ApiController]
     public class WarehouseController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IRavenDbContext _context;
 
-        public WarehouseController(ApplicationDbContext context)
+        public WarehouseController(IRavenDbContext context)
         {
             _context = context;
         }
@@ -21,54 +21,61 @@ namespace Nebula.Controllers
         [HttpGet("Index")]
         public async Task<IActionResult> Index([FromQuery] string query)
         {
-            var result = from m in _context.Warehouses select m;
+            using var session = _context.Store.OpenAsyncSession();
+            IRavenQueryable<Warehouse> warehouses = from m in session.Query<Warehouse>() select m;
             if (!string.IsNullOrWhiteSpace(query))
-                result = result.Where(m => m.Name.ToLower().Contains(query.ToLower()));
-            var responseData = await result.AsNoTracking().ToListAsync();
+                warehouses = warehouses.Search(m => m.Name, $"*{query.ToUpper()}*");
+            var responseData = await warehouses.Take(25).ToListAsync();
             return Ok(responseData);
         }
 
         [HttpGet("Show/{id}")]
         public async Task<IActionResult> Show(string id)
         {
-            var result = await _context.Warehouses.AsNoTracking()
-                .FirstOrDefaultAsync(m => m.Id.ToString().Equals(id));
-            return Ok(result);
+            using var session = _context.Store.OpenAsyncSession();
+            Warehouse warehouse = await session.LoadAsync<Warehouse>(id);
+            return Ok(warehouse);
         }
 
-        [HttpPost("Store")]
-        public async Task<IActionResult> Store([FromBody] Warehouse model)
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create([FromBody] Warehouse model)
         {
-            _context.Warehouses.Add(model);
-            await _context.SaveChangesAsync();
+            using var session = _context.Store.OpenAsyncSession();
+            model.Id = string.Empty;
+            model.Name = model.Name.ToUpper();
+            await session.StoreAsync(model);
+            await session.SaveChangesAsync();
             return Ok(new
             {
                 Ok = true, Data = model,
-                Msg = $"{model.Name} ha sido registrado!"
+                Msg = $"El Almacén {model.Name} ha sido registrado!"
             });
         }
 
         [HttpPut("Update/{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] Warehouse model)
         {
-            if (id != model.Id.ToString()) return BadRequest();
-            _context.Warehouses.Update(model);
-            await _context.SaveChangesAsync();
+            if (id != model.Id) return BadRequest();
+            using var session = _context.Store.OpenAsyncSession();
+            Warehouse warehouse = await session.LoadAsync<Warehouse>(id);
+            warehouse.Name = model.Name.ToUpper();
+            warehouse.Remark = model.Remark;
+            await session.SaveChangesAsync();
             return Ok(new
             {
-                Ok = true, Data = model,
-                Msg = $"{model.Name} ha sido actualizado!"
+                Ok = true, Data = warehouse,
+                Msg = $"El Almacén {warehouse.Name} ha sido actualizado!"
             });
         }
 
-        [HttpDelete("Destroy/{id}")]
-        public async Task<IActionResult> Destroy(string id)
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> Delete(string id)
         {
-            var result = await _context.Warehouses.FirstOrDefaultAsync(m => m.Id.ToString().Equals(id));
-            if (result == null) return BadRequest();
-            _context.Warehouses.Remove(result);
-            await _context.SaveChangesAsync();
-            return Ok(new {Ok = true, Data = result, Msg = "El almacén ha sido borrado!"});
+            using var session = _context.Store.OpenAsyncSession();
+            Warehouse warehouse = await session.LoadAsync<Warehouse>(id);
+            session.Delete(warehouse);
+            await session.SaveChangesAsync();
+            return Ok(new {Ok = true, Data = warehouse, Msg = "El almacén ha sido borrado!"});
         }
     }
 }

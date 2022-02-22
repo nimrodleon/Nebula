@@ -63,10 +63,10 @@ namespace Nebula.Data
         /// </summary>
         public DbSet<InvoiceNoteDetail> InvoiceNoteDetails { get; set; }
 
-        /// <summary>
-        /// Lista de almacenes.
-        /// </summary>
-        public DbSet<Warehouse> Warehouses { get; set; }
+        // /// <summary>
+        // /// Lista de almacenes.
+        // /// </summary>
+        // public DbSet<Warehouse> Warehouses { get; set; }
 
         /// <summary>
         /// Motivos de Inventario.
@@ -180,8 +180,8 @@ namespace Nebula.Data
             modelBuilder.Entity<Invoice>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<InvoiceNote>().Property<bool>("SoftDeleted");
             modelBuilder.Entity<InvoiceNote>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
-            modelBuilder.Entity<Warehouse>().Property<bool>("SoftDeleted");
-            modelBuilder.Entity<Warehouse>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
+            // modelBuilder.Entity<Warehouse>().Property<bool>("SoftDeleted");
+            // modelBuilder.Entity<Warehouse>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<TransferNote>().Property<bool>("SoftDeleted");
             modelBuilder.Entity<TransferNote>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<InventoryNote>().Property<bool>("SoftDeleted");
