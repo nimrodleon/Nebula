@@ -19,7 +19,7 @@ export class ConfigurationService {
     return this.http.get<Configuration>(`${this.appURL}/Show`);
   }
 
-  public update(id: number, data: Configuration): Observable<ResponseData<Configuration>> {
-    return this.http.put<ResponseData<Configuration>>(`${this.appURL}/Update/${id}`, data);
+  public update(data: Configuration): Observable<ResponseData<Configuration>> {
+    return this.http.put<ResponseData<Configuration>>(`${this.appURL}/Update`, data);
   }
 }

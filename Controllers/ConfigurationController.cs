@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Nebula.Data;
 using Nebula.Data.Models;
 
@@ -10,9 +9,9 @@ namespace Nebula.Controllers
     [ApiController]
     public class ConfigurationController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IRavenDbContext _context;
 
-        public ConfigurationController(ApplicationDbContext context)
+        public ConfigurationController(IRavenDbContext context)
         {
             _context = context;
         }
@@ -20,26 +19,44 @@ namespace Nebula.Controllers
         [HttpGet("Show")]
         public async Task<IActionResult> Show()
         {
-            if (await _context.Configuration.AsNoTracking().CountAsync() == 0)
+            using var session = _context.Store.OpenAsyncSession();
+            Configuration configuration = await session.LoadAsync<Configuration>("default");
+            if (configuration == null)
             {
-                _context.Configuration.Add(new Configuration());
-                await _context.SaveChangesAsync();
+                var model = new Configuration()
+                {
+                    Id = "default"
+                };
+                await session.StoreAsync(model);
+                await session.SaveChangesAsync();
+                return RedirectToAction("Show");
             }
 
-            var result = await _context.Configuration.FirstAsync();
-            return Ok(result);
+            return Ok(configuration);
         }
 
-        [HttpPut("Update/{id}")]
-        public async Task<IActionResult> Update(int? id, [FromBody] Configuration model)
+        [HttpPut("Update")]
+        public async Task<IActionResult> Update([FromBody] Configuration model)
         {
-            if (id != model.Id) return BadRequest();
-            _context.Configuration.Update(model);
-            await _context.SaveChangesAsync();
+            using var session = _context.Store.OpenAsyncSession();
+            Configuration configuration = await session.LoadAsync<Configuration>("default");
+            configuration.Ruc = model.Ruc;
+            configuration.RznSocial = model.RznSocial.ToUpper();
+            configuration.CodLocalEmisor = model.CodLocalEmisor;
+            configuration.TipMoneda = model.TipMoneda;
+            configuration.PorcentajeIgv = model.PorcentajeIgv;
+            configuration.ValorImpuestoBolsa = model.ValorImpuestoBolsa;
+            configuration.CpeSunat = model.CpeSunat;
+            configuration.ContactId = model.ContactId;
+            configuration.UrlApi = model.UrlApi;
+            configuration.FileSunat = model.FileSunat;
+            configuration.FileControl = model.FileControl;
+            await session.SaveChangesAsync();
+
             return Ok(new
             {
-                Ok = true, Data = model,
-                Msg = $"{model.Ruc}, ha sido actualizado!"
+                Ok = true, Data = configuration,
+                Msg = $"La configuración {configuration.Ruc}, ha sido actualizado!"
             });
         }
     }
