@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl} from '@angular/forms';
 import {faEdit, faFilter, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {ProductService} from '../../services';
-import {PagedResponse, ResponseData} from '../../../global/interfaces';
+import {ResponseData} from 'src/app/global/interfaces';
 import {Product} from '../../interfaces';
 
 declare var bootstrap: any;
@@ -20,10 +20,8 @@ export class ProductListComponent implements OnInit {
   faFilter = faFilter;
   // ====================================================================================================
   currentProduct: Product = new Product();
-  products: PagedResponse<Product> = new PagedResponse<Product>();
+  products: Array<Product> = new Array<Product>();
   query: FormControl = this.fb.control('');
-  pageNumber: number = 1;
-  pageSize: number = 25;
   productModal: any;
   title: string = '';
 
@@ -41,7 +39,7 @@ export class ProductListComponent implements OnInit {
 
   // lista de productos.
   private cargarListaDeProductos(): void {
-    this.productService.index(this.pageNumber, this.pageSize, this.query.value)
+    this.productService.index(this.query.value)
       .subscribe(result => this.products = result);
   }
 

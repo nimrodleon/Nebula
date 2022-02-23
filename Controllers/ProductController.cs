@@ -1,15 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Nebula.Data;
-using Nebula.Data.Helpers;
 using Nebula.Data.Models;
-using Nebula.Data.Services;
 using Nebula.Data.ViewModels;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Linq;
 
 namespace Nebula.Controllers
 {
@@ -17,77 +15,54 @@ namespace Nebula.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        private readonly IUriService _uriService;
+        private readonly IRavenDbContext _context;
 
-        public ProductController(ApplicationDbContext context, IUriService uriService)
+        public ProductController(IRavenDbContext context)
         {
             _context = context;
-            _uriService = uriService;
         }
 
         [HttpGet("Index")]
-        public async Task<IActionResult> Index([FromQuery] PaginationFilter filter)
+        public async Task<IActionResult> Index([FromQuery] string query)
         {
-            var route = Request.Path.Value;
-            var validFilter = new PaginationFilter(filter.PageNumber, filter.PageSize, filter.Query);
-            var skip = (validFilter.PageNumber - 1) * validFilter.PageSize;
-            var result = from p in _context.Products select p;
-            if (!string.IsNullOrWhiteSpace(filter.Query))
-                result = result.Where(m => m.Barcode.Contains(filter.Query)
-                                           || m.Description.ToLower().Contains(filter.Query.ToLower()));
-            result = result.OrderByDescending(m => m.Id);
-            var pagedData = await result.AsNoTracking().Skip(skip).Take(validFilter.PageSize).ToListAsync();
-            var totalRecords = await result.CountAsync();
-            var pagedResponse =
-                PaginationHelper.CreatePagedResponse(pagedData, validFilter, totalRecords, _uriService, route);
-            return Ok(pagedResponse);
-        }
-
-        [HttpGet("Terminal")]
-        public async Task<IActionResult> Terminal([FromQuery] string query)
-        {
-            var result = from p in _context.Products select p;
+            using var session = _context.Store.OpenAsyncSession();
+            IRavenQueryable<Product> products = from m in session.Query<Product>() select m;
             if (!string.IsNullOrWhiteSpace(query))
-                result = result.Where(m => m.Description.ToLower().Contains(query.ToLower()));
-            result = result.OrderByDescending(m => m.Id);
-            var responseData = await result.AsNoTracking().Take(25).ToListAsync();
+                products = products.Search(m => m.Description, $"*{query.ToUpper()}*");
+            var responseData = await products.Take(25).ToListAsync();
             return Ok(responseData);
         }
 
         [HttpGet("Show/{id}")]
-        public async Task<IActionResult> Show(int? id)
+        public async Task<IActionResult> Show(string id)
         {
-            if (id == null) return BadRequest();
-            var result = await _context.Products.AsNoTracking()
-                .Include(m => m.UndMedida)
-                .IgnoreQueryFilters().FirstOrDefaultAsync(m => m.Id.Equals(id));
-            if (result == null) return BadRequest();
-            return Ok(result);
+            using var session = _context.Store.OpenAsyncSession();
+            Product product = await session.LoadAsync<Product>(id);
+            return Ok(product);
         }
 
-        // [HttpGet("Select2")]
-        // public async Task<IActionResult> Select2([FromQuery] string term)
-        // {
-        //     var result = from m in _context.Products select m;
-        //     if (!string.IsNullOrWhiteSpace(term))
-        //         result = result.Where(m => m.Description.ToLower().Contains(term.ToLower()));
-        //     result = result.OrderByDescending(m => m.Id);
-        //     var responseData = await result.AsNoTracking().Take(10).ToListAsync();
-        //     var data = new List<Select2>();
-        //     responseData.ForEach(item =>
-        //     {
-        //         data.Add(new Select2()
-        //         {
-        //             Id = item.Id,
-        //             Text = $"{item.Description} | {Convert.ToDecimal(item.Price1):N2}"
-        //         });
-        //     });
-        //     return Ok(new {Results = data});
-        // }
+        [HttpGet("Select2")]
+        public async Task<IActionResult> Select2([FromQuery] string term)
+        {
+            using var session = _context.Store.OpenAsyncSession();
+            IRavenQueryable<Product> products = from m in session.Query<Product>() select m;
+            if (!string.IsNullOrWhiteSpace(term))
+                products = products.Search(m => m.Description, $"*{term.ToUpper()}*");
+            var responseData = await products.Take(25).ToListAsync();
+            var data = new List<Select2>();
+            responseData.ForEach(item =>
+            {
+                data.Add(new Select2()
+                {
+                    Id = item.Id,
+                    Text = $"{item.Description} | {Convert.ToDecimal(item.Price1):N2}"
+                });
+            });
+            return Ok(new {Results = data});
+        }
 
-        [HttpPost("Store")]
-        public async Task<IActionResult> Store([FromForm] Product model)
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create([FromForm] Product model)
         {
             if (model.File?.Length > 0)
             {
@@ -104,21 +79,25 @@ namespace Nebula.Controllers
                 model.PathImage = "default.png";
             }
 
-            _context.Products.Add(model);
-            await _context.SaveChangesAsync();
+            using var session = _context.Store.OpenAsyncSession();
+            model.Id = String.Empty;
+            model.Description = model.Description.ToUpper();
+            await session.StoreAsync(model);
+            await session.SaveChangesAsync();
+
             return Ok(new
             {
                 Ok = true, Data = model,
-                Msg = $"{model.Description} ha sido registrado!"
+                Msg = $"El producto {model.Description} ha sido registrado!"
             });
         }
 
         [HttpPut("Update/{id}")]
-        public async Task<IActionResult> Update(int? id, [FromForm] Product model)
+        public async Task<IActionResult> Update(string id, [FromForm] Product model)
         {
             if (id != model.Id) return BadRequest();
-            var product = await _context.Products
-                .AsNoTracking().SingleAsync(m => m.Id.Equals(id));
+            using var session = _context.Store.OpenAsyncSession();
+            Product product = await session.LoadAsync<Product>(id);
             if (product == null) return BadRequest();
 
             if (model.File?.Length > 0)
@@ -142,31 +121,42 @@ namespace Nebula.Controllers
                 model.PathImage = product.PathImage;
             }
 
-            _context.Products.Update(model);
-            await _context.SaveChangesAsync();
+            product.Description = model.Description.ToUpper();
+            product.Barcode = model.Barcode;
+            product.Price1 = model.Price1;
+            product.Price2 = model.Price2;
+            product.FromQty = model.FromQty;
+            product.IgvSunat = model.IgvSunat;
+            product.Icbper = model.Icbper;
+            product.Category = model.Category;
+            product.UndMedida = model.UndMedida;
+            product.Type = model.Type;
+            product.PathImage = model.PathImage;
+            await session.SaveChangesAsync();
+
             return Ok(new
             {
-                Ok = true, Data = model,
-                Msg = $"{model.Description} ha sido actualizado!"
+                Ok = true, Data = product,
+                Msg = $"El producto {product.Description} ha sido actualizado!"
             });
         }
 
-        [HttpDelete("Destroy/{id}")]
-        public async Task<IActionResult> Destroy(int? id)
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> Delete(string id)
         {
-            var result = await _context.Products
-                .FirstOrDefaultAsync(m => m.Id.Equals(id));
-            if (result == null) return BadRequest();
+            using var session = _context.Store.OpenAsyncSession();
+            Product product = await session.LoadAsync<Product>(id);
+            if (product == null) return BadRequest();
             // directorio principal.
             var dirPath = Path.Combine(Environment
                 .GetFolderPath(Environment.SpecialFolder.UserProfile), "StaticFiles");
             // borrar archivo si existe.
-            var file = Path.Combine(dirPath, result.PathImage);
+            var file = Path.Combine(dirPath, product.PathImage);
             if (System.IO.File.Exists(file)) System.IO.File.Delete(file);
             // borrar registro.
-            _context.Products.Remove(result);
-            await _context.SaveChangesAsync();
-            return Ok(new {Ok = true, Data = result, Msg = "El producto ha sido borrado!"});
+            session.Delete(product);
+            await session.SaveChangesAsync();
+            return Ok(new {Ok = true, Data = product, Msg = "El producto ha sido borrado!"});
         }
     }
 }

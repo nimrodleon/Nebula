@@ -65,7 +65,8 @@ export class ItemComprobanteComponent implements OnInit {
     const myModal: any = document.querySelector('#item-comprobante');
     myModal.addEventListener('shown.bs.modal', () => {
       this.detalleVenta = new CpeDetail();
-      if (this.productId > 0) this.cargarProducto(this.productId);
+      // TODO: corregir esta linea de código.
+      // if (this.productId > 0) this.cargarProducto(this.productId);
     });
     myModal.addEventListener('hide.bs.modal', () => {
       this.itemComprobanteForm.reset();
@@ -74,7 +75,7 @@ export class ItemComprobanteComponent implements OnInit {
   }
 
   // cargar producto al modelo y formulario.
-  private cargarProducto(id: number): void {
+  private cargarProducto(id: string): void {
     this.productService.show(id).subscribe(result => {
       this.detalleVenta = CpeBase.configItemDetail(this.configuration, result);
       this.detalleVenta.calcularItem();

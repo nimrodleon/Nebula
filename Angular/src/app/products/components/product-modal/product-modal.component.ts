@@ -3,8 +3,8 @@ import {faBars, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {environment} from 'src/environments/environment';
 import {CategoryService, ProductService} from '../../services';
-import {Category, Product} from '../../interfaces';
 import {ResponseData} from 'src/app/global/interfaces';
+import {Category, Product} from '../../interfaces';
 
 declare var jQuery: any;
 declare var bootstrap: any;
@@ -29,8 +29,8 @@ export class ProductModalComponent implements OnInit {
     fromQty: [0, [Validators.required, Validators.min(0)]],
     igvSunat: ['', [Validators.required]],
     icbper: ['', [Validators.required]],
-    categoryId: ['', [Validators.required]],
-    undMedidaId: ['', [Validators.required]],
+    category: ['', [Validators.required]],
+    undMedida: ['', [Validators.required]],
     type: ['', [Validators.required]],
   });
   fileImage: any;
@@ -53,7 +53,7 @@ export class ProductModalComponent implements OnInit {
 
   ngOnInit(): void {
     // cargar lista de categorías.
-    const categoryId = jQuery('#categoryId')
+    const category = jQuery('#category')
       .select2({
         theme: 'bootstrap-5',
         placeholder: 'BUSCAR CATEGORÍA',
@@ -66,7 +66,7 @@ export class ProductModalComponent implements OnInit {
         }
       }).on('select2:select', (e: any) => {
         const data = e.params.data;
-        this.productForm.controls['categoryId'].setValue(data.id);
+        this.productForm.controls['category'].setValue(`${data.id}:${data.text}`);
       });
     // cargar valores por defecto.
     if (document.querySelector('#product-modal')) {
@@ -77,14 +77,14 @@ export class ProductModalComponent implements OnInit {
         this.inputFile?.nativeElement.value = null;
         this.fileImage = null;
         // cargar categoría de producto.
-        if (this.product?.categoryId === undefined
-          || this.product?.categoryId === null) {
-          categoryId.val(null).trigger('change');
+        if (this.product?.category === undefined
+          || this.product?.category === null) {
+          category.val(null).trigger('change');
         } else {
-          this.categoryService.show(this.product.categoryId)
+          this.categoryService.show(this.product.category.split(':')[0]?.trim())
             .subscribe(result => {
               const newOption = new Option(result.name, <any>result.id, true, true);
-              categoryId.append(newOption).trigger('change');
+              category.append(newOption).trigger('change');
             });
         }
       });
@@ -118,18 +118,18 @@ export class ProductModalComponent implements OnInit {
     formData.append('fromQty', this.productForm.get('fromQty')?.value);
     formData.append('igvSunat', this.productForm.get('igvSunat')?.value);
     formData.append('icbper', this.productForm.get('icbper')?.value);
-    formData.append('categoryId', this.productForm.get('categoryId')?.value);
-    formData.append('undMedidaId', this.productForm.get('undMedidaId')?.value);
+    formData.append('category', this.productForm.get('category')?.value);
+    formData.append('undMedida', this.productForm.get('undMedida')?.value);
     formData.append('type', this.productForm.get('type')?.value);
     if (this.fileImage) formData.append('file', this.fileImage);
     if (this.productForm.get('id')?.value == null) {
-      this.productService.store(formData)
+      this.productService.create(<any>formData)
         .subscribe(result => {
           this.responseData.emit(result);
         });
     } else {
       formData.append('id', <any>this.product.id);
-      this.productService.update(<any>this.product.id, formData)
+      this.productService.update(<any>this.product.id, <any>formData)
         .subscribe(result => {
           this.responseData.emit(result);
         });

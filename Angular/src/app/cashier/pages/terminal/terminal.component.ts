@@ -127,8 +127,9 @@ export class TerminalComponent implements OnInit {
 
   // buscar productos.
   public searchProducts(): void {
-    this.productService.terminal(this.queryProduct.value)
-      .subscribe(result => this.products = result);
+    // TODO: corregir esta linea de código.
+    // this.productService.terminal(this.queryProduct.value)
+    //   .subscribe(result => this.products = result);
   }
 
   // agregar nuevo producto.
