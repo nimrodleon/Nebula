@@ -57,7 +57,7 @@
                 <td>{{item.counterBoleta}}</td>
                 <td>{{item.notaDeVenta}}</td>
                 <td>{{item.counterNotaDeVenta}}</td>
-                <td>{{item.warehouse?.name}}</td>
+                <td>{{item.warehouse.split(':')[1]?.trim()}}</td>
                 <td>
                   <div class="tblBtn ms-auto">
                     <button type="button" (click)="editInvoiceSerieModal(item.id)"

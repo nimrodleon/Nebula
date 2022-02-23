@@ -51,7 +51,8 @@ namespace Nebula.Controllers
                 {
                     var cajaDiaria = new CajaDiaria()
                     {
-                        InvoiceSerieId = invoiceSerie.Id,
+                        // TODO: corregir esta linea de código.
+                        // InvoiceSerieId = invoiceSerie.Id,
                         Name = invoiceSerie.Name,
                         StartDate = DateTime.Now,
                         Status = "ABIERTO",

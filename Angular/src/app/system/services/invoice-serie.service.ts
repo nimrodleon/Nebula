@@ -17,7 +17,7 @@ export class InvoiceSerieService {
   public index(query: string = ''): Observable<InvoiceSerie[]> {
     let params = new HttpParams();
     params = params.append('query', query);
-    return this.http.get<InvoiceSerie[]>(`${this.appURL}/Index`, {params: params});
+    return this.http.get<InvoiceSerie[]>(`${this.appURL}/Index`, {params});
   }
 
   public show(id: string): Observable<InvoiceSerie> {

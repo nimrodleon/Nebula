@@ -22,7 +22,7 @@ export class InvoiceSerieModalComponent implements OnInit {
   invoiceSerieForm: FormGroup = this.fb.group({
     id: [null],
     name: ['', [Validators.required]],
-    warehouseId: [null, [Validators.required]],
+    warehouse: [null, [Validators.required]],
     factura: ['', [Validators.required]],
     counterFactura: [0, [Validators.required, Validators.min(0)]],
     boleta: ['', [Validators.required]],

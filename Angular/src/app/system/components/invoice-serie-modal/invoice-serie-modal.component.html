@@ -18,9 +18,9 @@
             </div>
             <div class="col-6">
               <label class="form-label text-uppercase">Almacén</label>
-              <select formControlName="warehouseId" class="form-select"
-                      [ngClass]="{'is-invalid': inputIsInvalid('warehouseId')}">
-                <option *ngFor="let item of warehouses" [value]="item.id">{{item.name}}</option>
+              <select formControlName="warehouse" class="form-select"
+                      [ngClass]="{'is-invalid': inputIsInvalid('warehouse')}">
+                <option *ngFor="let item of warehouses" [value]="item.id + ':' + item.name">{{item.name}}</option>
               </select>
             </div>
           </div>

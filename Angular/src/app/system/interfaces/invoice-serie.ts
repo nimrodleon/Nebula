@@ -1,11 +1,8 @@
-import {Warehouse} from './warehouse';
-
 export class InvoiceSerie {
   constructor(
-    public id: number | any = null,
+    public id: any = undefined,
     public name: string = '',
-    public warehouseId: number | any = null,
-    public warehouse: Warehouse | any = undefined,
+    public warehouse: any = undefined,
     public factura: string = '',
     public counterFactura: number = 0,
     public boleta: string = '',
