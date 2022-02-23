@@ -68,13 +68,13 @@
                 <a href="#" (click)="showCategoryModal($event)"
                    class="text-uppercase text-decoration-none">[ Agregar ]</a>
               </label>
-              <select id="categoryId" class="form-select"
-                      [ngClass]="{'is-invalid': inputIsInvalid('categoryId')}"></select>
+              <select id="category" class="form-select"
+                      [ngClass]="{'is-invalid': inputIsInvalid('category')}"></select>
             </div>
             <div class="mb-1">
               <label class="col-form-label-sm text-uppercase">Unidad de medida</label>
-              <select formControlName="undMedidaId" class="form-select"
-                      [ngClass]="{'is-invalid': inputIsInvalid('undMedidaId')}">
+              <select formControlName="undMedida" class="form-select"
+                      [ngClass]="{'is-invalid': inputIsInvalid('undMedida')}">
                 <option value="4A:BOBINAS">BOBINAS</option>
                 <option value="BJ:BALDE">BALDE</option>
                 <option value="BLL:BARRILES">BARRILES</option>
