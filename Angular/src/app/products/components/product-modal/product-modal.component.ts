@@ -146,8 +146,8 @@ export class ProductModalComponent implements OnInit {
   public hideCategoryModal(response: ResponseData<Category>): void {
     if (response.ok) {
       const newOption = new Option(response.data?.name, <any>response.data?.id, true, true);
-      jQuery('#categoryId').append(newOption).trigger('change');
-      this.productForm.controls['categoryId'].setValue(response.data?.id);
+      jQuery('#category').append(newOption).trigger('change');
+      this.productForm.controls['category'].setValue(`${response.data?.id}:${response.data?.name}`);
       this.categoryModal.hide();
     }
   }

@@ -1,7 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Http;
-
-namespace Nebula.Data.Models
+﻿namespace Nebula.Data.Models
 {
     public class Product
     {
@@ -61,11 +58,5 @@ namespace Nebula.Data.Models
         /// Path de la imagen del producto.
         /// </summary>
         public string PathImage { get; set; }
-
-        /// <summary>
-        /// Propiedad para subir imágenes.
-        /// </summary>
-        [JsonIgnore]
-        public IFormFile File { get; set; }
     }
 }

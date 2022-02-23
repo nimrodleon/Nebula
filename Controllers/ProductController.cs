@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Data;
 using Nebula.Data.Models;
@@ -20,6 +21,11 @@ namespace Nebula.Controllers
         public ProductController(IRavenDbContext context)
         {
             _context = context;
+        }
+
+        public class FormData : Product
+        {
+            public IFormFile File { get; set; }
         }
 
         [HttpGet("Index")]
@@ -62,7 +68,7 @@ namespace Nebula.Controllers
         }
 
         [HttpPost("Create")]
-        public async Task<IActionResult> Create([FromForm] Product model)
+        public async Task<IActionResult> Create([FromForm] FormData model)
         {
             if (model.File?.Length > 0)
             {
@@ -80,20 +86,33 @@ namespace Nebula.Controllers
             }
 
             using var session = _context.Store.OpenAsyncSession();
-            model.Id = String.Empty;
-            model.Description = model.Description.ToUpper();
-            await session.StoreAsync(model);
+            Product product = new Product()
+            {
+                Id = string.Empty,
+                Description = model.Description.ToUpper(),
+                Barcode = model.Barcode,
+                Price1 = model.Price1,
+                Price2 = model.Price2,
+                FromQty = model.FromQty,
+                IgvSunat = model.IgvSunat,
+                Icbper = model.Icbper,
+                Category = model.Category,
+                UndMedida = model.UndMedida,
+                Type = model.Type,
+                PathImage = model.PathImage
+            };
+            await session.StoreAsync(product);
             await session.SaveChangesAsync();
 
             return Ok(new
             {
-                Ok = true, Data = model,
-                Msg = $"El producto {model.Description} ha sido registrado!"
+                Ok = true, Data = product,
+                Msg = $"El producto {product.Description} ha sido registrado!"
             });
         }
 
         [HttpPut("Update/{id}")]
-        public async Task<IActionResult> Update(string id, [FromForm] Product model)
+        public async Task<IActionResult> Update(string id, [FromForm] FormData model)
         {
             if (id != model.Id) return BadRequest();
             using var session = _context.Store.OpenAsyncSession();
