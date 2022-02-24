@@ -3,7 +3,6 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {faBars} from '@fortawesome/free-solid-svg-icons';
 import {environment} from 'src/environments/environment';
 import {CashierDetail} from '../../interfaces';
-import {ContactService} from 'src/app/contact/services';
 import {CashierDetailService} from '../../services';
 import {ResponseData} from 'src/app/global/interfaces';
 
@@ -18,22 +17,20 @@ export class CashInOutModalComponent implements OnInit {
   private appURL: string = environment.applicationUrl;
   faBars = faBars;
   @Input()
-  cajaDiariaId: number = 0;
+  cajaDiariaId: string = '';
   @Output()
   responseData = new EventEmitter<ResponseData<CashierDetail>>();
   cashierDetail: CashierDetail = new CashierDetail();
   cajaChicaForm: FormGroup = this.fb.group({
-    id: [null],
-    contactId: [null, [Validators.required]],
-    glosa: ['', [Validators.required]],
-    type: ['ENTRADA', [Validators.required]],
-    total: [0, [Validators.required, Validators.min(0.1)]],
+    type: ['', [Validators.required]],
+    contact: [null, [Validators.required]],
+    amount: [null, [Validators.required, Validators.min(0.1)]],
+    remark: ['', [Validators.required]],
   });
 
   constructor(
     private fb: FormBuilder,
-    private cashierDetailService: CashierDetailService,
-    private contactService: ContactService) {
+    private cashierDetailService: CashierDetailService) {
   }
 
   ngOnInit(): void {
@@ -49,16 +46,16 @@ export class CashInOutModalComponent implements OnInit {
       }
     }).on('select2:select', (e: any) => {
       const data = e.params.data;
-      this.cajaChicaForm.controls['contactId'].setValue(data.id);
+      const text = data.text.split('-');
+      this.cajaChicaForm.controls['contact'].setValue(`${data.id}:${text[text.length - 1].trim()}`);
     });
     // cargar valores por defecto.
     if (document.querySelector('#cash-in-out-modal')) {
       const myModal: any = document.querySelector('#cash-in-out-modal');
-      myModal.addEventListener('shown.bs.modal', () => {
+      myModal.addEventListener('hide.bs.modal', () => {
         jQuery('#contactId').val(null).trigger('change');
         this.cashierDetail = new CashierDetail();
-        // TODO: corregir esta linea de código.
-        // this.cashierDetail.cajaDiariaId = <any>this.cajaDiariaId;
+        this.cashierDetail.cajaDiaria = this.cajaDiariaId;
         this.cajaChicaForm.reset();
       });
     }
@@ -76,17 +73,10 @@ export class CashInOutModalComponent implements OnInit {
       return;
     }
     // Guardar datos, sólo si es válido el formulario.
-    const contactId = this.cajaChicaForm.get('contactId')?.value;
     this.cashierDetail = {...this.cajaChicaForm.value};
-    this.contactService.show(contactId).subscribe(result => {
-      this.cashierDetail.id = undefined;
-      // TODO: corregir esta linea de código.
-      // this.cashierDetail.cajaDiariaId = <any>this.cajaDiariaId;
-      this.cashierDetail.contact = result.name;
-      this.cashierDetail.document = '-';
-      this.cashierDetailService.store(this.cashierDetail)
-        .subscribe(result => this.responseData.emit(result));
-    });
+    this.cashierDetail.cajaDiaria = this.cajaDiariaId;
+    this.cashierDetailService.create(this.cashierDetail)
+      .subscribe(result => this.responseData.emit(result));
   }
 
 }

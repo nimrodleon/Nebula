@@ -24,21 +24,21 @@
             <label class="col-3 col-form-label-sm text-uppercase text-end">Contacto</label>
             <div class="col-9">
               <select id="contactId" class="form-select"
-                      [ngClass]="{'is-invalid': inputIsInvalid('contactId')}"></select>
+                      [ngClass]="{'is-invalid': inputIsInvalid('contact')}"></select>
             </div>
           </div>
           <div class="row mb-3">
             <label class="col-3 col-form-label-sm text-uppercase text-end">Monto</label>
             <div class="col-6">
-              <input type="number" formControlName="total" step="0.1" class="form-control"
-                     [ngClass]="{'is-invalid': inputIsInvalid('total')}">
+              <input type="number" formControlName="amount" step="0.1" class="form-control"
+                     [ngClass]="{'is-invalid': inputIsInvalid('amount')}">
             </div>
           </div>
           <div class="row">
-            <label class="col-3 col-form-label-sm text-uppercase text-end">Glosa</label>
+            <label class="col-3 col-form-label-sm text-uppercase text-end">Comentario</label>
             <div class="col-sm-9">
-              <textarea formControlName="glosa" class="form-control"
-                        [ngClass]="{'is-invalid': inputIsInvalid('glosa')}"
+              <textarea formControlName="remark" class="form-control"
+                        [ngClass]="{'is-invalid': inputIsInvalid('remark')}"
                         placeholder="ESCRIBE AQUÍ TU COMENTARIO"></textarea>
             </div>
           </div>

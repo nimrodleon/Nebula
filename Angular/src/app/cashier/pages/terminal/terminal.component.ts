@@ -40,7 +40,7 @@ export class TerminalComponent implements OnInit {
   faCogs = faCogs;
   faThList = faThList;
   // ====================================================================================================
-  cajaDiariaId: number = 0;
+  cajaDiariaId: string = '';
   cobrarModal: any;
   cashInOutModal: any;
   productModal: any;
@@ -67,7 +67,7 @@ export class TerminalComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe(params => {
-      this.cajaDiariaId = Number(params.get('id'));
+      this.cajaDiariaId = params.get('id') || '';
       // cargar caja diaria.
       // TODO: corregir esta linea de código.
       // this.cajaDiariaService.show(this.cajaDiariaId)

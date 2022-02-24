@@ -14,14 +14,14 @@ export class CashierDetailService {
   constructor(private http: HttpClient) {
   }
 
-  public index(id: number, query: string): Observable<CashierDetail[]> {
+  public index(id: string, query: string): Observable<CashierDetail[]> {
     let params = new HttpParams();
     params = params.append('query', query);
-    return this.http.get<CashierDetail[]>(`${this.appURL}/Index/${id}`, {params: params});
+    return this.http.get<CashierDetail[]>(`${this.appURL}/Index/${id}`, {params});
   }
 
-  public store(data: CashierDetail): Observable<ResponseData<CashierDetail>> {
-    return this.http.post<ResponseData<CashierDetail>>(`${this.appURL}/Store`, data);
+  public create(data: CashierDetail): Observable<ResponseData<CashierDetail>> {
+    return this.http.post<ResponseData<CashierDetail>>(`${this.appURL}/Create`, data);
   }
 
 }

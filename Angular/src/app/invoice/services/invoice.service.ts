@@ -40,7 +40,7 @@ export class InvoiceService {
   }
 
   // registrar venta rápida.
-  public createQuickSale(id: number, data: Sale): Observable<ResponseData<Sale>> {
+  public createQuickSale(id: string, data: Sale): Observable<ResponseData<Sale>> {
     return this.http.post<ResponseData<Sale>>(`${this.appURL}/CreateQuickSale/${id}`, data);
   }
 

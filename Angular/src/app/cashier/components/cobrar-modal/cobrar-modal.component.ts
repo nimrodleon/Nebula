@@ -21,7 +21,7 @@ export class CobrarModalComponent implements OnInit {
   // ====================================================================================================
   private appURL: string = environment.applicationUrl;
   @Input()
-  cajaDiariaId: number = 0;
+  cajaDiariaId: string = '';
   @Input()
   sale: Sale = new Sale();
   @Output()

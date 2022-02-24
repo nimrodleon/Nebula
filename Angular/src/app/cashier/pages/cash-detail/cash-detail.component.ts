@@ -3,12 +3,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {FormBuilder, FormControl} from '@angular/forms';
 import {
   faCashRegister,
-  faChartBar,
-  faCog,
-  faFilter,
-  faLock,
-  faPlus,
-  faSearch,
+  faChartBar, faCog, faFilter,
+  faLock, faPlus, faSearch,
   faTrashAlt
 } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';

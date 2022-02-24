@@ -52,8 +52,9 @@
                 <th>Hora</th>
                 <th>Documento</th>
                 <th>Contacto</th>
-                <th>Glosa</th>
+                <th>Comentario</th>
                 <th>Tipo</th>
+                <th>F. Pago</th>
                 <th>Monto</th>
                 <td></td>
               </tr>
@@ -69,13 +70,14 @@
                     <a [routerLink]="['/invoice/detail/sale', item.document]">{{item.document}}</a>
                   </ng-template>
                 </td>
-                <td>{{item.contact}}</td>
+                <td>{{item.contact.split(':')[1]?.trim() || item.contact}}</td>
                 <td>{{item.remark}}</td>
                 <td class="text-uppercase">
                   <span *ngIf="item.type === 'ENTRADA'" class="badge bg-success">{{item.type}}</span>
                   <span *ngIf="item.type === 'SALIDA'" class="badge bg-danger">{{item.type}}</span>
                 </td>
-                <td>{{item.amount|currency}}</td>
+                <td class="text-uppercase">{{item.formaPago}}</td>
+                <td>{{item.amount.toFixed(2)}}</td>
                 <td class="text-end">
                   <button type="button" class="btn btn-danger btn-sm">
                     <fa-icon [icon]="faTrashAlt"></fa-icon>
