@@ -57,7 +57,8 @@ export class CashInOutModalComponent implements OnInit {
       myModal.addEventListener('shown.bs.modal', () => {
         jQuery('#contactId').val(null).trigger('change');
         this.cashierDetail = new CashierDetail();
-        this.cashierDetail.cajaDiariaId = <any>this.cajaDiariaId;
+        // TODO: corregir esta linea de código.
+        // this.cashierDetail.cajaDiariaId = <any>this.cajaDiariaId;
         this.cajaChicaForm.reset();
       });
     }
@@ -79,7 +80,8 @@ export class CashInOutModalComponent implements OnInit {
     this.cashierDetail = {...this.cajaChicaForm.value};
     this.contactService.show(contactId).subscribe(result => {
       this.cashierDetail.id = undefined;
-      this.cashierDetail.cajaDiariaId = <any>this.cajaDiariaId;
+      // TODO: corregir esta linea de código.
+      // this.cashierDetail.cajaDiariaId = <any>this.cajaDiariaId;
       this.cashierDetail.contact = result.name;
       this.cashierDetail.document = '-';
       this.cashierDetailService.store(this.cashierDetail)

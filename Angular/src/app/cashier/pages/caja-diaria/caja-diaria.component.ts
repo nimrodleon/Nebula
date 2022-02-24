@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {faBars, faPlus, faSyncAlt, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import * as moment from 'moment';
 import {InvoiceSerie} from 'src/app/system/interfaces';
@@ -29,7 +29,9 @@ export class CajaDiariaComponent implements OnInit {
   });
   // ====================================================================================================
   aperturaForm: FormGroup = this.fb.group({
-    serieId: [''], total: 0
+    serieId: ['', [Validators.required]],
+    total: [0, [Validators.required, Validators.min(0)]],
+    turno: ['', [Validators.required]]
   });
 
   constructor(
@@ -65,8 +67,18 @@ export class CajaDiariaComponent implements OnInit {
     this.aperturaCajaModal.show();
   }
 
+  // Verificar campo invalido.
+  public inputIsInvalid(field: string) {
+    return this.aperturaForm.controls[field].errors && this.aperturaForm.controls[field].touched;
+  }
+
   // guardar apertura de caja.
   public guardarAperturaCaja(): void {
+    if (this.aperturaForm.invalid) {
+      this.aperturaForm.markAllAsTouched();
+      return;
+    }
+    // Guardar datos, sólo si es válido el formulario.
     this.cajaDiariaService.create(this.aperturaForm.value)
       .subscribe(result => {
         if (result.ok) {

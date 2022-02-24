@@ -49,7 +49,7 @@
             <table class="table table-striped mb-0">
               <thead>
               <tr class="text-uppercase">
-                <th>Fecha</th>
+                <th>Hora</th>
                 <th>Documento</th>
                 <th>Contacto</th>
                 <th>Glosa</th>
@@ -60,22 +60,22 @@
               </thead>
               <tbody>
               <tr *ngFor="let item of cashierDetails">
-                <td>{{item.startDate|date}}</td>
+                <td>{{item.hour}}</td>
                 <td>
                   <ng-container *ngIf="item.typeOperation === 0 else comprobante">
                     {{item.document}}
                   </ng-container>
                   <ng-template #comprobante>
-                    <a [routerLink]="['/invoice/detail/sale', item.invoiceId]">{{item.document}}</a>
+                    <a [routerLink]="['/invoice/detail/sale', item.document]">{{item.document}}</a>
                   </ng-template>
                 </td>
                 <td>{{item.contact}}</td>
-                <td>{{item.glosa}}</td>
+                <td>{{item.remark}}</td>
                 <td class="text-uppercase">
                   <span *ngIf="item.type === 'ENTRADA'" class="badge bg-success">{{item.type}}</span>
                   <span *ngIf="item.type === 'SALIDA'" class="badge bg-danger">{{item.type}}</span>
                 </td>
-                <td>{{item.total|currency}}</td>
+                <td>{{item.amount|currency}}</td>
                 <td class="text-end">
                   <button type="button" class="btn btn-danger btn-sm">
                     <fa-icon [icon]="faTrashAlt"></fa-icon>
