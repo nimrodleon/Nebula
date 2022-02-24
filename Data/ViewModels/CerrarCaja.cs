@@ -8,7 +8,7 @@
         public decimal TotalContabilizado { get; set; }
 
         /// <summary>
-        /// Monto para el día siguiente.
+        /// Monto para el siguiente turno.
         /// </summary>
         public decimal TotalCierre { get; set; }
     }

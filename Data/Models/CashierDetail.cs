@@ -1,6 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Nebula.Data.Models
 {
@@ -15,74 +13,67 @@ namespace Nebula.Data.Models
     /// </summary>
     public class CashierDetail
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
-        /// Clave foránea CajaDiaria.
+        /// Identificador CajaDiaria.
         /// </summary>
-        public int? CajaDiariaId { get; set; }
-
-        /// <summary>
-        /// Propiedad de Relación con Caja diaria.
-        /// </summary>
-        [ForeignKey("CajaDiariaId")]
-        public CajaDiaria CajaDiaria { get; set; }
-
-        /// <summary>
-        /// Clave foránea Factura.
-        /// </summary>
-        public int? InvoiceId { get; set; }
-
-        /// <summary>
-        /// Propiedad de Relación con Factura.
-        /// </summary>
-        [ForeignKey("InvoiceId")]
-        public Invoice Invoice { get; set; }
-
-        /// <summary>
-        /// Tipo de Operación.
-        /// </summary>
-        public TypeOperation? TypeOperation { get; set; }
-
-        /// <summary>
-        /// Fecha de registro.
-        /// </summary>
-        [DataType((DataType.Date))]
-        public DateTime StartDate { get; set; }
+        public string CajaDiaria { get; set; }
 
         /// <summary>
         /// Serie y Número de documento.
         /// </summary>
-        [MaxLength(250)]
-        public string Document { get; set; }
+        public string Document { get; set; } = "-";
 
         /// <summary>
         /// Nombre Contacto.
         /// </summary>
-        [MaxLength(250)]
-        public string Contact { get; set; }
+        public string Contact { get; set; } = "-";
 
         /// <summary>
         /// Observación de la Operación.
         /// </summary>
-        [MaxLength(250)]
-        public string Glosa { get; set; }
-
-        /// <summary>
-        /// Medios de Pago.
-        /// </summary>
-        public int? PaymentMethod { get; set; }
+        public string Remark { get; set; } = "-";
 
         /// <summary>
         /// Movimiento de efectivo,
-        /// (Entrada|Salida).
+        /// (ENTRADA|SALIDA).
         /// </summary>
-        [MaxLength(250)]
         public string Type { get; set; }
+
+        /// <summary>
+        /// Tipo de Operación.
+        /// </summary>
+        public TypeOperation TypeOperation { get; set; }
+
+        /// <summary>
+        /// Forma de Pago (Credito|Contado).
+        /// </summary>
+        public string FormaPago { get; set; }
 
         /// <summary>
         /// Monto de la Operación.
         /// </summary>
-        public decimal? Total { get; set; }
+        public decimal Amount { get; set; }
+
+        /// <summary>
+        /// Hora de la Operación.
+        /// </summary>
+        public string Hour { get; set; } = DateTime.Now.ToString("HH:mm");
+
+        /// <summary>
+        /// Fecha de Operación.
+        /// </summary>
+        public string CreatedAt { get; set; } = DateTime.Now.ToString("yyyy-MM-dd");
+
+        /// <summary>
+        /// Año de registro.
+        /// </summary>
+        public string Year { get; set; } = DateTime.Now.ToString("yyyy");
+
+        /// <summary>
+        /// Mes de registro.
+        /// </summary>
+        public string Month { get; set; } = DateTime.Now.ToString("MM");
     }
 }

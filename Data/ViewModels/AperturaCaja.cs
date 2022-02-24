@@ -11,5 +11,10 @@
         /// Total monto apertura.
         /// </summary>
         public decimal Total { get; set; }
+
+        /// <summary>
+        /// Turno Operación.
+        /// </summary>
+        public string Turno { get; set; }
     }
 }

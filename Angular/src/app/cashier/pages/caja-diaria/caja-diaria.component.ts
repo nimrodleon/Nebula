@@ -2,10 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {faBars, faPlus, faSyncAlt, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import * as moment from 'moment';
+import {InvoiceSerie} from 'src/app/system/interfaces';
+import {InvoiceSerieService} from 'src/app/system/services';
 import {CajaDiariaService} from '../../services';
 import {CajaDiaria} from '../../interfaces';
-import {InvoiceSerie} from '../../../system/interfaces';
-import {InvoiceSerieService} from '../../../system/services';
 
 declare var bootstrap: any;
 
