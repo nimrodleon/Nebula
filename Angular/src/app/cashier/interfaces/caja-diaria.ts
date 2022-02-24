@@ -6,6 +6,7 @@ export class CajaDiaria {
     public totalApertura: number = 0, // Monto Apertura.
     public totalContabilizado: number = 0, // Monto Contabilizado durante el dia.
     public totalCierre: number = 0, // Monto para el dia siguiente.
-    public turno: string = '') {
+    public turno: string = '', // turno del trabajador.
+    public createdAt: any = undefined) {
   }
 }

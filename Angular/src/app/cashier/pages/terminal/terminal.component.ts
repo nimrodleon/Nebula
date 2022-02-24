@@ -69,8 +69,9 @@ export class TerminalComponent implements OnInit {
     this.activatedRoute.paramMap.subscribe(params => {
       this.cajaDiariaId = Number(params.get('id'));
       // cargar caja diaria.
-      this.cajaDiariaService.show(this.cajaDiariaId)
-        .subscribe(result => this.cajaDiaria = result);
+      // TODO: corregir esta linea de código.
+      // this.cajaDiariaService.show(this.cajaDiariaId)
+      //   .subscribe(result => this.cajaDiaria = result);
     });
     // buscador de clientes.
     const clientId = jQuery('#clientId')

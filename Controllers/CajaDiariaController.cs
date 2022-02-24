@@ -25,7 +25,7 @@ namespace Nebula.Controllers
         {
             using var session = _context.Store.OpenAsyncSession();
             List<CajaDiaria> cajaDiarias = await session.Query<CajaDiaria>()
-                .Where(m => m.Year.Equals(model.Year) && m.Month.Equals(m.Month))
+                .Where(m => m.Year == model.Year && m.Month == model.Month)
                 .OrderByDescending(m => m.CreatedAt)
                 .ToListAsync();
             return Ok(cajaDiarias);
@@ -57,6 +57,7 @@ namespace Nebula.Controllers
                 Turno = model.Turno
             };
             await session.StoreAsync(cajaDiaria);
+            await session.SaveChangesAsync();
 
             // registrar apertura de caja.
             var detalleCaja = new CashierDetail()
@@ -70,8 +71,6 @@ namespace Nebula.Controllers
                 Amount = model.Total
             };
             await session.StoreAsync(detalleCaja);
-
-            // guardar todos los cambios.
             await session.SaveChangesAsync();
 
             return Ok(new
