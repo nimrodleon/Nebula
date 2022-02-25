@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <a class="navbar-brand" [routerLink]="['/cashier/detail', cajaDiariaId]">
       <fa-icon [icon]="faThList" class="text-success me-1"></fa-icon>
-      <span class="text-uppercase">{{cajaDiaria?.terminal}}</span>
+      <span class="text-uppercase">{{title}}</span>
     </a>
     <div class="collapse navbar-collapse">
       <form class="d-none d-sm-block">
@@ -10,7 +10,7 @@
           <span class="input-group-text">
             <fa-icon [icon]="faBarcode"></fa-icon>
           </span>
-          <input class="form-control" type="search" placeholder="Código de barra">
+          <input id="barcode" type="text" class="form-control" placeholder="[F2] Código de barra">
         </div>
       </form>
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">

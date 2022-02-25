@@ -9,13 +9,13 @@ import Swal from 'sweetalert2';
 import {environment} from 'src/environments/environment';
 import {ProductService} from 'src/app/products/services';
 import {deleteConfirm, ResponseData} from 'src/app/global/interfaces';
-import {Product} from '../../../products/interfaces';
-import {Contact} from '../../../contact/interfaces';
+import {Product} from 'src/app/products/interfaces';
+import {Contact} from 'src/app/contact/interfaces';
 import {CajaDiaria, CashierDetail, Sale} from '../../interfaces';
 import {CajaDiariaService} from '../../services';
-import {Configuration} from '../../../system/interfaces';
-import {ConfigurationService} from '../../../system/services';
-import {ContactService} from '../../../contact/services';
+import {Configuration} from 'src/app/system/interfaces';
+import {ConfigurationService} from 'src/app/system/services';
+import {ContactService} from 'src/app/contact/services';
 
 declare var jQuery: any;
 declare var bootstrap: any;
@@ -55,6 +55,7 @@ export class TerminalComponent implements OnInit {
   products: Array<Product> = new Array<Product>();
   sale: Sale = new Sale();
   toastText: string = '';
+  title: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -68,10 +69,13 @@ export class TerminalComponent implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe(params => {
       this.cajaDiariaId = params.get('id') || '';
-      // cargar caja diaria.
-      // TODO: corregir esta linea de código.
-      // this.cajaDiariaService.show(this.cajaDiariaId)
-      //   .subscribe(result => this.cajaDiaria = result);
+      this.cajaDiariaService.show(this.cajaDiariaId)
+        .subscribe(result => {
+          this.cajaDiaria = result;
+          // cargar título de la terminal.
+          const arr = result.terminal.split(':');
+          this.title = arr[arr.length - 1];
+        });
     });
     // buscador de clientes.
     const clientId = jQuery('#clientId')
@@ -95,6 +99,11 @@ export class TerminalComponent implements OnInit {
         clientId.val(null).trigger('change');
       }
     });
+    // shortcode código de barra.
+    const body: any = document.querySelector('body');
+    body.addEventListener('keydown', (e: any) => {
+      if (e.key === 'F2') (document.querySelector('#barcode') as any).focus();
+    });
     // cargar valor inicial.
     this.sale = new Sale();
     // cargar parámetros del configuración.
@@ -115,22 +124,18 @@ export class TerminalComponent implements OnInit {
   private getDefaultParams(): void {
     this.configurationService.show().subscribe(result => {
       this.configuration = result;
-      // cargar cliente por defecto.
-      // TODO: corregir esta linea de código.
-      // this.contactService.show(result.contactId).subscribe(result => {
-      //   this.sale.contactId = result.id;
-      //   const newOption = new Option(`${result.document} - ${result.name}`,
-      //     <any>result.id, true, true);
-      //   jQuery('#clientId').append(newOption).trigger('change');
-      // });
+      this.contactService.show(result.contactId).subscribe(result => {
+        this.sale.contactId = result.id;
+        const newOption = new Option(`${result.document} - ${result.name}`, <any>result.id, true, true);
+        jQuery('#clientId').append(newOption).trigger('change');
+      });
     });
   }
 
   // buscar productos.
   public searchProducts(): void {
-    // TODO: corregir esta linea de código.
-    // this.productService.terminal(this.queryProduct.value)
-    //   .subscribe(result => this.products = result);
+    this.productService.index(this.queryProduct.value)
+      .subscribe(result => this.products = result);
   }
 
   // agregar nuevo producto.
