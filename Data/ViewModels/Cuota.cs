@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Nebula.Data.ViewModels
+﻿namespace Nebula.Data.ViewModels
 {
     /// <summary>
     /// Cuota de Créditos.
@@ -17,7 +15,7 @@ namespace Nebula.Data.ViewModels
         /// <summary>
         /// Fecha de vencimiento.
         /// </summary>
-        public DateTime EndDate { get; set; }
+        public string EndDate { get; set; }
 
         /// <summary>
         /// Monto prometido.

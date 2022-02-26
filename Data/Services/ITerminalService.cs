@@ -7,6 +7,6 @@ namespace Nebula.Data.Services
     public interface ITerminalService
     {
         public void SetModel(Venta model);
-        public Task<Invoice> SaveInvoice(int cajaDiaria);
+        public Task<InvoiceSale> SaveInvoice(int cajaDiaria);
     }
 }

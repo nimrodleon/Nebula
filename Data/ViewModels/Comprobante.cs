@@ -41,7 +41,7 @@ namespace Nebula.Data.ViewModels
         /// <summary>
         /// Configurar cabecera de venta.
         /// </summary>
-        public Invoice GetInvoice(Configuration config, Contact client)
+        public InvoiceSale GetInvoice(Configuration config, Contact client)
         {
             CalcImporteVenta();
 
@@ -63,7 +63,7 @@ namespace Nebula.Data.ViewModels
             }
 
             // Devolver Configuración Factura.
-            var invoice = new Invoice()
+            var invoice = new InvoiceSale()
             {
                 DocType = DocType,
                 TipOperacion = TypeOperation,

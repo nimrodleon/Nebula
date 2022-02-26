@@ -1,14 +1,14 @@
 ﻿namespace Nebula.Data.ViewModels
 {
     /// <summary>
-    /// modelo para el punto de venta.
+    /// items de productos.
     /// </summary>
     public class CpeDetail
     {
         /// <summary>
         /// Id del producto.
         /// </summary>
-        public int ProductId { get; set; }
+        public string ProductId { get; set; }
 
         /// <summary>
         /// Unidad de Medida.

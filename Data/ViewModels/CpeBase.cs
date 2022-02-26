@@ -4,15 +4,18 @@ using Nebula.Data.Models;
 
 namespace Nebula.Data.ViewModels
 {
+    /// <summary>
+    /// Cabecera comprobante.
+    /// </summary>
     public class CpeBase
     {
         /// <summary>
         /// Id del Contacto.
         /// </summary>
-        public int ContactId { get; set; }
+        public string ContactId { get; set; }
 
         /// <summary>
-        /// Tipo documento.
+        /// Tipo documento (FACTURA|BOLETA|NOTA).
         /// </summary>
         public string DocType { get; set; }
 
@@ -37,11 +40,6 @@ namespace Nebula.Data.ViewModels
         public string Remark { get; set; }
 
         /// <summary>
-        /// Tipo comprobante #COMPRA/VENTA.
-        /// </summary>
-        public string InvoiceType { get; set; } = "VENTA";
-
-        /// <summary>
         /// Detalle de Venta.
         /// </summary>
         public List<CpeDetail> Details { get; set; }
@@ -52,9 +50,9 @@ namespace Nebula.Data.ViewModels
         public List<Cuota> Cuotas { get; set; }
 
         /// <summary>
-        /// Id del Comprobante.
+        /// ID del Comprobante.
         /// </summary>
-        public int? InvoiceId { get; set; }
+        public string InvoiceSale { get; set; }
 
         /// <summary>
         /// calcular importe de venta.
@@ -76,9 +74,10 @@ namespace Nebula.Data.ViewModels
         /// <summary>
         /// Configurar Detalle de Facturas.
         /// </summary>
-        public List<InvoiceDetail> GetInvoiceDetail(int invoice)
+        /// <param name="invoice">ID del comprobante</param>
+        public List<InvoiceSaleDetail> GetInvoiceDetail(string invoice)
         {
-            var invoiceDetails = new List<InvoiceDetail>();
+            var invoiceSaleDetails = new List<InvoiceSaleDetail>();
             Details.ForEach(item =>
             {
                 // Tributo: Afectación al IGV por ítem.
@@ -109,9 +108,10 @@ namespace Nebula.Data.ViewModels
                 }
 
                 // agregar items al comprobante.
-                invoiceDetails.Add(new InvoiceDetail()
+                invoiceSaleDetails.Add(new InvoiceSaleDetail()
                 {
-                    InvoiceId = invoice,
+                    Id = string.Empty,
+                    InvoiceSale = invoice,
                     CodUnidadMedida = item.CodUnidadMedida,
                     CtdUnidadItem = item.Quantity,
                     CodProducto = item.ProductId.ToString(),
@@ -139,13 +139,14 @@ namespace Nebula.Data.ViewModels
                     MtoValorVentaItem = item.MtoBaseIgvItem
                 });
             });
-            return invoiceDetails;
+            return invoiceSaleDetails;
         }
 
         /// <summary>
         /// Lista de Tributos.
         /// </summary>
-        public List<Tributo> GetTributo(int invoiceId)
+        /// <param name="invoice">ID del comprobante</param>
+        public List<TributoSale> GetTributo(string invoice)
         {
             bool icbper = false;
             decimal opGravada = 0;
@@ -176,12 +177,13 @@ namespace Nebula.Data.ViewModels
                 }
             });
 
-            var tributos = new List<Tributo>();
+            var tributos = new List<TributoSale>();
             if (opGratuita > 0)
             {
-                tributos.Add(new Tributo()
+                tributos.Add(new TributoSale()
                 {
-                    InvoiceId = invoiceId,
+                    Id = string.Empty,
+                    InvoiceSale = invoice,
                     IdeTributo = "9996", NomTributo = "GRA", CodTipTributo = "FRE",
                     MtoBaseImponible = opGratuita, MtoTributo = 0,
                     Year = DateTime.Now.ToString("yyyy"),
@@ -191,9 +193,10 @@ namespace Nebula.Data.ViewModels
 
             if (opExonerada > 0)
             {
-                tributos.Add(new Tributo()
+                tributos.Add(new TributoSale()
                 {
-                    InvoiceId = invoiceId,
+                    Id = string.Empty,
+                    InvoiceSale = invoice,
                     IdeTributo = "9997", NomTributo = "EXO", CodTipTributo = "VAT",
                     MtoBaseImponible = opExonerada, MtoTributo = 0,
                     Year = DateTime.Now.ToString("yyyy"),
@@ -201,9 +204,10 @@ namespace Nebula.Data.ViewModels
                 });
             }
 
-            tributos.Add(new Tributo()
+            tributos.Add(new TributoSale()
             {
-                InvoiceId = invoiceId,
+                Id = string.Empty,
+                InvoiceSale = invoice,
                 IdeTributo = "1000", NomTributo = "IGV", CodTipTributo = "VAT",
                 MtoBaseImponible = opGravada, MtoTributo = totalIgv,
                 Year = DateTime.Now.ToString("yyyy"),
@@ -212,9 +216,10 @@ namespace Nebula.Data.ViewModels
 
             if (icbper)
             {
-                tributos.Add(new Tributo()
+                tributos.Add(new TributoSale()
                 {
-                    InvoiceId = invoiceId,
+                    Id = string.Empty,
+                    InvoiceSale = invoice,
                     IdeTributo = "7152", NomTributo = "ICBPER", CodTipTributo = "OTH",
                     MtoBaseImponible = 0, MtoTributo = totalIcbper,
                     Year = DateTime.Now.ToString("yyyy"),
@@ -228,29 +233,26 @@ namespace Nebula.Data.ViewModels
         /// <summary>
         /// Configurar Cuentas por cobrar.
         /// </summary>
-        public List<InvoiceAccount> GetInvoiceAccounts(Invoice invoice)
+        /// <param name="invoiceSale">Comprobante de venta</param>
+        public List<InvoiceSaleAccount> GetInvoiceAccounts(InvoiceSale invoiceSale)
         {
-            string accountType = string.Empty;
-            if (invoice.InvoiceType.Equals("VENTA")) accountType = "COBRAR";
-            if (invoice.InvoiceType.Equals("COMPRA")) accountType = "PAGAR";
-            var invoiceAccounts = new List<InvoiceAccount>();
+            var invoiceAccounts = new List<InvoiceSaleAccount>();
             Cuotas.ForEach(item =>
             {
-                var cuota = new InvoiceAccount()
+                var cuota = new InvoiceSaleAccount()
                 {
-                    InvoiceId = invoice.Id,
-                    Serie = invoice.Serie,
-                    Number = invoice.Number,
-                    AccountType = accountType,
+                    Id = string.Empty,
+                    InvoiceSale = invoiceSale.Id,
+                    Serie = invoiceSale.Serie,
+                    Number = invoiceSale.Number,
                     Status = "PENDIENTE",
                     Cuota = item.NumCuota,
                     Amount = item.Amount,
                     Balance = item.Amount,
                     EndDate = item.EndDate,
-                    Year = item.EndDate.ToString("yyyy"),
-                    Month = item.EndDate.ToString("MM")
+                    Year = Convert.ToDateTime(item.EndDate).ToString("yyyy"),
+                    Month = Convert.ToDateTime(item.EndDate).ToString("MM")
                 };
-                if (item.Id != null) cuota.Id = Guid.Parse(item.Id);
                 invoiceAccounts.Add(cuota);
             });
             return invoiceAccounts;

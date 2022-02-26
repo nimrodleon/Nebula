@@ -11,43 +11,43 @@ namespace Nebula.Data.ViewModels
         /// <summary>
         /// Medios de Pago.
         /// </summary>
-        public int PaymentMethod { get; set; }
+        public string FormaPago { get; set; }
 
         /// <summary>
         /// Monto Cobrado.
         /// </summary>
-        public decimal? MontoTotal { get; set; }
+        public decimal MontoTotal { get; set; }
 
         /// <summary>
         /// Vuelto para el Cliente.
         /// </summary>
-        public decimal? Vuelto { get; set; }
+        public decimal Vuelto { get; set; }
 
         /// <summary>
         /// Configurar cabecera de venta.
         /// </summary>
-        public Invoice GetInvoice(Configuration config, Contact client)
+        /// <param name="config">Configuración del sistema</param>
+        /// <param name="contact">Información de contacto</param>
+        public InvoiceSale GetInvoice(Configuration config, Contact contact)
         {
             CalcImporteVenta();
-            // Devolver Configuración Factura.
-            return new Invoice()
+            // Devolver Configuración comprobante de venta.
+            return new InvoiceSale()
             {
                 DocType = DocType,
                 TipOperacion = "0101",
                 FecEmision = DateTime.Now.ToString("yyyy-MM-dd"),
                 HorEmision = DateTime.Now.ToString("HH:mm:ss"),
                 CodLocalEmisor = config.CodLocalEmisor,
-                FormaPago = "Contado",
-                // TODO: corregir esta linea de código. se ha cambiado el tipo de datos de int a string.
-                // ContactId = client.Id,
-                TipDocUsuario = client.DocType.ToString(),
-                NumDocUsuario = client.Document,
-                RznSocialUsuario = client.Name,
+                FormaPago = FormaPago,
+                ContactId = contact.Id,
+                TipDocUsuario = contact.DocType,
+                NumDocUsuario = contact.Document,
+                RznSocialUsuario = contact.Name,
                 TipMoneda = config.TipMoneda,
                 SumTotValVenta = SumTotValVenta,
                 SumTotTributos = SumTotTributos,
                 SumImpVenta = SumImpVenta,
-                InvoiceType = "VENTA",
                 Year = DateTime.Now.ToString("yyyy"),
                 Month = DateTime.Now.ToString("MM"),
             };

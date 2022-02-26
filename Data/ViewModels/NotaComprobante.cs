@@ -84,32 +84,32 @@ namespace Nebula.Data.ViewModels
         /// <summary>
         /// Configurar cabecera de Nota.
         /// </summary>
-        public InvoiceNote GetInvoiceNote(Invoice invoice)
+        public InvoiceNote GetInvoiceNote(InvoiceSale invoiceSale)
         {
             CalcImporteVenta();
 
             var invoiceNote = new InvoiceNote()
             {
-                InvoiceId = invoice.Id,
+                InvoiceId = invoiceSale.Id,
                 DocType = DocType,
-                InvoiceType = invoice.InvoiceType,
-                TipOperacion = invoice.TipOperacion,
-                CodLocalEmisor = invoice.CodLocalEmisor,
-                TipDocUsuario = invoice.TipDocUsuario,
-                NumDocUsuario = invoice.NumDocUsuario,
-                RznSocialUsuario = invoice.RznSocialUsuario,
-                TipMoneda = invoice.TipMoneda,
+                InvoiceType = invoiceSale.InvoiceType,
+                TipOperacion = invoiceSale.TipOperacion,
+                CodLocalEmisor = invoiceSale.CodLocalEmisor,
+                TipDocUsuario = invoiceSale.TipDocUsuario,
+                NumDocUsuario = invoiceSale.NumDocUsuario,
+                RznSocialUsuario = invoiceSale.RznSocialUsuario,
+                TipMoneda = invoiceSale.TipMoneda,
                 CodMotivo = CodMotivo,
                 DesMotivo = DesMotivo,
-                NumDocAfectado = $"{invoice.Serie}-{invoice.Number}",
+                NumDocAfectado = $"{invoiceSale.Serie}-{invoiceSale.Number}",
                 SumTotTributos = SumTotTributos,
                 SumTotValVenta = SumTotValVenta,
                 SumPrecioVenta = 0,
                 SumImpVenta = SumImpVenta
             };
 
-            if (invoice.DocType.Equals("FACTURA")) invoiceNote.TipDocAfectado = "01";
-            if (invoice.DocType.Equals("BOLETA")) invoiceNote.TipDocAfectado = "03";
+            if (invoiceSale.DocType.Equals("FACTURA")) invoiceNote.TipDocAfectado = "01";
+            if (invoiceSale.DocType.Equals("BOLETA")) invoiceNote.TipDocAfectado = "03";
 
             // configurar fecha de registro.
             string year = DateTime.Now.ToString("yyyy");

@@ -36,12 +36,12 @@ namespace Nebula.Data
         /// <summary>
         /// Cabecera Factura.
         /// </summary>
-        public DbSet<Invoice> Invoices { get; set; }
+        public DbSet<InvoiceSale> Invoices { get; set; }
 
         /// <summary>
         /// Detalle Factura.
         /// </summary>
-        public DbSet<InvoiceDetail> InvoiceDetails { get; set; }
+        public DbSet<InvoiceSaleDetail> InvoiceDetails { get; set; }
 
         /// <summary>
         /// Catalogo Tipos de Operación para facturar.
@@ -96,7 +96,7 @@ namespace Nebula.Data
         /// <summary>
         /// Pendientes de Cobro/Pago.
         /// </summary>
-        public DbSet<InvoiceAccount> InvoiceAccounts { get; set; }
+        public DbSet<InvoiceSaleAccount> InvoiceAccounts { get; set; }
 
         /// <summary>
         /// Configuración del sistema.
@@ -111,7 +111,7 @@ namespace Nebula.Data
         /// <summary>
         /// Tributos Generales de la Factura.
         /// </summary>
-        public DbSet<Tributo> Tributos { get; set; }
+        public DbSet<TributoSale> Tributos { get; set; }
 
         /// <summary>
         /// Configurar SoftDelete.
@@ -169,8 +169,8 @@ namespace Nebula.Data
             modelBuilder.Entity<Product>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<CashierDetail>().Property<bool>("SoftDeleted");
             modelBuilder.Entity<CashierDetail>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
-            modelBuilder.Entity<Invoice>().Property<bool>("SoftDeleted");
-            modelBuilder.Entity<Invoice>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
+            modelBuilder.Entity<InvoiceSale>().Property<bool>("SoftDeleted");
+            modelBuilder.Entity<InvoiceSale>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             modelBuilder.Entity<InvoiceNote>().Property<bool>("SoftDeleted");
             modelBuilder.Entity<InvoiceNote>().HasQueryFilter(m => EF.Property<bool>(m, "SoftDeleted") == false);
             // modelBuilder.Entity<Warehouse>().Property<bool>("SoftDeleted");

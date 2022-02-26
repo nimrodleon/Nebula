@@ -113,7 +113,7 @@ namespace Nebula.Data.Services
         /// <summary>
         /// Comprobar si Existe operaciones gratuitas.
         /// </summary>
-        private bool ExistFreeOperations(List<Tributo> tributos)
+        private bool ExistFreeOperations(List<TributoSale> tributos)
         {
             bool result = false;
             tributos.ForEach(item => result = item.IdeTributo.Equals("9996"));
@@ -123,30 +123,30 @@ namespace Nebula.Data.Services
         /// <summary>
         /// Configurar cabecera del comprobante.
         /// </summary>
-        private sfs.Invoice GetInvoice(Invoice invoice)
+        private sfs.Invoice GetInvoice(InvoiceSale invoiceSale)
         {
             return new sfs.Invoice()
             {
-                tipOperacion = invoice.TipOperacion,
-                fecEmision = invoice.FecEmision,
-                horEmision = invoice.HorEmision,
-                fecVencimiento = invoice.FecVencimiento,
+                tipOperacion = invoiceSale.TipOperacion,
+                fecEmision = invoiceSale.FecEmision,
+                horEmision = invoiceSale.HorEmision,
+                fecVencimiento = invoiceSale.FecVencimiento,
                 codLocalEmisor = _configuration.CodLocalEmisor,
-                tipDocUsuario = invoice.TipDocUsuario,
-                numDocUsuario = invoice.NumDocUsuario,
-                rznSocialUsuario = invoice.RznSocialUsuario,
-                tipMoneda = invoice.TipMoneda,
-                sumTotTributos = Convert.ToDecimal(invoice.SumTotTributos).ToString("N2"),
-                sumTotValVenta = Convert.ToDecimal(invoice.SumTotValVenta).ToString("N2"),
-                sumPrecioVenta = Convert.ToDecimal(invoice.SumImpVenta).ToString("N2"),
-                sumImpVenta = Convert.ToDecimal(invoice.SumImpVenta).ToString("N2"),
+                tipDocUsuario = invoiceSale.TipDocUsuario,
+                numDocUsuario = invoiceSale.NumDocUsuario,
+                rznSocialUsuario = invoiceSale.RznSocialUsuario,
+                tipMoneda = invoiceSale.TipMoneda,
+                sumTotTributos = Convert.ToDecimal(invoiceSale.SumTotTributos).ToString("N2"),
+                sumTotValVenta = Convert.ToDecimal(invoiceSale.SumTotValVenta).ToString("N2"),
+                sumPrecioVenta = Convert.ToDecimal(invoiceSale.SumImpVenta).ToString("N2"),
+                sumImpVenta = Convert.ToDecimal(invoiceSale.SumImpVenta).ToString("N2"),
             };
         }
 
         /// <summary>
         /// Configurar detalle del comprobante.
         /// </summary>
-        private List<sfs.InvoiceDetail> GetInvoiceDetail(List<InvoiceDetail> details)
+        private List<sfs.InvoiceDetail> GetInvoiceDetail(List<InvoiceSaleDetail> details)
         {
             var detalle = new List<sfs.InvoiceDetail>();
             details.ForEach(item =>
@@ -186,7 +186,7 @@ namespace Nebula.Data.Services
         /// <summary>
         /// Configurar Tributos del Comprobante.
         /// </summary>
-        private List<sfs.Tributo> GetTributos(List<Tributo> tributos)
+        private List<sfs.Tributo> GetTributos(List<TributoSale> tributos)
         {
             var result = new List<sfs.Tributo>();
             tributos.ForEach(item =>
@@ -206,10 +206,10 @@ namespace Nebula.Data.Services
         /// <summary>
         /// Configurar Leyendas del Comprobante.
         /// </summary>
-        private List<sfs.Leyenda> GetLeyendas(Invoice invoice)
+        private List<sfs.Leyenda> GetLeyendas(InvoiceSale invoiceSale)
         {
             var leyendas = new List<sfs.Leyenda>();
-            if (ExistFreeOperations(invoice.Tributos))
+            if (ExistFreeOperations(invoiceSale.Tributos))
             {
                 leyendas.Add(new sfs.Leyenda()
                 {
@@ -221,7 +221,7 @@ namespace Nebula.Data.Services
             leyendas.Add(new sfs.Leyenda()
             {
                 codLeyenda = "1000",
-                desLeyenda = new NumberToLetters(Convert.ToDecimal(invoice.SumImpVenta)).ToString()
+                desLeyenda = new NumberToLetters(Convert.ToDecimal(invoiceSale.SumImpVenta)).ToString()
             });
             return leyendas;
         }
@@ -229,30 +229,30 @@ namespace Nebula.Data.Services
         /// <summary>
         /// Configurar forma de pago.
         /// </summary>
-        private sfs.DatoPago GetDatoPago(Invoice invoice)
+        private sfs.DatoPago GetDatoPago(InvoiceSale invoiceSale)
         {
             return new sfs.DatoPago()
             {
-                formaPago = invoice.FormaPago,
-                mtoNetoPendientePago = Convert.ToDecimal(invoice.SumImpVenta).ToString("N2"),
-                tipMonedaMtoNetoPendientePago = invoice.TipMoneda
+                formaPago = invoiceSale.FormaPago,
+                mtoNetoPendientePago = Convert.ToDecimal(invoiceSale.SumImpVenta).ToString("N2"),
+                tipMonedaMtoNetoPendientePago = invoiceSale.TipMoneda
             };
         }
 
         /// <summary>
         /// Configurar Cuentas por cobrar.
         /// </summary>
-        private List<sfs.DetallePago> GetDetallePagos(Invoice invoice)
+        private List<sfs.DetallePago> GetDetallePagos(InvoiceSale invoiceSale)
         {
             var detallePagos = new List<sfs.DetallePago>();
-            invoice.InvoiceAccounts.OrderBy(m => m.Cuota).ToList()
+            invoiceSale.InvoiceAccounts.OrderBy(m => m.Cuota).ToList()
                 .ForEach(item =>
                 {
                     detallePagos.Add(new sfs.DetallePago()
                     {
                         mtoCuotaPago = Convert.ToDecimal(item.Amount).ToString("N2"),
                         fecCuotaPago = item.EndDate.ToString("yyyy-MM-dd"),
-                        tipMonedaCuotaPago = invoice.TipMoneda,
+                        tipMonedaCuotaPago = invoiceSale.TipMoneda,
                     });
                 });
             return detallePagos;
