@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using CpeLibPE.Facturador;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Nebula.Data.Helpers;
 using Nebula.Data.Models;
@@ -16,10 +15,10 @@ namespace Nebula.Data.Services
     public class CpeService : ICpeService
     {
         private readonly ILogger _logger;
-        private readonly ApplicationDbContext _context;
+        private readonly IRavenDbContext _context;
         private Configuration _configuration;
 
-        public CpeService(ILogger<CpeService> logger, ApplicationDbContext context)
+        public CpeService(ILogger<CpeService> logger, IRavenDbContext context)
         {
             _logger = logger;
             _context = context;
@@ -30,7 +29,8 @@ namespace Nebula.Data.Services
         /// </summary>
         private async Task GetConfiguration()
         {
-            _configuration = await _context.Configuration.AsNoTracking().FirstAsync();
+            using var session = _context.Store.OpenAsyncSession();
+            _configuration = await session.LoadAsync<Configuration>("default");
             _logger.LogInformation($"Configuración: {JsonSerializer.Serialize(_configuration)}");
         }
 
@@ -39,48 +39,56 @@ namespace Nebula.Data.Services
         /// </summary>
         public async Task<bool> CreateBoletaJson(int id)
         {
-            await GetConfiguration();
-            _logger.LogInformation("*** CreateBoletaJson ***");
-            var invoice = await _context.Invoices.AsNoTracking()
-                .Include(m => m.InvoiceDetails)
-                .Include(m => m.Tributos)
-                .FirstOrDefaultAsync(m => m.Id.Equals(id));
-            _logger.LogInformation(JsonSerializer.Serialize(invoice));
-            var cabecera = GetInvoice(invoice);
-            var detalle = GetInvoiceDetail(invoice.InvoiceDetails);
-            var tributos = GetTributos(invoice.Tributos);
-            var leyendas = GetLeyendas(invoice);
-
-            // Configurar estructura de la boleta.
-            var boleta = new JsonBoletaParser()
-            {
-                cabecera = cabecera,
-                detalle = detalle,
-                tributos = tributos,
-                leyendas = leyendas
-            };
-
-            // Información del comprobante.
-            _logger.LogInformation(JsonSerializer.Serialize(boleta));
-
-            // Escribir datos en el Disco duro.
-            string fileName = Path.Combine("DATA", $"{_configuration.Ruc}-03-{invoice.Serie}-{invoice.Number}.json");
-            boleta.CreateJson(Path.Combine(_configuration.FileSunat, fileName));
-            return File.Exists(Path.Combine(_configuration.FileSunat, fileName));
+            // TODO: verificar.
+            // await GetConfiguration();
+            // _logger.LogInformation("*** CreateBoletaJson ***");
+            // var invoice = await _context.Invoices.AsNoTracking()
+            //     .Include(m => m.InvoiceDetails)
+            //     .Include(m => m.Tributos)
+            //     .FirstOrDefaultAsync(m => m.Id.Equals(id));
+            // _logger.LogInformation(JsonSerializer.Serialize(invoice));
+            // var cabecera = GetInvoice(invoice);
+            // var detalle = GetInvoiceDetail(invoice.InvoiceDetails);
+            // var tributos = GetTributos(invoice.Tributos);
+            // var leyendas = GetLeyendas(invoice);
+            //
+            // // Configurar estructura de la boleta.
+            // var boleta = new JsonBoletaParser()
+            // {
+            //     cabecera = cabecera,
+            //     detalle = detalle,
+            //     tributos = tributos,
+            //     leyendas = leyendas
+            // };
+            //
+            // // Información del comprobante.
+            // _logger.LogInformation(JsonSerializer.Serialize(boleta));
+            //
+            // // Escribir datos en el Disco duro.
+            // string fileName = Path.Combine("DATA", $"{_configuration.Ruc}-03-{invoice.Serie}-{invoice.Number}.json");
+            // boleta.CreateJson(Path.Combine(_configuration.FileSunat, fileName));
+            // return File.Exists(Path.Combine(_configuration.FileSunat, fileName));
+            return false;
         }
 
         /// <summary>
         /// Crear Archivo Json Factura.
         /// </summary>
-        public async Task<bool> CreateFacturaJson(int id)
+        /// <param name="id">ID del comprobante de venta.</param>
+        public async Task<bool> CreateFacturaJson(string id)
         {
             await GetConfiguration();
+            using var session = _context.Store.OpenAsyncSession();
             _logger.LogInformation("*** CreateFacturaJson ***");
+            var invoiceSale = await session.LoadAsync<InvoiceSale>(id);
+
+
             var invoice = await _context.Invoices.AsNoTracking()
                 .Include(m => m.InvoiceDetails)
                 .Include(m => m.Tributos)
                 .Include(m => m.InvoiceAccounts)
                 .FirstOrDefaultAsync(m => m.Id.Equals(id));
+
             _logger.LogInformation(JsonSerializer.Serialize(invoice));
             var cabecera = GetInvoice(invoice);
             var detalle = GetInvoiceDetail(invoice.InvoiceDetails);
@@ -206,10 +214,11 @@ namespace Nebula.Data.Services
         /// <summary>
         /// Configurar Leyendas del Comprobante.
         /// </summary>
-        private List<sfs.Leyenda> GetLeyendas(InvoiceSale invoiceSale)
+        private List<sfs.Leyenda> GetLeyendas(
+            List<TributoSale> tributoSales, InvoiceSale invoiceSale)
         {
             var leyendas = new List<sfs.Leyenda>();
-            if (ExistFreeOperations(invoiceSale.Tributos))
+            if (ExistFreeOperations(tributoSales))
             {
                 leyendas.Add(new sfs.Leyenda()
                 {
@@ -242,17 +251,18 @@ namespace Nebula.Data.Services
         /// <summary>
         /// Configurar Cuentas por cobrar.
         /// </summary>
-        private List<sfs.DetallePago> GetDetallePagos(InvoiceSale invoiceSale)
+        private List<sfs.DetallePago> GetDetallePagos(
+            List<InvoiceSaleAccount> invoiceSaleAccounts, string tipMoneda)
         {
             var detallePagos = new List<sfs.DetallePago>();
-            invoiceSale.InvoiceAccounts.OrderBy(m => m.Cuota).ToList()
+            invoiceSaleAccounts.OrderBy(m => m.Cuota).ToList()
                 .ForEach(item =>
                 {
                     detallePagos.Add(new sfs.DetallePago()
                     {
                         mtoCuotaPago = Convert.ToDecimal(item.Amount).ToString("N2"),
-                        fecCuotaPago = item.EndDate.ToString("yyyy-MM-dd"),
-                        tipMonedaCuotaPago = invoiceSale.TipMoneda,
+                        fecCuotaPago = item.EndDate,
+                        tipMonedaCuotaPago = tipMoneda,
                     });
                 });
             return detallePagos;

@@ -90,9 +90,9 @@ namespace Nebula.Data.ViewModels
 
             var invoiceNote = new InvoiceNote()
             {
-                InvoiceId = invoiceSale.Id,
+                // InvoiceId = invoiceSale.Id,
                 DocType = DocType,
-                InvoiceType = invoiceSale.InvoiceType,
+                // InvoiceType = invoiceSale.InvoiceType,
                 TipOperacion = invoiceSale.TipOperacion,
                 CodLocalEmisor = invoiceSale.CodLocalEmisor,
                 TipDocUsuario = invoiceSale.TipDocUsuario,

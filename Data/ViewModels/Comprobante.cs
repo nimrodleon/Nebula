@@ -54,13 +54,14 @@ namespace Nebula.Data.ViewModels
             if (FormaPago.Equals("Credito"))
                 if (EndDate != null)
                     fecVencimiento = Convert.ToDateTime(EndDate).ToString("yyyy-MM-dd");
-            if (InvoiceType.Equals("COMPRA"))
-            {
-                year = StartDate.ToString("yyyy");
-                month = StartDate.ToString("MM");
-                startDate = StartDate.ToString("yyyy-MM-dd");
-                startTime = "00:00:00";
-            }
+            // TODO: verificar está linea de código.
+            // if (InvoiceType.Equals("COMPRA"))
+            // {
+            //     year = StartDate.ToString("yyyy");
+            //     month = StartDate.ToString("MM");
+            //     startDate = StartDate.ToString("yyyy-MM-dd");
+            //     startTime = "00:00:00";
+            // }
 
             // Devolver Configuración Factura.
             var invoice = new InvoiceSale()
@@ -81,17 +82,18 @@ namespace Nebula.Data.ViewModels
                 SumTotValVenta = SumTotValVenta,
                 SumTotTributos = SumTotTributos,
                 SumImpVenta = SumImpVenta,
-                InvoiceType = InvoiceType,
+                // InvoiceType = InvoiceType,
                 Year = year,
                 Month = month,
             };
 
-            // configurar número y serie de facturación.
-            if (InvoiceType.Equals("COMPRA"))
-            {
-                invoice.Number = Number;
-                invoice.Serie = Serie;
-            }
+            // TODO: verificar está linea de código.
+            // // configurar número y serie de facturación.
+            // if (InvoiceType.Equals("COMPRA"))
+            // {
+            //     invoice.Number = Number;
+            //     invoice.Serie = Serie;
+            // }
 
             return invoice;
         }

@@ -25,9 +25,11 @@ namespace Nebula.Controllers
         public async Task<IActionResult> Index(string type, [FromQuery] VoucherQuery model)
         {
             if (type == null) return BadRequest();
-            var result = from m in _context.InvoiceAccounts.Where(m =>
-                    m.AccountType.Equals(type.ToUpper()) && m.Year.Equals(model.Year) && m.Month.Equals(model.Month))
-                select m;
+            // TODO: verificar.
+            var result = from m in _context.InvoiceAccounts select m;
+            // var result = from m in _context.InvoiceAccounts.Where(m =>
+            //         m.AccountType.Equals(type.ToUpper()) && m.Year.Equals(model.Year) && m.Month.Equals(model.Month))
+            //     select m;
             if (!string.IsNullOrWhiteSpace(model.Query))
                 result = result.Where(m => m.Status.Equals(model.Query.ToUpper()));
             result = result.OrderByDescending(m => m.EndDate);

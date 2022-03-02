@@ -26,9 +26,9 @@ namespace Nebula.Data.ViewModels
         /// <summary>
         /// Configurar cabecera de venta.
         /// </summary>
-        /// <param name="config">Configuración del sistema</param>
+        /// <param name="configuration">Configuración del sistema</param>
         /// <param name="contact">Información de contacto</param>
-        public InvoiceSale GetInvoice(Configuration config, Contact contact)
+        public InvoiceSale GetInvoice(Configuration configuration, Contact contact)
         {
             CalcImporteVenta();
             // Devolver Configuración comprobante de venta.
@@ -38,13 +38,13 @@ namespace Nebula.Data.ViewModels
                 TipOperacion = "0101",
                 FecEmision = DateTime.Now.ToString("yyyy-MM-dd"),
                 HorEmision = DateTime.Now.ToString("HH:mm:ss"),
-                CodLocalEmisor = config.CodLocalEmisor,
+                CodLocalEmisor = configuration.CodLocalEmisor,
                 FormaPago = FormaPago,
                 ContactId = contact.Id,
                 TipDocUsuario = contact.DocType,
                 NumDocUsuario = contact.Document,
                 RznSocialUsuario = contact.Name,
-                TipMoneda = config.TipMoneda,
+                TipMoneda = configuration.TipMoneda,
                 SumTotValVenta = SumTotValVenta,
                 SumTotTributos = SumTotTributos,
                 SumImpVenta = SumImpVenta,
