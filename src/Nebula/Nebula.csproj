@@ -5,6 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Angular\**" />
+    <Content Remove="Angular\**" />
+    <EmbeddedResource Remove="Angular\**" />
+    <None Remove="Angular\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.11">
@@ -19,13 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Angular\src\app\global\pipes" />
-    <Folder Include="Angular\src\app\invoice\pages" />
-    <Folder Include="Angular\src\app\sales\components" />
-    <Folder Include="Angular\src\app\system\components" />
-    <Folder Include="Angular\src\app\system\pages" />
-    <Folder Include="Angular\src\app\user\components" />
-    <Folder Include="Angular\src\app\user\pages" />
     <Folder Include="Data\Migrations" />
   </ItemGroup>
 
