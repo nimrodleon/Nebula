@@ -67,8 +67,7 @@ namespace Nebula
 
             services.AddHttpContextAccessor();
             services.AddSingleton<IRavenDbContext, RavenDbContext>();
-            // services.AddScoped<ITerminalService, TerminalService>();
-            // services.AddScoped<IComprobanteService, ComprobanteService>();
+            services.AddScoped<ISaleService, SaleService>();
             services.AddScoped<ICpeService, CpeService>();
             services.AddSingleton<IUriService>(o =>
             {

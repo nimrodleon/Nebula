@@ -1,12 +1,13 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Nebula.Data;
+using Nebula.Data.Models;
 using Nebula.Data.Services;
 using Nebula.Data.ViewModels;
+using Raven.Client.Documents;
+using Raven.Client.Documents.Linq;
 
 namespace Nebula.Controllers
 {
@@ -15,43 +16,96 @@ namespace Nebula.Controllers
     public class InvoiceSaleController : ControllerBase
     {
         private readonly ILogger _logger;
-        private readonly ApplicationDbContext _context;
-        private readonly IComprobanteService _comprobanteService;
+        private readonly IRavenDbContext _context;
+        private readonly ISaleService _saleService;
         private readonly ICpeService _cpeService;
 
         public InvoiceSaleController(ILogger<InvoiceSaleController> logger,
-            ApplicationDbContext context, IComprobanteService comprobanteService, ICpeService cpeService)
+            IRavenDbContext context, ISaleService saleService, ICpeService cpeService)
         {
             _logger = logger;
             _context = context;
-            _comprobanteService = comprobanteService;
+            _saleService = saleService;
             _cpeService = cpeService;
         }
 
         [HttpGet("Index/{type}")]
-        public async Task<IActionResult> Index(string type, [FromQuery] VoucherQuery model)
+        public async Task<IActionResult> Index([FromQuery] VoucherQuery model)
         {
-            if (type == null) return BadRequest();
-            var result = from m in _context.Invoices.Where(m =>
-                    m.InvoiceType.Equals(type) && m.Year.Equals(model.Year) && m.Month.Equals(model.Month))
+            using var session = _context.Store.OpenAsyncSession();
+            IRavenQueryable<InvoiceSale> invoiceSales = from m in session.Query<InvoiceSale>()
+                    .Where(x => x.Year == model.Year && x.Month == model.Month)
                 select m;
             if (!string.IsNullOrWhiteSpace(model.Query))
-                result = result.Where(m => m.RznSocialUsuario.ToUpper().Contains(model.Query.ToUpper()));
-            result = result.OrderByDescending(m => m.Id);
-            var responseData = await result.AsNoTracking().ToListAsync();
+                invoiceSales = invoiceSales.Search(m => m.RznSocialUsuario, $"*{model.Query.ToUpper()}*");
+            var responseData = await invoiceSales.ToListAsync();
             return Ok(responseData);
         }
 
         [HttpGet("Show/{id}")]
-        public async Task<IActionResult> Show(int id)
+        public async Task<IActionResult> Show(string id)
         {
-            // var result = await _context.Invoices.AsNoTracking()
-            //     .Include(m => m.InvoiceDetails)
-            //     .Include(m => m.Tributos)
-            //     .Include(m => m.InvoiceAccounts)
-            //     .FirstOrDefaultAsync(m => m.Id.Equals(id));
-            // if (result == null) return BadRequest();
-            return Ok();
+            using var session = _context.Store.OpenAsyncSession();
+            var invoiceSale = await session.LoadAsync<InvoiceSale>(id);
+            var invoiceSaleDetails = await session.Query<InvoiceSaleDetail>()
+                .Where(m => m.InvoiceSale == id).ToListAsync();
+            var tributoSales = await session.Query<TributoSale>()
+                .Where(m => m.InvoiceSale == id).ToListAsync();
+            var invoiceSaleAccounts = await session.Query<InvoiceSaleAccount>()
+                .Where(m => m.InvoiceSale == id).ToListAsync();
+            return Ok(new
+            {
+                invoiceSale,
+                invoiceSaleDetails,
+                tributoSales,
+                invoiceSaleAccounts
+            });
+        }
+
+        /// <summary>
+        /// registrar venta rápida.
+        /// </summary>
+        /// <param name="id">ID caja diaria</param>
+        /// <param name="model">Venta</param>
+        /// <returns>IActionResult</returns>
+        [HttpPost("CreateQuickSale/{id}")]
+        public async Task<IActionResult> CreateQuickSale(string id, [FromBody] Venta model)
+        {
+            try
+            {
+                _saleService.SetModel(model);
+                var invoiceSale = await _saleService.CreateQuickSale(id);
+                bool fileExist = false;
+
+                // generar fichero JSON según tipo comprobante.
+                switch (invoiceSale.DocType)
+                {
+                    case "BOLETA":
+                        fileExist = await _cpeService.CreateBoletaJson(invoiceSale.Id);
+                        break;
+                    case "FACTURA":
+                        fileExist = await _cpeService.CreateFacturaJson(invoiceSale.Id);
+                        break;
+                    case "NOTA":
+                        fileExist = true;
+                        break;
+                }
+
+                // Configurar valor de retorno.
+                model.InvoiceSale = invoiceSale.Id;
+                model.Vuelto = model.MontoTotal - model.SumImpVenta;
+
+                return Ok(new
+                {
+                    Ok = fileExist, Data = model,
+                    Msg = $"El comprobante {invoiceSale.Serie}-{invoiceSale.Number} ha sido registrado!"
+                });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return BadRequest(new {Ok = false, Msg = e.Message});
+            }
         }
 
         // /// <summary>
@@ -93,51 +147,5 @@ namespace Nebula.Controllers
         //         return BadRequest(new {Ok = false, Msg = e.Message});
         //     }
         // }
-
-        /// <summary>
-        /// registrar venta rápida.
-        /// </summary>
-        /// <param name="id">ID caja diaria</param>
-        /// <param name="model">Venta</param>
-        /// <returns>IActionResult</returns>
-        [HttpPost("CreateQuickSale/{id}")]
-        public async Task<IActionResult> CreateQuickSale(string id, [FromBody] Venta model)
-        {
-            try
-            {
-                _comprobanteService.SetModel(model);
-                var invoice = await _comprobanteService.CreateQuickSale(id);
-                bool fileExist = false;
-
-                // generar fichero JSON según tipo comprobante.
-                switch (invoice.DocType)
-                {
-                    case "BOLETA":
-                        fileExist = await _cpeService.CreateBoletaJson(invoice.Id);
-                        break;
-                    case "FACTURA":
-                        fileExist = await _cpeService.CreateFacturaJson(invoice.Id);
-                        break;
-                    case "NOTA":
-                        fileExist = true;
-                        break;
-                }
-
-                // Configurar valor de retorno.
-                model.InvoiceId = invoice.Id;
-                model.Vuelto = model.MontoTotal - model.SumImpVenta;
-
-                return Ok(new
-                {
-                    Ok = fileExist, Data = model,
-                    Msg = $"{invoice.Serie} - {invoice.Number} ha sido registrado!"
-                });
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-                return BadRequest(new {Ok = false, Msg = e.Message});
-            }
-        }
     }
 }
