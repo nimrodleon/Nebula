@@ -1,6 +1,6 @@
-export class Tributo {
+export class TributoSale {
   constructor(
-    public id: string | any = null,
+    public id: any = undefined,
     public invoiceId: number | any = null, // Clave foránea.
     public ideTributo: string = '', // Identificador de tributo.
     public nomTributo: string = '', // Nombre de tributo.

@@ -4,7 +4,7 @@ export class CpeDetail {
   private _mtoTriIcbperUnidad: number = 0;
 
   constructor(
-    public productId: number | any = null, // Enviar.
+    public productId: string = '', // Enviar.
     public codUnidadMedida: string = '', // Enviar.
     public codProductoSunat: string = '', // Enviar.
     public description: string = '', // Enviar.

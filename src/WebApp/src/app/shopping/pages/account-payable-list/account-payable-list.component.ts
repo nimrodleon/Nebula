@@ -3,7 +3,7 @@ import {faCoins, faEdit, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg
 import {FormBuilder, FormGroup} from '@angular/forms';
 import * as moment from 'moment';
 import {InvoiceAccountService} from 'src/app/invoice/services';
-import {InvoiceAccount} from 'src/app/invoice/interfaces';
+import {InvoiceSaleAccount} from 'src/app/invoice/interfaces';
 
 declare var bootstrap: any;
 
@@ -17,7 +17,7 @@ export class AccountPayableListComponent implements OnInit {
   faTrashAlt = faTrashAlt;
   faCoins = faCoins;
   faEdit = faEdit;
-  invoiceAccounts: Array<InvoiceAccount> = new Array<InvoiceAccount>();
+  invoiceAccounts: Array<InvoiceSaleAccount> = new Array<InvoiceSaleAccount>();
   queryForm: FormGroup = this.fb.group({
     year: [moment().format('YYYY')],
     month: [moment().format('MM')],

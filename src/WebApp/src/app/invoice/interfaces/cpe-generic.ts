@@ -1,7 +1,7 @@
 import {CpeDetail} from './cpe-detail';
-import {Configuration} from '../../system/interfaces';
-import {Product} from '../../products/interfaces';
-import {InvoiceDetail} from './invoice-detail';
+import {Configuration} from 'src/app/system/interfaces';
+import {Product} from 'src/app/products/interfaces';
+import {InvoiceSaleDetail} from './invoice-sale-detail';
 import {InvoiceNoteDetail} from './invoice-note-detail';
 
 // modelo genérico comprobante.
@@ -70,7 +70,7 @@ export class CpeGeneric {
   }
 
   // cambiar cantidad item.
-  public changeQuantity(prodId: number, value: number): void {
+  public changeQuantity(prodId: string, value: number): void {
     this.details.forEach((item: CpeDetail) => {
       if (item.productId === prodId) {
         item.quantity = value;
@@ -81,7 +81,7 @@ export class CpeGeneric {
   }
 
   // cambiar precio del producto.
-  public changePrice(prodId: number, value: number): void {
+  public changePrice(prodId: string, value: number): void {
     this.details.forEach((item: CpeDetail) => {
       if (item.productId === prodId) {
         item.price = value;
@@ -92,7 +92,7 @@ export class CpeGeneric {
   }
 
   // borrar item detalle comprobante.
-  public deleteItem(prodId: number | any): void {
+  public deleteItem(prodId: string): void {
     this.details.forEach((value: CpeDetail, index: number, array: CpeDetail[]) => {
       if (value.productId === prodId) {
         array.splice(index, 1);
@@ -104,9 +104,8 @@ export class CpeGeneric {
   // configurar item detalle pasando producto y configuración del sistema.
   public static configItemDetail(configuration: Configuration, product: Product): CpeDetail {
     const item: CpeDetail = new CpeDetail();
-    item.productId = Number(product.id);
-    // TODO: Corregir esta linea de código.
-    // item.codUnidadMedida = product.undMedida.sunatCode;
+    item.productId = product.id;
+    item.codUnidadMedida = product.undMedida.split(':')[0]?.trim();
     item.codProductoSunat = product.barcode.length > 0 ? product.barcode : '-';
     item.description = product.description;
     item.price = product.price1;
@@ -121,9 +120,9 @@ export class CpeGeneric {
   }
 
   // configurar item detalle desde una factura.
-  public static getItemDetail(invoiceDetail: InvoiceDetail | InvoiceNoteDetail): CpeDetail {
+  public static getItemDetail(invoiceDetail: InvoiceSaleDetail | InvoiceNoteDetail): CpeDetail {
     const item: CpeDetail = new CpeDetail();
-    item.productId = Number(invoiceDetail.codProducto);
+    item.productId = invoiceDetail.codProducto;
     item.codUnidadMedida = invoiceDetail.codUnidadMedida;
     item.codProductoSunat = invoiceDetail.codProductoSunat;
     item.description = invoiceDetail.desItem;

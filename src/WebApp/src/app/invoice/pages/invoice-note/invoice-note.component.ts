@@ -5,7 +5,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import * as moment from 'moment';
 import {confirmTask} from 'src/app/global/interfaces';
 import {CpeDetail, CpeGeneric, NotaComprobante} from '../../interfaces';
-import {InvoiceNoteService, InvoiceService} from '../../services';
+import {InvoiceNoteService, InvoiceSaleService} from '../../services';
 import Swal from 'sweetalert2';
 
 declare var bootstrap: any;
@@ -36,7 +36,7 @@ export class InvoiceNoteComponent implements OnInit {
   });
   // TODO: debug -> $invoiceNoteId
   invoiceNoteId: number = 0;
-  productId: number = 0;
+  productId: string = '';
   itemComprobanteModal: any;
   title: string = '';
 
@@ -44,7 +44,7 @@ export class InvoiceNoteComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
-    private invoiceService: InvoiceService,
+    private invoiceService: InvoiceSaleService,
     private invoiceNoteService: InvoiceNoteService) {
   }
 
@@ -56,48 +56,48 @@ export class InvoiceNoteComponent implements OnInit {
         .subscribe(result => {
           this.title = `${result.docType}: ${result.serie}-${result.number}`;
           this.notaComprobante.invoiceId = params.get('invoiceId');
-          if (result.invoiceType === 'VENTA') {
-            this.invoiceNoteForm.controls['startDate'].disable();
-            this.invoiceNoteForm.controls['serie'].disable();
-            this.invoiceNoteForm.controls['number'].disable();
-          }
+          // if (result.invoiceType === 'VENTA') {
+          //   this.invoiceNoteForm.controls['startDate'].disable();
+          //   this.invoiceNoteForm.controls['serie'].disable();
+          //   this.invoiceNoteForm.controls['number'].disable();
+          // }
           // cargar cabecera de nota crédito/débito.
           if (this.invoiceNoteId > 0) {
-            if (result.invoiceType === 'COMPRA') {
-              const factura = result;
-              this.invoiceNoteService.show(<any>params.get('id'))
-                .subscribe(result => {
-                  this.invoiceNoteForm.controls['startDate'].setValue(result.fecEmision);
-                  this.invoiceNoteForm.controls['docType'].setValue(result.docType);
-                  this.invoiceNoteForm.controls['codMotivo'].setValue(result.codMotivo);
-                  this.invoiceNoteForm.controls['serie'].setValue(result.serie);
-                  this.invoiceNoteForm.controls['number'].setValue(result.number);
-                  this.invoiceNoteForm.controls['desMotivo'].setValue(result.desMotivo);
-                  if (result.invoiceNoteDetails.length > 0) {
-                    // cargar detalle desde la nota de crédito/débito.
-                    result.invoiceNoteDetails.forEach(item => {
-                      const itemDetail = CpeGeneric.getItemDetail(item);
-                      itemDetail.calcularItem();
-                      this.notaComprobante.addItemWithData(itemDetail);
-                    });
-                  } else {
-                    // cargar detalle desde la factura/boleta.
-                    factura.invoiceDetails.forEach(item => {
-                      const itemDetail = CpeGeneric.getItemDetail(item);
-                      itemDetail.calcularItem();
-                      this.notaComprobante.addItemWithData(itemDetail);
-                    });
-                  }
-                });
-            }
+            // if (result.invoiceType === 'COMPRA') {
+            //   const factura = result;
+            //   this.invoiceNoteService.show(<any>params.get('id'))
+            //     .subscribe(result => {
+            //       this.invoiceNoteForm.controls['startDate'].setValue(result.fecEmision);
+            //       this.invoiceNoteForm.controls['docType'].setValue(result.docType);
+            //       this.invoiceNoteForm.controls['codMotivo'].setValue(result.codMotivo);
+            //       this.invoiceNoteForm.controls['serie'].setValue(result.serie);
+            //       this.invoiceNoteForm.controls['number'].setValue(result.number);
+            //       this.invoiceNoteForm.controls['desMotivo'].setValue(result.desMotivo);
+            //       if (result.invoiceNoteDetails.length > 0) {
+            //         // cargar detalle desde la nota de crédito/débito.
+            //         result.invoiceNoteDetails.forEach(item => {
+            //           const itemDetail = CpeGeneric.getItemDetail(item);
+            //           itemDetail.calcularItem();
+            //           this.notaComprobante.addItemWithData(itemDetail);
+            //         });
+            //       } else {
+            //         // cargar detalle desde la factura/boleta.
+            //         factura.invoiceDetails.forEach(item => {
+            //           const itemDetail = CpeGeneric.getItemDetail(item);
+            //           itemDetail.calcularItem();
+            //           this.notaComprobante.addItemWithData(itemDetail);
+            //         });
+            //       }
+            //     });
+            // }
           } else {
             // detalle de nota crédito/débito.
             // cargar detalle de factura/boleta.
-            result.invoiceDetails.forEach(item => {
-              const itemDetail = CpeGeneric.getItemDetail(item);
-              itemDetail.calcularItem();
-              this.notaComprobante.addItemWithData(itemDetail);
-            });
+            // result.invoiceDetails.forEach(item => {
+            //   const itemDetail = CpeGeneric.getItemDetail(item);
+            //   itemDetail.calcularItem();
+            //   this.notaComprobante.addItemWithData(itemDetail);
+            // });
           }
         });
     });
@@ -117,12 +117,12 @@ export class InvoiceNoteComponent implements OnInit {
 
   // abrir item comprobante modal.
   public showItemComprobanteModal(): void {
-    this.productId = 0;
+    this.productId = '';
     this.itemComprobanteModal.show();
   }
 
   // editar modal item-comprobante.
-  public editItemComprobanteModal(id: number): void {
+  public editItemComprobanteModal(id: string): void {
     this.productId = id;
     this.itemComprobanteModal.show();
   }

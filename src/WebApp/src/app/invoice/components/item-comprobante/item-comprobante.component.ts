@@ -23,7 +23,7 @@ export class ItemComprobanteComponent implements OnInit {
   private configuration: Configuration = new Configuration();
   currentProduct: Product = new Product();
   @Input()
-  productId: number = 0;
+  productId: string = '';
   @Output()
   responseData = new EventEmitter<CpeDetail>();
   detalleVenta: CpeDetail = new CpeDetail();
@@ -81,7 +81,7 @@ export class ItemComprobanteComponent implements OnInit {
       this.detalleVenta.calcularItem();
       this.itemComprobanteForm.reset({...this.detalleVenta});
       // validar modo de edición.
-      if (this.productId > 0) {
+      if (this.productId.length > 0) {
         const newOption = new Option(result.description, <any>result.id, true, true);
         jQuery('#productId').append(newOption).trigger('change');
       }

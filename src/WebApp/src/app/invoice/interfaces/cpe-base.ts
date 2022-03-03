@@ -7,9 +7,8 @@ export class CpeBase extends CpeGeneric {
     public contactId: number | any = null,
     public docType: string = '', // tipo documento.
     public remark: string | any = undefined, // observación.
-    public invoiceType: string = 'VENTA', // Tipo comprobante #COMPRA/VENTA.
     public cuotas: Array<Cuota> = new Array<Cuota>(),
-    public invoiceId: number | any = undefined) {
+    public invoiceSale: any = undefined) {
     super();
   }
 

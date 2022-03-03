@@ -22,25 +22,25 @@ export class FacturadorService {
     return this.http.get<FacturadorData>(`${this.appURL}/EliminarBandeja`);
   }
 
-  public GenerarComprobante(invoice: number): Observable<FacturadorData> {
+  public GenerarComprobante(invoice: string): Observable<FacturadorData> {
     let params = new HttpParams();
     params = params.append('invoice', invoice);
     return this.http.get<FacturadorData>(`${this.appURL}/GenerarComprobante`, {params});
   }
 
-  public EnviarXML(invoice: number): Observable<FacturadorData> {
+  public EnviarXML(invoice: string): Observable<FacturadorData> {
     let params = new HttpParams();
     params = params.append('invoice', invoice);
     return this.http.get<FacturadorData>(`${this.appURL}/EnviarXML`, {params});
   }
 
-  public GenerarPdf(invoice: number): Observable<any> {
+  public GenerarPdf(invoice: string): Observable<any> {
     let params = new HttpParams();
     params = params.append('invoice', invoice);
     return this.http.get(`${this.appURL}/GenerarPdf`, {params});
   }
 
-  public Backup(invoice: number): Observable<ResponseData<any>> {
+  public Backup(invoice: string): Observable<ResponseData<any>> {
     let params = new HttpParams();
     params = params.append('invoice', invoice);
     return this.http.get<ResponseData<any>>(`${this.appURL}/Backup`, {params});

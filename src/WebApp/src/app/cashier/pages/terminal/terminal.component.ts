@@ -233,7 +233,7 @@ export class TerminalComponent implements OnInit {
   }
 
   // cambiar precio del Item.
-  public changePrice(e: Event, id: number): void {
+  public changePrice(e: Event, id: string): void {
     e.preventDefault();
     const toastSuccess = new bootstrap.Toast(document.querySelector('#toast-success'));
     const toastDanger = new bootstrap.Toast(document.querySelector('#toast-danger'));

@@ -4,7 +4,7 @@ import {faWhatsapp} from '@fortawesome/free-brands-svg-icons';
 import {faCheckSquare} from '@fortawesome/free-regular-svg-icons';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {environment} from 'src/environments/environment';
-import {FacturadorService, InvoiceService} from 'src/app/invoice/services';
+import {FacturadorService, InvoiceSaleService} from 'src/app/invoice/services';
 import {confirmTask} from 'src/app/global/interfaces';
 import {Sale} from '../../interfaces';
 
@@ -38,7 +38,7 @@ export class CobrarModalComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private invoiceService: InvoiceService,
+    private invoiceService: InvoiceSaleService,
     private facturadorService: FacturadorService) {
   }
 
@@ -79,7 +79,7 @@ export class CobrarModalComponent implements OnInit {
               if (result.data) {
                 const {data} = result;
                 this.sale = data;
-                this.urlPdf = `${this.appURL}Facturador/GetPdf?invoice=${data?.invoiceId}`;
+                this.urlPdf = `${this.appURL}Facturador/GetPdf?invoice=${data?.invoiceSale}`;
                 console.info(result.msg);
                 if (data?.docType === 'NOTA') {
                   this.statusProgress = false;
@@ -90,11 +90,11 @@ export class CobrarModalComponent implements OnInit {
                     .subscribe(result => {
                       if (result.listaBandejaFacturador.length > 0) {
                         // generar fichero XML del comprobante.
-                        this.facturadorService.GenerarComprobante(data.invoiceId)
+                        this.facturadorService.GenerarComprobante(data?.invoiceSale)
                           .subscribe(result => {
                             if (result.listaBandejaFacturador.length > 0) {
                               // generar fichero PDF del comprobante.
-                              this.facturadorService.GenerarPdf(data.invoiceId)
+                              this.facturadorService.GenerarPdf(data?.invoiceSale)
                                 .subscribe(result => {
                                   this.statusProgress = false;
                                   this.formReg = false;

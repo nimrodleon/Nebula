@@ -2,8 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {faCog, faEdit, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import * as moment from 'moment';
-import {InvoiceService} from 'src/app/invoice/services';
-import {Invoice} from 'src/app/invoice/interfaces';
+import {InvoiceSaleService} from 'src/app/invoice/services';
+import {InvoiceSale} from 'src/app/invoice/interfaces';
 
 @Component({
   selector: 'app-sales-list',
@@ -16,7 +16,7 @@ export class SalesListComponent implements OnInit {
   faEdit = faEdit;
   faTrashAlt = faTrashAlt;
   faCog = faCog;
-  invoices: Array<Invoice> = new Array<Invoice>();
+  invoices: Array<InvoiceSale> = new Array<InvoiceSale>();
   queryForm: FormGroup = this.fb.group({
     year: [moment().format('YYYY')],
     month: [moment().format('MM')],
@@ -25,7 +25,7 @@ export class SalesListComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private invoiceService: InvoiceService) {
+    private invoiceService: InvoiceSaleService) {
   }
 
   ngOnInit(): void {

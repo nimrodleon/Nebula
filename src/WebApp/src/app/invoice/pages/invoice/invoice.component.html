@@ -5,7 +5,7 @@
     <div class="container-fluid">
       <div class="row px-2">
         <div class="col-12 bg-white shadow-sm my-2 py-3">
-          <h5 class="text-uppercase">Comprobante de {{comprobante.invoiceType}}</h5>
+          <h5 class="text-uppercase">Comprobante de ***</h5>
           <hr>
           <form [formGroup]="comprobanteForm" class="row">
             <div class="col-8">
@@ -58,11 +58,11 @@
                 <div class="col-4">
                   <div class="input-group mb-3">
                     <input type="text" formControlName="serie" class="form-control" placeholder="F001"
-                           [readOnly]="comprobante.invoiceType==='VENTA'" style="max-width: 90px;"
+                           style="max-width: 90px;"
                            [ngClass]="{'is-invalid': inputIsInvalid('serie')}">
                     <span class="input-group-text fw-bold">#</span>
                     <input type="text" class="form-control" formControlName="number"
-                           placeholder="99999999" [readOnly]="comprobante.invoiceType==='VENTA'"
+                           placeholder="99999999"
                            [ngClass]="{'is-invalid': inputIsInvalid('number')}">
                   </div>
                 </div>
@@ -192,7 +192,7 @@
                 <tbody>
                 <tr *ngFor="let item of comprobante.cuotas">
                   <td>{{item.numCuota}}</td>
-                  <td>{{item.endDate|date}}</td>
+                  <td>{{item.endDate}}</td>
                   <td>{{item.amount.toFixed(2)}}</td>
                   <td class="text-end">
                     <div class="tblBtn ms-auto">

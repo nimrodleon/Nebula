@@ -46,20 +46,17 @@ namespace Nebula.Controllers
         public async Task<IActionResult> Show(string id)
         {
             using var session = _context.Store.OpenAsyncSession();
-            var invoiceSale = await session.LoadAsync<InvoiceSale>(id);
-            var invoiceSaleDetails = await session.Query<InvoiceSaleDetail>()
-                .Where(m => m.InvoiceSale == id).ToListAsync();
-            var tributoSales = await session.Query<TributoSale>()
-                .Where(m => m.InvoiceSale == id).ToListAsync();
-            var invoiceSaleAccounts = await session.Query<InvoiceSaleAccount>()
-                .Where(m => m.InvoiceSale == id).ToListAsync();
-            return Ok(new
+            var responseData = new ResponseInvoiceSale()
             {
-                invoiceSale,
-                invoiceSaleDetails,
-                tributoSales,
-                invoiceSaleAccounts
-            });
+                InvoiceSale = await session.LoadAsync<InvoiceSale>(id),
+                InvoiceSaleDetails = await session.Query<InvoiceSaleDetail>()
+                    .Where(m => m.InvoiceSale == id).ToListAsync(),
+                TributoSales = await session.Query<TributoSale>()
+                    .Where(m => m.InvoiceSale == id).ToListAsync(),
+                InvoiceSaleAccounts = await session.Query<InvoiceSaleAccount>()
+                    .Where(m => m.InvoiceSale == id).ToListAsync()
+            };
+            return Ok(responseData);
         }
 
         /// <summary>

@@ -1,12 +1,7 @@
-import {InvoiceDetail} from './invoice-detail';
-import {Tributo} from './tributo';
-import {InvoiceAccount} from './invoice-account';
-
-export class Invoice {
+export class InvoiceSale {
   constructor(
-    public id: number | any = null,
+    public id: any = undefined,
     public docType: string = '', // Tipo documento para control interno. (FT|BL|NV)
-    public invoiceType: string = '', // Tipo factura (Compra|Venta)
     public serie: string = '', // Serie comprobante.
     public number: string = '', // Número comprobante.
     public tipOperacion: string = '', // Tipo de operación Catálogo: 51, n4
@@ -23,9 +18,6 @@ export class Invoice {
     public sumTotTributos: number = 0, // Sumatoria Tributos. an..15|n(12,2)
     public sumTotValVenta: number = 0, // Total valor de venta. an..15|n(12,2)
     public sumPrecioVenta: number = 0, // Total Precio de Venta. an..15|n(12,2)
-    public sumImpVenta: number = 0, // Importe total de la venta, cesión en uso o del servicio prestado. an..15|n(12,2)
-    public invoiceDetails: Array<InvoiceDetail> = new Array<InvoiceDetail>(),
-    public tributos: Array<Tributo> = new Array<Tributo>(),
-    public invoiceAccounts: Array<InvoiceAccount> = new Array<InvoiceAccount>(),) {
+    public sumImpVenta: number = 0) {
   }
 }
