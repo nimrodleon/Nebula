@@ -15,8 +15,38 @@
                 [href]="'/system/configuration'">
               </app-router-link>
             </div>
-
-
+            <div class="col-4">
+              <app-router-link
+                [icon]="faUserCog"
+                [title]="'Usuarios'"
+                [detail]="'Lista de Usuarios'"
+                [href]="'/user'">
+              </app-router-link>
+            </div>
+            <div class="col-4">
+              <app-router-link
+                [icon]="faWarehouse"
+                [title]="'Almacenes'"
+                [detail]="'Lista de Almacenes'"
+                [href]="'/system/warehouse'">
+              </app-router-link>
+            </div>
+            <div class="col-4">
+              <app-router-link
+                [icon]="faReceipt"
+                [title]="'Series'"
+                [detail]="'Series de Facturación'"
+                [href]="'/system/invoice-serie'">
+              </app-router-link>
+            </div>
+            <div class="col-4">
+              <app-router-link
+                [icon]="faTags"
+                [title]="'Categorías'"
+                [detail]="'Categoría de Productos'"
+                [href]="'/products/category'">
+              </app-router-link>
+            </div>
           </div>
         </div>
       </div>

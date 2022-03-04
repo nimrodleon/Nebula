@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {faCog} from '@fortawesome/free-solid-svg-icons';
+import {faCog, faReceipt, faTags, faUserCog, faWarehouse} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-system-list',
@@ -8,6 +8,10 @@ import {faCog} from '@fortawesome/free-solid-svg-icons';
 })
 export class SystemListComponent implements OnInit {
   faCog = faCog;
+  faUserCog = faUserCog;
+  faWarehouse = faWarehouse;
+  faReceipt = faReceipt;
+  faTags = faTags;
 
   constructor() {
   }
