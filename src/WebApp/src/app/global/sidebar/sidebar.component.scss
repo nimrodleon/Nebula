@@ -1,3 +1,35 @@
+.SidebarWrapper {
+  min-height: 100vh;
+  background-color: #252f3f;
+  color: white;
+  min-width: 260px;
+  max-width: 260px;
+
+  .WrapLink {
+    a {
+      color: white;
+      text-decoration: none;
+      // Hover.
+      &:hover {
+        color: white;
+        text-decoration: none;
+      }
+    }
+  }
+
+  .LinkItem {
+    padding: 6px 10px;
+    font-size: 1.25rem;
+    border-radius: 4px;
+    // Hover.
+    &:hover {
+      background-color: #161d2e;
+    }
+  }
+}
+
+
+/*
 .menu-wrapper {
   background-color: #212529;
   position: relative;
@@ -77,3 +109,4 @@
     }
   }
 }
+*/
