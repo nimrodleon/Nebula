@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {
-  faAddressBook, faArchive, faBox, faCashRegister, faCogs, faShoppingBasket, faWallet,
+  faAddressBook, faArchive, faBox, faCashRegister, faCogs, faShoppingBasket, faWallet
 } from '@fortawesome/free-solid-svg-icons';
 
 @Component({

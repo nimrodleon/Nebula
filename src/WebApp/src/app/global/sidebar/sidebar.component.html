@@ -1,10 +1,33 @@
 <div class="SidebarWrapper">
-
+  <div class="WrapLink p-2">
+    <a routerLink="/products">
+      <div class="LinkItem">
+        <fa-icon [icon]="faBox" class="me-1"></fa-icon>
+        <span class="text-uppercase">Productos</span>
+      </div>
+    </a>
+    <a routerLink="/cashier">
+      <div class="LinkItem">
+        <fa-icon [icon]="faCashRegister" class="me-1"></fa-icon>
+        <span class="text-uppercase">Punto de Venta</span>
+      </div>
+    </a>
+    <a routerLink="/contacts">
+      <div class="LinkItem">
+        <fa-icon [icon]="faAddressBook" class="me-1"></fa-icon>
+        <span class="text-uppercase">Lista de Contactos</span>
+      </div>
+    </a>
+    <a routerLink="/system">
+      <div class="LinkItem">
+        <fa-icon [icon]="faCogs" class="me-1"></fa-icon>
+        <span class="text-uppercase">Opciones de Sistema</span>
+      </div>
+    </a>
+  </div>
 </div>
 
-
-
-
+<!--
 <div class="menu-wrapper d-print-none">
   <ul class="menubar">
     <li class="level-0" routerLinkActive="active-menu">
@@ -25,7 +48,6 @@
         <span class="text-uppercase">Terminal</span>
       </a>
     </li>
-    <!--
     <li class="level-0" routerLinkActive="active-menu">
       <a (click)="$event.preventDefault()" href="#">
         <fa-icon [icon]="faArchive"></fa-icon>
@@ -92,7 +114,6 @@
       <a routerLink="/invoice/detail/sale" class="d-none">&nbsp;</a>
       <a routerLink="/invoice/note/sale" class="d-none">&nbsp;</a>
     </li>
-    -->
     <li class="level-0" routerLinkActive="active-menu">
       <a (click)="$event.preventDefault()" href="#">
         <fa-icon [icon]="faCogs"></fa-icon>
@@ -124,3 +145,4 @@
     </li>
   </ul>
 </div>
+-->

@@ -1,0 +1,25 @@
+<app-navbar></app-navbar>
+<main class="position-relative">
+  <app-sidebar></app-sidebar>
+  <div class="page-wrapper">
+    <div class="container-fluid">
+      <div class="bg-white p-4 my-2">
+        <h5 class="text-uppercase">Opciones del Sistema</h5>
+        <div class="border rounded p-3">
+          <div class="row">
+            <div class="col-4">
+              <app-router-link
+                [icon]="faCog"
+                [title]="'General'"
+                [detail]="'Configurar Empresa'"
+                [href]="'/system/configuration'">
+              </app-router-link>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

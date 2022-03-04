@@ -20,26 +20,26 @@ const routes: Routes = [
     loadChildren: () => import('./cashier/cashier.module').then(m => m.CashierModule),
     canActivate: [AuthGuard]
   },
-  {
-    path: 'inventory',
-    loadChildren: () => import('./inventory/inventory.module').then(m => m.InventoryModule),
-    canActivate: [AuthGuard]
-  },
-  {
-    path: 'shopping',
-    loadChildren: () => import('./shopping/shopping.module').then(m => m.ShoppingModule),
-    canActivate: [AuthGuard]
-  },
+  // {
+  //   path: 'inventory',
+  //   loadChildren: () => import('./inventory/inventory.module').then(m => m.InventoryModule),
+  //   canActivate: [AuthGuard]
+  // },
+  // {
+  //   path: 'shopping',
+  //   loadChildren: () => import('./shopping/shopping.module').then(m => m.ShoppingModule),
+  //   canActivate: [AuthGuard]
+  // },
   {
     path: 'sales',
     loadChildren: () => import('./sales/sales.module').then(m => m.SalesModule),
     canActivate: [AuthGuard]
   },
-  {
-    path: 'invoice',
-    loadChildren: () => import('./invoice/invoice.module').then(m => m.InvoiceModule),
-    canActivate: [AuthGuard]
-  },
+  // {
+  //   path: 'invoice',
+  //   loadChildren: () => import('./invoice/invoice.module').then(m => m.InvoiceModule),
+  //   canActivate: [AuthGuard]
+  // },
   {
     path: 'user',
     loadChildren: () => import('./user/user.module').then(m => m.UserModule),
