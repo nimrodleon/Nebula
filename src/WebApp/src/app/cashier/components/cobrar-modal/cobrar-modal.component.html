@@ -21,13 +21,14 @@
         <form [formGroup]="cobrarForm">
           <ng-container *ngIf="formReg else successTpl">
             <div class="row mb-3">
-              <label class="col-4 col-form-label text-uppercase text-end">Medios de Pago</label>
+              <label class="col-4 col-form-label text-uppercase text-end">Forma de Pago</label>
               <div class="col-6">
-                <select formControlName="paymentMethod" class="form-select text-uppercase"
-                        [ngClass]="{'is-invalid': inputIsInvalid('paymentMethod')}">
-                  <option value="0">Dinero en efectivo</option>
-                  <option value="1">Depósito en cuenta</option>
-                  <option value="2">Billetera digital</option>
+                <select formControlName="formaPago" class="form-select text-uppercase"
+                        [ngClass]="{'is-invalid': inputIsInvalid('formaPago')}">
+                  <option value="Contado:Plin">Plin</option>
+                  <option value="Contado:Yape">Yape</option>
+                  <option value="Contado:Contado">Contado</option>
+                  <option value="Contado:Depósito">Depósito</option>
                 </select>
               </div>
             </div>
@@ -36,8 +37,8 @@
               <div class="col-6">
                 <select formControlName="docType" class="form-select"
                         [ngClass]="{'is-invalid': inputIsInvalid('docType')}">
-                  <option value="BOLETA">BOLETA</option>
-                  <option value="FACTURA">FACTURA</option>
+                  <option *ngIf="configuration.cpeSunat !== 'NONE'" value="BOLETA">BOLETA</option>
+                  <option *ngIf="configuration.cpeSunat !== 'NONE'" value="FACTURA">FACTURA</option>
                   <option value="NOTA">NOTA DE VENTA</option>
                 </select>
               </div>
@@ -70,6 +71,8 @@
             </div>
           </ng-template>
         </form>
+        <!-- ## DEBUG -->
+        <pre>{{sale|json}}</pre>
       </div>
       <div class="modal-footer justify-content-center">
         <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">

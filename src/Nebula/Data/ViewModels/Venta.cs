@@ -34,6 +34,7 @@ namespace Nebula.Data.ViewModels
             // Devolver Configuración comprobante de venta.
             return new InvoiceSale()
             {
+                Id = string.Empty,
                 DocType = DocType,
                 TipOperacion = "0101",
                 FecEmision = DateTime.Now.ToString("yyyy-MM-dd"),

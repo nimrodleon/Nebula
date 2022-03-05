@@ -4,8 +4,9 @@ import {faWhatsapp} from '@fortawesome/free-brands-svg-icons';
 import {faCheckSquare} from '@fortawesome/free-regular-svg-icons';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {environment} from 'src/environments/environment';
-import {FacturadorService, InvoiceSaleService} from 'src/app/invoice/services';
+import {InvoiceSaleService} from 'src/app/invoice/services';
 import {confirmTask} from 'src/app/global/interfaces';
+import {Configuration} from 'src/app/system/interfaces';
 import {Sale} from '../../interfaces';
 
 @Component({
@@ -20,15 +21,14 @@ export class CobrarModalComponent implements OnInit {
   faWhatsapp = faWhatsapp;
   // ====================================================================================================
   private appURL: string = environment.applicationUrl;
-  @Input()
-  cajaDiariaId: string = '';
-  @Input()
-  sale: Sale = new Sale();
-  @Output()
-  responseData = new EventEmitter<boolean>();
+  @Input() cajaDiariaId: string = '';
+  @Input() sale: Sale = new Sale();
+  @Input() configuration: Configuration = new Configuration();
+  // valor de retorno del modal.
+  @Output() responseData = new EventEmitter<boolean>();
   cobrarForm: FormGroup = this.fb.group({
-    paymentMethod: ['0', [Validators.required]],
-    docType: ['BOLETA', [Validators.required]],
+    formaPago: ['Contado:Contado', [Validators.required]],
+    docType: ['NOTA', [Validators.required]],
     montoTotal: [null, [Validators.required, Validators.min(0)]],
     remark: ['']
   });
@@ -38,8 +38,7 @@ export class CobrarModalComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private invoiceService: InvoiceSaleService,
-    private facturadorService: FacturadorService) {
+    private invoiceService: InvoiceSaleService) {
   }
 
   ngOnInit(): void {
@@ -47,7 +46,7 @@ export class CobrarModalComponent implements OnInit {
     myModal.addEventListener('hide.bs.modal', () => {
       if (!this.formReg) {
         this.responseData.emit(this.formReg);
-        this.cobrarForm.reset({paymentMethod: 0, docType: 'BOLETA', montoTotal: null, remark: ''});
+        this.cobrarForm.reset({formaPago: 'Contado:Contado', docType: 'NOTA', montoTotal: null, remark: ''});
       }
     });
     myModal.addEventListener('hidden.bs.modal', () => {
@@ -79,32 +78,37 @@ export class CobrarModalComponent implements OnInit {
               if (result.data) {
                 const {data} = result;
                 this.sale = data;
-                this.urlPdf = `${this.appURL}Facturador/GetPdf?invoice=${data?.invoiceSale}`;
-                console.info(result.msg);
                 if (data?.docType === 'NOTA') {
                   this.statusProgress = false;
                   this.formReg = false;
-                } else {
-                  // cargar la Lista de archivos JSON.
-                  this.facturadorService.ActualizarPantalla()
-                    .subscribe(result => {
-                      if (result.listaBandejaFacturador.length > 0) {
-                        // generar fichero XML del comprobante.
-                        this.facturadorService.GenerarComprobante(data?.invoiceSale)
-                          .subscribe(result => {
-                            if (result.listaBandejaFacturador.length > 0) {
-                              // generar fichero PDF del comprobante.
-                              this.facturadorService.GenerarPdf(data?.invoiceSale)
-                                .subscribe(result => {
-                                  this.statusProgress = false;
-                                  this.formReg = false;
-                                  console.info(result);
-                                });
-                            }
-                          });
-                      }
-                    });
                 }
+                // TODO: refactoring.
+                // this.urlPdf = `${this.appURL}Facturador/GetPdf?invoice=${data?.invoiceSale}`;
+                // console.info(result.msg);
+                // if (data?.docType === 'NOTA') {
+                //   this.statusProgress = false;
+                //   this.formReg = false;
+                // } else {
+                //   // cargar la Lista de archivos JSON.
+                //   this.facturadorService.ActualizarPantalla()
+                //     .subscribe(result => {
+                //       if (result.listaBandejaFacturador.length > 0) {
+                //         // generar fichero XML del comprobante.
+                //         this.facturadorService.GenerarComprobante(data?.invoiceSale)
+                //           .subscribe(result => {
+                //             if (result.listaBandejaFacturador.length > 0) {
+                //               // generar fichero PDF del comprobante.
+                //               this.facturadorService.GenerarPdf(data?.invoiceSale)
+                //                 .subscribe(result => {
+                //                   this.statusProgress = false;
+                //                   this.formReg = false;
+                //                   console.info(result);
+                //                 });
+                //             }
+                //           });
+                //       }
+                //     });
+                // }
               }
             }
           });

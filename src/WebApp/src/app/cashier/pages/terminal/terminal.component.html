@@ -202,7 +202,33 @@
 
 <app-cobrar-modal
   [cajaDiariaId]="cajaDiariaId" [sale]="sale"
+  [configuration]="configuration"
   (responseData)="hideCobrarModal($event)">
 </app-cobrar-modal>
-
-<!--<pre>{{sale|json}}</pre>-->
+<!-- ## DEBUG -->
+<table class="table table-bordered">
+  <tbody>
+  <tr>
+    <th>cajaDiariaId</th>
+    <td>{{cajaDiariaId|json}}</td>
+  </tr>
+  <tr>
+    <th>cajaDiaria</th>
+    <td>
+      <pre>{{cajaDiaria|json}}</pre>
+    </td>
+  </tr>
+  <tr>
+    <th>sale</th>
+    <td>
+      <pre>{{sale|json}}</pre>
+    </td>
+  </tr>
+  <tr>
+    <th>configuration</th>
+    <td>
+      <pre>{{configuration|json}}</pre>
+    </td>
+  </tr>
+  </tbody>
+</table>
