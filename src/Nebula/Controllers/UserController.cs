@@ -1,6 +1,8 @@
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Data;
+using Nebula.Data.Helpers;
+using Nebula.Data.Models;
 using Nebula.Data.ViewModels;
 
 namespace Nebula.Controllers
@@ -9,22 +11,28 @@ namespace Nebula.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IRavenDbContext _context;
 
-        public UserController(UserManager<IdentityUser> userManager)
+        public UserController(IRavenDbContext context)
         {
-            _userManager = userManager;
+            _context = context;
         }
 
-        [HttpPost("Store")]
-        public async Task<IActionResult> Store([FromBody] UserRegister model)
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create([FromBody] UserRegister model)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
+            using var session = _context.Store.OpenAsyncSession();
+            var user = new User()
+            {
+                UserName = model.UserName,
+                Email = model.Email,
+                PasswordHash = PasswordHasher.HashPassword(model.Password)
+            };
 
-            var user = new IdentityUser() { UserName = model.UserName, Email = model.Email };
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded) return BadRequest("Username or password invalid");
-            return Ok(new { Ok = true, User = user });
+            await session.StoreAsync(user);
+            await session.SaveChangesAsync();
+
+            return Ok(new {Ok = true, User = user});
         }
     }
 }

@@ -5,7 +5,7 @@
     /// </summary>
     public class InvoiceSaleAccount
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         /// <summary>
         /// ID Comprobante de Venta.

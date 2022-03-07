@@ -2,7 +2,7 @@
 {
     public class Product
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         /// <summary>
         /// Descripción del producto.

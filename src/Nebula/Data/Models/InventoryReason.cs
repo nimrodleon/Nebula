@@ -3,6 +3,7 @@
 namespace Nebula.Data.Models
 {
     /// <summary>
+    /// TODO: refactoring.
     /// Motivos para tipos de inventario.
     /// </summary>
     public class InventoryReason

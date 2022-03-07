@@ -2,7 +2,7 @@
 {
     public class Contact
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         /// <summary>
         /// Documento de Identidad.

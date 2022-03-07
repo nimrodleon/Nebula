@@ -13,7 +13,7 @@ namespace Nebula.Data.Models
     /// </summary>
     public class CashierDetail
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         /// <summary>
         /// Identificador CajaDiaria.

@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Nebula.Data.Models
 {
+    // TODO: refactoring.
     public class TransferNote
     {
         public int Id { get; set; }

@@ -4,7 +4,7 @@ namespace Nebula.Data.Models
 {
     public class CajaDiaria
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         /// <summary>
         /// Series de facturación.

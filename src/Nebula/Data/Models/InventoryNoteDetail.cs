@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace Nebula.Data.Models
 {
+    // TODO: refactoring.
     public class InventoryNoteDetail
     {
         [Key]

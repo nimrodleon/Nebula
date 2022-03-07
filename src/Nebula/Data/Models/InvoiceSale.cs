@@ -2,7 +2,7 @@
 {
     public class InvoiceSale
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         /// <summary>
         /// Tipo documento para control interno.

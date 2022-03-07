@@ -2,7 +2,7 @@
 {
     public class Warehouse
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         /// <summary>
         /// Nombre Almacén.

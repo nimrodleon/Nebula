@@ -2,6 +2,7 @@
 
 namespace Nebula.Data.Models
 {
+    // TODO: refactoring.
     public class TypeOperationSunat
     {
         /// <summary>

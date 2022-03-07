@@ -5,7 +5,7 @@
     /// </summary>
     public class InvoiceSerie
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         /// <summary>
         /// Identificador Serie.

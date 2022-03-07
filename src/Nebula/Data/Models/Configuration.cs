@@ -2,7 +2,7 @@
 {
     public class Configuration
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = "default";
 
         /// <summary>
         /// R.U.C. Empresa.

@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Nebula.Data.Models
 {
+    // TODO: refactoring.
     public class InvoiceNote
     {
         public int Id { get; set; }
