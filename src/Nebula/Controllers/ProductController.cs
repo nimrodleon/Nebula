@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Data;
 using Nebula.Data.Models;
@@ -29,7 +24,7 @@ namespace Nebula.Controllers
         }
 
         [HttpGet("Index")]
-        public async Task<IActionResult> Index([FromQuery] string query)
+        public async Task<IActionResult> Index([FromQuery] string? query)
         {
             using var session = _context.Store.OpenAsyncSession();
             IRavenQueryable<Product> products = from m in session.Query<Product>() select m;
@@ -64,7 +59,7 @@ namespace Nebula.Controllers
                     Text = $"{item.Description} | {Convert.ToDecimal(item.Price1):N2}"
                 });
             });
-            return Ok(new {Results = data});
+            return Ok(new { Results = data });
         }
 
         [HttpPost("Create")]
@@ -106,7 +101,8 @@ namespace Nebula.Controllers
 
             return Ok(new
             {
-                Ok = true, Data = product,
+                Ok = true,
+                Data = product,
                 Msg = $"El producto {product.Description} ha sido registrado!"
             });
         }
@@ -155,7 +151,8 @@ namespace Nebula.Controllers
 
             return Ok(new
             {
-                Ok = true, Data = product,
+                Ok = true,
+                Data = product,
                 Msg = $"El producto {product.Description} ha sido actualizado!"
             });
         }
@@ -175,7 +172,7 @@ namespace Nebula.Controllers
             // borrar registro.
             session.Delete(product);
             await session.SaveChangesAsync();
-            return Ok(new {Ok = true, Data = product, Msg = "El producto ha sido borrado!"});
+            return Ok(new { Ok = true, Data = product, Msg = "El producto ha sido borrado!" });
         }
     }
 }

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Data;
 using Nebula.Data.Models;
@@ -21,7 +19,7 @@ namespace Nebula.Controllers
         }
 
         [HttpGet("Index")]
-        public async Task<IActionResult> Index([FromQuery] string query)
+        public async Task<IActionResult> Index([FromQuery] string? query)
         {
             using var session = _context.Store.OpenAsyncSession();
             IRavenQueryable<Contact> contacts = from m in session.Query<Contact>() select m;

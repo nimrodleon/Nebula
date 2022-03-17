@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Data;
 using Nebula.Data.Models;
@@ -21,7 +19,7 @@ namespace Nebula.Controllers
         }
 
         [HttpGet("Index")]
-        public async Task<IActionResult> Index([FromQuery] string query)
+        public async Task<IActionResult> Index([FromQuery] string? query)
         {
             using var session = _context.Store.OpenAsyncSession();
             IRavenQueryable<Category> categories = from m in session.Query<Category>() select m;
@@ -52,10 +50,11 @@ namespace Nebula.Controllers
             {
                 data.Add(new Select2()
                 {
-                    Id = item.Id, Text = item.Name
+                    Id = item.Id,
+                    Text = item.Name
                 });
             });
-            return Ok(new {Results = data});
+            return Ok(new { Results = data });
         }
 
         [HttpPost("Create")]
@@ -70,7 +69,8 @@ namespace Nebula.Controllers
 
             return Ok(new
             {
-                Ok = true, Data = model,
+                Ok = true,
+                Data = model,
                 Msg = $"La Categoría {model.Name} ha sido registrado!"
             });
         }
@@ -86,7 +86,8 @@ namespace Nebula.Controllers
 
             return Ok(new
             {
-                Ok = true, Data = category,
+                Ok = true,
+                Data = category,
                 Msg = $"La Categoría {category.Name} ha sido actualizado!"
             });
         }
@@ -98,7 +99,7 @@ namespace Nebula.Controllers
             Category category = await session.LoadAsync<Category>(id);
             session.Delete(category);
             await session.SaveChangesAsync();
-            return Ok(new {Ok = true, Data = category, Msg = "La categoría ha sido borrado!"});
+            return Ok(new { Ok = true, Data = category, Msg = "La categoría ha sido borrado!" });
         }
     }
 }
