@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Data;
 using Nebula.Data.Models;
-using Raven.Client.Documents;
-using Raven.Client.Documents.Linq;
+using Nebula.Data.Services;
 
 namespace Nebula.Controllers
 {
@@ -10,43 +8,36 @@ namespace Nebula.Controllers
     [ApiController]
     public class WarehouseController : ControllerBase
     {
-        private readonly IRavenDbContext _context;
+        private readonly WarehouseService _warehouseService;
 
-        public WarehouseController(IRavenDbContext context)
-        {
-            _context = context;
-        }
+        public WarehouseController(WarehouseService warehouseService) =>
+            _warehouseService = warehouseService;
 
         [HttpGet("Index")]
         public async Task<IActionResult> Index([FromQuery] string? query)
         {
-            using var session = _context.Store.OpenAsyncSession();
-            IRavenQueryable<Warehouse> warehouses = from m in session.Query<Warehouse>() select m;
-            if (!string.IsNullOrWhiteSpace(query))
-                warehouses = warehouses.Search(m => m.Name, $"*{query.ToUpper()}*");
-            var responseData = await warehouses.Take(25).ToListAsync();
+            var responseData = await _warehouseService.GetListAsync(query);
             return Ok(responseData);
         }
 
         [HttpGet("Show/{id}")]
         public async Task<IActionResult> Show(string id)
         {
-            using var session = _context.Store.OpenAsyncSession();
-            Warehouse warehouse = await session.LoadAsync<Warehouse>(id);
+            var warehouse = await _warehouseService.GetAsync(id);
+            if (warehouse is null) return NotFound();
             return Ok(warehouse);
         }
 
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] Warehouse model)
         {
-            using var session = _context.Store.OpenAsyncSession();
-            model.Id = string.Empty;
             model.Name = model.Name.ToUpper();
-            await session.StoreAsync(model);
-            await session.SaveChangesAsync();
+            await _warehouseService.CreateAsync(model);
+
             return Ok(new
             {
-                Ok = true, Data = model,
+                Ok = true,
+                Data = model,
                 Msg = $"El Almacén {model.Name} ha sido registrado!"
             });
         }
@@ -54,27 +45,28 @@ namespace Nebula.Controllers
         [HttpPut("Update/{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] Warehouse model)
         {
-            if (id != model.Id) return BadRequest();
-            using var session = _context.Store.OpenAsyncSession();
-            Warehouse warehouse = await session.LoadAsync<Warehouse>(id);
-            warehouse.Name = model.Name.ToUpper();
-            warehouse.Remark = model.Remark;
-            await session.SaveChangesAsync();
+            var warehouse = await _warehouseService.GetAsync(id);
+            if (warehouse is null) return NotFound();
+
+            model.Id = warehouse.Id;
+            model.Name = model.Name.ToUpper();
+            await _warehouseService.UpdateAsync(id, model);
+
             return Ok(new
             {
-                Ok = true, Data = warehouse,
-                Msg = $"El Almacén {warehouse.Name} ha sido actualizado!"
+                Ok = true,
+                Data = model,
+                Msg = $"El Almacén {model.Name} ha sido actualizado!"
             });
         }
 
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            using var session = _context.Store.OpenAsyncSession();
-            Warehouse warehouse = await session.LoadAsync<Warehouse>(id);
-            session.Delete(warehouse);
-            await session.SaveChangesAsync();
-            return Ok(new {Ok = true, Data = warehouse, Msg = "El almacén ha sido borrado!"});
+            var warehouse = await _warehouseService.GetAsync(id);
+            if (warehouse is null) return NotFound();
+            await _warehouseService.RemoveAsync(id);
+            return Ok(new { Ok = true, Data = warehouse, Msg = "El almacén ha sido borrado!" });
         }
     }
 }

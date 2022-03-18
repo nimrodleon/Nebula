@@ -1,17 +1,21 @@
-﻿namespace Nebula.Data.Models
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
+namespace Nebula.Data.Models;
+
+public class Warehouse
 {
-    public class Warehouse
-    {
-        public string Id { get; set; } = string.Empty;
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string Id { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Nombre Almacén.
-        /// </summary>
-        public string Name { get; set; }
+    /// <summary>
+    /// Nombre Almacén.
+    /// </summary>
+    public string Name { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Observación.
-        /// </summary>
-        public string Remark { get; set; }
-    }
+    /// <summary>
+    /// Observación.
+    /// </summary>
+    public string Remark { get; set; } = string.Empty;
 }
