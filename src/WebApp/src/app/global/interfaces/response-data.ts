@@ -1,11 +1,7 @@
 export class ResponseData<Type> {
-  constructor() {
-    this.ok = false;
-    this.data = undefined;
-    this.msg = null;
+  constructor(
+    public ok: boolean = false,
+    public data: Type | undefined = undefined,
+    public msg: string = '') {
   }
-
-  ok: boolean;
-  msg: string | null;
-  data: Type | undefined;
 }

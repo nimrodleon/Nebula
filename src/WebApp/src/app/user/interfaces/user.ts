@@ -1,10 +1,29 @@
-export interface User {
-  _id: string,
-  fullName: string,
-  address: string,
-  phoneNumber: string,
-  userName: string,
-  password: string,
-  permission: string,
-  email: string,
+// clase datos del usuario.
+export class User {
+  constructor(
+    public id: string = '',
+    public userName: string = '',
+    public email: string = '',
+    public role: string = '') {
+  }
+}
+
+// clase para registrar usuarios.
+export class UserRegister {
+  constructor(
+    public userName: string = '',
+    public email: string = '',
+    public password: string = '',
+    public role: string = '') {
+  }
+}
+
+// clase para registrar usuario desde una modal.
+export class UserDataModal {
+  constructor(
+    public title: string = '',
+    public type: 'ADD' | 'EDIT' = 'ADD',
+    public userId: string = '',
+    public userRegister: UserRegister = new UserRegister()) {
+  }
 }

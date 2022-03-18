@@ -5,7 +5,7 @@
     <div class="container-fluid">
       <div class="row px-2">
         <div class="col-12 bg-white my-2 py-3">
-          <form class="row row-cols-auto g-2">
+          <form (submit)="submitSearch($event)" class="row row-cols-auto g-2">
             <div class="col-auto">
               <label class="col-form-label fw-bold">Filtrar por:</label>
             </div>
@@ -14,7 +14,7 @@
               <span class="input-group-text">
                 <fa-icon [icon]="faFilter"></fa-icon>
               </span>
-                <input type="search" class="form-control" placeholder="USUARIO">
+                <input type="search" [formControl]="query" class="form-control" placeholder="USUARIO">
               </div>
             </div>
             <div class="col-auto">
@@ -45,18 +45,18 @@
               </tr>
               </thead>
               <tbody>
-              <tr>
-                <td>user2021</td>
-                <td>user2021@local.pe</td>
+              <tr *ngFor="let item of userList">
+                <td>{{item.userName}}</td>
+                <td>{{item.email}}</td>
                 <td>
-                  <button type="button" (click)="showChangePassword()" class="btn btn-info btn-sm">
+                  <button type="button" (click)="showChangePassword(item.id)" class="btn btn-info btn-sm">
                     <span class="text-uppercase">Establecer</span>
                   </button>
                 </td>
-                <td>ADMIN</td>
+                <td>{{item.role}}</td>
                 <td>
                   <div class="tblBtn ms-auto">
-                    <button type="button" class="btn btn-secondary btn-sm me-2">
+                    <button type="button" (click)="editUserModal(item.id)" class="btn btn-secondary btn-sm me-2">
                       <fa-icon [icon]="faEdit"></fa-icon>
                     </button>
                     <button type="button" class="btn btn-danger btn-sm">
@@ -74,5 +74,11 @@
   </div>
 </main>
 
-<app-user-modal [title]="title"></app-user-modal>
-<app-change-password></app-change-password>
+<app-user-modal
+  [data]="userDataModal"
+  (responseData)="hideUserModal($event)">
+</app-user-modal>
+<app-change-password
+  [data]="userDataModal"
+  (responseData)="hideUserModal($event)">
+</app-change-password>

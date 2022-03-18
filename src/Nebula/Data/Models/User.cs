@@ -1,10 +1,17 @@
-namespace Nebula.Data.Models
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
+namespace Nebula.Data.Models;
+
+public class User
 {
-    public class User
-    {
-        public string Id { get; set; } = string.Empty;
-        public string UserName { get; set; }
-        public string Email { get; set; }
-        public string PasswordHash { get; set; }
-    }
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string Id { get; set; } = string.Empty;
+
+    public string UserName { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string PasswordHash { get; set; } = string.Empty;
+
+    public string Role { get; set; } = "ROLE_USER";
 }
