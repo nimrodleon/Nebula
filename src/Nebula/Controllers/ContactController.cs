@@ -3,77 +3,78 @@ using Nebula.Data.Models;
 using Nebula.Data.Services;
 using Nebula.Data.ViewModels;
 
-namespace Nebula.Controllers
+namespace Nebula.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class ContactController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ContactController : ControllerBase
+    private readonly ContactService _contactService;
+
+    public ContactController(ContactService contactService) =>
+        _contactService = contactService;
+
+    [HttpGet("Index")]
+    public async Task<IActionResult> Index([FromQuery] string? query)
     {
-        private readonly ContactService _contactService;
+        var responseData = await _contactService.GetListAsync(query);
+        return Ok(responseData);
+    }
 
-        public ContactController(ContactService contactService) =>
-            _contactService = contactService;
+    [HttpGet("Show/{id}")]
+    public async Task<IActionResult> Show(string id)
+    {
+        var contact = await _contactService.GetAsync(id);
+        return Ok(contact);
+    }
 
-        [HttpGet("Index")]
-        public async Task<IActionResult> Index([FromQuery] string? query)
+    [HttpGet("Select2")]
+    public async Task<IActionResult> Select2([FromQuery] string? term)
+    {
+        var responseData = await _contactService.GetListAsync(term, 10);
+        var data = new List<Select2>();
+        responseData.ForEach(item =>
         {
-            var responseData = await _contactService.GetListAsync(query);
-            return Ok(responseData);
-        }
+            data.Add(new Select2() { Id = item.Id, Text = $"{item.Document} - {item.Name}" });
+        });
+        return Ok(new { Results = data });
+    }
 
-        [HttpGet("Show/{id}")]
-        public async Task<IActionResult> Show(string id)
+    [HttpPost("Create")]
+    public async Task<IActionResult> Create([FromBody] Contact model)
+    {
+        model.Name = model.Name.ToUpper();
+        await _contactService.CreateAsync(model);
+
+        return Ok(new
         {
-            var contact = await _contactService.GetAsync(id);
-            return Ok(contact);
-        }
+            Ok = true,
+            Data = model,
+            Msg = $"El contacto {model.Name} ha sido registrado!"
+        });
+    }
 
-        [HttpGet("Select2")]
-        public async Task<IActionResult> Select2([FromQuery] string? term)
+    [HttpPut("Update/{id}")]
+    public async Task<IActionResult> Update(string id, [FromBody] Contact model)
+    {
+        var contact = await _contactService.GetAsync(id);
+        model.Id = contact.Id;
+        model.Name = model.Name.ToUpper();
+        await _contactService.UpdateAsync(id, model);
+
+        return Ok(new
         {
-            var responseData = await _contactService.GetListAsync(term, 10);
-            var data = new List<Select2>();
-            responseData.ForEach(item =>
-            {
-                data.Add(new Select2() {Id = item.Id, Text = $"{item.Document} - {item.Name}"});
-            });
-            return Ok(new {Results = data});
-        }
+            Ok = true,
+            Data = model,
+            Msg = $"El contacto {model.Name} ha sido actualizado!"
+        });
+    }
 
-        [HttpPost("Create")]
-        public async Task<IActionResult> Create([FromBody] Contact model)
-        {
-            model.Name = model.Name.ToUpper();
-            await _contactService.CreateAsync(model);
-
-            return Ok(new
-            {
-                Ok = true, Data = model,
-                Msg = $"El contacto {model.Name} ha sido registrado!"
-            });
-        }
-
-        [HttpPut("Update/{id}")]
-        public async Task<IActionResult> Update(string id, [FromBody] Contact model)
-        {
-            var contact = await _contactService.GetAsync(id);
-            model.Id = contact.Id;
-            model.Name = model.Name.ToUpper();
-            await _contactService.UpdateAsync(id, model);
-
-            return Ok(new
-            {
-                Ok = true, Data = model,
-                Msg = $"El contacto {model.Name} ha sido actualizado!"
-            });
-        }
-
-        [HttpDelete("Delete/{id}")]
-        public async Task<IActionResult> Delete(string id)
-        {
-            var contact = await _contactService.GetAsync(id);
-            await _contactService.RemoveAsync(id);
-            return Ok(new {Ok = true, Data = contact, Msg = "El contacto ha sido borrado!"});
-        }
+    [HttpDelete("Delete/{id}")]
+    public async Task<IActionResult> Delete(string id)
+    {
+        var contact = await _contactService.GetAsync(id);
+        await _contactService.RemoveAsync(id);
+        return Ok(new { Ok = true, Data = contact, Msg = "El contacto ha sido borrado!" });
     }
 }

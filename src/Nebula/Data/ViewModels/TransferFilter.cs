@@ -1,28 +1,27 @@
-﻿namespace Nebula.Data.ViewModels
+namespace Nebula.Data.ViewModels;
+
+/// <summary>
+/// Filtrar Transferencia entre almacenes.
+/// </summary>
+public class TransferFilter
 {
     /// <summary>
-    /// Filtrar Transferencia entre almacenes.
+    /// Id Almacén Origen.
     /// </summary>
-    public class TransferFilter
-    {
-        /// <summary>
-        /// Id Almacén Origen.
-        /// </summary>
-        public int Origin { get; set; }
+    public int Origin { get; set; }
 
-        /// <summary>
-        /// Id Almacén destino.
-        /// </summary>
-        public int Target { get; set; }
+    /// <summary>
+    /// Id Almacén destino.
+    /// </summary>
+    public int Target { get; set; }
 
-        /// <summary>
-        /// Año del Inventario.
-        /// </summary>
-        public string Year { get; set; }
+    /// <summary>
+    /// Año del Inventario.
+    /// </summary>
+    public string Year { get; set; }
 
-        /// <summary>
-        /// Mes del Inventario.
-        /// </summary>
-        public string Month { get; set; }
-    }
+    /// <summary>
+    /// Mes del Inventario.
+    /// </summary>
+    public string Month { get; set; }
 }

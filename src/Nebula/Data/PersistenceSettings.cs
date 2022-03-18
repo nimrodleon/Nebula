@@ -1,8 +1,7 @@
-﻿namespace Nebula.Data
+namespace Nebula.Data;
+
+public class PersistenceSettings
 {
-    public class PersistenceSettings
-    {
-        public string DatabaseName { get; set; }
-        public string[] Urls { get; set; }
-    }
+    public string DatabaseName { get; set; }
+    public string[] Urls { get; set; }
 }

@@ -1,16 +1,15 @@
-﻿namespace Nebula.Data.Helpers
+namespace Nebula.Data.Helpers;
+
+public class Response<T>
 {
-    public class Response<T>
+    public Response()
     {
-        public Response()
-        {
-        }
-
-        public Response(T data)
-        {
-            Data = data;
-        }
-
-        public T Data { get; set; }
     }
+
+    public Response(T data)
+    {
+        Data = data;
+    }
+
+    public T Data { get; set; }
 }

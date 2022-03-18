@@ -1,7 +1,6 @@
-﻿namespace Nebula.Data.ViewModels
+namespace Nebula.Data.ViewModels;
+
+public class VoucherQuery : DateQuery
 {
-    public class VoucherQuery : DateQuery
-    {
-        public string Query { get; set; }
-    }
+    public string Query { get; set; }
 }
