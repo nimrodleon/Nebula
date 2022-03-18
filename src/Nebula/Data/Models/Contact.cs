@@ -1,37 +1,41 @@
-﻿namespace Nebula.Data.Models
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
+namespace Nebula.Data.Models;
+
+public class Contact
 {
-    public class Contact
-    {
-        public string Id { get; set; } = string.Empty;
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string Id { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Documento de Identidad.
-        /// </summary>
-        public string Document { get; set; }
+    /// <summary>
+    /// Documento de Identidad.
+    /// </summary>
+    public string Document { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Tipo de documento.
-        /// </summary>
-        public string DocType { get; set; }
+    /// <summary>
+    /// Tipo de documento.
+    /// </summary>
+    public string DocType { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Nombre de contacto.
-        /// </summary>
-        public string Name { get; set; }
+    /// <summary>
+    /// Nombre de contacto.
+    /// </summary>
+    public string Name { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Dirección de contacto.
-        /// </summary>
-        public string Address { get; set; }
+    /// <summary>
+    /// Dirección de contacto.
+    /// </summary>
+    public string Address { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Número Telefónico.
-        /// </summary>
-        public string PhoneNumber { get; set; }
+    /// <summary>
+    /// Número Telefónico.
+    /// </summary>
+    public string PhoneNumber { get; set; } = string.Empty;
 
-        /// <summary>
-        /// E-Mail de Contacto.
-        /// </summary>
-        public string Email { get; set; }
-    }
+    /// <summary>
+    /// E-Mail de Contacto.
+    /// </summary>
+    public string Email { get; set; } = string.Empty;
 }
