@@ -33,13 +33,13 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: "MyPolicy", builder =>
-    {
-        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-    });
+    options.AddPolicy(name: "MyPolicy",
+        c => { c.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); });
 });
 
 // Add services to the container.
+builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
+builder.Services.AddSingleton<CategoryService>();
 builder.Services.AddSingleton<IRavenDbContext, RavenDbContext>();
 builder.Services.AddScoped<ISaleService, SaleService>();
 builder.Services.AddScoped<ICpeService, CpeService>();
@@ -49,7 +49,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Nebula", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo {Title = "Nebula", Version = "v1"});
     // To Enable authorization using Swagger (JWT).
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {
@@ -95,7 +95,7 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 app.UseStaticFiles(new StaticFileOptions()
 {
     FileProvider = new PhysicalFileProvider(Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "StaticFiles")),
+        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "StaticFiles")),
     RequestPath = "/StaticFiles"
 });
 
