@@ -42,6 +42,7 @@ builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("D
 builder.Services.AddSingleton<CategoryService>();
 builder.Services.AddSingleton<WarehouseService>();
 builder.Services.AddSingleton<InvoiceSerieService>();
+builder.Services.AddSingleton<ConfigurationService>();
 builder.Services.AddSingleton<IRavenDbContext, RavenDbContext>();
 builder.Services.AddScoped<ISaleService, SaleService>();
 builder.Services.AddScoped<ICpeService, CpeService>();
