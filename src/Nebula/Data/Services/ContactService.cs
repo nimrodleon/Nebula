@@ -16,12 +16,12 @@ public class ContactService
         _collection = mongoDatabase.GetCollection<Contact>("Contacts");
     }
 
-    public async Task<List<Contact>> GetListAsync(string? query)
+    public async Task<List<Contact>> GetListAsync(string? query, int limit = 25)
     {
         var filter = Builders<Contact>.Filter.Empty;
         if (!string.IsNullOrEmpty(query))
             filter = Builders<Contact>.Filter.Regex("Name", new BsonRegularExpression(query.ToUpper(), "i"));
-        return await _collection.Find(filter).Limit(25).ToListAsync();
+        return await _collection.Find(filter).Limit(limit).ToListAsync();
     }
 
     public async Task<Contact> GetAsync(string id) =>

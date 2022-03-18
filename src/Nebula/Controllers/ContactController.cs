@@ -29,9 +29,9 @@ namespace Nebula.Controllers
         }
 
         [HttpGet("Select2")]
-        public async Task<IActionResult> Select2([FromQuery] string term)
+        public async Task<IActionResult> Select2([FromQuery] string? term)
         {
-            var responseData = await _contactService.GetListAsync(term);
+            var responseData = await _contactService.GetListAsync(term, 10);
             var data = new List<Select2>();
             responseData.ForEach(item =>
             {
