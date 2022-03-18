@@ -1,17 +1,11 @@
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Nebula.Data;
 using Nebula.Data.Helpers;
-using Nebula.Data.Models;
+using Nebula.Data.Services;
 using Nebula.Data.ViewModels;
-using Raven.Client.Documents;
-using Raven.Client.Documents.Linq;
 
 namespace Nebula.Controllers
 {
@@ -20,12 +14,12 @@ namespace Nebula.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        private readonly IRavenDbContext _context;
+        private readonly UserService _userService;
 
-        public AuthController(IConfiguration configuration, IRavenDbContext context)
+        public AuthController(IConfiguration configuration, UserService userService)
         {
             _configuration = configuration;
-            _context = context;
+            _userService = userService;
         }
 
         [HttpPost("Login")]
@@ -33,8 +27,8 @@ namespace Nebula.Controllers
         {
             try
             {
-                using var session = _context.Store.OpenAsyncSession();
-                var user = await session.Query<User>().Where(m => m.UserName == model.UserName).SingleAsync();
+                var user = await _userService.GetByUserNameAsync(model.UserName);
+                if (user is null) throw new Exception();
 
                 if (PasswordHasher.VerifyHashedPassword(user.PasswordHash, model.Password)
                     .Equals(PasswordVerificationResult.Failed)) throw new Exception();
