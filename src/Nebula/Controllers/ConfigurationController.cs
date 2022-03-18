@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Data;
 using Nebula.Data.Models;
+using Nebula.Data.Services;
 
 namespace Nebula.Controllers
 {
@@ -8,53 +8,36 @@ namespace Nebula.Controllers
     [ApiController]
     public class ConfigurationController : ControllerBase
     {
-        private readonly IRavenDbContext _context;
+        private readonly ConfigurationService _configurationService;
 
-        public ConfigurationController(IRavenDbContext context)
-        {
-            _context = context;
-        }
+        public ConfigurationController(ConfigurationService configurationService) =>
+            _configurationService = configurationService;
 
         [HttpGet("Show")]
         public async Task<IActionResult> Show()
         {
-            using var session = _context.Store.OpenAsyncSession();
-            Configuration configuration = await session.LoadAsync<Configuration>("default");
-            if (configuration == null)
+            var configuration = await _configurationService.GetAsync();
+            if (configuration is null)
             {
-                var model = new Configuration()
-                {
-                    Id = "default"
-                };
-                await session.StoreAsync(model);
-                await session.SaveChangesAsync();
-                return RedirectToAction("Show");
+                await _configurationService.CreateAsync();
+                return Ok(await _configurationService.GetAsync());
             }
-
             return Ok(configuration);
         }
 
         [HttpPut("Update")]
         public async Task<IActionResult> Update([FromBody] Configuration model)
         {
-            using var session = _context.Store.OpenAsyncSession();
-            Configuration configuration = await session.LoadAsync<Configuration>("default");
-            configuration.Ruc = model.Ruc;
-            configuration.RznSocial = model.RznSocial.ToUpper();
-            configuration.CodLocalEmisor = model.CodLocalEmisor;
-            configuration.TipMoneda = model.TipMoneda;
-            configuration.PorcentajeIgv = model.PorcentajeIgv;
-            configuration.ValorImpuestoBolsa = model.ValorImpuestoBolsa;
-            configuration.CpeSunat = model.CpeSunat;
-            configuration.ContactId = model.ContactId;
-            configuration.UrlApi = model.UrlApi;
-            configuration.FileSunat = model.FileSunat;
-            configuration.FileControl = model.FileControl;
-            await session.SaveChangesAsync();
+            var configuration = await _configurationService.GetAsync();
+            if (configuration is null) return NotFound();
+
+            model.Id = configuration.Id;
+            await _configurationService.UpdateAsync(model);
 
             return Ok(new
             {
-                Ok = true, Data = configuration,
+                Ok = true,
+                Data = configuration,
                 Msg = $"La configuración {configuration.Ruc}, ha sido actualizado!"
             });
         }

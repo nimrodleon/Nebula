@@ -40,6 +40,9 @@ builder.Services.AddCors(options =>
 // Add services to the container.
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
 builder.Services.AddSingleton<CategoryService>();
+builder.Services.AddSingleton<WarehouseService>();
+builder.Services.AddSingleton<InvoiceSerieService>();
+builder.Services.AddSingleton<ConfigurationService>();
 builder.Services.AddSingleton<IRavenDbContext, RavenDbContext>();
 builder.Services.AddScoped<ISaleService, SaleService>();
 builder.Services.AddScoped<ICpeService, CpeService>();
@@ -49,7 +52,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo {Title = "Nebula", Version = "v1"});
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Nebula", Version = "v1" });
     // To Enable authorization using Swagger (JWT).
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
     {

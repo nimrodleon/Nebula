@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Nebula.Data.Models;
 
@@ -15,8 +16,13 @@ public class CategoryService
         _collection = mongoDatabase.GetCollection<Category>("Categories");
     }
 
-    public async Task<List<Category>> GetListAsync(string query) =>
-        await _collection.Find(x => x.Name.Contains(query)).ToListAsync();
+    public async Task<List<Category>> GetListAsync(string? query)
+    {
+        var filter = Builders<Category>.Filter.Empty;
+        if (!string.IsNullOrEmpty(query))
+            filter = Builders<Category>.Filter.Regex("Name", new BsonRegularExpression(query.ToUpper(), "i"));
+        return await _collection.Find(filter).ToListAsync();
+    }
 
     public async Task<Category?> GetAsync(string id) =>
         await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();

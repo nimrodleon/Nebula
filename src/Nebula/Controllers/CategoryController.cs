@@ -14,7 +14,7 @@ namespace Nebula.Controllers
             _categoryService = categoryService;
 
         [HttpGet("Index")]
-        public async Task<IActionResult> Index([FromQuery] string query)
+        public async Task<IActionResult> Index([FromQuery] string? query)
         {
             var responseData = await _categoryService.GetListAsync(query);
             return Ok(responseData);
@@ -86,7 +86,7 @@ namespace Nebula.Controllers
             var category = await _categoryService.GetAsync(id);
             if (category is null) return NotFound();
             await _categoryService.RemoveAsync(id);
-            return Ok(new {Ok = true, Data = category, Msg = "La categoría ha sido borrado!"});
+            return Ok(new { Ok = true, Data = category, Msg = "La categoría ha sido borrado!" });
         }
     }
 }
