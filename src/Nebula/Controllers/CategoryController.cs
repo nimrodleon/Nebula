@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Data.Models;
 using Nebula.Data.Services;
+using Nebula.Data.ViewModels;
 
 namespace Nebula.Controllers
 {
@@ -24,29 +25,25 @@ namespace Nebula.Controllers
         public async Task<IActionResult> Show(string id)
         {
             var category = await _categoryService.GetAsync(id);
-            if (category is null) return NotFound();
             return Ok(category);
         }
 
-        // [HttpGet("Select2")]
-        // public async Task<IActionResult> Select2([FromQuery] string term)
-        // {
-        //     using var session = _context.Store.OpenAsyncSession();
-        //     IRavenQueryable<Category> categories = from m in session.Query<Category>() select m;
-        //     if (!string.IsNullOrWhiteSpace(term))
-        //         categories = categories.Search(m => m.Name, $"*{term.ToUpper()}*");
-        //     var responseData = await categories.Take(10).ToListAsync();
-        //     var data = new List<Select2>();
-        //     responseData.ForEach(item =>
-        //     {
-        //         data.Add(new Select2()
-        //         {
-        //             Id = item.Id,
-        //             Text = item.Name
-        //         });
-        //     });
-        //     return Ok(new {Results = data});
-        // }
+        [HttpGet("Select2")]
+        public async Task<IActionResult> Select2([FromQuery] string? term)
+        {
+            if (string.IsNullOrWhiteSpace(term)) term = string.Empty;
+            var responseData = await _categoryService.GetListAsync(term, 10);
+            var data = new List<Select2>();
+            responseData.ForEach(item =>
+            {
+                data.Add(new Select2()
+                {
+                    Id = item.Id,
+                    Text = item.Name
+                });
+            });
+            return Ok(new {Results = data});
+        }
 
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] Category model)
@@ -66,7 +63,6 @@ namespace Nebula.Controllers
         public async Task<IActionResult> Update(string id, [FromBody] Category model)
         {
             var category = await _categoryService.GetAsync(id);
-            if (category is null) return NotFound();
 
             model.Id = category.Id;
             model.Name = model.Name.ToUpper();
@@ -84,9 +80,8 @@ namespace Nebula.Controllers
         public async Task<IActionResult> Delete(string id)
         {
             var category = await _categoryService.GetAsync(id);
-            if (category is null) return NotFound();
             await _categoryService.RemoveAsync(id);
-            return Ok(new { Ok = true, Data = category, Msg = "La categoría ha sido borrado!" });
+            return Ok(new {Ok = true, Data = category, Msg = "La categoría ha sido borrado!"});
         }
     }
 }

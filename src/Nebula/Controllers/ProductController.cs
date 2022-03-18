@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Data;
 using Nebula.Data.Models;
+using Nebula.Data.Services;
 using Nebula.Data.ViewModels;
-using Raven.Client.Documents;
-using Raven.Client.Documents.Linq;
 
 namespace Nebula.Controllers
 {
@@ -11,45 +9,34 @@ namespace Nebula.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IRavenDbContext _context;
+        private readonly ProductService _productService;
 
-        public ProductController(IRavenDbContext context)
-        {
-            _context = context;
-        }
+        public ProductController(ProductService productService) =>
+            _productService = productService;
 
         public class FormData : Product
         {
-            public IFormFile File { get; set; }
+            public IFormFile? File { get; set; }
         }
 
         [HttpGet("Index")]
         public async Task<IActionResult> Index([FromQuery] string? query)
         {
-            using var session = _context.Store.OpenAsyncSession();
-            IRavenQueryable<Product> products = from m in session.Query<Product>() select m;
-            if (!string.IsNullOrWhiteSpace(query))
-                products = products.Search(m => m.Description, $"*{query.ToUpper()}*");
-            var responseData = await products.Take(25).ToListAsync();
+            var responseData = await _productService.GetListAsync(query);
             return Ok(responseData);
         }
 
         [HttpGet("Show/{id}")]
         public async Task<IActionResult> Show(string id)
         {
-            using var session = _context.Store.OpenAsyncSession();
-            Product product = await session.LoadAsync<Product>(id);
+            var product = await _productService.GetAsync(id);
             return Ok(product);
         }
 
         [HttpGet("Select2")]
         public async Task<IActionResult> Select2([FromQuery] string term)
         {
-            using var session = _context.Store.OpenAsyncSession();
-            IRavenQueryable<Product> products = from m in session.Query<Product>() select m;
-            if (!string.IsNullOrWhiteSpace(term))
-                products = products.Search(m => m.Description, $"*{term.ToUpper()}*");
-            var responseData = await products.Take(25).ToListAsync();
+            var responseData = await _productService.GetListAsync(term, 10);
             var data = new List<Select2>();
             responseData.ForEach(item =>
             {
@@ -59,7 +46,7 @@ namespace Nebula.Controllers
                     Text = $"{item.Description} | {Convert.ToDecimal(item.Price1):N2}"
                 });
             });
-            return Ok(new { Results = data });
+            return Ok(new {Results = data});
         }
 
         [HttpPost("Create")]
@@ -80,10 +67,8 @@ namespace Nebula.Controllers
                 model.PathImage = "default.png";
             }
 
-            using var session = _context.Store.OpenAsyncSession();
             Product product = new Product()
             {
-                Id = string.Empty,
                 Description = model.Description.ToUpper(),
                 Barcode = model.Barcode,
                 Price1 = model.Price1,
@@ -96,14 +81,13 @@ namespace Nebula.Controllers
                 Type = model.Type,
                 PathImage = model.PathImage
             };
-            await session.StoreAsync(product);
-            await session.SaveChangesAsync();
+            await _productService.CreateAsync(product);
 
             return Ok(new
             {
                 Ok = true,
-                Data = product,
-                Msg = $"El producto {product.Description} ha sido registrado!"
+                Data = model,
+                Msg = $"El producto {model.Description} ha sido registrado!"
             });
         }
 
@@ -111,9 +95,7 @@ namespace Nebula.Controllers
         public async Task<IActionResult> Update(string id, [FromForm] FormData model)
         {
             if (id != model.Id) return BadRequest();
-            using var session = _context.Store.OpenAsyncSession();
-            Product product = await session.LoadAsync<Product>(id);
-            if (product == null) return BadRequest();
+            var product = await _productService.GetAsync(id);
 
             if (model.File?.Length > 0)
             {
@@ -147,22 +129,20 @@ namespace Nebula.Controllers
             product.UndMedida = model.UndMedida;
             product.Type = model.Type;
             product.PathImage = model.PathImage;
-            await session.SaveChangesAsync();
+            await _productService.UpdateAsync(id, product);
 
             return Ok(new
             {
                 Ok = true,
-                Data = product,
-                Msg = $"El producto {product.Description} ha sido actualizado!"
+                Data = model,
+                Msg = $"El producto {model.Description} ha sido actualizado!"
             });
         }
 
         [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            using var session = _context.Store.OpenAsyncSession();
-            Product product = await session.LoadAsync<Product>(id);
-            if (product == null) return BadRequest();
+            var product = await _productService.GetAsync(id);
             // directorio principal.
             var dirPath = Path.Combine(Environment
                 .GetFolderPath(Environment.SpecialFolder.UserProfile), "StaticFiles");
@@ -170,9 +150,8 @@ namespace Nebula.Controllers
             var file = Path.Combine(dirPath, product.PathImage);
             if (System.IO.File.Exists(file)) System.IO.File.Delete(file);
             // borrar registro.
-            session.Delete(product);
-            await session.SaveChangesAsync();
-            return Ok(new { Ok = true, Data = product, Msg = "El producto ha sido borrado!" });
+            await _productService.RemoveAsync(id);
+            return Ok(new {Ok = true, Data = product, Msg = "El producto ha sido borrado!"});
         }
     }
 }

@@ -16,15 +16,15 @@ public class CategoryService
         _collection = mongoDatabase.GetCollection<Category>("Categories");
     }
 
-    public async Task<List<Category>> GetListAsync(string? query)
+    public async Task<List<Category>> GetListAsync(string? query, int limit = 25)
     {
         var filter = Builders<Category>.Filter.Empty;
         if (!string.IsNullOrEmpty(query))
             filter = Builders<Category>.Filter.Regex("Name", new BsonRegularExpression(query.ToUpper(), "i"));
-        return await _collection.Find(filter).ToListAsync();
+        return await _collection.Find(filter).Limit(limit).ToListAsync();
     }
 
-    public async Task<Category?> GetAsync(string id) =>
+    public async Task<Category> GetAsync(string id) =>
         await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
     public async Task CreateAsync(Category category) =>
