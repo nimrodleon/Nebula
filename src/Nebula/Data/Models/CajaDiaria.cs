@@ -1,18 +1,23 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
 namespace Nebula.Data.Models;
 
 public class CajaDiaria
 {
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
     /// Series de facturación.
     /// </summary>
-    public string Terminal { get; set; }
+    public string Terminal { get; set; } = string.Empty;
 
     /// <summary>
     /// Estado Caja (ABIERTO|CERRADO).
     /// </summary>
-    public string Status { get; set; }
+    public string Status { get; set; } = string.Empty;
 
     /// <summary>
     /// Monto Apertura.
@@ -32,7 +37,7 @@ public class CajaDiaria
     /// <summary>
     /// Turno Operación de caja.
     /// </summary>
-    public string Turno { get; set; }
+    public string Turno { get; set; } = string.Empty;
 
     /// <summary>
     /// Fecha de Operación.

@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Data;
 using Nebula.Data.Models;
+using Nebula.Data.Services;
 using Nebula.Data.ViewModels;
-using Raven.Client.Documents;
 
 namespace Nebula.Controllers;
 
@@ -10,42 +9,38 @@ namespace Nebula.Controllers;
 [ApiController]
 public class CajaDiariaController : ControllerBase
 {
-    private readonly IRavenDbContext _context;
+    private readonly CajaDiariaService _cajaDiariaService;
+    private readonly InvoiceSerieService _invoiceSerieService;
+    private readonly CashierDetailService _cashierDetailService;
 
-    public CajaDiariaController(IRavenDbContext context)
+    public CajaDiariaController(CajaDiariaService cajaDiariaService,
+        InvoiceSerieService invoiceSerieService, CashierDetailService cashierDetailService)
     {
-        _context = context;
+        _cajaDiariaService = cajaDiariaService;
+        _invoiceSerieService = invoiceSerieService;
+        _cashierDetailService = cashierDetailService;
     }
 
     [HttpGet("Index")]
     public async Task<IActionResult> Index([FromQuery] DateQuery model)
     {
-        using var session = _context.Store.OpenAsyncSession();
-        List<CajaDiaria> cajaDiarias = await session.Query<CajaDiaria>()
-            .Where(m => m.Year == model.Year && m.Month == model.Month)
-            .OrderByDescending(m => m.CreatedAt)
-            .ToListAsync();
+        var cajaDiarias = await _cajaDiariaService.GetListAsync(model);
         return Ok(cajaDiarias);
     }
 
     [HttpGet("Show/{id}")]
     public async Task<IActionResult> Show(string id)
     {
-        using var session = _context.Store.OpenAsyncSession();
-        CajaDiaria cajaDiaria = await session.LoadAsync<CajaDiaria>(id);
+        var cajaDiaria = await _cajaDiariaService.GetAsync(id);
         return Ok(cajaDiaria);
     }
 
     [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] AperturaCaja model)
     {
-        using var session = _context.Store.OpenAsyncSession();
-        InvoiceSerie invoiceSerie = await session.LoadAsync<InvoiceSerie>(model.SerieId);
-        if (invoiceSerie == null) return BadRequest();
-
+        var invoiceSerie = await _invoiceSerieService.GetAsync(model.SerieId);
         var cajaDiaria = new CajaDiaria()
         {
-            Id = string.Empty,
             Terminal = $"{invoiceSerie.Id}:{invoiceSerie.Name}",
             Status = "ABIERTO",
             TotalApertura = model.Total,
@@ -53,13 +48,11 @@ public class CajaDiariaController : ControllerBase
             TotalCierre = 0.0M,
             Turno = model.Turno
         };
-        await session.StoreAsync(cajaDiaria);
-        await session.SaveChangesAsync();
+        await _cajaDiariaService.CreateAsync(cajaDiaria);
 
         // registrar apertura de caja.
         var detalleCaja = new CashierDetail()
         {
-            Id = string.Empty,
             CajaDiaria = cajaDiaria.Id,
             Remark = "APERTURA DE CAJA",
             Type = "ENTRADA",
@@ -67,8 +60,7 @@ public class CajaDiariaController : ControllerBase
             FormaPago = "Contado",
             Amount = model.Total
         };
-        await session.StoreAsync(detalleCaja);
-        await session.SaveChangesAsync();
+        await _cashierDetailService.CreateAsync(detalleCaja);
 
         return Ok(new
         {
@@ -81,13 +73,11 @@ public class CajaDiariaController : ControllerBase
     [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] CerrarCaja model)
     {
-        using var session = _context.Store.OpenAsyncSession();
-        CajaDiaria cajaDiaria = await session.LoadAsync<CajaDiaria>(id);
-        if (cajaDiaria == null) return BadRequest();
+        var cajaDiaria = await _cajaDiariaService.GetAsync(id);
         cajaDiaria.TotalContabilizado = model.TotalContabilizado;
         cajaDiaria.TotalCierre = model.TotalCierre;
         cajaDiaria.Status = "CERRADO";
-        await session.SaveChangesAsync();
+        await _cajaDiariaService.UpdateAsync(id, cajaDiaria);
         return Ok(new
         {
             Ok = true,
@@ -99,10 +89,8 @@ public class CajaDiariaController : ControllerBase
     [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(string id)
     {
-        using var session = _context.Store.OpenAsyncSession();
-        CajaDiaria cajaDiaria = await session.LoadAsync<CajaDiaria>(id);
-        session.Delete(cajaDiaria);
-        await session.SaveChangesAsync();
-        return Ok(new { Ok = true, Data = cajaDiaria, Msg = "La caja diaria ha sido borrado!" });
+        var cajaDiaria = await _cajaDiariaService.GetAsync(id);
+        await _cajaDiariaService.RemoveAsync(cajaDiaria.Id);
+        return Ok(new {Ok = true, Data = cajaDiaria, Msg = "La caja diaria ha sido borrado!"});
     }
 }

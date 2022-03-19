@@ -1,3 +1,6 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
 namespace Nebula.Data.Models;
 
 public enum TypeOperation
@@ -11,12 +14,14 @@ public enum TypeOperation
 /// </summary>
 public class CashierDetail
 {
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
     /// Identificador CajaDiaria.
     /// </summary>
-    public string CajaDiaria { get; set; }
+    public string CajaDiaria { get; set; } = string.Empty;
 
     /// <summary>
     /// Serie y Número de documento.
@@ -37,7 +42,7 @@ public class CashierDetail
     /// Movimiento de efectivo,
     /// (ENTRADA|SALIDA).
     /// </summary>
-    public string Type { get; set; }
+    public string Type { get; set; } = string.Empty;
 
     /// <summary>
     /// Tipo de Operación.
@@ -47,7 +52,7 @@ public class CashierDetail
     /// <summary>
     /// Forma de Pago (Credito|Contado).
     /// </summary>
-    public string FormaPago { get; set; }
+    public string FormaPago { get; set; } = string.Empty;
 
     /// <summary>
     /// Monto de la Operación.
