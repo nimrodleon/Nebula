@@ -8,10 +8,9 @@ using Nebula.Data;
 using Nebula.Data.Services;
 using Nebula.Data.Services.Cashier;
 using Nebula.Data.Services.Common;
+using Nebula.Data.Services.Sales;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.Configure<PersistenceSettings>(builder.Configuration.GetSection("RavenDb"));
 var secretKey = Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("SecretKey"));
 
 builder.Services.AddAuthentication(options =>
@@ -50,9 +49,11 @@ builder.Services.AddSingleton<ProductService>();
 builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<CajaDiariaService>();
 builder.Services.AddSingleton<CashierDetailService>();
-builder.Services.AddSingleton<IRavenDbContext, RavenDbContext>();
+builder.Services.AddSingleton<InvoiceSaleAccountService>();
+builder.Services.AddSingleton<InvoiceSaleDetailService>();
+builder.Services.AddSingleton<InvoiceSaleService>();
+builder.Services.AddSingleton<TributoSaleService>();
 builder.Services.AddSingleton<CashierSaleService>();
-builder.Services.AddScoped<ICpeService, CpeService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

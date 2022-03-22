@@ -8,10 +8,10 @@ public class AuthLogin
     /// <summary>
     /// Nombre de usuario.
     /// </summary>
-    public string UserName { get; set; }
+    public string UserName { get; set; } = string.Empty;
 
     /// <summary>
     /// Contraseña del usuario.
     /// </summary>
-    public string Password { get; set; }
+    public string Password { get; set; } = string.Empty;
 }

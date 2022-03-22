@@ -1,7 +1,9 @@
 using Nebula.Data.Models.Cashier;
 using Nebula.Data.Models.Common;
 using Nebula.Data.Models.Sales;
-using Nebula.Data.ViewModels;
+using Nebula.Data.Services.Common;
+using Nebula.Data.Services.Sales;
+using Nebula.Data.ViewModels.Cashier;
 
 namespace Nebula.Data.Services.Cashier;
 
@@ -10,14 +12,31 @@ namespace Nebula.Data.Services.Cashier;
 /// </summary>
 public class CashierSaleService
 {
-    private readonly IRavenDbContext _context;
-    private Configuration _configuration;
-    private Contact _contact;
+    private readonly ConfigurationService _configurationService;
+    private readonly ContactService _contactService;
+    private readonly CajaDiariaService _cajaDiariaService;
+    private readonly InvoiceSerieService _invoiceSerieService;
+    private readonly InvoiceSaleService _invoiceSaleService;
+    private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
+    private readonly TributoSaleService _tributoSaleService;
+    private readonly CashierDetailService _cashierDetailService;
     private Venta _venta;
 
-    public CashierSaleService(IRavenDbContext context)
+    public CashierSaleService(ConfigurationService configurationService,
+        ContactService contactService, CajaDiariaService cajaDiariaService,
+        InvoiceSerieService invoiceSerieService, InvoiceSaleService invoiceSaleService,
+        InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService,
+        CashierDetailService cashierDetailService)
     {
-        _context = context;
+        _configurationService = configurationService;
+        _contactService = contactService;
+        _cajaDiariaService = cajaDiariaService;
+        _invoiceSerieService = invoiceSerieService;
+        _invoiceSaleService = invoiceSaleService;
+        _invoiceSaleDetailService = invoiceSaleDetailService;
+        _tributoSaleService = tributoSaleService;
+        _cashierDetailService = cashierDetailService;
+        _venta = new Venta();
     }
 
     /// <summary>
@@ -31,28 +50,25 @@ public class CashierSaleService
     /// <param name="cajaDiariaId">ID caja diaria.</param>
     public async Task<InvoiceSale> CreateQuickSale(string cajaDiariaId)
     {
-        await GetConfiguration();
-        await GetContact(_venta.ContactId);
-        using var session = _context.Store.OpenAsyncSession();
-        // Cambiar el número máximo de solicitudes en una sola sesión.
-        session.Advanced.MaxNumberOfRequestsPerSession = 1000;
-        var invoiceSale = _venta.GetInvoice(_configuration, _contact);
-        var cajaDiaria = await session.LoadAsync<CajaDiaria>(cajaDiariaId);
-        var invoiceSerie = await session.LoadAsync<InvoiceSerie>(cajaDiaria.Terminal.Split(":")[0].Trim());
+        var configuration = await _configurationService.GetAsync();
+        var contact = await _contactService.GetAsync(_venta.ContactId);
+
+        var invoiceSale = _venta.GetInvoice(configuration, contact);
+        var cajaDiaria = await _cajaDiariaService.GetAsync(cajaDiariaId);
+        var invoiceSerie = await _invoiceSerieService.GetAsync(cajaDiaria.Terminal.Split(":")[0].Trim());
         GenerateInvoiceSerie(ref invoiceSerie, ref invoiceSale, _venta.DocType);
+
         // Agregar Información del comprobante.
-        await session.StoreAsync(invoiceSale);
-        await session.SaveChangesAsync();
+        await _invoiceSerieService.UpdateAsync(invoiceSale.Id, invoiceSerie);
+        await _invoiceSaleService.CreateAsync(invoiceSale);
 
         // Agregar detalles del comprobante.
         var invoiceSaleDetails = _venta.GetInvoiceDetail(invoiceSale.Id);
-        foreach (var item in invoiceSaleDetails) await session.StoreAsync(item);
-        await session.SaveChangesAsync();
+        await _invoiceSaleDetailService.CreateAsync(invoiceSaleDetails);
 
         // Agregar Tributos de Factura.
         var tributoSales = _venta.GetTributo(invoiceSale.Id);
-        foreach (var item in tributoSales) await session.StoreAsync(item);
-        await session.SaveChangesAsync();
+        await _tributoSaleService.CreateAsync(tributoSales);
 
         // Registrar operación de Caja.
         var cashierDetail = new CashierDetail()
@@ -67,29 +83,8 @@ public class CashierSaleService
             FormaPago = _venta.FormaPago,
             Amount = invoiceSale.SumImpVenta
         };
-        await session.StoreAsync(cashierDetail);
-        await session.SaveChangesAsync();
-
+        await _cashierDetailService.CreateAsync(cashierDetail);
         return invoiceSale;
-    }
-
-    /// <summary>
-    ///  Carga la configuración del sistema.
-    /// </summary>
-    private async Task GetConfiguration()
-    {
-        using var session = _context.Store.OpenAsyncSession();
-        _configuration = await session.LoadAsync<Configuration>("default");
-    }
-
-    /// <summary>
-    /// Carga los datos de contacto.
-    /// </summary>
-    /// <param name="id">ID de contacto.</param>
-    private async Task GetContact(string id)
-    {
-        using var session = _context.Store.OpenAsyncSession();
-        _contact = await session.LoadAsync<Contact>(id);
     }
 
     /// <summary>

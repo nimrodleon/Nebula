@@ -15,6 +15,9 @@ public class InvoiceSaleService
         _collection = mongoDatabase.GetCollection<InvoiceSale>("InvoiceSales");
     }
 
+    public async Task<InvoiceSale> GetAsync(string id) =>
+        await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
+
     public async Task CreateAsync(InvoiceSale invoiceSale) =>
         await _collection.InsertOneAsync(invoiceSale);
 }

@@ -1,8 +1,7 @@
-using Nebula.Data.Models;
 using Nebula.Data.Models.Common;
 using Nebula.Data.Models.Sales;
 
-namespace Nebula.Data.ViewModels;
+namespace Nebula.Data.ViewModels.Cashier;
 
 /// <summary>
 /// modelo para el punto de venta.
@@ -12,7 +11,7 @@ public class Venta : CpeBase
     /// <summary>
     /// Medios de Pago.
     /// </summary>
-    public string FormaPago { get; set; }
+    public string FormaPago { get; set; } = string.Empty;
 
     /// <summary>
     /// Monto Cobrado.

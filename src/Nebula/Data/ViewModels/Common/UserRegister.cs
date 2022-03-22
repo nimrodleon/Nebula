@@ -1,4 +1,4 @@
-﻿namespace Nebula.Data.ViewModels;
+﻿namespace Nebula.Data.ViewModels.Common;
 
 /// <summary>
 /// Registrar Usuario.

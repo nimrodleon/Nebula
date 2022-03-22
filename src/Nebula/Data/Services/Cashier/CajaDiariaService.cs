@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using Nebula.Data.Models.Cashier;
 using Nebula.Data.ViewModels;
+using Nebula.Data.ViewModels.Common;
 
 namespace Nebula.Data.Services.Cashier;
 

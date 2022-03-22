@@ -1,11 +1,11 @@
-namespace Nebula.Data.ViewModels;
+namespace Nebula.Data.ViewModels.Cashier;
 
 public class AperturaCaja
 {
     /// <summary>
     /// Id de la serie facturación.
     /// </summary>
-    public string SerieId { get; set; }
+    public string SerieId { get; set; } = string.Empty;
 
     /// <summary>
     /// Total monto apertura.
@@ -15,5 +15,5 @@ public class AperturaCaja
     /// <summary>
     /// Turno Operación.
     /// </summary>
-    public string Turno { get; set; }
+    public string Turno { get; set; } = string.Empty;
 }

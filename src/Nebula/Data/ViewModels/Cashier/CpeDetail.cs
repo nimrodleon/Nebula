@@ -1,4 +1,4 @@
-namespace Nebula.Data.ViewModels;
+namespace Nebula.Data.ViewModels.Cashier;
 
 /// <summary>
 /// items de productos.
@@ -8,22 +8,22 @@ public class CpeDetail
     /// <summary>
     /// Id del producto.
     /// </summary>
-    public string ProductId { get; set; }
+    public string ProductId { get; set; } = string.Empty;
 
     /// <summary>
     /// Unidad de Medida.
     /// </summary>
-    public string CodUnidadMedida { get; set; }
+    public string CodUnidadMedida { get; set; } = string.Empty;
 
     /// <summary>
     /// Código de producto SUNAT.
     /// </summary>
-    public string CodProductoSunat { get; set; }
+    public string CodProductoSunat { get; set; } = string.Empty;
 
     /// <summary>
     /// Descripción del Item.
     /// </summary>
-    public string Description { get; set; }
+    public string Description { get; set; } = string.Empty;
 
     /// <summary>
     /// Precio del Item.
@@ -38,7 +38,7 @@ public class CpeDetail
     /// <summary>
     /// Tipo de operación IGV Sunat.
     /// </summary>
-    public string IgvSunat { get; set; }
+    public string IgvSunat { get; set; } = string.Empty;
 
     /// <summary>
     /// Porcentaje IGV - 18.00.

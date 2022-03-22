@@ -1,7 +1,6 @@
-using Nebula.Data.Models;
 using Nebula.Data.Models.Sales;
 
-namespace Nebula.Data.ViewModels;
+namespace Nebula.Data.ViewModels.Cashier;
 
 /// <summary>
 /// Cabecera comprobante.
@@ -11,12 +10,12 @@ public class CpeBase
     /// <summary>
     /// Id del Contacto.
     /// </summary>
-    public string ContactId { get; set; }
+    public string ContactId { get; set; } = string.Empty;
 
     /// <summary>
     /// Tipo documento (FACTURA|BOLETA|NOTA).
     /// </summary>
-    public string DocType { get; set; }
+    public string DocType { get; set; } = string.Empty;
 
     /// <summary>
     /// SubTotal.
@@ -36,22 +35,22 @@ public class CpeBase
     /// <summary>
     /// Observación o Comentario.
     /// </summary>
-    public string Remark { get; set; }
+    public string Remark { get; set; } = string.Empty;
 
     /// <summary>
     /// Detalle de Venta.
     /// </summary>
-    public List<CpeDetail> Details { get; set; }
+    public List<CpeDetail> Details { get; set; } = new List<CpeDetail>();
 
     /// <summary>
     /// Cuotas a Crédito.
     /// </summary>
-    public List<Cuota> Cuotas { get; set; }
+    public List<Cuota> Cuotas { get; set; } = new List<Cuota>();
 
     /// <summary>
     /// ID del Comprobante.
     /// </summary>
-    public string InvoiceSale { get; set; }
+    public string InvoiceSale { get; set; } = string.Empty;
 
     /// <summary>
     /// calcular importe de venta.

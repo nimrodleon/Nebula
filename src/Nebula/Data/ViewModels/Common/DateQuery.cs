@@ -1,4 +1,4 @@
-namespace Nebula.Data.ViewModels;
+namespace Nebula.Data.ViewModels.Common;
 
 /// <summary>
 /// Modelo para el filtro por mes y año.
@@ -8,10 +8,10 @@ public class DateQuery
     /// <summary>
     /// Año.
     /// </summary>
-    public string Year { get; set; }
+    public string Year { get; set; } = string.Empty;
 
     /// <summary>
     /// Mes.
     /// </summary>
-    public string Month { get; set; }
+    public string Month { get; set; } = string.Empty;
 }
