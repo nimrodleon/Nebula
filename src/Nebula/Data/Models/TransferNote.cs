@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Nebula.Data.Models.Common;
 
 namespace Nebula.Data.Models;
 

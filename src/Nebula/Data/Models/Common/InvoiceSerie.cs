@@ -1,0 +1,54 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
+namespace Nebula.Data.Models.Common;
+
+/// <summary>
+/// Series de facturación.
+/// </summary>
+public class InvoiceSerie
+{
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string Id { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Identificador Serie.
+    /// </summary>
+    public string Name { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Identificar Almacén.
+    /// </summary>
+    public string Warehouse { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Serie Factura.
+    /// </summary>
+    public string Factura { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Contador Factura.
+    /// </summary>
+    public int CounterFactura { get; set; }
+
+    /// <summary>
+    /// Serie Boleta.
+    /// </summary>
+    public string Boleta { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Contador Boleta.
+    /// </summary>
+    public int CounterBoleta { get; set; }
+
+    /// <summary>
+    /// Serie Nota de Venta.
+    /// </summary>
+    public string NotaDeVenta { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Contador Nota de Venta.
+    /// </summary>
+    public int CounterNotaDeVenta { get; set; }
+}

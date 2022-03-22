@@ -1,4 +1,4 @@
-using Nebula.Data.Models;
+using Nebula.Data.Models.Sales;
 using Nebula.Data.ViewModels;
 
 namespace Nebula.Data.Services;

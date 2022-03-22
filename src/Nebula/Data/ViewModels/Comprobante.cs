@@ -1,4 +1,6 @@
 using Nebula.Data.Models;
+using Nebula.Data.Models.Common;
+using Nebula.Data.Models.Sales;
 
 namespace Nebula.Data.ViewModels;
 

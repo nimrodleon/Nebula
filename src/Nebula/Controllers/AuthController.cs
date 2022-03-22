@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Nebula.Data.Helpers;
-using Nebula.Data.Services;
+using Nebula.Data.Services.Common;
 using Nebula.Data.ViewModels;
 
 namespace Nebula.Controllers;
@@ -45,7 +45,7 @@ public class AuthController : ControllerBase
                 SecurityAlgorithms.HmacSha256Signature);
             var expires = DateTime.UtcNow.AddHours(12);
             var token = new JwtSecurityToken(claims: claims, expires: expires, signingCredentials: credentials);
-            return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), expires });
+            return Ok(new {token = new JwtSecurityTokenHandler().WriteToken(token), expires});
         }
         catch (Exception)
         {

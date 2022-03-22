@@ -1,3 +1,4 @@
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.FileProviders;
@@ -5,7 +6,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Nebula.Data;
 using Nebula.Data.Services;
-using System.Text;
+using Nebula.Data.Services.Cashier;
+using Nebula.Data.Services.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -49,7 +51,7 @@ builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<CajaDiariaService>();
 builder.Services.AddSingleton<CashierDetailService>();
 builder.Services.AddSingleton<IRavenDbContext, RavenDbContext>();
-builder.Services.AddScoped<ISaleService, SaleService>();
+builder.Services.AddSingleton<CashierSaleService>();
 builder.Services.AddScoped<ICpeService, CpeService>();
 
 builder.Services.AddControllers();

@@ -1,7 +1,8 @@
 using System.Text.Json;
 using CpeLibPE.Facturador;
 using Nebula.Data.Helpers;
-using Nebula.Data.Models;
+using Nebula.Data.Models.Common;
+using Nebula.Data.Models.Sales;
 using Raven.Client.Documents;
 using sfs = CpeLibPE.Facturador.Models;
 
