@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Data.Models.Common;
-using Nebula.Data.Services;
 using Nebula.Data.Services.Common;
 
 namespace Nebula.Controllers.Common;
@@ -23,6 +22,7 @@ public class ConfigurationController : ControllerBase
             await _configurationService.CreateAsync();
             return Ok(await _configurationService.GetAsync());
         }
+
         return Ok(configuration);
     }
 

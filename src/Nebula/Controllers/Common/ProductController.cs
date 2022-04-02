@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Data.Models;
 using Nebula.Data.Models.Common;
-using Nebula.Data.Services;
-using Nebula.Data.ViewModels;
+using Nebula.Data.Services.Common;
 using Nebula.Data.ViewModels.Common;
 
 namespace Nebula.Controllers.Common;
@@ -48,7 +46,7 @@ public class ProductController : ControllerBase
                 Text = $"{item.Description} | {Convert.ToDecimal(item.Price1):N2}"
             });
         });
-        return Ok(new { Results = data });
+        return Ok(new {Results = data});
     }
 
     [HttpPost("Create")]
@@ -153,6 +151,6 @@ public class ProductController : ControllerBase
         if (System.IO.File.Exists(file)) System.IO.File.Delete(file);
         // borrar registro.
         await _productService.RemoveAsync(id);
-        return Ok(new { Ok = true, Data = product, Msg = "El producto ha sido borrado!" });
+        return Ok(new {Ok = true, Data = product, Msg = "El producto ha sido borrado!"});
     }
 }

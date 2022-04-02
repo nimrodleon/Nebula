@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Data.Models.Cashier;
-using Nebula.Data.Services;
 using Nebula.Data.Services.Cashier;
 using Nebula.Data.Services.Common;
-using Nebula.Data.ViewModels;
 using Nebula.Data.ViewModels.Cashier;
 using Nebula.Data.ViewModels.Common;
 

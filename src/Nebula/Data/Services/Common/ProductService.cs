@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Nebula.Data.Models;
 using Nebula.Data.Models.Common;
 
-namespace Nebula.Data.Services;
+namespace Nebula.Data.Services.Common;
 
 public class ProductService
 {

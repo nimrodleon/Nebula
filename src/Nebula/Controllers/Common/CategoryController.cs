@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Data.Models.Common;
-using Nebula.Data.Services;
 using Nebula.Data.Services.Common;
-using Nebula.Data.ViewModels;
 using Nebula.Data.ViewModels.Common;
 
 namespace Nebula.Controllers.Common;
@@ -44,7 +42,7 @@ public class CategoryController : ControllerBase
                 Text = item.Name
             });
         });
-        return Ok(new { Results = data });
+        return Ok(new {Results = data});
     }
 
     [HttpPost("Create")]
@@ -83,6 +81,6 @@ public class CategoryController : ControllerBase
     {
         var category = await _categoryService.GetAsync(id);
         await _categoryService.RemoveAsync(id);
-        return Ok(new { Ok = true, Data = category, Msg = "La categoría ha sido borrado!" });
+        return Ok(new {Ok = true, Data = category, Msg = "La categoría ha sido borrado!"});
     }
 }
