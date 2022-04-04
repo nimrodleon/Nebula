@@ -1,9 +1,9 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {faBars} from '@fortawesome/free-solid-svg-icons';
+import {ResponseData} from 'src/app/global/interfaces';
 import {InvoiceSerieService, WarehouseService} from '../../services';
 import {InvoiceSerie, Warehouse} from '../../interfaces';
-import {ResponseData} from 'src/app/global/interfaces';
 
 @Component({
   selector: 'app-invoice-serie-modal',
@@ -28,7 +28,11 @@ export class InvoiceSerieModalComponent implements OnInit {
     boleta: ['', [Validators.required]],
     counterBoleta: [0, [Validators.required, Validators.min(0)]],
     notaDeVenta: ['', [Validators.required]],
-    counterNotaDeVenta: [0, [Validators.required, Validators.min(0)]]
+    counterNotaDeVenta: [0, [Validators.required, Validators.min(0)]],
+    creditNote: ['', [Validators.required]],
+    counterCreditNote: [0, [Validators.required, Validators.min(0)]],
+    debitNote: ['', [Validators.required]],
+    counterDebitNote: [0, [Validators.required, Validators.min(0)]]
   });
 
   constructor(

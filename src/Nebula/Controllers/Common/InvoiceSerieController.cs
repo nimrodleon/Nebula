@@ -24,7 +24,6 @@ public class InvoiceSerieController : ControllerBase
     public async Task<IActionResult> Show(string id)
     {
         var invoiceSerie = await _invoiceSerieService.GetAsync(id);
-        if (invoiceSerie is null) return NotFound();
         return Ok(invoiceSerie);
     }
 
@@ -66,6 +65,6 @@ public class InvoiceSerieController : ControllerBase
         var invoiceSerie = await _invoiceSerieService.GetAsync(id);
         if (invoiceSerie is null) return NotFound();
         await _invoiceSerieService.RemoveAsync(id);
-        return Ok(new { Ok = true, Data = invoiceSerie, Msg = "La serie de facturación ha sido borrado!" });
+        return Ok(new {Ok = true, Data = invoiceSerie, Msg = "La serie de facturación ha sido borrado!"});
     }
 }

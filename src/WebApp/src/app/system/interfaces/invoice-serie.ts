@@ -8,6 +8,10 @@ export class InvoiceSerie {
     public boleta: string = '',
     public counterBoleta: number = 0,
     public notaDeVenta: string = '',
-    public counterNotaDeVenta: number = 0) {
+    public counterNotaDeVenta: number = 0,
+    public creditNote: string = '',
+    public counterCreditNote: number = 0,
+    public debitNote: string = '',
+    public counterDebitNote: number = 0) {
   }
 }

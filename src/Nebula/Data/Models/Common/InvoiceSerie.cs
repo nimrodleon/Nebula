@@ -51,4 +51,24 @@ public class InvoiceSerie
     /// Contador Nota de Venta.
     /// </summary>
     public int CounterNotaDeVenta { get; set; }
+
+    /// <summary>
+    /// Serie Nota de Crédito.
+    /// </summary>
+    public string CreditNote { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Contador Nota de Crédito.
+    /// </summary>
+    public int CounterCreditNote { get; set; }
+
+    /// <summary>
+    /// Serie Nota de Débito.
+    /// </summary>
+    public string DebitNote { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Contador Nota de Débito.
+    /// </summary>
+    public int CounterDebitNote { get; set; }
 }

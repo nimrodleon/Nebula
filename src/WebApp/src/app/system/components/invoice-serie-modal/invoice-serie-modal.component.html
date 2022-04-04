@@ -48,7 +48,7 @@
                      [ngClass]="{'is-invalid': inputIsInvalid('counterBoleta')}">
             </div>
           </div>
-          <div class="row">
+          <div class="row mb-3">
             <div class="col-6">
               <label class="form-label text-uppercase">Nota de Venta</label>
               <input type="text" formControlName="notaDeVenta" class="form-control"
@@ -58,6 +58,30 @@
               <label class="form-label text-uppercase">Contador</label>
               <input type="number" formControlName="counterNotaDeVenta" class="form-control"
                      [ngClass]="{'is-invalid': inputIsInvalid('counterNotaDeVenta')}">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-6">
+              <label class="form-label text-uppercase">Nota de Crédito</label>
+              <input type="text" formControlName="creditNote" class="form-control"
+                     [ngClass]="{'is-invalid': inputIsInvalid('creditNote')}">
+            </div>
+            <div class="col-6">
+              <label class="form-label text-uppercase">Contador</label>
+              <input type="number" formControlName="counterCreditNote" class="form-control"
+                     [ngClass]="{'is-invalid': inputIsInvalid('counterCreditNote')}">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <label class="form-label text-uppercase">Nota de Débito</label>
+              <input type="text" formControlName="debitNote" class="form-control"
+                     [ngClass]="{'is-invalid': inputIsInvalid('debitNote')}">
+            </div>
+            <div class="col-6">
+              <label class="form-label text-uppercase">Contador</label>
+              <input type="number" formControlName="counterDebitNote" class="form-control"
+                     [ngClass]="{'is-invalid': inputIsInvalid('counterDebitNote')}">
             </div>
           </div>
         </form>
