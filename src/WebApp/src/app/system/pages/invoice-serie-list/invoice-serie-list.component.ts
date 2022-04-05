@@ -1,16 +1,16 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl} from '@angular/forms';
 import {faEdit, faFilter, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
-import {InvoiceSerie} from '../../interfaces';
+import {accessDenied, deleteConfirm, ResponseData} from 'src/app/global/interfaces';
+import {AuthService} from 'src/app/user/services';
 import {InvoiceSerieService} from '../../services';
-import {ResponseData} from '../../../global/interfaces';
+import {InvoiceSerie} from '../../interfaces';
 
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-invoice-serie-list',
-  templateUrl: './invoice-serie-list.component.html',
-  styleUrls: ['./invoice-serie-list.component.scss']
+  templateUrl: './invoice-serie-list.component.html'
 })
 export class InvoiceSerieListComponent implements OnInit {
   faFilter = faFilter;
@@ -26,6 +26,7 @@ export class InvoiceSerieListComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private authService: AuthService,
     private invoiceSerieService: InvoiceSerieService) {
   }
 
@@ -70,6 +71,23 @@ export class InvoiceSerieListComponent implements OnInit {
       this.getInvoiceSeries();
       this.invoiceSerieModal.hide();
     }
+  }
+
+  // borrar serie de facturación.
+  public deleteInvoiceSerie(id: string): void {
+    this.authService.getMe().subscribe(async (result) => {
+      if (result.role !== 'Admin') {
+        await accessDenied();
+      } else {
+        deleteConfirm().then(result => {
+          if (result.isConfirmed) {
+            this.invoiceSerieService.delete(id).subscribe(result => {
+              if (result.ok) this.getInvoiceSeries();
+            });
+          }
+        });
+      }
+    });
   }
 
 }

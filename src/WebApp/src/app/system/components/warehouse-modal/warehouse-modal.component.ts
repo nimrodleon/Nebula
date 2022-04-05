@@ -2,13 +2,12 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {faBars} from '@fortawesome/free-solid-svg-icons';
 import {WarehouseService} from '../../services';
-import {ResponseData} from '../../../global/interfaces';
+import {ResponseData} from 'src/app/global/interfaces';
 import {Warehouse} from '../../interfaces';
 
 @Component({
   selector: 'app-warehouse-modal',
-  templateUrl: './warehouse-modal.component.html',
-  styleUrls: ['./warehouse-modal.component.scss']
+  templateUrl: './warehouse-modal.component.html'
 })
 export class WarehouseModalComponent implements OnInit {
   @Input()

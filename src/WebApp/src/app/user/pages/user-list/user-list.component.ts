@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl} from '@angular/forms';
 import {faEdit, faFilter, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
-import {ResponseData} from 'src/app/global/interfaces';
+import {accessDenied, deleteConfirm, ResponseData} from 'src/app/global/interfaces';
 import {User, UserDataModal} from '../../interfaces';
-import {UserService} from '../../services';
+import {AuthService, UserService} from '../../services';
 
 declare var bootstrap: any;
 
@@ -26,6 +26,7 @@ export class UserListComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private authService: AuthService,
     private userService: UserService) {
   }
 
@@ -87,6 +88,23 @@ export class UserListComponent implements OnInit {
       this.userModal.hide();
       this.changePasswordModal.hide();
     }
+  }
+
+  // borrar usuario.
+  public deleteUser(id: string): void {
+    this.authService.getMe().subscribe(async (result) => {
+      if (result.role !== 'Admin') {
+        await accessDenied();
+      } else {
+        deleteConfirm().then(result => {
+          if (result.isConfirmed) {
+            this.userService.delete(id).subscribe(result => {
+              if (result.ok) this.getUsers();
+            });
+          }
+        });
+      }
+    });
   }
 
 }

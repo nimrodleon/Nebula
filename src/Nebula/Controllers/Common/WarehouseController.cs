@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Data.Helpers;
 using Nebula.Data.Models.Common;
 using Nebula.Data.Services.Common;
 
 namespace Nebula.Controllers.Common;
 
+[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class WarehouseController : ControllerBase
@@ -24,7 +27,6 @@ public class WarehouseController : ControllerBase
     public async Task<IActionResult> Show(string id)
     {
         var warehouse = await _warehouseService.GetAsync(id);
-        if (warehouse is null) return NotFound();
         return Ok(warehouse);
     }
 
@@ -46,7 +48,6 @@ public class WarehouseController : ControllerBase
     public async Task<IActionResult> Update(string id, [FromBody] Warehouse model)
     {
         var warehouse = await _warehouseService.GetAsync(id);
-        if (warehouse is null) return NotFound();
 
         model.Id = warehouse.Id;
         model.Name = model.Name.ToUpper();
@@ -60,12 +61,11 @@ public class WarehouseController : ControllerBase
         });
     }
 
-    [HttpDelete("Delete/{id}")]
+    [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
         var warehouse = await _warehouseService.GetAsync(id);
-        if (warehouse is null) return NotFound();
         await _warehouseService.RemoveAsync(id);
-        return Ok(new { Ok = true, Data = warehouse, Msg = "El almacén ha sido borrado!" });
+        return Ok(new {Ok = true, Data = warehouse, Msg = "El almacén ha sido borrado!"});
     }
 }

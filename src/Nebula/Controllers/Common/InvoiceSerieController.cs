@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Data.Helpers;
 using Nebula.Data.Models.Common;
 using Nebula.Data.Services.Common;
 
 namespace Nebula.Controllers.Common;
 
+[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class InvoiceSerieController : ControllerBase
@@ -45,7 +48,6 @@ public class InvoiceSerieController : ControllerBase
     public async Task<IActionResult> Update(string id, [FromBody] InvoiceSerie model)
     {
         var invoiceSerie = await _invoiceSerieService.GetAsync(id);
-        if (invoiceSerie is null) return NotFound();
 
         model.Id = invoiceSerie.Id;
         model.Name = model.Name.ToUpper();
@@ -59,11 +61,10 @@ public class InvoiceSerieController : ControllerBase
         });
     }
 
-    [HttpDelete("Delete/{id}")]
+    [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
         var invoiceSerie = await _invoiceSerieService.GetAsync(id);
-        if (invoiceSerie is null) return NotFound();
         await _invoiceSerieService.RemoveAsync(id);
         return Ok(new {Ok = true, Data = invoiceSerie, Msg = "La serie de facturación ha sido borrado!"});
     }

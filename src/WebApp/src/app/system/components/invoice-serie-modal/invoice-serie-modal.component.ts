@@ -7,8 +7,7 @@ import {InvoiceSerie, Warehouse} from '../../interfaces';
 
 @Component({
   selector: 'app-invoice-serie-modal',
-  templateUrl: './invoice-serie-modal.component.html',
-  styleUrls: ['./invoice-serie-modal.component.scss']
+  templateUrl: './invoice-serie-modal.component.html'
 })
 export class InvoiceSerieModalComponent implements OnInit {
   @Input()

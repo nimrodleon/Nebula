@@ -7,7 +7,7 @@
         <h5 class="text-uppercase">Opciones del Sistema</h5>
         <div class="border rounded p-3">
           <div class="row">
-            <div class="col-4">
+            <div *ngIf="authUser.role === 'Admin'" class="col-4">
               <app-router-link
                 [icon]="faCog"
                 [title]="'General'"
@@ -15,7 +15,7 @@
                 [href]="'/system/configuration'">
               </app-router-link>
             </div>
-            <div class="col-4">
+            <div *ngIf="authUser.role === 'Admin'" class="col-4">
               <app-router-link
                 [icon]="faUserCog"
                 [title]="'Usuarios'"
@@ -31,7 +31,7 @@
                 [href]="'/system/warehouse'">
               </app-router-link>
             </div>
-            <div class="col-4">
+            <div *ngIf="authUser.role === 'Admin'" class="col-4">
               <app-router-link
                 [icon]="faReceipt"
                 [title]="'Series'"

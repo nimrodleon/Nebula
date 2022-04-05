@@ -7,8 +7,7 @@ import {InventoryReasonService} from '../../services';
 
 @Component({
   selector: 'app-inventory-reason-modal',
-  templateUrl: './inventory-reason-modal.component.html',
-  styleUrls: ['./inventory-reason-modal.component.scss']
+  templateUrl: './inventory-reason-modal.component.html'
 })
 export class InventoryReasonModalComponent implements OnInit {
   faBars = faBars;

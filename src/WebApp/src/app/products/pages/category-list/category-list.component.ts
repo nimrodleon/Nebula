@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl} from '@angular/forms';
 import {faEdit, faFilter, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
-import {ResponseData} from '../../../global/interfaces';
+import {accessDenied, deleteConfirm, ResponseData} from 'src/app/global/interfaces';
+import {AuthService} from 'src/app/user/services';
 import {Category} from '../../interfaces';
 import {CategoryService} from '../../services';
 
@@ -26,6 +27,7 @@ export class CategoryListComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private authService: AuthService,
     private categoryService: CategoryService) {
   }
 
@@ -71,4 +73,22 @@ export class CategoryListComponent implements OnInit {
       this.categoryModal.hide();
     }
   }
+
+  // borrar categoría.
+  public deleteCategory(id: string): void {
+    this.authService.getMe().subscribe(async (result) => {
+      if (result.role !== 'Admin') {
+        await accessDenied();
+      } else {
+        deleteConfirm().then(result => {
+          if (result.isConfirmed) {
+            this.categoryService.delete(id).subscribe(result => {
+              if (result.ok) this.getCategories();
+            });
+          }
+        });
+      }
+    });
+  }
+
 }

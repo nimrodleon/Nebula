@@ -1,16 +1,16 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl} from '@angular/forms';
 import {faEdit, faFilter, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
-import {Warehouse} from '../../interfaces';
+import {AuthService} from 'src/app/user/services';
+import {accessDenied, deleteConfirm, ResponseData} from 'src/app/global/interfaces';
 import {WarehouseService} from '../../services';
-import {ResponseData} from '../../../global/interfaces';
+import {Warehouse} from '../../interfaces';
 
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-warehouse-list',
   templateUrl: './warehouse-list.component.html',
-  styleUrls: ['./warehouse-list.component.scss']
 })
 export class WarehouseListComponent implements OnInit {
   faFilter = faFilter;
@@ -26,6 +26,7 @@ export class WarehouseListComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private authService: AuthService,
     private warehouseService: WarehouseService) {
   }
 
@@ -69,6 +70,23 @@ export class WarehouseListComponent implements OnInit {
       this.getWarehouses();
       this.warehouseModal.hide();
     }
+  }
+
+  // borrar almacén.
+  public deleteWarehouse(id: string): void {
+    this.authService.getMe().subscribe(async (result) => {
+      if (result.role !== 'Admin') {
+        await accessDenied();
+      } else {
+        deleteConfirm().then(result => {
+          if (result.isConfirmed) {
+            this.warehouseService.delete(id).subscribe(result => {
+              if (result.ok) this.getWarehouses();
+            });
+          }
+        });
+      }
+    });
   }
 
 }

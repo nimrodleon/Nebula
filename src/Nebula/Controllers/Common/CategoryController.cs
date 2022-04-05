@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Data.Helpers;
 using Nebula.Data.Models.Common;
 using Nebula.Data.Services.Common;
 using Nebula.Data.ViewModels.Common;
 
 namespace Nebula.Controllers.Common;
 
+[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class CategoryController : ControllerBase
@@ -76,7 +79,7 @@ public class CategoryController : ControllerBase
         });
     }
 
-    [HttpDelete("Delete/{id}")]
+    [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
         var category = await _categoryService.GetAsync(id);

@@ -64,7 +64,7 @@
                             class="btn btn-secondary btn-sm me-2">
                       <fa-icon [icon]="faEdit"></fa-icon>
                     </button>
-                    <button type="button" class="btn btn-danger btn-sm">
+                    <button type="button" (click)="deleteInvoiceSerie(item.id)" class="btn btn-danger btn-sm">
                       <fa-icon [icon]="faTrashAlt"></fa-icon>
                     </button>
                   </div>

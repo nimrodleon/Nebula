@@ -27,3 +27,12 @@ export const deleteConfirm = async () => {
     cancelButtonText: 'Cancelar'
   });
 };
+
+// acceso denegado.
+export const accessDenied = async () => {
+  return Swal.fire(
+    'Oops...',
+    'Acceso denegado!',
+    'error'
+  );
+};

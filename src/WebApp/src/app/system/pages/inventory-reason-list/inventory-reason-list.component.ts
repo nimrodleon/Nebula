@@ -3,14 +3,13 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {faEdit, faFilter, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {InventoryReasonService} from '../../services';
 import {InventoryReason} from '../../interfaces';
-import {ResponseData} from '../../../global/interfaces';
+import {ResponseData} from 'src/app/global/interfaces';
 
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-inventory-reason-list',
-  templateUrl: './inventory-reason-list.component.html',
-  styleUrls: ['./inventory-reason-list.component.scss']
+  templateUrl: './inventory-reason-list.component.html'
 })
 export class InventoryReasonListComponent implements OnInit {
   faFilter = faFilter;
