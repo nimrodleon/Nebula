@@ -2,15 +2,15 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl} from '@angular/forms';
 import {faEdit, faFilter, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {ProductService} from '../../services';
-import {ResponseData} from 'src/app/global/interfaces';
+import {AuthService} from 'src/app/user/services';
+import {accessDenied, deleteConfirm, ResponseData} from 'src/app/global/interfaces';
 import {Product} from '../../interfaces';
 
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-product-list',
-  templateUrl: './product-list.component.html',
-  styleUrls: ['./product-list.component.scss']
+  templateUrl: './product-list.component.html'
 })
 export class ProductListComponent implements OnInit {
   faSearch = faSearch;
@@ -27,6 +27,7 @@ export class ProductListComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private authService: AuthService,
     private productService: ProductService) {
   }
 
@@ -72,4 +73,22 @@ export class ProductListComponent implements OnInit {
       this.cargarListaDeProductos();
     }
   }
+
+  // borrar producto.
+  public deleteProduct(id: string): void {
+    this.authService.getMe().subscribe(async (result) => {
+      if (result.role !== 'Admin') {
+        await accessDenied();
+      } else {
+        deleteConfirm().then(result => {
+          if (result.isConfirmed) {
+            this.productService.delete(id).subscribe(result => {
+              if (result.ok) this.cargarListaDeProductos();
+            });
+          }
+        });
+      }
+    });
+  }
+
 }

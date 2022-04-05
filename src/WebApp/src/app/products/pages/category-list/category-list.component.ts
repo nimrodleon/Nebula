@@ -2,16 +2,15 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl} from '@angular/forms';
 import {faEdit, faFilter, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {accessDenied, deleteConfirm, ResponseData} from 'src/app/global/interfaces';
+import {CategoryService} from '../../services';
 import {AuthService} from 'src/app/user/services';
 import {Category} from '../../interfaces';
-import {CategoryService} from '../../services';
 
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-category-list',
-  templateUrl: './category-list.component.html',
-  styleUrls: ['./category-list.component.scss']
+  templateUrl: './category-list.component.html'
 })
 export class CategoryListComponent implements OnInit {
   faFilter = faFilter;

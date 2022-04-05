@@ -6,8 +6,7 @@ import {Category} from '../../interfaces';
 
 @Component({
   selector: 'app-category-modal',
-  templateUrl: './category-modal.component.html',
-  styleUrls: ['./category-modal.component.scss']
+  templateUrl: './category-modal.component.html'
 })
 export class CategoryModalComponent implements OnInit {
   @Input()

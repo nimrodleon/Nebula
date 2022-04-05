@@ -33,7 +33,7 @@ export class ProductService {
     return this.http.put<ResponseData<Product>>(`${this.appURL}/Update/${id}`, data);
   }
 
-  public delete(id: number): Observable<ResponseData<Product>> {
+  public delete(id: string): Observable<ResponseData<Product>> {
     return this.http.delete<ResponseData<Product>>(`${this.appURL}/Delete/${id}`);
   }
 }
