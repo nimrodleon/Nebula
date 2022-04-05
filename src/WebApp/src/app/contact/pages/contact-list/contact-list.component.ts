@@ -1,16 +1,16 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl} from '@angular/forms';
 import {faEdit, faFilter, faPlus, faSearch, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {AuthService} from 'src/app/user/services';
+import {accessDenied, deleteConfirm, ResponseData} from 'src/app/global/interfaces';
 import {ContactService} from '../../services';
-import {ResponseData} from 'src/app/global/interfaces';
 import {Contact} from '../../interfaces';
 
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-contact-list',
-  templateUrl: './contact-list.component.html',
-  styleUrls: ['./contact-list.component.scss']
+  templateUrl: './contact-list.component.html'
 })
 export class ContactListComponent implements OnInit {
   faSearch = faSearch;
@@ -27,6 +27,7 @@ export class ContactListComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private authService: AuthService,
     private contactService: ContactService) {
   }
 
@@ -34,17 +35,17 @@ export class ContactListComponent implements OnInit {
     // modal formulario de contactos.
     this.contactModal = new bootstrap.Modal(document.querySelector('#contact-modal'));
     // cargar lista de contactos.
-    this.loadContactList();
+    this.cargarListaDeContactos();
   }
 
   // botón buscar contactos.
   public submitSearch(e: any): void {
     e.preventDefault();
-    this.loadContactList();
+    this.cargarListaDeContactos();
   }
 
   // cargar lista de contactos.
-  private loadContactList(): void {
+  private cargarListaDeContactos(): void {
     this.contactService.index(this.query.value)
       .subscribe(result => this.contacts = result);
   }
@@ -69,8 +70,25 @@ export class ContactListComponent implements OnInit {
   public hideContactModal(data: ResponseData<Contact>): void {
     if (data.ok) {
       this.contactModal.hide();
-      this.loadContactList();
+      this.cargarListaDeContactos();
     }
+  }
+
+  // borrar contacto.
+  public deleteContact(id: string): void {
+    this.authService.getMe().subscribe(async (result) => {
+      if (result.role !== 'Admin') {
+        await accessDenied();
+      } else {
+        deleteConfirm().then(result => {
+          if (result.isConfirmed) {
+            this.contactService.delete(id).subscribe(result => {
+              if (result.ok) this.cargarListaDeContactos();
+            });
+          }
+        });
+      }
+    });
   }
 
 }

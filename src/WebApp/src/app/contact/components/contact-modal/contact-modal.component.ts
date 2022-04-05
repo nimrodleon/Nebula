@@ -1,14 +1,13 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {faBars} from '@fortawesome/free-solid-svg-icons';
+import {ResponseData} from 'src/app/global/interfaces';
 import {Contact} from '../../interfaces';
 import {ContactService} from '../../services';
-import {ResponseData} from 'src/app/global/interfaces';
 
 @Component({
   selector: 'app-contact-modal',
-  templateUrl: './contact-modal.component.html',
-  styleUrls: ['./contact-modal.component.scss']
+  templateUrl: './contact-modal.component.html'
 })
 export class ContactModalComponent implements OnInit {
   faBars = faBars;

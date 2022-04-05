@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Data.Helpers;
 using Nebula.Data.Models.Common;
 using Nebula.Data.Services.Common;
 using Nebula.Data.ViewModels.Common;
 
 namespace Nebula.Controllers.Common;
 
+[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class ContactController : ControllerBase
@@ -35,9 +38,9 @@ public class ContactController : ControllerBase
         var data = new List<Select2>();
         responseData.ForEach(item =>
         {
-            data.Add(new Select2() { Id = item.Id, Text = $"{item.Document} - {item.Name}" });
+            data.Add(new Select2() {Id = item.Id, Text = $"{item.Document} - {item.Name}"});
         });
-        return Ok(new { Results = data });
+        return Ok(new {Results = data});
     }
 
     [HttpPost("Create")]
@@ -70,11 +73,11 @@ public class ContactController : ControllerBase
         });
     }
 
-    [HttpDelete("Delete/{id}")]
+    [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
         var contact = await _contactService.GetAsync(id);
         await _contactService.RemoveAsync(id);
-        return Ok(new { Ok = true, Data = contact, Msg = "El contacto ha sido borrado!" });
+        return Ok(new {Ok = true, Data = contact, Msg = "El contacto ha sido borrado!"});
     }
 }
