@@ -10,7 +10,7 @@ using Nebula.Data.ViewModels;
 
 namespace Nebula.Controllers;
 
-[Authorize]
+[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class AuthController : ControllerBase

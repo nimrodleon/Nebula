@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Data.Helpers;
 using Nebula.Data.Models.Common;
 using Nebula.Data.Services.Common;
 
 namespace Nebula.Controllers.Common;
 
+[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class ConfigurationController : ControllerBase
@@ -14,7 +16,7 @@ public class ConfigurationController : ControllerBase
     public ConfigurationController(ConfigurationService configurationService) =>
         _configurationService = configurationService;
 
-    [HttpGet("Show"), Authorize]
+    [HttpGet("Show")]
     public async Task<IActionResult> Show()
     {
         var configuration = await _configurationService.GetAsync();
@@ -27,7 +29,7 @@ public class ConfigurationController : ControllerBase
         return Ok(configuration);
     }
 
-    [HttpPut("Update"), Authorize(Roles = "Admin")]
+    [HttpPut("Update"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Update([FromBody] Configuration model)
     {
         var configuration = await _configurationService.GetAsync();

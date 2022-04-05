@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Data.Helpers;
 using Nebula.Data.Models.Common;
@@ -6,6 +7,7 @@ using Nebula.Data.ViewModels.Common;
 
 namespace Nebula.Controllers.Common;
 
+[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class UserController : ControllerBase
@@ -41,7 +43,7 @@ public class UserController : ControllerBase
         };
         await _userService.CreateAsync(user);
 
-        return Ok(new { Ok = true, User = user });
+        return Ok(new {Ok = true, User = user});
     }
 
     [HttpPut("Update/{id}")]
@@ -76,11 +78,11 @@ public class UserController : ControllerBase
         });
     }
 
-    [HttpDelete("Delete/{id}")]
+    [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
         var user = await _userService.GetAsync(id);
         await _userService.RemoveAsync(id);
-        return Ok(new { Ok = true, Data = user, Msg = "El usuario ha sido borrado!" });
+        return Ok(new {Ok = true, Data = user, Msg = "El usuario ha sido borrado!"});
     }
 }
