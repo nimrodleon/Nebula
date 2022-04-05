@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Nebula.Data.Helpers;
@@ -9,6 +10,7 @@ using Nebula.Data.ViewModels;
 
 namespace Nebula.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class AuthController : ControllerBase
@@ -22,7 +24,15 @@ public class AuthController : ControllerBase
         _userService = userService;
     }
 
-    [HttpPost("Login")]
+    [HttpGet("GetMe")]
+    public Task<IActionResult> GetMe()
+    {
+        var userName = User.FindFirstValue(ClaimTypes.Name);
+        var role = User.FindFirstValue(ClaimTypes.Role);
+        return Task.FromResult<IActionResult>(Ok(new {userName, role}));
+    }
+
+    [HttpPost("Login"), AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] AuthLogin model)
     {
         try
@@ -35,8 +45,9 @@ public class AuthController : ControllerBase
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Role, user.Role)
             };
 
             // Leemos el secretKey desde nuestro appSettings.json

@@ -8,6 +8,14 @@ export class User {
   }
 }
 
+// usuario autentificado.
+export class AuthUser {
+  constructor(
+    public userName: string = '',
+    public role: 'Admin' | 'User' = 'User') {
+  }
+}
+
 // clase para registrar usuarios.
 export class UserRegister {
   constructor(

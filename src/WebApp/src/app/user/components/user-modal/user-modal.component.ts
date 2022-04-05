@@ -17,7 +17,7 @@ export class UserModalComponent implements OnInit {
   userForm: FormGroup = this.fb.group({
     userName: ['', [Validators.required]],
     email: ['', [Validators.required]],
-    role: ['ROLE_USER', [Validators.required]]
+    role: ['User', [Validators.required]]
   });
 
   constructor(
