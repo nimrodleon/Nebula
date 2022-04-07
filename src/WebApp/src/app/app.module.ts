@@ -3,7 +3,6 @@ import {BrowserModule} from '@angular/platform-browser';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {FormsModule} from '@angular/forms';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
-
 import {AppRoutingModule} from './app-routing.module';
 import {GlobalModule} from './global/global.module';
 import {AuthGuard} from './auth.guard';

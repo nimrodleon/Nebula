@@ -4,10 +4,8 @@ import {faWhatsapp} from '@fortawesome/free-brands-svg-icons';
 import {faCheckSquare} from '@fortawesome/free-regular-svg-icons';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {environment} from 'src/environments/environment';
-import {InvoiceSaleService} from 'src/app/invoice/services';
-import {confirmTask} from 'src/app/global/interfaces';
 import {Configuration} from 'src/app/system/interfaces';
-import {Sale} from '../../interfaces';
+import {GenerarVenta} from '../../interfaces';
 
 @Component({
   selector: 'app-cobrar-modal',
@@ -22,7 +20,10 @@ export class CobrarModalComponent implements OnInit {
   // ====================================================================================================
   private appURL: string = environment.applicationUrl;
   @Input() cajaDiariaId: string = '';
-  @Input() sale: Sale = new Sale();
+  @Input() generarVenta: GenerarVenta = new GenerarVenta();
+
+
+  // @Input() sale: Sale = new Sale();
   @Input() configuration: Configuration = new Configuration();
   // valor de retorno del modal.
   @Output() responseData = new EventEmitter<boolean>();
@@ -37,8 +38,7 @@ export class CobrarModalComponent implements OnInit {
   statusProgress: boolean = false;
 
   constructor(
-    private fb: FormBuilder,
-    private invoiceService: InvoiceSaleService) {
+    private fb: FormBuilder) {
   }
 
   ngOnInit(): void {
@@ -67,53 +67,53 @@ export class CobrarModalComponent implements OnInit {
       return;
     }
     // Guardar datos, sólo si es válido el formulario.
-    confirmTask().then(result => {
-      if (result.isConfirmed) {
-        this.statusProgress = true;
-        this.sale = {...this.sale, ...this.cobrarForm.value};
-        // guardar comprobante de pago.
-        this.invoiceService.createQuickSale(this.cajaDiariaId, this.sale)
-          .subscribe(result => {
-            if (result.ok) {
-              if (result.data) {
-                const {data} = result;
-                this.sale = data;
-                if (data?.docType === 'NOTA') {
-                  this.statusProgress = false;
-                  this.formReg = false;
-                }
-                // TODO: refactoring.
-                // this.urlPdf = `${this.appURL}Facturador/GetPdf?invoice=${data?.invoiceSale}`;
-                // console.info(result.msg);
-                // if (data?.docType === 'NOTA') {
-                //   this.statusProgress = false;
-                //   this.formReg = false;
-                // } else {
-                //   // cargar la Lista de archivos JSON.
-                //   this.facturadorService.ActualizarPantalla()
-                //     .subscribe(result => {
-                //       if (result.listaBandejaFacturador.length > 0) {
-                //         // generar fichero XML del comprobante.
-                //         this.facturadorService.GenerarComprobante(data?.invoiceSale)
-                //           .subscribe(result => {
-                //             if (result.listaBandejaFacturador.length > 0) {
-                //               // generar fichero PDF del comprobante.
-                //               this.facturadorService.GenerarPdf(data?.invoiceSale)
-                //                 .subscribe(result => {
-                //                   this.statusProgress = false;
-                //                   this.formReg = false;
-                //                   console.info(result);
-                //                 });
-                //             }
-                //           });
-                //       }
-                //     });
-                // }
-              }
-            }
-          });
-      }
-    });
+    // confirmTask().then(result => {
+    //   if (result.isConfirmed) {
+    //     this.statusProgress = true;
+    //     this.sale = {...this.sale, ...this.cobrarForm.value};
+    //     // guardar comprobante de pago.
+    //     this.invoiceService.createQuickSale(this.cajaDiariaId, this.sale)
+    //       .subscribe(result => {
+    //         if (result.ok) {
+    //           if (result.data) {
+    //             const {data} = result;
+    //             this.sale = data;
+    //             if (data?.docType === 'NOTA') {
+    //               this.statusProgress = false;
+    //               this.formReg = false;
+    //             }
+    //             // TODO: refactoring.
+    //             // this.urlPdf = `${this.appURL}Facturador/GetPdf?invoice=${data?.invoiceSale}`;
+    //             // console.info(result.msg);
+    //             // if (data?.docType === 'NOTA') {
+    //             //   this.statusProgress = false;
+    //             //   this.formReg = false;
+    //             // } else {
+    //             //   // cargar la Lista de archivos JSON.
+    //             //   this.facturadorService.ActualizarPantalla()
+    //             //     .subscribe(result => {
+    //             //       if (result.listaBandejaFacturador.length > 0) {
+    //             //         // generar fichero XML del comprobante.
+    //             //         this.facturadorService.GenerarComprobante(data?.invoiceSale)
+    //             //           .subscribe(result => {
+    //             //             if (result.listaBandejaFacturador.length > 0) {
+    //             //               // generar fichero PDF del comprobante.
+    //             //               this.facturadorService.GenerarPdf(data?.invoiceSale)
+    //             //                 .subscribe(result => {
+    //             //                   this.statusProgress = false;
+    //             //                   this.formReg = false;
+    //             //                   console.info(result);
+    //             //                 });
+    //             //             }
+    //             //           });
+    //             //       }
+    //             //     });
+    //             // }
+    //           }
+    //         }
+    //       });
+    //   }
+    // });
   }
 
 }

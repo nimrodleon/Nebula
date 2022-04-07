@@ -10,8 +10,7 @@ declare var jQuery: any;
 
 @Component({
   selector: 'app-cash-in-out-modal',
-  templateUrl: './cash-in-out-modal.component.html',
-  styleUrls: ['./cash-in-out-modal.component.scss']
+  templateUrl: './cash-in-out-modal.component.html'
 })
 export class CashInOutModalComponent implements OnInit {
   private appURL: string = environment.applicationUrl;

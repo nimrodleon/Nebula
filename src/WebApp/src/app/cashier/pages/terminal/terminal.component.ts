@@ -5,17 +5,19 @@ import {
   faBarcode, faCogs, faCoins, faIdCardAlt, faMinus, faPlus,
   faSearch, faSignOutAlt, faTags, faThList, faTimes, faTrashAlt, faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
+import * as _ from 'lodash';
 import Swal from 'sweetalert2';
 import {environment} from 'src/environments/environment';
 import {ProductService} from 'src/app/products/services';
 import {deleteConfirm, ResponseData} from 'src/app/global/interfaces';
 import {Product} from 'src/app/products/interfaces';
 import {Contact} from 'src/app/contact/interfaces';
-import {CajaDiaria, CashierDetail, Sale} from '../../interfaces';
-import {CajaDiariaService} from '../../services';
-import {Configuration} from 'src/app/system/interfaces';
 import {ConfigurationService} from 'src/app/system/services';
 import {ContactService} from 'src/app/contact/services';
+import {AuthUser} from 'src/app/user/interfaces';
+import {AuthService} from 'src/app/user/services';
+import {CajaDiaria, CashierDetail, DetalleComprobante, GenerarVenta} from '../../interfaces';
+import {CajaDiariaService} from '../../services';
 
 declare var jQuery: any;
 declare var bootstrap: any;
@@ -40,26 +42,26 @@ export class TerminalComponent implements OnInit {
   faCogs = faCogs;
   faThList = faThList;
   // ====================================================================================================
-  cajaDiariaId: string = '';
   cobrarModal: any;
-  cashInOutModal: any;
-  productModal: any;
-  contactModal: any;
+  modalCajaChica: any;
+  modalProducto: any;
+  modalContacto: any;
+  currentProduct: Product = new Product();
+  currentContact: Contact = new Contact();
   // ====================================================================================================
   private appURL: string = environment.applicationUrl;
   queryProduct: FormControl = this.fb.control('');
-  configuration: Configuration = new Configuration();
   cajaDiaria: CajaDiaria = new CajaDiaria();
-  currentProduct: Product = new Product();
-  currentContact: Contact = new Contact();
   products: Array<Product> = new Array<Product>();
-  sale: Sale = new Sale();
+  generarVenta: GenerarVenta = new GenerarVenta();
+  authUser: AuthUser = new AuthUser();
   toastText: string = '';
   title: string = '';
 
   constructor(
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
+    private authService: AuthService,
     private productService: ProductService,
     private cajaDiariaService: CajaDiariaService,
     private configurationService: ConfigurationService,
@@ -68,20 +70,17 @@ export class TerminalComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe(params => {
-      this.cajaDiariaId = params.get('id') || '';
-      this.cajaDiariaService.show(this.cajaDiariaId)
-        .subscribe(result => {
-          this.cajaDiaria = result;
-          // cargar título de la terminal.
-          const arr = result.terminal.split(':');
-          this.title = arr[arr.length - 1];
-        });
+      this.cajaDiariaService.show(<any>params.get('id')).subscribe(result => {
+        this.cajaDiaria = result;
+        this.title = result.terminal.split(':')[1];
+      });
     });
-    // buscador de clientes.
-    const clientId = jQuery('#clientId')
+    this.authService.getMe().subscribe(result => this.authUser = result);
+    // buscador de contactos.
+    const contactSelect = jQuery('#contactSelect')
       .select2({
         theme: 'bootstrap-5',
-        placeholder: 'BUSCAR CLIENTE',
+        placeholder: 'BUSCAR CONTACTO',
         ajax: {
           url: this.appURL + 'Contact/Select2',
           headers: {
@@ -90,171 +89,143 @@ export class TerminalComponent implements OnInit {
         }
       }).on('select2:select', (e: any) => {
         const data = e.params.data;
-        this.sale.contactId = data.id;
+        this.generarVenta.comprobante.contactId = data.id;
       });
-    // limpiar el cliente seleccionado.
-    const myModal: any = document.querySelector('#cobrar-modal');
-    myModal.addEventListener('hidden.bs.modal', () => {
-      if (this.sale.contactId === null) {
-        clientId.val(null).trigger('change');
-      }
-    });
     // shortcode código de barra.
     const body: any = document.querySelector('body');
     body.addEventListener('keydown', (e: any) => {
       if (e.key === 'F2') (document.querySelector('#barcode') as any).focus();
     });
-    // cargar valor inicial.
-    this.sale = new Sale();
-    // cargar parámetros del configuración.
-    this.getDefaultParams();
-    // cargar lista de productos.
-    this.searchProducts();
-    // modal formulario de productos.
-    this.productModal = new bootstrap.Modal(document.querySelector('#product-modal'));
-    // modal formulario de contactos.
-    this.contactModal = new bootstrap.Modal(document.querySelector('#contact-modal'));
-    // formulario modal cobrar.
+    this.loadConfigurationParameters();
+    this.buscarProductos();
+
     this.cobrarModal = new bootstrap.Modal(document.querySelector('#cobrar-modal'));
-    // formulario entrada/salida de efectivo.
-    this.cashInOutModal = new bootstrap.Modal(document.querySelector('#cash-in-out-modal'));
+    this.modalProducto = new bootstrap.Modal(document.querySelector('#product-modal'));
+    this.modalContacto = new bootstrap.Modal(document.querySelector('#contact-modal'));
+    this.modalCajaChica = new bootstrap.Modal(document.querySelector('#cash-in-out-modal'));
+
+    // limpiar el contacto seleccionado.
+    const myModal: any = document.querySelector('#cobrar-modal');
+    myModal.addEventListener('hidden.bs.modal', () => {
+      if (this.generarVenta.comprobante.contactId === '') contactSelect.val(null).trigger('change');
+    });
   }
 
-  // Cargar parámetros por defecto.
-  private getDefaultParams(): void {
+  public logout(): void {
+    this.authService.logout();
+  }
+
+  private loadConfigurationParameters(): void {
     this.configurationService.show().subscribe(result => {
-      this.configuration = result;
+      this.generarVenta.configuration = result;
       this.contactService.show(result.contactId).subscribe(result => {
-        this.sale.contactId = result.id;
+        this.generarVenta.comprobante.contactId = result.id;
         const newOption = new Option(`${result.document} - ${result.name}`, <any>result.id, true, true);
-        jQuery('#clientId').append(newOption).trigger('change');
+        jQuery('#contactSelect').append(newOption).trigger('change');
       });
     });
   }
 
-  // buscar productos.
-  public searchProducts(): void {
-    this.productService.index(this.queryProduct.value)
-      .subscribe(result => this.products = result);
+  public seleccionarProducto(producto: Product): void {
+    this.generarVenta.agregarProducto(producto);
   }
 
-  // agregar nuevo producto.
-  public addProductModal(): void {
-    this.currentProduct = new Product();
-    this.productModal.show();
-  }
-
-  // cerrar modal producto.
-  public hideProductModal(data: ResponseData<Product>): void {
-    if (data.ok) {
-      this.productModal.hide();
-      this.searchProducts();
-    }
-  }
-
-  // agregar contacto.
-  public addContactModal(): void {
-    this.currentContact = new Contact();
-    this.contactModal.show();
-  }
-
-  // cerrar modal contacto.
-  public hideContactModal(result: ResponseData<Contact>): void {
-    if (result.ok) {
-      const newOption = new Option(`${result.data?.document} - ${result.data?.name}`,
-        <any>result.data?.id, true, true);
-      jQuery('#clientId').append(newOption).trigger('change');
-      this.sale.contactId = result.data?.id;
-      this.contactModal.hide();
-    }
-  }
-
-  // movimientos de efectivo.
-  public btnCashInOutClick(): void {
-    this.cashInOutModal.show();
-  }
-
-  // cerrar modal movimientos de efectivo.
-  public hideCashInOutModal(data: ResponseData<CashierDetail>): void {
-    if (data.ok) {
-      this.cashInOutModal.hide();
-    }
-  }
-
-  // botón cobrar.
-  public async btnCobrarClick() {
-    if (this.sale.contactId === null) {
-      await Swal.fire(
-        'Información',
-        'La información del cliente es requerida!',
-        'info'
-      );
-    } else {
-      if (this.sale.details.length <= 0) {
-        await Swal.fire(
-          'Información',
-          'Debe existir al menos un Item para facturar!',
-          'info'
-        );
-      } else {
-        this.cobrarModal.show();
-      }
-    }
-  }
-
-  // cerrar modal cobrar.
-  public hideCobrarModal(value: boolean): void {
-    if (!value) {
-      this.getDefaultParams();
-      this.sale = new Sale();
-    }
-  }
-
-  // borrar venta.
-  public deleteSale(): void {
-    deleteConfirm().then(result => {
-      if (result.isConfirmed) {
-        this.sale = new Sale();
-      }
-    });
-  }
-
-  // agregar producto a la tabla.
-  public addItem(prodId: any): void {
-    this.productService.show(prodId).subscribe(result => {
-      this.sale.addItemDetail(this.configuration, result);
-    });
-  }
-
-  // cambiar la cantidad del item de la tabla.
-  public changeQuantity(prodId: any, target: any): void {
+  public cambiarCantidad(productId: string, target: any): void {
     const value: number = Number(target.value);
-    this.sale.changeQuantity(prodId, value);
+    this.generarVenta.cambiarCantidad(productId, value);
   }
 
-  // cambiar precio del Item.
-  public changePrice(e: Event, id: string): void {
+  public cambiarPrecio(e: Event, id: string): void {
     e.preventDefault();
-    const toastSuccess = new bootstrap.Toast(document.querySelector('#toast-success'));
-    const toastDanger = new bootstrap.Toast(document.querySelector('#toast-danger'));
-    const item = this.sale.details.find(x => x.productId === id);
-    if (item) {
-      this.productService.show(item.productId).subscribe(result => {
+    this.productService.show(id).subscribe(result => {
+      const item = _.find(this.generarVenta.detallesComprobante, (o: DetalleComprobante) => o.productId === result.id);
+      const toastSuccess = new bootstrap.Toast(document.querySelector('#toast-success'));
+      const toastDanger = new bootstrap.Toast(document.querySelector('#toast-danger'));
+      if (item) {
         if (item.quantity >= result.fromQty) {
-          this.sale.changePrice(result.id, result.price2);
+          this.generarVenta.cambiarPrecio(result.id, result.price2);
           this.toastText = 'El precio se ha cambiado correctamente!';
           toastSuccess.show();
         } else {
           this.toastText = `La cantidad debe ser mayor o igual que ${result.fromQty}!`;
           toastDanger.show();
         }
-      });
+      }
+    });
+  }
+
+  public borrarItemVenta(productId: string): void {
+    this.generarVenta.borrarItemVenta(productId);
+  }
+
+  public borrarVenta(): void {
+    deleteConfirm().then(result => {
+      if (result.isConfirmed) {
+        this.generarVenta.borrarVenta();
+        this.loadConfigurationParameters();
+      }
+    });
+  }
+
+  public buscarProductos(): void {
+    this.productService.index(this.queryProduct.value)
+      .subscribe(result => this.products = result);
+  }
+
+  public modalAgregarProducto(): void {
+    this.currentProduct = new Product();
+    this.modalProducto.show();
+  }
+
+  public ocultarModalProducto(data: ResponseData<Product>): void {
+    if (data.ok) {
+      this.modalProducto.hide();
+      this.buscarProductos();
     }
   }
 
-  // borrar item de la tabla.
-  public deleteItem(prodId: any): void {
-    this.sale.deleteItem(prodId);
+  public modalAgregarContacto(): void {
+    this.currentContact = new Contact();
+    this.modalContacto.show();
+  }
+
+  public ocultarModalContacto(result: ResponseData<Contact>): void {
+    if (result.ok) {
+      const newOption = new Option(`${result.data?.document} - ${result.data?.name}`,
+        <any>result.data?.id, true, true);
+      jQuery('#contactSelect').append(newOption).trigger('change');
+      this.generarVenta.comprobante.contactId = result.data?.id;
+      this.modalContacto.hide();
+    }
+  }
+
+  public abrirModalCajaChica(): void {
+    this.modalCajaChica.show();
+  }
+
+  public ocultarModalCajaChica(data: ResponseData<CashierDetail>): void {
+    if (data.ok) {
+      this.modalCajaChica.hide();
+    }
+  }
+
+  public async abrirCobrarModal() {
+    if (this.generarVenta.detallesComprobante.length <= 0) {
+      await Swal.fire(
+        'Información',
+        'Debe existir al menos un Item para facturar!',
+        'info'
+      );
+    } else {
+      this.cobrarModal.show();
+    }
+  }
+
+  public ocultarCobrarModal(value: boolean): void {
+    if (!value) {
+      this.loadConfigurationParameters();
+      this.generarVenta.borrarVenta();
+    }
   }
 
 }

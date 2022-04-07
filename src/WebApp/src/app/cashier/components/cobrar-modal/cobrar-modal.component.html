@@ -54,11 +54,11 @@
             <textarea class="form-control" formControlName="remark" id="remark" rows="2"></textarea>
           </ng-container>
           <ng-template #successTpl>
-            <div class="div-success">
+            <!--<div class="div-success">
               <fa-icon [icon]="faCheckSquare"></fa-icon>
               <span class="d-block">TOTAL: {{sale.sumImpVenta.toFixed(4)|currency}}</span>
               <span class="d-block text-danger">VUELTO: {{sale.vuelto.toFixed(4)|currency}}</span>
-            </div>
+            </div>-->
             <div class="sendEmail">
               <label class="form-label fw-bold">ENVIAR POR WHATSAPP</label>
               <div class="input-group">
@@ -72,7 +72,6 @@
           </ng-template>
         </form>
         <!-- ## DEBUG -->
-        <pre>{{sale|json}}</pre>
       </div>
       <div class="modal-footer justify-content-center">
         <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">

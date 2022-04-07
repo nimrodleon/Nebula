@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Data.Helpers;
 using Nebula.Data.Models.Cashier;
 using Nebula.Data.Services.Cashier;
 using Nebula.Data.Services.Common;
@@ -7,6 +9,7 @@ using Nebula.Data.ViewModels.Common;
 
 namespace Nebula.Controllers.Cashier;
 
+[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class CajaDiariaController : ControllerBase
@@ -88,7 +91,7 @@ public class CajaDiariaController : ControllerBase
         });
     }
 
-    [HttpDelete("Delete/{id}")]
+    [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
         var cajaDiaria = await _cajaDiariaService.GetAsync(id);

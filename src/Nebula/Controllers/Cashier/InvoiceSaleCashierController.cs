@@ -1,29 +1,29 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Data.Helpers;
 using Nebula.Data.Services.Cashier;
 using Nebula.Data.Services.Sales;
 using Nebula.Data.ViewModels.Cashier;
 
 namespace Nebula.Controllers.Cashier;
 
+[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
-public class InvoiceSaleController : ControllerBase
+public class InvoiceSaleCashierController : ControllerBase
 {
     private readonly CashierSaleService _cashierSaleService;
     private readonly InvoiceSaleService _invoiceSaleService;
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly TributoSaleService _tributoSaleService;
-    private readonly InvoiceSaleAccountService _invoiceSaleAccountService;
 
-    public InvoiceSaleController(CashierSaleService cashierSaleService, InvoiceSaleService invoiceSaleService,
-        InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService,
-        InvoiceSaleAccountService invoiceSaleAccountService)
+    public InvoiceSaleCashierController(CashierSaleService cashierSaleService, InvoiceSaleService invoiceSaleService,
+        InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService)
     {
         _cashierSaleService = cashierSaleService;
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _tributoSaleService = tributoSaleService;
-        _invoiceSaleAccountService = invoiceSaleAccountService;
     }
 
     [HttpGet("Show/{id}")]
@@ -33,8 +33,7 @@ public class InvoiceSaleController : ControllerBase
         {
             InvoiceSale = await _invoiceSaleService.GetAsync(id),
             InvoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(id),
-            TributoSales = await _tributoSaleService.GetListAsync(id),
-            InvoiceSaleAccounts = await _invoiceSaleAccountService.GetListAsync(id)
+            TributoSales = await _tributoSaleService.GetListAsync(id)
         };
         return Ok(responseData);
     }

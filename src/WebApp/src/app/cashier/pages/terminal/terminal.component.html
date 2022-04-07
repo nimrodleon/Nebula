@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand navbar-light bg-light shadow-sm">
   <div class="container-fluid">
-    <a class="navbar-brand" [routerLink]="['/cashier/detail', cajaDiariaId]">
+    <a class="navbar-brand" [routerLink]="['/cashier/detail', cajaDiaria.id]">
       <fa-icon [icon]="faThList" class="text-success me-1"></fa-icon>
       <span class="text-uppercase">{{title}}</span>
     </a>
@@ -15,13 +15,13 @@
       </form>
       <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link" href="#">
+          <a class="nav-link" (click)="$event.preventDefault()" href="#">
             <fa-icon [icon]="faUserCircle"></fa-icon>
-            <span class="ms-1">ADMIN</span>
+            <span class="text-uppercase ms-1">{{authUser.userName}}</span>
           </a>
         </li>
         <li class="nav-item">
-          <button class="nav-link btn btn-danger btn-sm px-4">
+          <button (click)="logout()" class="nav-link btn btn-danger btn-sm px-4">
             <fa-icon [icon]="faSignOutAlt" class="text-white me-1"></fa-icon>
             <span class="text-uppercase text-white">Salir</span>
           </button>
@@ -41,18 +41,18 @@
               <span class="input-group-text">
                 <fa-icon [icon]="faIdCardAlt"></fa-icon>
               </span>
-              <select id="clientId" class="form-select"></select>
+              <select id="contactSelect" class="form-select"></select>
             </div>
-            <button type="button" (click)="addContactModal()" class="btn btn-success">
+            <button type="button" (click)="modalAgregarContacto()" class="btn btn-success">
               <span class="text-uppercase">Nuevo</span>
             </button>
           </div>
           <div class="d-flex">
-            <button type="button" (click)="btnCashInOutClick()" class="btn btn-warning me-1">
+            <button type="button" (click)="abrirModalCajaChica()" class="btn btn-warning me-1">
               <fa-icon [icon]="faCoins" class="me-1"></fa-icon>
               <span class="text-uppercase">E/S Dinero</span>
             </button>
-            <button type="button" (click)="deleteSale()" class="btn btn-danger">
+            <button type="button" (click)="borrarVenta()" class="btn btn-danger">
               <fa-icon [icon]="faTimes"></fa-icon>
             </button>
           </div>
@@ -69,24 +69,24 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let item of sale.details">
+            <tr *ngFor="let item of generarVenta.detallesComprobante">
               <td>{{item.description}}</td>
               <td style="width: 124px;">
                 <input type="number" [value]="item.quantity"
-                       (change)="changeQuantity(item.productId, $event.target)"
+                       (change)="cambiarCantidad(item.productId, $event.target)"
                        class="form-control form-control-sm">
               </td>
               <td style="width: 124px;">
                 <div class="d-flex align-items-center justify-content-between">
                   {{item.price.toFixed(4)|currency}}
-                  <a href="#" (click)="changePrice($event, item.productId)" title="Cambiar precio!">
+                  <a href="#" (click)="cambiarPrecio($event, item.productId)" title="Cambiar precio!">
                     <fa-icon [icon]="faTags"></fa-icon>
                   </a>
                 </div>
               </td>
               <td style="width: 124px;">{{item.amount.toFixed(4)|currency}}</td>
               <td style="width: 50px;" class="text-center">
-                <button type="button" (click)="deleteItem(item.productId)" class="btn btn-danger btn-sm">
+                <button type="button" (click)="borrarItemVenta(item.productId)" class="btn btn-danger btn-sm">
                   <fa-icon [icon]="faTrashAlt"></fa-icon>
                 </button>
               </td>
@@ -99,28 +99,29 @@
         <div class="d-flex justify-content-between">
           <div>
             <span class="d-block cajero">Cajero</span>
-            <span class="d-block user">Admin</span>
+            <span class="d-block user">{{authUser.userName}}</span>
           </div>
           <table>
             <tbody>
             <tr>
               <th>IMPORTE:</th>
-              <td>{{sale.sumTotValVenta.toFixed(4)|currency}}</td>
+              <td>{{generarVenta.comprobante.sumTotValVenta.toFixed(4)|currency}}</td>
             </tr>
             <tr>
-              <th>IGV({{configuration?.porcentajeIgv|number}}%):</th>
-              <td>{{sale.sumTotTributos.toFixed(4)|currency}}</td>
+              <th>IGV({{generarVenta.configuration.porcentajeIgv|number}}%):</th>
+              <td>{{generarVenta.comprobante.sumTotTributos.toFixed(4)|currency}}</td>
             </tr>
             <tr>
               <th>ICBPER:</th>
-              <td>{{sale.ICBPER.toFixed(4)|currency}}</td>
+              <td>{{generarVenta.comprobante.sumTotTriIcbper.toFixed(4)|currency}}</td>
             </tr>
             </tbody>
           </table>
           <span class="text-uppercase text-lg total">Total</span>
           <div>
-            <span class="d-block fw-bold text-lg text-center">{{sale.sumImpVenta.toFixed(4)|currency}}</span>
-            <button (click)="btnCobrarClick()" class="btn btn-success btn-lg">
+            <span
+              class="d-block fw-bold text-lg text-center">{{generarVenta.comprobante.sumImpVenta.toFixed(4)|currency}}</span>
+            <button (click)="abrirCobrarModal()" class="btn btn-success btn-lg">
               <span class="text-uppercase fw-bold px-5">Cobrar</span>
             </button>
           </div>
@@ -134,10 +135,10 @@
               <span class="input-group-text">
                 <fa-icon [icon]="faSearch"></fa-icon>
               </span>
-            <input type="search" [formControl]="queryProduct" (change)="searchProducts()"
+            <input type="search" [formControl]="queryProduct" (change)="buscarProductos()"
                    class="form-control" placeholder="BIEN/SERVICIO">
           </div>
-          <button type="button" (click)="addProductModal()" class="btn btn-success">
+          <button type="button" (click)="modalAgregarProducto()" class="btn btn-success">
             <span class="text-uppercase">Nuevo</span>
           </button>
         </div>
@@ -159,7 +160,7 @@
             </tr>
             </tbody>
           </table>
-          <button type="button" (click)="addItem(item.id)" class="btn btn-primary btn-sm">
+          <button type="button" (click)="seleccionarProducto(item)" class="btn btn-primary btn-sm">
             <span class="text-uppercase">Seleccionar</span>
           </button>
         </div>
@@ -186,32 +187,27 @@
 <app-product-modal
   [title]="'Agregar Producto'"
   [product]="currentProduct"
-  (responseData)="hideProductModal($event)">
+  (responseData)="ocultarModalProducto($event)">
 </app-product-modal>
 
 <app-contact-modal
   [title]="'Agregar Contacto'"
   [contact]="currentContact"
-  (responseData)="hideContactModal($event)">
+  (responseData)="ocultarModalContacto($event)">
 </app-contact-modal>
 
 <app-cash-in-out-modal
-  [cajaDiariaId]="cajaDiariaId"
-  (responseData)="hideCashInOutModal($event)">
+  [cajaDiariaId]="cajaDiaria.id"
+  (responseData)="ocultarModalCajaChica($event)">
 </app-cash-in-out-modal>
 
 <app-cobrar-modal
-  [cajaDiariaId]="cajaDiariaId" [sale]="sale"
-  [configuration]="configuration"
-  (responseData)="hideCobrarModal($event)">
+  [cajaDiariaId]="cajaDiaria.id" [generarVenta]="generarVenta"
+  (responseData)="ocultarCobrarModal($event)">
 </app-cobrar-modal>
 <!-- ## DEBUG -->
 <table class="table table-bordered">
   <tbody>
-  <tr>
-    <th>cajaDiariaId</th>
-    <td>{{cajaDiariaId|json}}</td>
-  </tr>
   <tr>
     <th>cajaDiaria</th>
     <td>
@@ -219,15 +215,9 @@
     </td>
   </tr>
   <tr>
-    <th>sale</th>
+    <th>generarVenta</th>
     <td>
-      <pre>{{sale|json}}</pre>
-    </td>
-  </tr>
-  <tr>
-    <th>configuration</th>
-    <td>
-      <pre>{{configuration|json}}</pre>
+      <pre>{{generarVenta|json}}</pre>
     </td>
   </tr>
   </tbody>

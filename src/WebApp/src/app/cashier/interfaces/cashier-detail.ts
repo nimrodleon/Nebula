@@ -2,7 +2,7 @@ export class CashierDetail {
   constructor(
     public id: any = undefined, // identificador clave primaria.
     public cajaDiaria: string = '', // identificador caja diaria.
-    public document: string = '', // identificador serie y número del comprobante.
+    public document: string = '', // identificador, serie y número del comprobante.
     public contact: string = '', // identificador y nombre de contacto.
     public remark: string = '', // observación de la operación.
     public type: string = 'ENTRADA', // tipo de operación: <ENTRADA/SALIDA>

@@ -16,8 +16,7 @@ declare var bootstrap: any;
 
 @Component({
   selector: 'app-cash-detail',
-  templateUrl: './cash-detail.component.html',
-  styleUrls: ['./cash-detail.component.scss']
+  templateUrl: './cash-detail.component.html'
 })
 export class CashDetailComponent implements OnInit {
   faPlus = faPlus;

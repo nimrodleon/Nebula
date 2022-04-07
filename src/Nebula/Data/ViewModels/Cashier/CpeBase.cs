@@ -239,32 +239,4 @@ public class CpeBase
 
         return tributos;
     }
-
-    /// <summary>
-    /// Configurar Cuentas por cobrar.
-    /// </summary>
-    /// <param name="invoiceSale">Comprobante de venta</param>
-    public List<InvoiceSaleAccount> GetInvoiceAccounts(InvoiceSale invoiceSale)
-    {
-        var invoiceAccounts = new List<InvoiceSaleAccount>();
-        Cuotas.ForEach(item =>
-        {
-            var cuota = new InvoiceSaleAccount()
-            {
-                Id = string.Empty,
-                InvoiceSale = invoiceSale.Id,
-                Serie = invoiceSale.Serie,
-                Number = invoiceSale.Number,
-                Status = "PENDIENTE",
-                Cuota = item.NumCuota,
-                Amount = item.Amount,
-                Balance = item.Amount,
-                EndDate = item.EndDate,
-                Year = Convert.ToDateTime(item.EndDate).ToString("yyyy"),
-                Month = Convert.ToDateTime(item.EndDate).ToString("MM")
-            };
-            invoiceAccounts.Add(cuota);
-        });
-        return invoiceAccounts;
-    }
 }

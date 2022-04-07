@@ -10,7 +10,7 @@
     <Script Include="**" Exclude="*.esproj;**\node_modules\**" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="src\app\cashier\pages\terminal\terminal.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\sales\interfaces\index.ts" />
   </ItemGroup>
   <!-- This target is copied from the ASP.NET SPA template in order to ensure node_modules are in place. -->
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

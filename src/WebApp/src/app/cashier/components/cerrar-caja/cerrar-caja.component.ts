@@ -7,8 +7,7 @@ import {CajaDiaria, CerrarCaja} from '../../interfaces';
 
 @Component({
   selector: 'app-cerrar-caja',
-  templateUrl: './cerrar-caja.component.html',
-  styleUrls: ['./cerrar-caja.component.scss']
+  templateUrl: './cerrar-caja.component.html'
 })
 export class CerrarCajaComponent implements OnInit {
   faBars = faBars;
