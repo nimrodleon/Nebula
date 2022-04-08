@@ -4,7 +4,7 @@ import {faWhatsapp} from '@fortawesome/free-brands-svg-icons';
 import {faCheckSquare} from '@fortawesome/free-regular-svg-icons';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {environment} from 'src/environments/environment';
-import {Configuration} from 'src/app/system/interfaces';
+import {confirmTask} from 'src/app/global/interfaces';
 import {GenerarVenta} from '../../interfaces';
 
 @Component({
@@ -21,16 +21,11 @@ export class CobrarModalComponent implements OnInit {
   private appURL: string = environment.applicationUrl;
   @Input() cajaDiariaId: string = '';
   @Input() generarVenta: GenerarVenta = new GenerarVenta();
-
-
-  // @Input() sale: Sale = new Sale();
-  @Input() configuration: Configuration = new Configuration();
-  // valor de retorno del modal.
   @Output() responseData = new EventEmitter<boolean>();
   cobrarForm: FormGroup = this.fb.group({
     formaPago: ['Contado:Contado', [Validators.required]],
     docType: ['NOTA', [Validators.required]],
-    montoTotal: [null, [Validators.required, Validators.min(0)]],
+    montoRecibido: [null, [Validators.required, Validators.min(0)]],
     remark: ['']
   });
   formReg: boolean = true;
@@ -46,7 +41,7 @@ export class CobrarModalComponent implements OnInit {
     myModal.addEventListener('hide.bs.modal', () => {
       if (!this.formReg) {
         this.responseData.emit(this.formReg);
-        this.cobrarForm.reset({formaPago: 'Contado:Contado', docType: 'NOTA', montoTotal: null, remark: ''});
+        this.cobrarForm.reset({formaPago: 'Contado:Contado', docType: 'NOTA', montoRecibido: null, remark: ''});
       }
     });
     myModal.addEventListener('hidden.bs.modal', () => {
@@ -67,6 +62,14 @@ export class CobrarModalComponent implements OnInit {
       return;
     }
     // Guardar datos, sólo si es válido el formulario.
+    confirmTask().then(result => {
+      if (result.isConfirmed) {
+        this.statusProgress = true;
+        this.generarVenta.comprobante = {...this.generarVenta.comprobante, ...this.cobrarForm.value};
+        // registrar venta...
+      }
+    });
+
     // confirmTask().then(result => {
     //   if (result.isConfirmed) {
     //     this.statusProgress = true;

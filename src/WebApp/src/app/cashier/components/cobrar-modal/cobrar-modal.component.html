@@ -25,7 +25,6 @@
               <div class="col-6">
                 <select formControlName="formaPago" class="form-select text-uppercase"
                         [ngClass]="{'is-invalid': inputIsInvalid('formaPago')}">
-                  <option value="Contado:Plin">Plin</option>
                   <option value="Contado:Yape">Yape</option>
                   <option value="Contado:Contado">Contado</option>
                   <option value="Contado:Depósito">Depósito</option>
@@ -37,28 +36,29 @@
               <div class="col-6">
                 <select formControlName="docType" class="form-select"
                         [ngClass]="{'is-invalid': inputIsInvalid('docType')}">
-                  <option *ngIf="configuration.cpeSunat !== 'NONE'" value="BOLETA">BOLETA</option>
-                  <option *ngIf="configuration.cpeSunat !== 'NONE'" value="FACTURA">FACTURA</option>
+                  <option *ngIf="generarVenta.configuration.cpeSunat !== 'NONE'" value="BOLETA">BOLETA</option>
+                  <option *ngIf="generarVenta.configuration.cpeSunat !== 'NONE'" value="FACTURA">FACTURA</option>
                   <option value="NOTA">NOTA DE VENTA</option>
                 </select>
               </div>
             </div>
             <div class="row mb-3">
-              <label class="col-4 col-form-label text-uppercase text-end">Monto Caja</label>
+              <label class="col-4 col-form-label text-uppercase text-end">Monto Recibido</label>
               <div class="col-6">
-                <input type="number" formControlName="montoTotal" step="0.1" class="form-control"
-                       [ngClass]="{'is-invalid': inputIsInvalid('montoTotal')}">
+                <input type="number" formControlName="montoRecibido" step="0.1" class="form-control"
+                       [ngClass]="{'is-invalid': inputIsInvalid('montoRecibido')}">
               </div>
             </div>
             <label for="remark" class="form-label text-uppercase">Observaciones</label>
-            <textarea class="form-control" formControlName="remark" id="remark" rows="2"></textarea>
+            <textarea class="form-control" formControlName="remark" id="remark" rows="2"
+                      placeholder="ESCRIBE AQUÍ TU COMENTARIO"></textarea>
           </ng-container>
           <ng-template #successTpl>
-            <!--<div class="div-success">
+            <div class="div-success">
               <fa-icon [icon]="faCheckSquare"></fa-icon>
-              <span class="d-block">TOTAL: {{sale.sumImpVenta.toFixed(4)|currency}}</span>
-              <span class="d-block text-danger">VUELTO: {{sale.vuelto.toFixed(4)|currency}}</span>
-            </div>-->
+              <span class="d-block">TOTAL: {{generarVenta.comprobante.sumImpVenta.toFixed(4)|currency}}</span>
+              <span class="d-block text-danger">VUELTO: {{generarVenta.comprobante.vuelto.toFixed(4)|currency}}</span>
+            </div>
             <div class="sendEmail">
               <label class="form-label fw-bold">ENVIAR POR WHATSAPP</label>
               <div class="input-group">
