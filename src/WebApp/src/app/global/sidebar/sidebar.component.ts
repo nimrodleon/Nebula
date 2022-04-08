@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {faBox, faCashRegister, faCogs, faRobot} from '@fortawesome/free-solid-svg-icons';
+import {faBox, faCashRegister, faCogs, faUsers} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,7 +10,7 @@ export class SidebarComponent implements OnInit {
   faBox = faBox;
   faCashRegister = faCashRegister;
   faCogs = faCogs;
-  faRobot = faRobot;
+  faUsers = faUsers;
 
   constructor() {
   }

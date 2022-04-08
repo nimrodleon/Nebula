@@ -2,17 +2,17 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {faBars} from '@fortawesome/free-solid-svg-icons';
 import {environment} from 'src/environments/environment';
-import {CashierDetail} from '../../interfaces';
-import {CashierDetailService} from '../../services';
 import {ResponseData} from 'src/app/global/interfaces';
+import {CashierDetailService} from '../../services';
+import {CashierDetail} from '../../interfaces';
 
 declare var jQuery: any;
 
 @Component({
-  selector: 'app-cash-in-out-modal',
-  templateUrl: './cash-in-out-modal.component.html'
+  selector: 'app-caja-chica-modal',
+  templateUrl: './caja-chica-modal.component.html'
 })
-export class CashInOutModalComponent implements OnInit {
+export class CajaChicaModalComponent implements OnInit {
   private appURL: string = environment.applicationUrl;
   faBars = faBars;
   @Input()
@@ -36,7 +36,7 @@ export class CashInOutModalComponent implements OnInit {
     jQuery('#contactId').select2({
       theme: 'bootstrap-5',
       placeholder: 'BUSCAR CONTACTO',
-      dropdownParent: jQuery('#cash-in-out-modal'),
+      dropdownParent: jQuery('#caja-chica-modal'),
       ajax: {
         url: this.appURL + 'Contact/Select2',
         headers: {
@@ -49,8 +49,8 @@ export class CashInOutModalComponent implements OnInit {
       this.cajaChicaForm.controls['contact'].setValue(`${data.id}:${text[text.length - 1].trim()}`);
     });
     // cargar valores por defecto.
-    if (document.querySelector('#cash-in-out-modal')) {
-      const myModal: any = document.querySelector('#cash-in-out-modal');
+    if (document.querySelector('#caja-chica-modal')) {
+      const myModal: any = document.querySelector('#caja-chica-modal');
       myModal.addEventListener('hide.bs.modal', () => {
         jQuery('#contactId').val(null).trigger('change');
         this.cashierDetail = new CashierDetail();

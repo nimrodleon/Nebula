@@ -102,7 +102,7 @@ export class TerminalComponent implements OnInit {
     this.cobrarModal = new bootstrap.Modal(document.querySelector('#cobrar-modal'));
     this.modalProducto = new bootstrap.Modal(document.querySelector('#product-modal'));
     this.modalContacto = new bootstrap.Modal(document.querySelector('#contact-modal'));
-    this.modalCajaChica = new bootstrap.Modal(document.querySelector('#cash-in-out-modal'));
+    this.modalCajaChica = new bootstrap.Modal(document.querySelector('#caja-chica-modal'));
 
     // limpiar el contacto seleccionado.
     const myModal: any = document.querySelector('#cobrar-modal');
