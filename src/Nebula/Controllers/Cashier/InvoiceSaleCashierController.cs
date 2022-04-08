@@ -42,25 +42,25 @@ public class InvoiceSaleCashierController : ControllerBase
     /// registrar venta rápida.
     /// </summary>
     /// <param name="id">ID caja diaria</param>
-    /// <param name="model">Venta</param>
+    /// <param name="model">GenerarVenta</param>
     /// <returns>IActionResult</returns>
-    [HttpPost("CreateQuickSale/{id}")]
-    public async Task<IActionResult> CreateQuickSale(string id, [FromBody] Venta model)
+    [HttpPost("GenerarVenta/{id}")]
+    public async Task<IActionResult> GenerarVenta(string id, [FromBody] GenerarVenta model)
     {
         try
         {
             _cashierSaleService.SetModel(model);
-            var invoiceSale = await _cashierSaleService.CreateQuickSale(id);
+            var invoiceSale = await _cashierSaleService.SaveChanges(id);
             bool fileExist = true;
 
             // Configurar valor de retorno.
-            model.InvoiceSale = invoiceSale.Id;
-            model.Vuelto = model.MontoTotal - model.SumImpVenta;
+            model.Comprobante.InvoiceSale = invoiceSale.Id;
+            model.Comprobante.Vuelto = model.Comprobante.MontoRecibido - model.Comprobante.SumImpVenta;
 
             return Ok(new
             {
                 Ok = fileExist,
-                Data = model,
+                Data = model.Comprobante,
                 Msg = $"El comprobante {invoiceSale.Serie}-{invoiceSale.Number} ha sido registrado!"
             });
         }

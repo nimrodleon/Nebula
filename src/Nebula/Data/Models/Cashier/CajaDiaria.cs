@@ -10,6 +10,11 @@ public class CajaDiaria
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
+    /// ID Serie de facturación.
+    /// </summary>
+    public string InvoiceSerie { get; set; } = string.Empty;
+
+    /// <summary>
     /// Series de facturación.
     /// </summary>
     public string Terminal { get; set; } = string.Empty;

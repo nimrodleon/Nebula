@@ -1,82 +1,76 @@
+﻿using Nebula.Data.Models.Common;
 using Nebula.Data.Models.Sales;
 
 namespace Nebula.Data.ViewModels.Cashier;
 
-/// <summary>
-/// Cabecera comprobante.
-/// </summary>
-public class CpeBase
+public class GenerarVenta
 {
     /// <summary>
-    /// Id del Contacto.
+    /// Cabecera Comprobante.
     /// </summary>
-    public string ContactId { get; set; } = string.Empty;
+    public Comprobante Comprobante { get; set; } = new Comprobante();
 
     /// <summary>
-    /// Tipo documento (FACTURA|BOLETA|NOTA).
+    /// Detalles del Comprobante.
     /// </summary>
-    public string DocType { get; set; } = string.Empty;
+    public List<DetalleComprobante> DetallesComprobante { get; set; } = new List<DetalleComprobante>();
 
     /// <summary>
-    /// SubTotal.
+    /// Calcular Importe Venta.
     /// </summary>
-    public decimal SumTotValVenta { get; set; }
-
-    /// <summary>
-    /// Sumatoria Tributos.
-    /// </summary>
-    public decimal SumTotTributos { get; set; }
-
-    /// <summary>
-    /// Importe a Cobrar.
-    /// </summary>
-    public decimal SumImpVenta { get; set; }
-
-    /// <summary>
-    /// Observación o Comentario.
-    /// </summary>
-    public string Remark { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Detalle de Venta.
-    /// </summary>
-    public List<CpeDetail> Details { get; set; } = new List<CpeDetail>();
-
-    /// <summary>
-    /// Cuotas a Crédito.
-    /// </summary>
-    public List<Cuota> Cuotas { get; set; } = new List<Cuota>();
-
-    /// <summary>
-    /// ID del Comprobante.
-    /// </summary>
-    public string InvoiceSale { get; set; } = string.Empty;
-
-    /// <summary>
-    /// calcular importe de venta.
-    /// </summary>
-    protected void CalcImporteVenta()
+    private void CalcularImporteVenta()
     {
-        decimal icbper = 0;
-        SumTotValVenta = 0;
-        SumTotTributos = 0;
-        Details.ForEach(item =>
+        Comprobante.SumTotValVenta = 0;
+        Comprobante.SumTotTributos = 0;
+        Comprobante.SumTotTriIcbper = 0;
+        DetallesComprobante.ForEach(item =>
         {
-            SumTotValVenta = SumTotValVenta + item.MtoBaseIgvItem;
-            SumTotTributos = SumTotTributos + item.MtoIgvItem;
-            icbper = icbper + item.MtoTriIcbperItem;
+            Comprobante.SumTotValVenta += item.MtoBaseIgvItem;
+            Comprobante.SumTotTributos += item.MtoIgvItem;
+            Comprobante.SumTotTriIcbper += item.MtoTriIcbperItem;
         });
-        SumImpVenta = SumTotValVenta + SumTotTributos + icbper;
+        Comprobante.SumImpVenta = Comprobante.SumTotValVenta + Comprobante.SumTotTributos + Comprobante.SumTotTriIcbper;
     }
 
     /// <summary>
-    /// Configurar Detalle de Facturas.
+    /// Configurar cabecera de Factura.
     /// </summary>
-    /// <param name="invoice">ID del comprobante</param>
-    public List<InvoiceSaleDetail> GetInvoiceDetail(string invoice)
+    /// <param name="configuration">Configuración</param>
+    /// <param name="contact">Contacto</param>
+    /// <returns>Cabecera Factura</returns>
+    public InvoiceSale GetInvoiceSale(Configuration configuration, Contact contact)
+    {
+        CalcularImporteVenta();
+        return new InvoiceSale()
+        {
+            DocType = Comprobante.DocType,
+            TipOperacion = "0101",
+            FecEmision = DateTime.Now.ToString("yyyy-MM-dd"),
+            HorEmision = DateTime.Now.ToString("HH:mm:ss"),
+            CodLocalEmisor = configuration.CodLocalEmisor,
+            FormaPago = Comprobante.FormaPago,
+            ContactId = contact.Id,
+            TipDocUsuario = contact.DocType,
+            NumDocUsuario = contact.Document,
+            RznSocialUsuario = contact.Name,
+            TipMoneda = configuration.TipMoneda,
+            SumTotValVenta = Comprobante.SumTotValVenta,
+            SumTotTributos = Comprobante.SumTotTributos,
+            SumImpVenta = Comprobante.SumImpVenta,
+            Year = DateTime.Now.ToString("yyyy"),
+            Month = DateTime.Now.ToString("MM"),
+        };
+    }
+
+    /// <summary>
+    /// Configurar Detalle de Factura.
+    /// </summary>
+    /// <param name="invoice">ID Cabecera</param>
+    /// <returns>Detalles de Factura</returns>
+    public List<InvoiceSaleDetail> GetInvoiceSaleDetails(string invoice)
     {
         var invoiceSaleDetails = new List<InvoiceSaleDetail>();
-        Details.ForEach(item =>
+        DetallesComprobante.ForEach(item =>
         {
             // Tributo: Afectación al IGV por ítem.
             string tipAfeIgv = "10";
@@ -108,7 +102,6 @@ public class CpeBase
             // agregar items al comprobante.
             invoiceSaleDetails.Add(new InvoiceSaleDetail()
             {
-                Id = string.Empty,
                 InvoiceSale = invoice,
                 CodUnidadMedida = item.CodUnidadMedida,
                 CtdUnidadItem = item.Quantity,
@@ -141,37 +134,34 @@ public class CpeBase
     }
 
     /// <summary>
-    /// Lista de Tributos.
+    /// Obtener Lista de Tributos.
     /// </summary>
-    /// <param name="invoice">ID del comprobante</param>
-    public List<TributoSale> GetTributo(string invoice)
+    /// <param name="invoice">ID Cabecera</param>
+    /// <returns>Tributos de Factura</returns>
+    public List<TributoSale> GetTributoSales(string invoice)
     {
-        bool icbper = false;
         decimal opGravada = 0;
         decimal opExonerada = 0;
         decimal opGratuita = 0;
         decimal totalIgv = 0;
         decimal totalIcbper = 0;
-        Details.ForEach(item =>
+        DetallesComprobante.ForEach(item =>
         {
+            if (item.TriIcbper)
+                totalIcbper += item.MtoTriIcbperItem;
+
             switch (item.IgvSunat)
             {
                 case "GRAVADO":
-                    opGravada = opGravada + item.MtoBaseIgvItem;
-                    totalIgv = totalIgv + item.MtoIgvItem;
+                    opGravada += item.MtoBaseIgvItem;
+                    totalIgv += item.MtoIgvItem;
                     break;
                 case "EXONERADO":
-                    opExonerada = opExonerada + item.MtoBaseIgvItem;
+                    opExonerada += item.MtoBaseIgvItem;
                     break;
                 case "GRATUITO":
-                    opGratuita = opGratuita + item.MtoBaseIgvItem;
+                    opGratuita += item.MtoBaseIgvItem;
                     break;
-            }
-
-            if (item.TriIcbper)
-            {
-                icbper = true;
-                totalIcbper = totalIcbper + item.MtoTriIcbperItem;
             }
         });
 
@@ -180,7 +170,6 @@ public class CpeBase
         {
             tributos.Add(new TributoSale()
             {
-                Id = string.Empty,
                 InvoiceSale = invoice,
                 IdeTributo = "9996",
                 NomTributo = "GRA",
@@ -196,7 +185,6 @@ public class CpeBase
         {
             tributos.Add(new TributoSale()
             {
-                Id = string.Empty,
                 InvoiceSale = invoice,
                 IdeTributo = "9997",
                 NomTributo = "EXO",
@@ -208,24 +196,25 @@ public class CpeBase
             });
         }
 
-        tributos.Add(new TributoSale()
-        {
-            Id = string.Empty,
-            InvoiceSale = invoice,
-            IdeTributo = "1000",
-            NomTributo = "IGV",
-            CodTipTributo = "VAT",
-            MtoBaseImponible = opGravada,
-            MtoTributo = totalIgv,
-            Year = DateTime.Now.ToString("yyyy"),
-            Month = DateTime.Now.ToString("MM")
-        });
-
-        if (icbper)
+        if (opGravada > 0)
         {
             tributos.Add(new TributoSale()
             {
-                Id = string.Empty,
+                InvoiceSale = invoice,
+                IdeTributo = "1000",
+                NomTributo = "IGV",
+                CodTipTributo = "VAT",
+                MtoBaseImponible = opGravada,
+                MtoTributo = totalIgv,
+                Year = DateTime.Now.ToString("yyyy"),
+                Month = DateTime.Now.ToString("MM")
+            });
+        }
+
+        if (totalIcbper > 0)
+        {
+            tributos.Add(new TributoSale()
+            {
                 InvoiceSale = invoice,
                 IdeTributo = "7152",
                 NomTributo = "ICBPER",

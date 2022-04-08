@@ -20,7 +20,7 @@ public class CashierSaleService
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly TributoSaleService _tributoSaleService;
     private readonly CashierDetailService _cashierDetailService;
-    private Venta _venta;
+    private GenerarVenta _generarVenta;
 
     public CashierSaleService(ConfigurationService configurationService,
         ContactService contactService, CajaDiariaService cajaDiariaService,
@@ -36,51 +36,51 @@ public class CashierSaleService
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _tributoSaleService = tributoSaleService;
         _cashierDetailService = cashierDetailService;
-        _venta = new Venta();
+        _generarVenta = new GenerarVenta();
     }
 
     /// <summary>
     /// Establecer modelo venta.
     /// </summary>
-    public void SetModel(Venta model) => _venta = model;
+    public void SetModel(GenerarVenta model) => _generarVenta = model;
 
     /// <summary>
     /// Guardar comprobante de venta rápida.
     /// </summary>
-    /// <param name="cajaDiariaId">ID caja diaria.</param>
-    public async Task<InvoiceSale> CreateQuickSale(string cajaDiariaId)
+    /// <param name="id">ID caja diaria</param>
+    /// <returns>Cabecera Factura</returns>
+    public async Task<InvoiceSale> SaveChanges(string id)
     {
         var configuration = await _configurationService.GetAsync();
-        var contact = await _contactService.GetAsync(_venta.ContactId);
+        var contact = await _contactService.GetAsync(_generarVenta.Comprobante.ContactId);
 
-        var invoiceSale = _venta.GetInvoice(configuration, contact);
-        var cajaDiaria = await _cajaDiariaService.GetAsync(cajaDiariaId);
-        var invoiceSerie = await _invoiceSerieService.GetAsync(cajaDiaria.Terminal.Split(":")[0].Trim());
-        GenerateInvoiceSerie(ref invoiceSerie, ref invoiceSale, _venta.DocType);
+        var invoiceSale = _generarVenta.GetInvoiceSale(configuration, contact);
+        var cajaDiaria = await _cajaDiariaService.GetAsync(id);
+        var invoiceSerie = await _invoiceSerieService.GetAsync(cajaDiaria.InvoiceSerie);
+        GenerateInvoiceSerie(ref invoiceSerie, ref invoiceSale, _generarVenta.Comprobante.DocType);
 
         // Agregar Información del comprobante.
         await _invoiceSerieService.UpdateAsync(invoiceSale.Id, invoiceSerie);
         await _invoiceSaleService.CreateAsync(invoiceSale);
 
         // Agregar detalles del comprobante.
-        var invoiceSaleDetails = _venta.GetInvoiceDetail(invoiceSale.Id);
+        var invoiceSaleDetails = _generarVenta.GetInvoiceSaleDetails(invoiceSale.Id);
         await _invoiceSaleDetailService.CreateAsync(invoiceSaleDetails);
 
         // Agregar Tributos de Factura.
-        var tributoSales = _venta.GetTributo(invoiceSale.Id);
+        var tributoSales = _generarVenta.GetTributoSales(invoiceSale.Id);
         await _tributoSaleService.CreateAsync(tributoSales);
 
         // Registrar operación de Caja.
         var cashierDetail = new CashierDetail()
         {
-            Id = string.Empty,
-            CajaDiaria = cajaDiariaId,
+            CajaDiaria = cajaDiaria.Id,
             Document = $"{invoiceSale.Serie}-{invoiceSale.Number}",
             Contact = invoiceSale.RznSocialUsuario,
-            Remark = _venta.Remark,
+            Remark = _generarVenta.Comprobante.Remark,
             Type = "ENTRADA",
             TypeOperation = TypeOperation.Comprobante,
-            FormaPago = _venta.FormaPago,
+            FormaPago = _generarVenta.Comprobante.FormaPago,
             Amount = invoiceSale.SumImpVenta
         };
         await _cashierDetailService.CreateAsync(cashierDetail);
@@ -104,7 +104,7 @@ public class CashierSaleService
                 numComprobante = invoiceSerie.CounterFactura;
                 if (numComprobante > 99999999)
                     throw new Exception(THROW_MESSAGE);
-                numComprobante = numComprobante + 1;
+                numComprobante += 1;
                 invoiceSerie.CounterFactura = numComprobante;
                 break;
             case "BOLETA":
@@ -112,7 +112,7 @@ public class CashierSaleService
                 numComprobante = invoiceSerie.CounterBoleta;
                 if (numComprobante > 99999999)
                     throw new Exception(THROW_MESSAGE);
-                numComprobante = numComprobante + 1;
+                numComprobante += 1;
                 invoiceSerie.CounterBoleta = numComprobante;
                 break;
             case "NOTA":
@@ -120,7 +120,7 @@ public class CashierSaleService
                 numComprobante = invoiceSerie.CounterNotaDeVenta;
                 if (numComprobante > 99999999)
                     throw new Exception(THROW_MESSAGE);
-                numComprobante = numComprobante + 1;
+                numComprobante += 1;
                 invoiceSerie.CounterNotaDeVenta = numComprobante;
                 break;
         }

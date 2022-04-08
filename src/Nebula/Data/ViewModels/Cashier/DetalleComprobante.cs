@@ -1,9 +1,6 @@
-namespace Nebula.Data.ViewModels.Cashier;
+﻿namespace Nebula.Data.ViewModels.Cashier;
 
-/// <summary>
-/// items de productos.
-/// </summary>
-public class CpeDetail
+public class DetalleComprobante
 {
     /// <summary>
     /// Id del producto.

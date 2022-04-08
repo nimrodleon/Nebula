@@ -3,8 +3,9 @@ import {faBars, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
 import {faWhatsapp} from '@fortawesome/free-brands-svg-icons';
 import {faCheckSquare} from '@fortawesome/free-regular-svg-icons';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {environment} from 'src/environments/environment';
+// import {environment} from 'src/environments/environment';
 import {confirmTask} from 'src/app/global/interfaces';
+import {InvoiceSaleCashierService} from '../../services';
 import {GenerarVenta} from '../../interfaces';
 
 @Component({
@@ -18,7 +19,7 @@ export class CobrarModalComponent implements OnInit {
   faTrashAlt = faTrashAlt;
   faWhatsapp = faWhatsapp;
   // ====================================================================================================
-  private appURL: string = environment.applicationUrl;
+  // private appURL: string = environment.applicationUrl;
   @Input() cajaDiariaId: string = '';
   @Input() generarVenta: GenerarVenta = new GenerarVenta();
   @Output() responseData = new EventEmitter<boolean>();
@@ -33,7 +34,8 @@ export class CobrarModalComponent implements OnInit {
   statusProgress: boolean = false;
 
   constructor(
-    private fb: FormBuilder) {
+    private fb: FormBuilder,
+    private invoiceSaleCashierService: InvoiceSaleCashierService) {
   }
 
   ngOnInit(): void {
@@ -66,57 +68,15 @@ export class CobrarModalComponent implements OnInit {
       if (result.isConfirmed) {
         this.statusProgress = true;
         this.generarVenta.comprobante = {...this.generarVenta.comprobante, ...this.cobrarForm.value};
-        // registrar venta...
+        this.invoiceSaleCashierService.generarVenta(this.cajaDiariaId, this.generarVenta).subscribe(result => {
+          if (result.ok) {
+            this.generarVenta.comprobante = <any>result.data;
+            this.statusProgress = false;
+            this.formReg = false;
+          }
+        });
       }
     });
-
-    // confirmTask().then(result => {
-    //   if (result.isConfirmed) {
-    //     this.statusProgress = true;
-    //     this.sale = {...this.sale, ...this.cobrarForm.value};
-    //     // guardar comprobante de pago.
-    //     this.invoiceService.createQuickSale(this.cajaDiariaId, this.sale)
-    //       .subscribe(result => {
-    //         if (result.ok) {
-    //           if (result.data) {
-    //             const {data} = result;
-    //             this.sale = data;
-    //             if (data?.docType === 'NOTA') {
-    //               this.statusProgress = false;
-    //               this.formReg = false;
-    //             }
-    //             // TODO: refactoring.
-    //             // this.urlPdf = `${this.appURL}Facturador/GetPdf?invoice=${data?.invoiceSale}`;
-    //             // console.info(result.msg);
-    //             // if (data?.docType === 'NOTA') {
-    //             //   this.statusProgress = false;
-    //             //   this.formReg = false;
-    //             // } else {
-    //             //   // cargar la Lista de archivos JSON.
-    //             //   this.facturadorService.ActualizarPantalla()
-    //             //     .subscribe(result => {
-    //             //       if (result.listaBandejaFacturador.length > 0) {
-    //             //         // generar fichero XML del comprobante.
-    //             //         this.facturadorService.GenerarComprobante(data?.invoiceSale)
-    //             //           .subscribe(result => {
-    //             //             if (result.listaBandejaFacturador.length > 0) {
-    //             //               // generar fichero PDF del comprobante.
-    //             //               this.facturadorService.GenerarPdf(data?.invoiceSale)
-    //             //                 .subscribe(result => {
-    //             //                   this.statusProgress = false;
-    //             //                   this.formReg = false;
-    //             //                   console.info(result);
-    //             //                 });
-    //             //             }
-    //             //           });
-    //             //       }
-    //             //     });
-    //             // }
-    //           }
-    //         }
-    //       });
-    //   }
-    // });
   }
 
 }
