@@ -64,7 +64,7 @@
                 <td>{{item.createdAt|date}}</td>
                 <td>
                   <a [routerLink]="['/cashier/detail', item.id]" class="text-decoration-none">
-                    <span class="text-uppercase">{{item.terminal.split(':')[1]?.trim()}}</span>
+                    <span class="text-uppercase">{{item.terminal}}</span>
                   </a>
                 </td>
                 <td>{{item.turno}}</td>
@@ -104,8 +104,8 @@
                 <div class="row mb-3">
                   <label class="col-3 col-form-label fw-bold text-uppercase text-end">Serie</label>
                   <div class="col-6">
-                    <select formControlName="serieId" class="form-select"
-                            [ngClass]="{'is-invalid': inputIsInvalid('serieId')}">
+                    <select formControlName="invoiceSerie" class="form-select"
+                            [ngClass]="{'is-invalid': inputIsInvalid('invoiceSerie')}">
                       <option *ngFor="let item of invoiceSeries" [value]="item.id">{{item.name}}</option>
                     </select>
                   </div>

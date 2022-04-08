@@ -3,9 +3,9 @@ namespace Nebula.Data.ViewModels.Cashier;
 public class AperturaCaja
 {
     /// <summary>
-    /// Id de la serie facturación.
+    /// Id serie facturación.
     /// </summary>
-    public string SerieId { get; set; } = string.Empty;
+    public string InvoiceSerie { get; set; } = string.Empty;
 
     /// <summary>
     /// Total monto apertura.

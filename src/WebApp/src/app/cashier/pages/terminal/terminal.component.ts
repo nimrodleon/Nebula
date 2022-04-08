@@ -72,7 +72,7 @@ export class TerminalComponent implements OnInit {
     this.activatedRoute.paramMap.subscribe(params => {
       this.cajaDiariaService.show(<any>params.get('id')).subscribe(result => {
         this.cajaDiaria = result;
-        this.title = result.terminal.split(':')[1];
+        this.title = result.terminal;
       });
     });
     this.authService.getMe().subscribe(result => this.authUser = result);

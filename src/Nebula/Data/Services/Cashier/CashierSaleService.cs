@@ -60,7 +60,7 @@ public class CashierSaleService
         GenerateInvoiceSerie(ref invoiceSerie, ref invoiceSale, _generarVenta.Comprobante.DocType);
 
         // Agregar Información del comprobante.
-        await _invoiceSerieService.UpdateAsync(invoiceSale.Id, invoiceSerie);
+        await _invoiceSerieService.UpdateAsync(invoiceSerie.Id, invoiceSerie);
         await _invoiceSaleService.CreateAsync(invoiceSale);
 
         // Agregar detalles del comprobante.

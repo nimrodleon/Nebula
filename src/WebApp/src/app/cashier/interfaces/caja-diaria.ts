@@ -1,6 +1,7 @@
 export class CajaDiaria {
   constructor(
     public id: any = undefined,
+    public invoiceSerie: string = '', // ID Serie de facturación.
     public terminal: string = '', // identificador y nombre - Serie de facturación.
     public status: string = '', // Estado de Caja.
     public totalApertura: number = 0, // Monto Apertura.

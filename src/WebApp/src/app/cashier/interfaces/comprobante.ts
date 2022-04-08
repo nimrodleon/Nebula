@@ -1,6 +1,7 @@
 export class Comprobante {
   constructor(
     public contactId: string = '', // id contacto.
+    public invoiceSale: string = '', // id factura.
     public formaPago: string = '', // forma de pago.
     public docType: 'BOLETA' | 'FACTURA' | 'NOTA' = 'NOTA', // tipo documento.
     public montoRecibido: number = 0, // monto recibido.

@@ -43,10 +43,11 @@ public class CajaDiariaController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] AperturaCaja model)
     {
-        var invoiceSerie = await _invoiceSerieService.GetAsync(model.SerieId);
+        var invoiceSerie = await _invoiceSerieService.GetAsync(model.InvoiceSerie);
         var cajaDiaria = new CajaDiaria()
         {
-            Terminal = $"{invoiceSerie.Id}:{invoiceSerie.Name}",
+            InvoiceSerie = invoiceSerie.Id,
+            Terminal = invoiceSerie.Name,
             Status = "ABIERTO",
             TotalApertura = model.Total,
             TotalContabilizado = 0.0M,

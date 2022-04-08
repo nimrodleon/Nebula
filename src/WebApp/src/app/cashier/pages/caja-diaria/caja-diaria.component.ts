@@ -29,7 +29,7 @@ export class CajaDiariaComponent implements OnInit {
   });
   // ====================================================================================================
   aperturaForm: FormGroup = this.fb.group({
-    serieId: ['', [Validators.required]],
+    invoiceSerie: ['', [Validators.required]],
     total: [0, [Validators.required, Validators.min(0)]],
     turno: ['', [Validators.required]]
   });
