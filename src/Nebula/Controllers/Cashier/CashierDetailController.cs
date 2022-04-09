@@ -27,7 +27,7 @@ public class CashierDetailController : ControllerBase
     public async Task<IActionResult> Create([FromBody] CashierDetail model)
     {
         model.TypeOperation = TypeOperation.CajaChica;
-        model.FormaPago = "Contado";
+        model.FormaPago = FormaPago.Contado;
         await _cashierDetailService.CreateAsync(model);
         return Ok(new
         {

@@ -63,7 +63,7 @@ public class CajaDiariaController : ControllerBase
             Remark = "APERTURA DE CAJA",
             Type = "ENTRADA",
             TypeOperation = TypeOperation.CajaChica,
-            FormaPago = "Contado",
+            FormaPago = FormaPago.Contado,
             Amount = model.Total
         };
         await _cashierDetailService.CreateAsync(detalleCaja);

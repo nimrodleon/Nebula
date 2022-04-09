@@ -76,7 +76,7 @@
                   <span *ngIf="item.type === 'ENTRADA'" class="badge bg-success">{{item.type}}</span>
                   <span *ngIf="item.type === 'SALIDA'" class="badge bg-danger">{{item.type}}</span>
                 </td>
-                <td class="text-uppercase">{{item.formaPago}}</td>
+                <td class="text-uppercase">{{item.formaPago.split(':')[1]}}</td>
                 <td>{{item.amount.toFixed(2)}}</td>
                 <td class="text-end">
                   <button type="button" class="btn btn-danger btn-sm">
