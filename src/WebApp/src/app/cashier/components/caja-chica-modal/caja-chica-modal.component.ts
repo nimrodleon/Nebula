@@ -21,7 +21,7 @@ export class CajaChicaModalComponent implements OnInit {
   responseData = new EventEmitter<ResponseData<CashierDetail>>();
   cashierDetail: CashierDetail = new CashierDetail();
   cajaChicaForm: FormGroup = this.fb.group({
-    type: ['', [Validators.required]],
+    typeOperation: ['', [Validators.required]],
     contact: [null, [Validators.required]],
     amount: [null, [Validators.required, Validators.min(0.1)]],
     remark: ['', [Validators.required]],

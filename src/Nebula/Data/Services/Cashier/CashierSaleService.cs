@@ -1,3 +1,4 @@
+using Nebula.Data.Helpers;
 using Nebula.Data.Models.Cashier;
 using Nebula.Data.Models.Common;
 using Nebula.Data.Models.Sales;
@@ -75,11 +76,11 @@ public class CashierSaleService
         var cashierDetail = new CashierDetail()
         {
             CajaDiaria = cajaDiaria.Id,
+            InvoiceSale = invoiceSale.Id,
             Document = $"{invoiceSale.Serie}-{invoiceSale.Number}",
             Contact = invoiceSale.RznSocialUsuario,
             Remark = _generarVenta.Comprobante.Remark,
-            Type = "ENTRADA",
-            TypeOperation = TypeOperation.Comprobante,
+            TypeOperation = TypeOperationCaja.ComprobanteDeVenta,
             FormaPago = _generarVenta.Comprobante.FormaPago,
             Amount = invoiceSale.SumImpVenta
         };

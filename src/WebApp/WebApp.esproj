@@ -11,6 +11,10 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="src\app\sales\interfaces\index.ts" />
+    <TypeScriptCompile Include="src\app\sales\services\index.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\app\sales\pages" />
   </ItemGroup>
   <!-- This target is copied from the ASP.NET SPA template in order to ensure node_modules are in place. -->
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

@@ -1,6 +1,6 @@
 using Nebula.Data.Models.Sales;
 
-namespace Nebula.Data.ViewModels.Cashier;
+namespace Nebula.Data.ViewModels.Sales;
 
 public class ResponseInvoiceSale
 {

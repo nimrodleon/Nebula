@@ -13,10 +13,10 @@
           <div class="row mb-3">
             <label class="col-3 col-form-label-sm text-uppercase text-end">Tipo</label>
             <div class="col-6">
-              <select formControlName="type" class="form-select"
-                      [ngClass]="{'is-invalid': inputIsInvalid('type')}">
-                <option value="ENTRADA">ENTRADA</option>
-                <option value="SALIDA">SALIDA</option>
+              <select formControlName="typeOperation" class="form-select"
+                      [ngClass]="{'is-invalid': inputIsInvalid('typeOperation')}">
+                <option value="ENTRADA_DE_DINERO">ENTRADA</option>
+                <option value="SALIDA_DE_DINERO">SALIDA</option>
               </select>
             </div>
           </div>

@@ -61,8 +61,7 @@ public class CajaDiariaController : ControllerBase
         {
             CajaDiaria = cajaDiaria.Id,
             Remark = "APERTURA DE CAJA",
-            Type = "ENTRADA",
-            TypeOperation = TypeOperation.CajaChica,
+            TypeOperation = TypeOperationCaja.AperturaDeCaja,
             FormaPago = FormaPago.Contado,
             Amount = model.Total
         };

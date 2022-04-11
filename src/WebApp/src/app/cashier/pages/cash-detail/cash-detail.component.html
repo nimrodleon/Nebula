@@ -53,7 +53,6 @@
                 <th>Documento</th>
                 <th>Contacto</th>
                 <th>Comentario</th>
-                <th>Tipo</th>
                 <th>F. Pago</th>
                 <th>Monto</th>
                 <td></td>
@@ -63,21 +62,22 @@
               <tr *ngFor="let item of cashierDetails">
                 <td>{{item.hour}}</td>
                 <td>
-                  <ng-container *ngIf="item.typeOperation === 0 else comprobante">
+                  <ng-container *ngIf="item.typeOperation !== 'COMPROBANTE_DE_VENTA' else comprobante">
                     {{item.document}}
                   </ng-container>
                   <ng-template #comprobante>
-                    <a [routerLink]="['/invoice/detail/sale', item.document]">{{item.document}}</a>
+                    <a [routerLink]="['/sales/invoice-sale-detail', item.invoiceSale]">{{item.document}}</a>
                   </ng-template>
                 </td>
                 <td>{{item.contact.split(':')[1]?.trim() || item.contact}}</td>
                 <td>{{item.remark}}</td>
-                <td class="text-uppercase">
-                  <span *ngIf="item.type === 'ENTRADA'" class="badge bg-success">{{item.type}}</span>
-                  <span *ngIf="item.type === 'SALIDA'" class="badge bg-danger">{{item.type}}</span>
-                </td>
                 <td class="text-uppercase">{{item.formaPago.split(':')[1]}}</td>
-                <td>{{item.amount.toFixed(2)}}</td>
+                <td class="fw-bold">
+                  <span *ngIf="item.typeOperation === 'SALIDA_DE_DINERO'"
+                        class="text-danger">{{item.amount.toFixed(2)}}</span>
+                  <span *ngIf="item.typeOperation !== 'SALIDA_DE_DINERO'"
+                        class="text-primary">{{item.amount.toFixed(2)}}</span>
+                </td>
                 <td class="text-end">
                   <button type="button" class="btn btn-danger btn-sm">
                     <fa-icon [icon]="faTrashAlt"></fa-icon>

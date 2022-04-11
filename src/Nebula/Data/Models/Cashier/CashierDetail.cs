@@ -3,12 +3,6 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Nebula.Data.Models.Cashier;
 
-public enum TypeOperation
-{
-    CajaChica,
-    Comprobante
-}
-
 /// <summary>
 /// Detalle de caja diaria.
 /// </summary>
@@ -22,6 +16,11 @@ public class CashierDetail
     /// Identificador CajaDiaria.
     /// </summary>
     public string CajaDiaria { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Clave foránea comprobante de venta.
+    /// </summary>
+    public string InvoiceSale { get; set; } = "-";
 
     /// <summary>
     /// Serie y Número de documento.
@@ -39,15 +38,9 @@ public class CashierDetail
     public string Remark { get; set; } = "-";
 
     /// <summary>
-    /// Movimiento de efectivo,
-    /// (ENTRADA|SALIDA).
+    /// Definir Tipo de registro.
     /// </summary>
-    public string Type { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Tipo de Operación.
-    /// </summary>
-    public TypeOperation TypeOperation { get; set; }
+    public string TypeOperation { get; set; } = string.Empty;
 
     /// <summary>
     /// Forma de Pago (Credito|Contado).

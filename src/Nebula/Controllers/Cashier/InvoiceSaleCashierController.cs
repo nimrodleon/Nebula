@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Data.Helpers;
 using Nebula.Data.Services.Cashier;
-using Nebula.Data.Services.Sales;
 using Nebula.Data.ViewModels.Cashier;
 
 namespace Nebula.Controllers.Cashier;
@@ -13,29 +12,10 @@ namespace Nebula.Controllers.Cashier;
 public class InvoiceSaleCashierController : ControllerBase
 {
     private readonly CashierSaleService _cashierSaleService;
-    private readonly InvoiceSaleService _invoiceSaleService;
-    private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
-    private readonly TributoSaleService _tributoSaleService;
 
-    public InvoiceSaleCashierController(CashierSaleService cashierSaleService, InvoiceSaleService invoiceSaleService,
-        InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService)
+    public InvoiceSaleCashierController(CashierSaleService cashierSaleService)
     {
         _cashierSaleService = cashierSaleService;
-        _invoiceSaleService = invoiceSaleService;
-        _invoiceSaleDetailService = invoiceSaleDetailService;
-        _tributoSaleService = tributoSaleService;
-    }
-
-    [HttpGet("Show/{id}")]
-    public async Task<IActionResult> Show(string id)
-    {
-        var responseData = new ResponseInvoiceSale()
-        {
-            InvoiceSale = await _invoiceSaleService.GetAsync(id),
-            InvoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(id),
-            TributoSales = await _tributoSaleService.GetListAsync(id)
-        };
-        return Ok(responseData);
     }
 
     /// <summary>

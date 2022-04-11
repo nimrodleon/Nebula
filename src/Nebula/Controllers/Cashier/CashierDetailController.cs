@@ -26,7 +26,10 @@ public class CashierDetailController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] CashierDetail model)
     {
-        model.TypeOperation = TypeOperation.CajaChica;
+        if (model.TypeOperation == TypeOperationCaja.EntradaDeDinero)
+            model.TypeOperation = TypeOperationCaja.EntradaDeDinero;
+        if (model.TypeOperation == TypeOperationCaja.SalidaDeDinero)
+            model.TypeOperation = TypeOperationCaja.SalidaDeDinero;
         model.FormaPago = FormaPago.Contado;
         await _cashierDetailService.CreateAsync(model);
         return Ok(new
