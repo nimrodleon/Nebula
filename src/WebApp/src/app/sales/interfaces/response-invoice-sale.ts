@@ -6,7 +6,7 @@ import {TributoSale} from './tributo-sale';
 export class ResponseInvoiceSale {
   constructor(
     public invoiceSale: InvoiceSale = new InvoiceSale(),
-    public invoiceSaleDetail: InvoiceSaleDetail = new InvoiceSaleDetail(),
-    public tributoSale: TributoSale = new TributoSale()) {
+    public invoiceSaleDetails: Array<InvoiceSaleDetail> = new Array<InvoiceSaleDetail>(),
+    public tributoSales: Array<TributoSale> = new Array<TributoSale>()) {
   }
 }
