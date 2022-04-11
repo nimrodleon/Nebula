@@ -203,7 +203,7 @@
 
 <app-cobrar-modal
   [cajaDiariaId]="cajaDiaria.id" [generarVenta]="generarVenta"
-  (responseData)="ocultarCobrarModal($event)">
+  [modal]="cobrarModal" (responseData)="ocultarCobrarModal($event)">
 </app-cobrar-modal>
 <!-- ## DEBUG -->
 <table class="table table-bordered">

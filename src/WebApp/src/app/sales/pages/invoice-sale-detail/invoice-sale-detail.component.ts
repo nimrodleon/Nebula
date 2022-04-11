@@ -14,7 +14,7 @@ export class InvoiceSaleDetailComponent implements OnInit {
   faPrint = faPrint;
   faEdit = faEdit;
   faTrashAlt = faTrashAlt;
-  public responseInvoiceSale: ResponseInvoiceSale = new ResponseInvoiceSale();
+  responseInvoiceSale: ResponseInvoiceSale = new ResponseInvoiceSale();
 
   constructor(
     private activatedRoute: ActivatedRoute,

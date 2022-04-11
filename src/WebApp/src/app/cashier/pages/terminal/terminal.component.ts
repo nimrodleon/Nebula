@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormControl} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
+import {Router, ActivatedRoute} from '@angular/router';
 import {
   faBarcode, faCogs, faCoins, faIdCardAlt, faMinus, faPlus,
   faSearch, faSignOutAlt, faTags, faThList, faTimes, faTrashAlt, faUserCircle
@@ -16,7 +16,7 @@ import {ConfigurationService} from 'src/app/system/services';
 import {ContactService} from 'src/app/contact/services';
 import {AuthUser} from 'src/app/user/interfaces';
 import {AuthService} from 'src/app/user/services';
-import {CajaDiaria, CashierDetail, DetalleComprobante, GenerarVenta} from '../../interfaces';
+import {CajaDiaria, CashierDetail, DetalleComprobante, GenerarVenta, ResponseCobrarModal} from '../../interfaces';
 import {CajaDiariaService} from '../../services';
 
 declare var jQuery: any;
@@ -60,6 +60,7 @@ export class TerminalComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private router: Router,
     private activatedRoute: ActivatedRoute,
     private authService: AuthService,
     private productService: ProductService,
@@ -69,11 +70,10 @@ export class TerminalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.activatedRoute.paramMap.subscribe(params => {
-      this.cajaDiariaService.show(<any>params.get('id')).subscribe(result => {
-        this.cajaDiaria = result;
-        this.title = result.terminal;
-      });
+    const id: string = this.activatedRoute.snapshot.params['id'];
+    this.cajaDiariaService.show(id).subscribe(result => {
+      this.cajaDiaria = result;
+      this.title = result.terminal;
     });
     this.authService.getMe().subscribe(result => this.authUser = result);
     // buscador de contactos.
@@ -221,10 +221,14 @@ export class TerminalComponent implements OnInit {
     }
   }
 
-  public ocultarCobrarModal(value: boolean): void {
-    if (!value) {
+  public ocultarCobrarModal(value: ResponseCobrarModal): void {
+    if (value.status === 'COMPLETE') {
       this.loadConfigurationParameters();
       this.generarVenta.borrarVenta();
+    }
+    if (value.status === 'PRINT') {
+      this.generarVenta.borrarVenta();
+      this.router.navigate(['/cashier/ticket', value.data.invoiceSale]);
     }
   }
 

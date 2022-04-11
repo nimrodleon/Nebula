@@ -12,6 +12,7 @@ import {TerminalComponent} from './pages/terminal/terminal.component';
 import {CobrarModalComponent} from './components/cobrar-modal/cobrar-modal.component';
 import {CerrarCajaComponent} from './components/cerrar-caja/cerrar-caja.component';
 import {CajaChicaModalComponent} from './components/caja-chica-modal/caja-chica-modal.component';
+import {TicketComponent} from './pages/ticket/ticket.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import {CajaChicaModalComponent} from './components/caja-chica-modal/caja-chica-
     CajaChicaModalComponent,
     TerminalComponent,
     CobrarModalComponent,
-    CerrarCajaComponent
+    CerrarCajaComponent,
+    TicketComponent
   ],
   imports: [
     CommonModule,
