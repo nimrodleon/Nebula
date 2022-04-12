@@ -1,1 +1,54 @@
-<p>ticket works!</p>
+<app-navbar></app-navbar>
+<main class="position-relative">
+  <app-sidebar></app-sidebar>
+  <div class="page-wrapper">
+    <div class="container-fluid">
+      <div style="width: 410px;">
+        <div class="d-flex justify-content-center my-2 d-print-none">
+          <button type="button" (click)="print()" class="text-uppercase">Imprimir</button>
+        </div>
+        <p
+          class="text-center fw-bold m-0 text-uppercase">{{responseInvoiceSale.invoiceSale.docType|docTypeInvoice}}</p>
+        <p class="text-center fw-bold m-0">{{configuration.rznSocial}}</p>
+        <p class="text-center fw-bold m-0">
+          Nro: {{responseInvoiceSale.invoiceSale.serie}}-{{responseInvoiceSale.invoiceSale.number}}
+          | Fecha: {{responseInvoiceSale.invoiceSale.fecEmision|date}}
+        </p>
+        <p class="text-center fw-bold m-0">CLIENTE: {{responseInvoiceSale.invoiceSale.rznSocialUsuario}}</p>
+        <table style="font-size: 14px;" class="table mb-0">
+          <thead>
+          <tr class="text-uppercase">
+            <th>Cant</th>
+            <th>Producto</th>
+            <th>Precio</th>
+            <th>V. Item</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let item of responseInvoiceSale.invoiceSaleDetails">
+            <td>{{item.ctdUnidadItem}}</td>
+            <td>{{item.desItem}}</td>
+            <td>{{item.mtoPrecioVentaUnitario.toFixed(4)|currency}}</td>
+            <td>{{item.mtoValorVentaItem.toFixed(4)|currency}}</td>
+          </tr>
+          </tbody>
+          <tfoot>
+          <tr>
+            <th colspan="3" class="text-uppercase text-end">Importe</th>
+            <td class="fw-bold">{{responseInvoiceSale.invoiceSale.sumTotValVenta.toFixed(4)|currency}}</td>
+          </tr>
+          <tr>
+            <th colspan="3" class="text-uppercase text-end">IGV (18%)</th>
+            <td class="fw-bold">{{responseInvoiceSale.invoiceSale.sumTotTributos.toFixed(4)|currency}}</td>
+          </tr>
+          <tr>
+            <th colspan="3" class="text-uppercase text-end">Total</th>
+            <td class="fw-bold">{{responseInvoiceSale.invoiceSale.sumImpVenta.toFixed(4)|currency}}</td>
+          </tr>
+          </tfoot>
+        </table>
+        <p class="text-center fw-bold m-0">GRACIAS POR SU PREFERENCIA</p>
+      </div>
+    </div>
+  </div>
+</main>
