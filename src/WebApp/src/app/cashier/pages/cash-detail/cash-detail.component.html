@@ -30,10 +30,30 @@
               </button>
             </div>
             <div class="col-auto">
-              <button type="button" class="btn btn-dark">
-                <fa-icon [icon]="faChartBar"></fa-icon>
-                <span class="text-uppercase ms-1">Reporte</span>
-              </button>
+              <div class="btn-group">
+                <button type="button" class="btn btn-dark">
+                  <fa-icon [icon]="faChartBar"></fa-icon>
+                  <span class="text-uppercase ms-1">Reporte</span>
+                </button>
+                <button type="button"
+                        class="btn btn-dark dropdown-toggle dropdown-toggle-split"
+                        data-bs-toggle="dropdown">
+                  <span class="visually-hidden">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li class="text-uppercase">
+                    <a class="dropdown-item"
+                       [routerLink]="['/cashier/product-report', cajaDiariaId]">Productos</a>
+                  </li>
+                  <li>
+                    <hr class="dropdown-divider">
+                  </li>
+                  <li class="text-uppercase">
+                    <a class="dropdown-item"
+                       [routerLink]="['/cashier/forma-pago-report', cajaDiariaId]">Formas de Pago</a>
+                  </li>
+                </ul>
+              </div>
             </div>
             <div class="col-auto">
               <button type="button" (click)="showCerrarCajaModal()" class="btn btn-danger">
