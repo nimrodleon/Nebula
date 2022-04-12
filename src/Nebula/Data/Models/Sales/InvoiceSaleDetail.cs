@@ -10,9 +10,19 @@ public class InvoiceSaleDetail
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
+    /// Identificador CajaDiaria.
+    /// </summary>
+    public string CajaDiaria { get; set; } = "-";
+
+    /// <summary>
     /// foreignKey cabecera.
     /// </summary>
     public string InvoiceSale { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Tipo registro producto o servicio.
+    /// </summary>
+    public string TipoItem { get; set; } = string.Empty;
 
     /// <summary>
     /// Código de unidad de medida por ítem. Catálogo: 3, an..3

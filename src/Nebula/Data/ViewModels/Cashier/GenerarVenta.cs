@@ -66,8 +66,9 @@ public class GenerarVenta
     /// Configurar Detalle de Factura.
     /// </summary>
     /// <param name="invoice">ID Cabecera</param>
+    /// <param name="cajaDiaria">ID Caja diaria</param>
     /// <returns>Detalles de Factura</returns>
-    public List<InvoiceSaleDetail> GetInvoiceSaleDetails(string invoice)
+    public List<InvoiceSaleDetail> GetInvoiceSaleDetails(string invoice, string cajaDiaria)
     {
         var invoiceSaleDetails = new List<InvoiceSaleDetail>();
         DetallesComprobante.ForEach(item =>
@@ -103,6 +104,8 @@ public class GenerarVenta
             invoiceSaleDetails.Add(new InvoiceSaleDetail()
             {
                 InvoiceSale = invoice,
+                CajaDiaria = cajaDiaria,
+                TipoItem = item.TipoItem,
                 CodUnidadMedida = item.CodUnidadMedida,
                 CtdUnidadItem = item.Quantity,
                 CodProducto = item.ProductId.ToString(),

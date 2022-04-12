@@ -20,4 +20,7 @@ public class InvoiceSaleDetailService
 
     public async Task CreateAsync(List<InvoiceSaleDetail> invoiceSaleDetails) =>
         await _collection.InsertManyAsync(invoiceSaleDetails);
+
+    public async Task<List<InvoiceSaleDetail>> GetItemsByCajaDiaria(string cajaDiaria) =>
+        await _collection.Find(x => x.CajaDiaria == cajaDiaria).ToListAsync();
 }

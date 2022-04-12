@@ -15,6 +15,7 @@ export class GenerarVenta {
     let _detalleComprobante: DetalleComprobante = new DetalleComprobante();
     const itemVenta = _.find(this.detallesComprobante, (o: DetalleComprobante) => o.productId === producto.id);
     _detalleComprobante.productId = producto.id;
+    _detalleComprobante.tipoItem = producto.type;
     _detalleComprobante.codUnidadMedida = producto.undMedida;
     _detalleComprobante.codProductoSunat = producto.barcode;
     _detalleComprobante.description = producto.description;

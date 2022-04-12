@@ -8,6 +8,11 @@ public class DetalleComprobante
     public string ProductId { get; set; } = string.Empty;
 
     /// <summary>
+    /// Tipo registro producto o servicio.
+    /// </summary>
+    public string TipoItem { get; set; } = string.Empty;
+
+    /// <summary>
     /// Unidad de Medida.
     /// </summary>
     public string CodUnidadMedida { get; set; } = string.Empty;

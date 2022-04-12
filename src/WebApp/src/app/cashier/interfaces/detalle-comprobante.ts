@@ -1,6 +1,7 @@
 export class DetalleComprobante {
   constructor(
     public productId: string = '', // Enviar.
+    public tipoItem: string = '', // Tipo de registro.
     public codUnidadMedida: string = '', // Enviar.
     public codProductoSunat: string = '', // Enviar.
     public description: string = '', // Enviar.

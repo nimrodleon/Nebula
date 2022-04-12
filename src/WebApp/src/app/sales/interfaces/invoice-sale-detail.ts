@@ -1,7 +1,9 @@
 export class InvoiceSaleDetail {
   constructor(
     public id: any = undefined,
+    public cajaDiaria: string = '', // clave foránea caja diaria.
     public invoiceSale: string = '', // Clave foránea comprobante de venta.
+    public tipoItem: string = '', // Tipo registro producto o servicio.
     public codUnidadMedida: string = '', // Código de unidad de medida por ítem. Catálogo: 3, an..3
     public ctdUnidadItem: number = 0, //  Cantidad de unidades por ítem. an..23|n(12,10)
     public codProducto: string = '', // Código de producto. an..30
