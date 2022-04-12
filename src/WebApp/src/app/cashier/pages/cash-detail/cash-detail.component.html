@@ -66,7 +66,7 @@
                     {{item.document}}
                   </ng-container>
                   <ng-template #comprobante>
-                    <a [routerLink]="['/sales/invoice-sale-detail', item.invoiceSale]">{{item.document}}</a>
+                    <a [routerLink]="['/cashier/ticket', item.invoiceSale]">{{item.document}}</a>
                   </ng-template>
                 </td>
                 <td>{{item.contact.split(':')[1]?.trim() || item.contact}}</td>
