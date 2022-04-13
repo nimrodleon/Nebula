@@ -21,7 +21,7 @@ public class CajaDiariaService
         var filter = Builders<CajaDiaria>.Filter.And(
             Builders<CajaDiaria>.Filter.Eq(x => x.Month, query.Month),
             Builders<CajaDiaria>.Filter.Eq(x => x.Year, query.Year));
-        return await _collection.Find(filter).ToListAsync();
+        return await _collection.Find(filter).SortByDescending(x => x.CreatedAt).ToListAsync();
     }
 
     public async Task<CajaDiaria> GetAsync(string id) =>
