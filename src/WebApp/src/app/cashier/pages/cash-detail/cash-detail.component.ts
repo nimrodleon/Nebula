@@ -8,6 +8,7 @@ import {
   faTrashAlt
 } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
+import * as _ from 'lodash';
 import {CajaDiaria, CashierDetail} from '../../interfaces';
 import {CajaDiariaService, CashierDetailService} from '../../services';
 import {ResponseData} from 'src/app/global/interfaces';
@@ -94,6 +95,58 @@ export class CashDetailComponent implements OnInit {
       this.cerrarCajaModal.hide();
       await this.router.navigate(['/cashier']);
     }
+  }
+
+  public async reporteCaja() {
+    const calcularTotales = (formaPago: 'Contado:Yape' | 'Credito:Crédito' | 'Contado:Contado' | 'Contado:Depósito') => {
+      const objFilter = _.filter(this.cashierDetails, (item: CashierDetail) => item.typeOperation !== 'SALIDA_DE_DINERO' && item.formaPago === formaPago);
+      return _.sumBy(objFilter, (item: CashierDetail) => item.amount);
+    };
+    const totalSalidas = _.sumBy(_.filter(this.cashierDetails, (item: CashierDetail) =>
+      item.typeOperation === 'SALIDA_DE_DINERO' && item.formaPago === 'Contado:Contado'), (item: CashierDetail) => item.amount);
+    const totalContado = calcularTotales('Contado:Contado');
+    await Swal.fire({
+      title: '<strong class="text-primary text-uppercase"><u>Reporte</u></strong>',
+      html: `
+      <table class="table table-striped mb-0">
+      <thead>
+      <tr class="text-uppercase">
+        <th>Concepto</th>
+        <th>Total</th>
+      </tr>
+      </thead>
+      <tbody class="text-uppercase">
+      <tr>
+        <td>Yape</td>
+        <td>${calcularTotales('Contado:Yape').toFixed(2)}</td>
+      </tr>
+      <tr>
+        <td>Crédito</td>
+        <td>${calcularTotales('Credito:Crédito').toFixed(2)}</td>
+      </tr>
+      <tr>
+        <td>Contado</td>
+        <td>${totalContado.toFixed(2)}</td>
+      </tr>
+      <tr>
+        <td>Depósito</td>
+        <td>${calcularTotales('Contado:Depósito').toFixed(2)}</td>
+      </tr>
+      <tr class="bg-danger">
+        <td class="text-white">Salida</td>
+        <td class="text-white">${totalSalidas.toFixed(2)}</td>
+      </tr>
+      <tr class="bg-dark">
+        <td class="text-white">Monto Total</td>
+        <td class="text-white">${(totalContado - totalSalidas).toFixed(2)}</td>
+      </tr>
+      </tbody>
+      </table>
+      `,
+      showCloseButton: true,
+      showCancelButton: false,
+      showConfirmButton: false
+    });
   }
 
 }
