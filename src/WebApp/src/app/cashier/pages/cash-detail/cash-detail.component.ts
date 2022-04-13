@@ -28,8 +28,7 @@ export class CashDetailComponent implements OnInit {
   faFilter = faFilter;
   faChartBar = faChartBar;
   // ====================================================================================================
-  cajaDiariaId: number | any;
-  currentCajaDiaria: CajaDiaria | any;
+  cajaDiaria: CajaDiaria = new CajaDiaria();
   query: FormControl = this.fb.control('');
   cashierDetails: Array<CashierDetail> = new Array<CashierDetail>();
   cerrarCajaModal: any;
@@ -43,27 +42,24 @@ export class CashDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.activatedRoute.paramMap.subscribe(params => {
-      this.cajaDiariaId = params.get('id') || 0;
-      this.cajaDiariaService.show(<any>params.get('id'))
-        .subscribe(result => this.currentCajaDiaria = result);
-      // cargar detalle de caja.
+    const id: string = this.activatedRoute.snapshot.params['id'];
+    this.cajaDiariaService.show(id).subscribe(result => {
+      this.cajaDiaria = result;
       this.loadCashierDetails();
     });
-    // modal cerrar caja.
     this.cerrarCajaModal = new bootstrap.Modal(document.querySelector('#cerrar-caja'));
   }
 
   // cargar detalle de caja.
   private loadCashierDetails(): void {
-    this.cashierDetailService.index(<any>this.cajaDiariaId, this.query.value)
+    this.cashierDetailService.index(this.cajaDiaria.id, this.query.value)
       .subscribe(result => this.cashierDetails = result);
   }
 
   // abrir terminal de venta.
   public async openTerminal() {
-    if (this.currentCajaDiaria.status == 'ABIERTO') {
-      await this.router.navigate(['/cashier/terminal', this.cajaDiariaId]);
+    if (this.cajaDiaria.status == 'ABIERTO') {
+      await this.router.navigate(['/cashier/terminal', this.cajaDiaria.id]);
     } else {
       await Swal.fire(
         'Info?',
@@ -81,7 +77,7 @@ export class CashDetailComponent implements OnInit {
 
   // botón cerrar caja.
   public async showCerrarCajaModal() {
-    if (this.currentCajaDiaria.status === 'ABIERTO') {
+    if (this.cajaDiaria.status === 'ABIERTO') {
       this.cerrarCajaModal.show();
     } else {
       await Swal.fire(

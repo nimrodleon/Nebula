@@ -14,7 +14,7 @@ export class CashierDetailService {
   constructor(private http: HttpClient) {
   }
 
-  public index(id: string, query: string): Observable<CashierDetail[]> {
+  public index(id: string, query: string = ''): Observable<CashierDetail[]> {
     let params = new HttpParams();
     params = params.append('query', query);
     return this.http.get<CashierDetail[]>(`${this.appURL}/Index/${id}`, {params});

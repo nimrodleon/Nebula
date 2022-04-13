@@ -1,1 +1,65 @@
-<p>forma-pago-report works!</p>
+<app-navbar></app-navbar>
+<main class="position-relative">
+  <app-sidebar></app-sidebar>
+  <div class="page-wrapper">
+    <div class="container-fluid">
+      <div class="row px-2">
+        <div class="col-12 bg-white my-2 py-3">
+          <h5 class="text-uppercase text-center">Reporte Según Forma de Pago</h5>
+          <div class="table-responsive">
+            <table class="table table-striped mb-0">
+              <thead>
+              <tr class="text-uppercase">
+                <th>Tipo de Entrada</th>
+                <th>Yape</th>
+                <th>Crédito</th>
+                <th>Contado</th>
+                <th>Depósito</th>
+              </tr>
+              </thead>
+              <tbody class="text-uppercase">
+              <tr>
+                <td>Apertura de Caja</td>
+                <td>-</td>
+                <td>-</td>
+                <td>{{calcularMonto('APERTURA_DE_CAJA', 'Contado:Contado')}}</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Entrada de Dinero</td>
+                <td>-</td>
+                <td>-</td>
+                <td>{{calcularMonto('ENTRADA_DE_DINERO', 'Contado:Contado')}}</td>
+                <td>-</td>
+              </tr>
+              <tr class="bg-danger">
+                <td class="text-white">Salida de Dinero</td>
+                <td class="text-white">-</td>
+                <td class="text-white">-</td>
+                <td class="text-white">{{calcularMonto('SALIDA_DE_DINERO', 'Contado:Contado')}}</td>
+                <td class="text-white">-</td>
+              </tr>
+              <tr>
+                <td>Comprobantes de Venta</td>
+                <td>{{calcularMonto('COMPROBANTE_DE_VENTA', 'Contado:Yape').toFixed(4)|currency}}</td>
+                <td>{{calcularMonto('COMPROBANTE_DE_VENTA', 'Credito:Crédito').toFixed(4)|currency}}</td>
+                <td>{{calcularMonto('COMPROBANTE_DE_VENTA', 'Contado:Contado').toFixed(4)|currency}}</td>
+                <td>{{calcularMonto('COMPROBANTE_DE_VENTA', 'Contado:Depósito').toFixed(4)|currency}}</td>
+              </tr>
+              </tbody>
+              <tfoot>
+              <tr class="fw-bold">
+                <th class="text-uppercase text-end">Total</th>
+                <td>{{calcularTotales('Contado:Yape').toFixed(4)|currency}}</td>
+                <td>{{calcularTotales('Credito:Crédito').toFixed(4)|currency}}</td>
+                <td>{{calcularTotales('Contado:Contado').toFixed(4)|currency}}</td>
+                <td>{{calcularTotales('Contado:Depósito').toFixed(4)|currency}}</td>
+              </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

@@ -7,7 +7,7 @@ export class CashierDetail {
     public contact: string = '', // identificador y nombre de contacto.
     public remark: string = '', // observación de la operación.
     public typeOperation: 'APERTURA_DE_CAJA' | 'ENTRADA_DE_DINERO' | 'SALIDA_DE_DINERO' | 'COMPROBANTE_DE_VENTA' = 'ENTRADA_DE_DINERO',
-    public formaPago: string = 'Contado', // forma de pago: <Credito|Contado>
+    public formaPago: 'Contado:Yape' | 'Credito:Crédito' | 'Contado:Contado' | 'Contado:Depósito' = 'Contado:Contado',
     public amount: number = 0, // Monto de la Operación.
     public hour: string = '') {
   }
