@@ -144,7 +144,7 @@
         </div>
         <div *ngFor="let item of products" class="item-product">
           <img
-            src="http://localhost:5000/StaticFiles/{{item.pathImage}}" alt="">
+            src="{{staticFiles}}/{{item.pathImage}}" alt="{{item.description}}">
           <table>
             <tbody>
             <tr>

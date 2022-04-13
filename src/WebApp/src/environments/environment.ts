@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  applicationUrl: 'http://localhost:5000/api/'
+  applicationUrl: 'http://localhost:5000/api/',
+  staticFiles: 'http://localhost:5000/StaticFiles'
 };
 
 /*

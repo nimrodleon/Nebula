@@ -67,7 +67,7 @@ public class ProductController : ControllerBase
         }
         else
         {
-            model.PathImage = "default.png";
+            model.PathImage = "default.jpg";
         }
 
         Product product = new Product()
@@ -106,7 +106,7 @@ public class ProductController : ControllerBase
                 .GetFolderPath(Environment.SpecialFolder.UserProfile), "StaticFiles");
             // borrar archivo antiguo si existe.
             var oldFile = Path.Combine(dirPath, product.PathImage ?? string.Empty);
-            if (product.PathImage != null && !product.PathImage.Equals("default.png"))
+            if (product.PathImage != null && !product.PathImage.Equals("default.jpg"))
                 if (System.IO.File.Exists(oldFile))
                     System.IO.File.Delete(oldFile);
             // copiar nuevo archivo.
@@ -150,8 +150,12 @@ public class ProductController : ControllerBase
         var dirPath = Path.Combine(Environment
             .GetFolderPath(Environment.SpecialFolder.UserProfile), "StaticFiles");
         // borrar archivo si existe.
-        var file = Path.Combine(dirPath, product.PathImage);
-        if (System.IO.File.Exists(file)) System.IO.File.Delete(file);
+        if (product.PathImage != "default.jpg")
+        {
+            var file = Path.Combine(dirPath, product.PathImage);
+            if (System.IO.File.Exists(file)) System.IO.File.Delete(file);
+        }
+
         // borrar registro.
         await _productService.RemoveAsync(id);
         return Ok(new {Ok = true, Data = product, Msg = "El producto ha sido borrado!"});

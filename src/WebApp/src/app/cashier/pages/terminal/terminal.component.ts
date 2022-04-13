@@ -50,6 +50,7 @@ export class TerminalComponent implements OnInit {
   currentContact: Contact = new Contact();
   // ====================================================================================================
   private appURL: string = environment.applicationUrl;
+  staticFiles: string = environment.staticFiles;
   queryProduct: FormControl = this.fb.control('');
   cajaDiaria: CajaDiaria = new CajaDiaria();
   products: Array<Product> = new Array<Product>();
