@@ -13,9 +13,13 @@ namespace Nebula.Controllers.Common;
 public class UserController : ControllerBase
 {
     private readonly UserService _userService;
+    private readonly IConfiguration _configuration;
 
-    public UserController(UserService userService) =>
+    public UserController(IConfiguration configuration, UserService userService)
+    {
+        _configuration = configuration;
         _userService = userService;
+    }
 
     [HttpGet("Index")]
     public async Task<IActionResult> Index([FromQuery] string? query)
@@ -31,7 +35,7 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
-    [HttpPost("Create")]
+    [HttpPost("Create"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Create([FromBody] UserRegister model)
     {
         var user = new User()
@@ -46,7 +50,26 @@ public class UserController : ControllerBase
         return Ok(new {Ok = true, User = user});
     }
 
-    [HttpPut("Update/{id}")]
+    [AllowAnonymous]
+    [HttpPost("CreateUserAdmin")]
+    public async Task<IActionResult> CreateUserAdmin()
+    {
+        if (_configuration.GetValue<bool>("UserAdminRegister").Equals(false))
+            return NotFound();
+
+        var user = new User()
+        {
+            UserName = "admin",
+            Email = "admin@local.pe",
+            PasswordHash = PasswordHasher.HashPassword("admin"),
+            Role = AuthRoles.Admin
+        };
+        await _userService.CreateAsync(user);
+
+        return Ok(new {Ok = true, User = user});
+    }
+
+    [HttpPut("Update/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Update(string id, [FromBody] UserRegister model)
     {
         var user = await _userService.GetAsync(id);
@@ -63,7 +86,7 @@ public class UserController : ControllerBase
         });
     }
 
-    [HttpPut("PasswordChange/{id}")]
+    [HttpPut("PasswordChange/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> PasswordChange(string id, [FromBody] UserRegister model)
     {
         var user = await _userService.GetAsync(id);
