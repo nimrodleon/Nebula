@@ -20,9 +20,28 @@
                 </div>
                 <div class="row mb-3">
                   <label class="col-2 col-form-label text-end fw-bold">Razón Social</label>
-                  <div class="col-6">
+                  <div class="col-8">
                     <input type="text" formControlName="rznSocial" class="form-control"
                            [ngClass]="{'is-invalid': inputIsInvalid('rznSocial')}">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-2 col-form-label text-end fw-bold">Dirección</label>
+                  <div class="col-8">
+                    <input type="text" formControlName="address" class="form-control"
+                           [ngClass]="{'is-invalid': inputIsInvalid('address')}">
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <label class="col-2 col-form-label text-end fw-bold">Teléfono</label>
+                  <div class="col-3">
+                    <input type="text" formControlName="phoneNumber" class="form-control"
+                           [ngClass]="{'is-invalid': inputIsInvalid('phoneNumber')}">
+                  </div>
+                  <label class="col-2 col-form-label text-end fw-bold">Ancho Ticket</label>
+                  <div class="col-3">
+                    <input type="text" formControlName="anchoTicket" class="form-control"
+                           [ngClass]="{'is-invalid': inputIsInvalid('anchoTicket')}">
                   </div>
                 </div>
                 <div class="mb-3">

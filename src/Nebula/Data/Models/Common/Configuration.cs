@@ -4,8 +4,7 @@ namespace Nebula.Data.Models.Common;
 
 public class Configuration
 {
-    [BsonId]
-    public string Id { get; set; } = "DEFAULT";
+    [BsonId] public string Id { get; set; } = "DEFAULT";
 
     /// <summary>
     /// R.U.C. Empresa.
@@ -16,6 +15,21 @@ public class Configuration
     /// Razón Social.
     /// </summary>
     public string RznSocial { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Dirección Empresa.
+    /// </summary>
+    public string Address { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Teléfono Empresa.
+    /// </summary>
+    public string PhoneNumber { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Ancho de la impresión del Ticket.
+    /// </summary>
+    public string AnchoTicket { get; set; } = string.Empty;
 
     /// <summary>
     /// Código Local Emisor.

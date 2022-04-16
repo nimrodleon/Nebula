@@ -23,6 +23,9 @@ export class ConfigurationComponent implements OnInit {
   configForm: FormGroup = this.fb.group({
     ruc: ['', [Validators.required]],
     rznSocial: ['', [Validators.required]],
+    address: ['', [Validators.required]],
+    phoneNumber: ['', [Validators.required]],
+    anchoTicket: ['', [Validators.required]],
     codLocalEmisor: ['', [Validators.required]],
     tipMoneda: ['', [Validators.required]],
     porcentajeIgv: [0, [Validators.required]],
