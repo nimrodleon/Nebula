@@ -4,8 +4,10 @@ import {faBars, faPlus, faSyncAlt, faTrashAlt} from '@fortawesome/free-solid-svg
 import * as moment from 'moment';
 import {InvoiceSerie} from 'src/app/system/interfaces';
 import {InvoiceSerieService} from 'src/app/system/services';
-import {CajaDiariaService} from '../../services';
+import {CajaDiariaService, CashierDetailService} from '../../services';
 import {CajaDiaria} from '../../interfaces';
+import {accessDenied, deleteConfirm, errorAlBorrarCajaDiaria} from 'src/app/global/interfaces';
+import {AuthService} from 'src/app/user/services';
 
 declare var bootstrap: any;
 
@@ -36,8 +38,10 @@ export class CajaDiariaComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
+    private authService: AuthService,
     private invoiceSerieService: InvoiceSerieService,
-    private cajaDiariaService: CajaDiariaService) {
+    private cajaDiariaService: CajaDiariaService,
+    private cashierDetailService: CashierDetailService) {
   }
 
   ngOnInit(): void {
@@ -86,6 +90,30 @@ export class CajaDiariaComponent implements OnInit {
           this.aperturaCajaModal.hide();
         }
       });
+  }
+
+  // borrar registro caja diaria.
+  public borrarCajaDiaria(id: string): void {
+    this.authService.getMe().subscribe(async (result) => {
+      if (result.role !== 'Admin') {
+        await accessDenied();
+      } else {
+        deleteConfirm().then(result => {
+          if (result.isConfirmed) {
+            this.cashierDetailService.countDocuments(id)
+              .subscribe(async (result) => {
+                if (result > 0) {
+                  await errorAlBorrarCajaDiaria(result);
+                } else {
+                  this.cajaDiariaService.delete(id).subscribe(result => {
+                    if (result.ok) this.cargarCajasDiarias();
+                  });
+                }
+              });
+          }
+        });
+      }
+    });
   }
 
 }

@@ -28,4 +28,8 @@ export class CashierDetailService {
     return this.http.delete<ResponseData<CashierDetail>>(`${this.appURL}/Delete/${id}`);
   }
 
+  public countDocuments(id: string): Observable<number> {
+    return this.http.get<number>(`${this.appURL}/CountDocuments/${id}`);
+  }
+
 }

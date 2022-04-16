@@ -33,4 +33,7 @@ public class CashierDetailService
 
     public async Task RemoveAsync(string id) =>
         await _collection.DeleteOneAsync(x => x.Id == id);
+
+    public async Task<long> CountDocumentsAsync(string id) =>
+        await _collection.CountDocumentsAsync(x => x.CajaDiaria == id);
 }

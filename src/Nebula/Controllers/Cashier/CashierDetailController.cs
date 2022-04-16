@@ -40,6 +40,13 @@ public class CashierDetailController : ControllerBase
         });
     }
 
+    [HttpGet("CountDocuments/{id}")]
+    public async Task<IActionResult> CountDocuments(string id)
+    {
+        var countDocuments = await _cashierDetailService.CountDocumentsAsync(id);
+        return Ok(countDocuments);
+    }
+
     [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Delete(string id)
     {

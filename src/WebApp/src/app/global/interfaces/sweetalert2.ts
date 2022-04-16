@@ -36,3 +36,13 @@ export const accessDenied = async () => {
     'error'
   );
 };
+
+// mensaje caja diaria.
+export const errorAlBorrarCajaDiaria = async (num: number) => {
+  const msg = num > 1 ? 'registros asociados' : 'registro asociado';
+  return Swal.fire(
+    'Oops...',
+    `Hay ${num} ${msg} a este documento!`,
+    'error'
+  );
+};
