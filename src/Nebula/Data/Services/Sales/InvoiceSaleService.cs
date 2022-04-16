@@ -20,4 +20,7 @@ public class InvoiceSaleService
 
     public async Task CreateAsync(InvoiceSale invoiceSale) =>
         await _collection.InsertOneAsync(invoiceSale);
+
+    public async Task RemoveAsync(string id) =>
+        await _collection.DeleteOneAsync(x => x.Id == id);
 }

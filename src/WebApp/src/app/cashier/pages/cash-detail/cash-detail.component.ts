@@ -9,9 +9,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import * as _ from 'lodash';
+import {accessDenied, deleteConfirm, ResponseData} from 'src/app/global/interfaces';
+import {AuthService} from 'src/app/user/services';
+import {InvoiceSaleService} from 'src/app/sales/services';
 import {CajaDiaria, CashierDetail} from '../../interfaces';
 import {CajaDiariaService, CashierDetailService} from '../../services';
-import {ResponseData} from 'src/app/global/interfaces';
 
 declare var bootstrap: any;
 
@@ -38,7 +40,9 @@ export class CashDetailComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private activatedRoute: ActivatedRoute,
+    private authService: AuthService,
     private cajaDiariaService: CajaDiariaService,
+    private invoiceSaleService: InvoiceSaleService,
     private cashierDetailService: CashierDetailService) {
   }
 
@@ -46,13 +50,13 @@ export class CashDetailComponent implements OnInit {
     const id: string = this.activatedRoute.snapshot.params['id'];
     this.cajaDiariaService.show(id).subscribe(result => {
       this.cajaDiaria = result;
-      this.loadCashierDetails();
+      this.cargarDetallesDeCaja();
     });
     this.cerrarCajaModal = new bootstrap.Modal(document.querySelector('#cerrar-caja'));
   }
 
   // cargar detalle de caja.
-  private loadCashierDetails(): void {
+  private cargarDetallesDeCaja(): void {
     this.cashierDetailService.index(this.cajaDiaria.id, this.query.value)
       .subscribe(result => this.cashierDetails = result);
   }
@@ -73,7 +77,7 @@ export class CashDetailComponent implements OnInit {
   // buscar documentos.
   public submitSearch(e: Event): void {
     e.preventDefault();
-    this.loadCashierDetails();
+    this.cargarDetallesDeCaja();
   }
 
   // botón cerrar caja.
@@ -95,6 +99,33 @@ export class CashDetailComponent implements OnInit {
       this.cerrarCajaModal.hide();
       await this.router.navigate(['/cashier']);
     }
+  }
+
+  // borrar detalle de caja.
+  public borrarDetalleCaja(data: CashierDetail): void {
+    this.authService.getMe().subscribe(async (user) => {
+      if (user.role !== 'Admin') {
+        await accessDenied();
+      } else {
+        deleteConfirm().then(result => {
+          if (result.isConfirmed) {
+            if (data.typeOperation !== 'COMPROBANTE_DE_VENTA') {
+              this.cashierDetailService.delete(data.id).subscribe(result => {
+                if (result.ok) this.cargarDetallesDeCaja();
+              });
+            } else {
+              this.cashierDetailService.delete(data.id).subscribe(result => {
+                if (result.ok) {
+                  this.invoiceSaleService.delete(data.invoiceSale).subscribe(result => {
+                    if (result.ok) this.cargarDetallesDeCaja();
+                  });
+                }
+              });
+            }
+          }
+        });
+      }
+    });
   }
 
   public async reporteCaja() {

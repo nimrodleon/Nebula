@@ -2,7 +2,8 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {environment} from 'src/environments/environment';
-import {ResponseInvoiceSale} from '../interfaces';
+import {InvoiceSale, ResponseInvoiceSale} from '../interfaces';
+import {ResponseData} from 'src/app/global/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -17,4 +18,7 @@ export class InvoiceSaleService {
     return this.http.get<ResponseInvoiceSale>(`${this.appURL}/Show/${id}`);
   }
 
+  public delete(id: string): Observable<ResponseData<InvoiceSale>> {
+    return this.http.delete<ResponseData<InvoiceSale>>(`${this.appURL}/Delete/${id}`);
+  }
 }

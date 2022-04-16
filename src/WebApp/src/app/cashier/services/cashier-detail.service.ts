@@ -24,4 +24,8 @@ export class CashierDetailService {
     return this.http.post<ResponseData<CashierDetail>>(`${this.appURL}/Create`, data);
   }
 
+  public delete(id: string): Observable<ResponseData<CashierDetail>> {
+    return this.http.delete<ResponseData<CashierDetail>>(`${this.appURL}/Delete/${id}`);
+  }
+
 }

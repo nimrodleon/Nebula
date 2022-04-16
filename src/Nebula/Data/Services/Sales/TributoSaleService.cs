@@ -20,4 +20,7 @@ public class TributoSaleService
 
     public async Task CreateAsync(List<TributoSale> tributoSales) =>
         await _collection.InsertManyAsync(tributoSales);
+
+    public async Task RemoveAsync(string id) =>
+        await _collection.DeleteManyAsync(x => x.InvoiceSale == id);
 }

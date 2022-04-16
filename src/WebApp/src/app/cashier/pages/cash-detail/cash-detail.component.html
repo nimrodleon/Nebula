@@ -99,7 +99,7 @@
                         class="text-primary">{{item.amount.toFixed(2)}}</span>
                 </td>
                 <td class="text-end">
-                  <button type="button" class="btn btn-danger btn-sm">
+                  <button type="button" (click)="borrarDetalleCaja(item)" class="btn btn-danger btn-sm">
                     <fa-icon [icon]="faTrashAlt"></fa-icon>
                   </button>
                 </td>

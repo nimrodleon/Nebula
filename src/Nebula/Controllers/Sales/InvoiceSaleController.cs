@@ -34,5 +34,15 @@ namespace Nebula.Controllers.Sales
             };
             return Ok(responseData);
         }
+
+        [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var invoiceSale = await _invoiceSaleService.GetAsync(id);
+            await _invoiceSaleService.RemoveAsync(invoiceSale.Id);
+            await _invoiceSaleDetailService.RemoveAsync(invoiceSale.Id);
+            await _tributoSaleService.RemoveAsync(invoiceSale.Id);
+            return Ok(new {Ok = true, Data = invoiceSale, Msg = "El comprobante de venta ha sido borrado!"});
+        }
     }
 }

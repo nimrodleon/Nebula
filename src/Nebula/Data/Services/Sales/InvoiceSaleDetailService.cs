@@ -23,4 +23,7 @@ public class InvoiceSaleDetailService
 
     public async Task<List<InvoiceSaleDetail>> GetItemsByCajaDiaria(string cajaDiaria) =>
         await _collection.Find(x => x.CajaDiaria == cajaDiaria).ToListAsync();
+
+    public async Task RemoveAsync(string id) =>
+        await _collection.DeleteManyAsync(x => x.InvoiceSale == id);
 }
