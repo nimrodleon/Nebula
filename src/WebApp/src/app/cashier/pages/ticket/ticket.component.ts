@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {ResponseInvoiceSale} from 'src/app/sales/interfaces';
+import {InvoiceSaleDetail, ResponseInvoiceSale} from 'src/app/sales/interfaces';
 import {InvoiceSaleService} from 'src/app/sales/services';
 import {ConfigurationService} from 'src/app/system/services';
 import {Configuration} from 'src/app/system/interfaces';
@@ -23,6 +23,11 @@ export class TicketComponent implements OnInit {
     const id: string = this.activatedRoute.snapshot.params['id'];
     this.invoiceSaleService.show(id).subscribe(result => this.responseInvoiceSale = result);
     this.configurationService.show().subscribe(result => this.configuration = result);
+  }
+
+  public calcularImporte(item: InvoiceSaleDetail): number {
+    const {mtoBaseIgvItem, mtoIgvItem, mtoTriIcbperItem} = item;
+    return mtoBaseIgvItem + mtoIgvItem + mtoTriIcbperItem;
   }
 
   public print(): void {
