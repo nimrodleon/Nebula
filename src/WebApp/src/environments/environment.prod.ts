@@ -1,4 +1,5 @@
 export const environment = {
   production: true,
-  applicationUrl: '/api/'
+  applicationUrl: '/api/',
+  staticFiles: '/StaticFiles'
 };
