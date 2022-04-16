@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {faBars, faPlus, faSyncAlt, faTrashAlt} from '@fortawesome/free-solid-svg-icons';
+import {faBars, faPlus, faTrashAlt, faSearch} from '@fortawesome/free-solid-svg-icons';
 import * as moment from 'moment';
 import {InvoiceSerie} from 'src/app/system/interfaces';
 import {InvoiceSerieService} from 'src/app/system/services';
@@ -17,7 +17,7 @@ declare var bootstrap: any;
   styleUrls: ['./caja-diaria.component.scss']
 })
 export class CajaDiariaComponent implements OnInit {
-  faSyncAlt = faSyncAlt;
+  faSearch = faSearch;
   faPlus = faPlus;
   faBars = faBars;
   faTrashAlt = faTrashAlt;
