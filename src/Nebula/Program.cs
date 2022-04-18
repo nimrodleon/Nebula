@@ -96,6 +96,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Nebula v1"));
 }
 
+if (app.Environment.IsProduction())
+{
+    builder.WebHost.ConfigureKestrel((context, serverOptions) =>
+    {
+        var kestrelSection = context.Configuration.GetSection("Kestrel");
+        serverOptions.Configure(kestrelSection);
+    });
+}
+
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
