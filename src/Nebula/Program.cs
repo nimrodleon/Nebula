@@ -10,6 +10,14 @@ using Nebula.Data.Services.Common;
 using Nebula.Data.Services.Sales;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Kestrel web server.
+builder.WebHost.ConfigureKestrel((context, serverOptions) =>
+{
+    var kestrelSection = context.Configuration.GetSection("Kestrel");
+    serverOptions.Configure(kestrelSection);
+});
+
 var secretKey = Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("SecretKey"));
 
 builder.Services.AddAuthentication(options =>
@@ -94,15 +102,6 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Nebula v1"));
-}
-
-if (app.Environment.IsProduction())
-{
-    builder.WebHost.ConfigureKestrel((context, serverOptions) =>
-    {
-        var kestrelSection = context.Configuration.GetSection("Kestrel");
-        serverOptions.Configure(kestrelSection);
-    });
 }
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions
