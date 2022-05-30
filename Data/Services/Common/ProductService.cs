@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Nebula.Data.Models.Common;
@@ -20,7 +20,8 @@ public class ProductService
     {
         var filter = Builders<Product>.Filter.Empty;
         if (!string.IsNullOrEmpty(query))
-            filter = Builders<Product>.Filter.Regex("Description", new BsonRegularExpression(query.ToUpper(), "i"));
+            filter = Builders<Product>.Filter.Or(Builders<Product>.Filter.Eq("Barcode", query),
+                Builders<Product>.Filter.Regex("Description", new BsonRegularExpression(query.ToUpper(), "i")));
         return await _collection.Find(filter).Limit(limit).ToListAsync();
     }
 

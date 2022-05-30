@@ -49,7 +49,7 @@ public class ProductController : ControllerBase
                 Text = $"{item.Description} | {Convert.ToDecimal(item.Price1):N2}"
             });
         });
-        return Ok(new {Results = data});
+        return Ok(new { Results = data });
     }
 
     [HttpPost("Create")]
@@ -73,7 +73,7 @@ public class ProductController : ControllerBase
         Product product = new Product()
         {
             Description = model.Description.ToUpper(),
-            Barcode = model.Barcode,
+            Barcode = model.Barcode.ToUpper(),
             Price1 = model.Price1,
             Price2 = model.Price2,
             FromQty = model.FromQty,
@@ -122,7 +122,7 @@ public class ProductController : ControllerBase
         }
 
         product.Description = model.Description.ToUpper();
-        product.Barcode = model.Barcode;
+        product.Barcode = model.Barcode.ToUpper();
         product.Price1 = model.Price1;
         product.Price2 = model.Price2;
         product.FromQty = model.FromQty;
@@ -158,6 +158,6 @@ public class ProductController : ControllerBase
 
         // borrar registro.
         await _productService.RemoveAsync(id);
-        return Ok(new {Ok = true, Data = product, Msg = "El producto ha sido borrado!"});
+        return Ok(new { Ok = true, Data = product, Msg = "El producto ha sido borrado!" });
     }
 }
