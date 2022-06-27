@@ -5,6 +5,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Nebula.Data;
+using Nebula.Data.Services;
 using Nebula.Data.Services.Cashier;
 using Nebula.Data.Services.Common;
 using Nebula.Data.Services.Sales;
@@ -47,6 +48,7 @@ builder.Services.AddCors(options =>
 
 // Add services to the container.
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
+builder.Services.AddSingleton(typeof(CrudOperationService<>));
 builder.Services.AddSingleton<CategoryService>();
 builder.Services.AddSingleton<WarehouseService>();
 builder.Services.AddSingleton<InvoiceSerieService>();
