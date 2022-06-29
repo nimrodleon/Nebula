@@ -49,6 +49,8 @@ builder.Services.AddCors(options =>
 // Add services to the container.
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
 builder.Services.AddSingleton(typeof(CrudOperationService<>));
+builder.Services.AddSingleton<ReceivableService>();
+// TODO: refactoring.
 builder.Services.AddSingleton<CategoryService>();
 builder.Services.AddSingleton<WarehouseService>();
 builder.Services.AddSingleton<InvoiceSerieService>();
