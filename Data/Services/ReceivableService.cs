@@ -14,5 +14,19 @@ namespace Nebula.Data.Services
             var query = filter.And(filter.Eq(x => x.Year, year), filter.Eq(x => x.Month, month), filter.Eq(x => x.Status, status));
             return await _collection.Find(query).ToListAsync();
         }
+
+        public async Task<List<Receivable>> GetAbonosAsync(string id)
+        {
+            var filter = Builders<Receivable>.Filter;
+            var query = filter.And(filter.Eq(x => x.ReceivableId, id), filter.Eq(x => x.Status, "ABONO"));
+            return await _collection.Find(query).ToListAsync();
+        }
+
+        public async Task<long> GetTotalAbonosAsync(string id)
+        {
+            var filter = Builders<Receivable>.Filter;
+            var query = filter.And(filter.Eq(x => x.ReceivableId, id), filter.Eq(x => x.Status, "ABONO"));
+            return await _collection.Find(query).CountDocumentsAsync();
+        }
     }
 }
