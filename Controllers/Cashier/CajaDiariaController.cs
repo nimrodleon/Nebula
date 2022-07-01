@@ -96,6 +96,12 @@ public class CajaDiariaController : ControllerBase
     {
         var cajaDiaria = await _cajaDiariaService.GetAsync(id);
         await _cajaDiariaService.RemoveAsync(cajaDiaria.Id);
-        return Ok(new {Ok = true, Data = cajaDiaria, Msg = "La caja diaria ha sido borrado!"});
+        return Ok(new { Ok = true, Data = cajaDiaria, Msg = "La caja diaria ha sido borrado!" });
+    }
+
+    [HttpGet("CajasAbiertas")]
+    public async Task<IActionResult> CajasAbiertas()
+    {
+        return Ok(await _cajaDiariaService.GetCajasAbiertasAsync());
     }
 }

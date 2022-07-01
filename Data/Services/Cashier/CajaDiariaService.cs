@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Data.Models.Cashier;
 using Nebula.Data.ViewModels.Common;
@@ -35,4 +35,13 @@ public class CajaDiariaService
 
     public async Task RemoveAsync(string id) =>
         await _collection.DeleteOneAsync(x => x.Id == id);
+
+    public async Task<List<CajaDiaria>> GetCajasAbiertasAsync()
+    {
+        var filter = Builders<CajaDiaria>.Filter;
+        var query = filter.And(filter.Eq(x => x.Status, "ABIERTO"),
+            filter.Eq(x => x.Month, DateTime.Now.ToString("MM")),
+            filter.Eq(x => x.Year, DateTime.Now.ToString("yyyy")));
+        return await _collection.Find(query).ToListAsync();
+    }
 }
