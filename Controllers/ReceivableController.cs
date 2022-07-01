@@ -73,7 +73,7 @@ namespace Nebula.Controllers
             return Ok(receivables);
         }
 
-        [HttpGet("TotalAbonos")]
+        [HttpGet("TotalAbonos/{id}")]
         public async Task<IActionResult> TotalAbonos(string id)
         {
             var total = await _receivableService.GetTotalAbonosAsync(id);
