@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Data.Services;
+using Nebula.Data.Services.Cashier;
 using Nebula.Data.Models;
 
 namespace Nebula.Controllers
@@ -9,10 +10,12 @@ namespace Nebula.Controllers
     public class ReceivableController : ControllerBase
     {
         private readonly ReceivableService _receivableService;
+        private readonly CashierDetailService _cashierDetailService;
 
-        public ReceivableController(ReceivableService receivableService)
+        public ReceivableController(ReceivableService receivableService, CashierDetailService cashierDetailService)
         {
             _receivableService = receivableService;
+            _cashierDetailService = cashierDetailService;
         }
 
         [HttpGet("Index")]
@@ -32,7 +35,7 @@ namespace Nebula.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] Receivable model)
         {
-            await _receivableService.CreateAsync(model);
+            await _receivableService.CreateAsync(_cashierDetailService, model);
 
             return Ok(new
             {
