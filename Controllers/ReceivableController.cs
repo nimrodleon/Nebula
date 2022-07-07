@@ -69,7 +69,7 @@ namespace Nebula.Controllers
             return Ok(new { Ok = true, Data = receivable, Msg = $"El {receivable.Type.ToLower()} ha sido borrado!" });
         }
 
-        [HttpGet("Abonos")]
+        [HttpGet("Abonos/{id}")]
         public async Task<IActionResult> Abonos(string id)
         {
             var receivables = await _receivableService.GetAbonosAsync(id);
