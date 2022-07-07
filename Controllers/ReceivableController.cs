@@ -2,9 +2,12 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Data.Services;
 using Nebula.Data.Services.Cashier;
 using Nebula.Data.Models;
+using Microsoft.AspNetCore.Authorization;
+using Nebula.Data.Helpers;
 
 namespace Nebula.Controllers
 {
+    [Authorize(Roles = AuthRoles.User)]
     [Route("api/[controller]")]
     [ApiController]
     public class ReceivableController : ControllerBase
@@ -61,11 +64,14 @@ namespace Nebula.Controllers
             });
         }
 
-        [HttpDelete("Delete/{id}")]
+        [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
         public async Task<IActionResult> Delete(string id)
         {
             var receivable = await _receivableService.GetAsync(id);
-            await _receivableService.RemoveAsync(receivable.Id);
+            if (receivable.Type == "CARGO")
+                await _receivableService.RemoveAsync(receivable.Id);
+            if (receivable.Type == "ABONO")
+                await _receivableService.RemoveAbonoAsync(receivable);
             return Ok(new { Ok = true, Data = receivable, Msg = $"El {receivable.Type.ToLower()} ha sido borrado!" });
         }
 

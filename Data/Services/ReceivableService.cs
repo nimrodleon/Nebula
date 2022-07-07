@@ -76,6 +76,36 @@ namespace Nebula.Data.Services
             }
         }
 
+        public async Task RemoveAbonoAsync(Receivable abono)
+        {
+            using (var session = await mongoClient.StartSessionAsync())
+            {
+                session.StartTransaction();
+
+                try
+                {
+                    var cargo = await GetAsync(abono.ReceivableId);
+                    var abonos = await GetAbonosAsync(cargo.Id);
+                    var totalAbonos = abonos.Sum(x => x.Abono) - abono.Abono;
+                    if ((cargo.Cargo - totalAbonos) > 0)
+                    {
+                        await RemoveAsync(abono.Id);
+                        cargo.Status = "PENDIENTE";
+                        await UpdateAsync(cargo.Id, cargo);
+                    }
+                    else
+                    {
+                        await RemoveAsync(abono.Id);
+                    }
+                    await session.CommitTransactionAsync();
+                }
+                catch (Exception)
+                {
+                    await session.AbortTransactionAsync();
+                }
+            }
+        }
+
         private CashierDetail GetCashierDetail(Receivable abono)
         {
             var cashierDetail = new CashierDetail();
