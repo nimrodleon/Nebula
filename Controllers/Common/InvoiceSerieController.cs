@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Data.Helpers;
 using Nebula.Data.Models.Common;
-using Nebula.Data.Services.Common;
+using Nebula.Data.Services;
 
 namespace Nebula.Controllers.Common;
 
@@ -11,15 +11,15 @@ namespace Nebula.Controllers.Common;
 [ApiController]
 public class InvoiceSerieController : ControllerBase
 {
-    private readonly InvoiceSerieService _invoiceSerieService;
+    private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
 
-    public InvoiceSerieController(InvoiceSerieService invoiceSerieService) =>
+    public InvoiceSerieController(CrudOperationService<InvoiceSerie> invoiceSerieService) =>
         _invoiceSerieService = invoiceSerieService;
 
     [HttpGet("Index")]
     public async Task<IActionResult> Index([FromQuery] string? query)
     {
-        var responseData = await _invoiceSerieService.GetListAsync(query);
+        var responseData = await _invoiceSerieService.GetAsync("Name", query);
         return Ok(responseData);
     }
 
@@ -66,6 +66,6 @@ public class InvoiceSerieController : ControllerBase
     {
         var invoiceSerie = await _invoiceSerieService.GetAsync(id);
         await _invoiceSerieService.RemoveAsync(id);
-        return Ok(new {Ok = true, Data = invoiceSerie, Msg = "La serie de facturación ha sido borrado!"});
+        return Ok(new { Ok = true, Data = invoiceSerie, Msg = "La serie de facturación ha sido borrado!" });
     }
 }

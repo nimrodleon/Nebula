@@ -16,7 +16,7 @@ public class CashierSaleService
     private readonly ConfigurationService _configurationService;
     private readonly CrudOperationService<Contact> _contactService;
     private readonly CajaDiariaService _cajaDiariaService;
-    private readonly InvoiceSerieService _invoiceSerieService;
+    private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
     private readonly InvoiceSaleService _invoiceSaleService;
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly TributoSaleService _tributoSaleService;
@@ -25,7 +25,7 @@ public class CashierSaleService
 
     public CashierSaleService(ConfigurationService configurationService,
         CrudOperationService<Contact> contactService, CajaDiariaService cajaDiariaService,
-        InvoiceSerieService invoiceSerieService, InvoiceSaleService invoiceSaleService,
+        CrudOperationService<InvoiceSerie> invoiceSerieService, InvoiceSaleService invoiceSaleService,
         InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService,
         CashierDetailService cashierDetailService)
     {

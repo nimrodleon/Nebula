@@ -52,7 +52,6 @@ builder.Services.AddSingleton(typeof(CrudOperationService<>));
 builder.Services.AddSingleton<ReceivableService>();
 // TODO: refactoring.
 builder.Services.AddSingleton<WarehouseService>();
-builder.Services.AddSingleton<InvoiceSerieService>();
 builder.Services.AddSingleton<ConfigurationService>();
 builder.Services.AddSingleton<ProductService>();
 builder.Services.AddSingleton<UserService>();

@@ -6,7 +6,7 @@ namespace Nebula.Data.Models.Common;
 /// <summary>
 /// Series de facturación.
 /// </summary>
-public class InvoiceSerie
+public class InvoiceSerie : Generic
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Data.Helpers;
 using Nebula.Data.Models.Cashier;
 using Nebula.Data.Services.Cashier;
-using Nebula.Data.Services.Common;
 using Nebula.Data.ViewModels.Cashier;
 using Nebula.Data.ViewModels.Common;
+using Nebula.Data.Services;
+using Nebula.Data.Models.Common;
 
 namespace Nebula.Controllers.Cashier;
 
@@ -15,11 +16,11 @@ namespace Nebula.Controllers.Cashier;
 public class CajaDiariaController : ControllerBase
 {
     private readonly CajaDiariaService _cajaDiariaService;
-    private readonly InvoiceSerieService _invoiceSerieService;
+    private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
     private readonly CashierDetailService _cashierDetailService;
 
     public CajaDiariaController(CajaDiariaService cajaDiariaService,
-        InvoiceSerieService invoiceSerieService, CashierDetailService cashierDetailService)
+        CrudOperationService<InvoiceSerie> invoiceSerieService, CashierDetailService cashierDetailService)
     {
         _cajaDiariaService = cajaDiariaService;
         _invoiceSerieService = invoiceSerieService;
