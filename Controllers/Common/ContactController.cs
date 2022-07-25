@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Data.Helpers;
 using Nebula.Data.Models.Common;
-using Nebula.Data.Services.Common;
 using Nebula.Data.ViewModels.Common;
+using Nebula.Data.Services;
 
 namespace Nebula.Controllers.Common;
 
@@ -12,15 +12,15 @@ namespace Nebula.Controllers.Common;
 [ApiController]
 public class ContactController : ControllerBase
 {
-    private readonly ContactService _contactService;
+    private readonly CrudOperationService<Contact> _contactService;
 
-    public ContactController(ContactService contactService) =>
+    public ContactController(CrudOperationService<Contact> contactService) =>
         _contactService = contactService;
 
     [HttpGet("Index")]
     public async Task<IActionResult> Index([FromQuery] string? query)
     {
-        var responseData = await _contactService.GetListAsync(query);
+        var responseData = await _contactService.GetAsync("Name", query);
         return Ok(responseData);
     }
 
@@ -34,13 +34,13 @@ public class ContactController : ControllerBase
     [HttpGet("Select2")]
     public async Task<IActionResult> Select2([FromQuery] string? term)
     {
-        var responseData = await _contactService.GetListAsync(term, 10);
+        var responseData = await _contactService.GetAsync("Name", term, 10);
         var data = new List<Select2>();
         responseData.ForEach(item =>
         {
-            data.Add(new Select2() {Id = item.Id, Text = $"{item.Document} - {item.Name}"});
+            data.Add(new Select2() { Id = item.Id, Text = $"{item.Document} - {item.Name}" });
         });
-        return Ok(new {Results = data});
+        return Ok(new { Results = data });
     }
 
     [HttpPost("Create")]
@@ -78,6 +78,6 @@ public class ContactController : ControllerBase
     {
         var contact = await _contactService.GetAsync(id);
         await _contactService.RemoveAsync(id);
-        return Ok(new {Ok = true, Data = contact, Msg = "El contacto ha sido borrado!"});
+        return Ok(new { Ok = true, Data = contact, Msg = "El contacto ha sido borrado!" });
     }
 }

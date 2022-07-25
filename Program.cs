@@ -55,7 +55,6 @@ builder.Services.AddSingleton<CategoryService>();
 builder.Services.AddSingleton<WarehouseService>();
 builder.Services.AddSingleton<InvoiceSerieService>();
 builder.Services.AddSingleton<ConfigurationService>();
-builder.Services.AddSingleton<ContactService>();
 builder.Services.AddSingleton<ProductService>();
 builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<CajaDiariaService>();

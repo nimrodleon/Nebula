@@ -14,7 +14,7 @@ namespace Nebula.Data.Services.Cashier;
 public class CashierSaleService
 {
     private readonly ConfigurationService _configurationService;
-    private readonly ContactService _contactService;
+    private readonly CrudOperationService<Contact> _contactService;
     private readonly CajaDiariaService _cajaDiariaService;
     private readonly InvoiceSerieService _invoiceSerieService;
     private readonly InvoiceSaleService _invoiceSaleService;
@@ -24,7 +24,7 @@ public class CashierSaleService
     private GenerarVenta _generarVenta;
 
     public CashierSaleService(ConfigurationService configurationService,
-        ContactService contactService, CajaDiariaService cajaDiariaService,
+        CrudOperationService<Contact> contactService, CajaDiariaService cajaDiariaService,
         InvoiceSerieService invoiceSerieService, InvoiceSaleService invoiceSaleService,
         InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService,
         CashierDetailService cashierDetailService)
