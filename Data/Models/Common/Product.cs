@@ -1,9 +1,9 @@
-﻿using MongoDB.Bson;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Nebula.Data.Models.Common;
 
-public class Product
+public class Product : Generic
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

@@ -50,9 +50,9 @@ builder.Services.AddCors(options =>
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
 builder.Services.AddSingleton(typeof(CrudOperationService<>));
 builder.Services.AddSingleton<ReceivableService>();
-// TODO: refactoring.
 builder.Services.AddSingleton<ConfigurationService>();
 builder.Services.AddSingleton<ProductService>();
+// TODO: refactoring.
 builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<CajaDiariaService>();
 builder.Services.AddSingleton<CashierDetailService>();
