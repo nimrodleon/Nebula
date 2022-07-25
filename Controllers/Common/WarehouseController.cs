@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Data.Helpers;
 using Nebula.Data.Models.Common;
-using Nebula.Data.Services.Common;
+using Nebula.Data.Services;
 
 namespace Nebula.Controllers.Common;
 
@@ -11,15 +11,15 @@ namespace Nebula.Controllers.Common;
 [ApiController]
 public class WarehouseController : ControllerBase
 {
-    private readonly WarehouseService _warehouseService;
+    private readonly CrudOperationService<Warehouse> _warehouseService;
 
-    public WarehouseController(WarehouseService warehouseService) =>
+    public WarehouseController(CrudOperationService<Warehouse> warehouseService) =>
         _warehouseService = warehouseService;
 
     [HttpGet("Index")]
     public async Task<IActionResult> Index([FromQuery] string? query)
     {
-        var responseData = await _warehouseService.GetListAsync(query);
+        var responseData = await _warehouseService.GetAsync("Name", query);
         return Ok(responseData);
     }
 
@@ -66,6 +66,6 @@ public class WarehouseController : ControllerBase
     {
         var warehouse = await _warehouseService.GetAsync(id);
         await _warehouseService.RemoveAsync(id);
-        return Ok(new {Ok = true, Data = warehouse, Msg = "El almacén ha sido borrado!"});
+        return Ok(new { Ok = true, Data = warehouse, Msg = "El almacén ha sido borrado!" });
     }
 }

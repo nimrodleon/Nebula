@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Nebula.Data.Models.Common;
 
-public class Warehouse
+public class Warehouse : Generic
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
