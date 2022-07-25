@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Data.Helpers;
 using Nebula.Data.Models.Common;
-using Nebula.Data.Services.Common;
 using Nebula.Data.ViewModels.Common;
+using Nebula.Data.Services;
 
 namespace Nebula.Controllers.Common;
 
@@ -12,15 +12,15 @@ namespace Nebula.Controllers.Common;
 [ApiController]
 public class CategoryController : ControllerBase
 {
-    private readonly CategoryService _categoryService;
+    private readonly CrudOperationService<Category> _categoryService;
 
-    public CategoryController(CategoryService categoryService) =>
+    public CategoryController(CrudOperationService<Category> categoryService) =>
         _categoryService = categoryService;
 
     [HttpGet("Index")]
     public async Task<IActionResult> Index([FromQuery] string? query)
     {
-        var responseData = await _categoryService.GetListAsync(query);
+        var responseData = await _categoryService.GetAsync("Name", query);
         return Ok(responseData);
     }
 
@@ -35,7 +35,7 @@ public class CategoryController : ControllerBase
     public async Task<IActionResult> Select2([FromQuery] string? term)
     {
         if (string.IsNullOrWhiteSpace(term)) term = string.Empty;
-        var responseData = await _categoryService.GetListAsync(term, 10);
+        var responseData = await _categoryService.GetAsync("Name", term, 10);
         var data = new List<Select2>();
         responseData.ForEach(item =>
         {
@@ -45,7 +45,7 @@ public class CategoryController : ControllerBase
                 Text = item.Name
             });
         });
-        return Ok(new {Results = data});
+        return Ok(new { Results = data });
     }
 
     [HttpPost("Create")]
@@ -84,6 +84,6 @@ public class CategoryController : ControllerBase
     {
         var category = await _categoryService.GetAsync(id);
         await _categoryService.RemoveAsync(id);
-        return Ok(new {Ok = true, Data = category, Msg = "La categoría ha sido borrado!"});
+        return Ok(new { Ok = true, Data = category, Msg = "La categoría ha sido borrado!" });
     }
 }

@@ -1,4 +1,4 @@
-﻿using MongoDB.Bson;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Nebula.Data.Models.Common;
@@ -6,7 +6,7 @@ namespace Nebula.Data.Models.Common;
 /// <summary>
 /// categoría de productos.
 /// </summary>
-public class Category
+public class Category : Generic
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

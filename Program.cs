@@ -51,7 +51,6 @@ builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("D
 builder.Services.AddSingleton(typeof(CrudOperationService<>));
 builder.Services.AddSingleton<ReceivableService>();
 // TODO: refactoring.
-builder.Services.AddSingleton<CategoryService>();
 builder.Services.AddSingleton<WarehouseService>();
 builder.Services.AddSingleton<InvoiceSerieService>();
 builder.Services.AddSingleton<ConfigurationService>();
