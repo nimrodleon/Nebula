@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Nebula.Data.Models.Cashier;
 
-public class CajaDiaria
+public class CajaDiaria : Generic
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
