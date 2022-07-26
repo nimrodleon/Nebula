@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Nebula.Data.Models.Common;
 
-public class User
+public class User : Generic
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

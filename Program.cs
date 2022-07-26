@@ -52,8 +52,8 @@ builder.Services.AddSingleton(typeof(CrudOperationService<>));
 builder.Services.AddSingleton<ReceivableService>();
 builder.Services.AddSingleton<ConfigurationService>();
 builder.Services.AddSingleton<ProductService>();
-// TODO: refactoring.
 builder.Services.AddSingleton<UserService>();
+// TODO: refactoring.
 builder.Services.AddSingleton<CajaDiariaService>();
 builder.Services.AddSingleton<CashierDetailService>();
 builder.Services.AddSingleton<InvoiceSaleDetailService>();
