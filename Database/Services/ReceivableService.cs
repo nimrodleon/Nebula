@@ -39,70 +39,45 @@ namespace Nebula.Database.Services
 
             if (model.Type.Equals("ABONO"))
             {
-                using (var session = await mongoClient.StartSessionAsync())
+                var cargo = await GetAsync(model.ReceivableId);
+                model.ContactId = cargo.ContactId;
+                model.ContactName = cargo.ContactName;
+                model.Document = cargo.Document;
+                model.Month = cargo.Month;
+                model.Year = cargo.Year;
+                var abonos = await GetAbonosAsync(model.ReceivableId);
+                var totalAbonos = abonos.Sum(x => x.Abono) + model.Abono;
+                if ((cargo.Cargo - totalAbonos) > 0)
                 {
-                    session.StartTransaction();
-                    try
-                    {
-                        var cargo = await GetAsync(model.ReceivableId);
-                        model.ContactId = cargo.ContactId;
-                        model.ContactName = cargo.ContactName;
-                        model.Document = cargo.Document;
-                        model.Month = cargo.Month;
-                        model.Year = cargo.Year;
-                        var abonos = await GetAbonosAsync(model.ReceivableId);
-                        var totalAbonos = abonos.Sum(x => x.Abono) + model.Abono;
-                        if ((cargo.Cargo - totalAbonos) > 0)
-                        {
-                            await CreateAsync(model);
-                            if (model.CajaDiaria != "-")
-                                await cashierDetailService.CreateAsync(GetCashierDetail(model));
-                        }
-                        else
-                        {
-                            await CreateAsync(model);
-                            if (model.CajaDiaria != "-")
-                                await cashierDetailService.CreateAsync(GetCashierDetail(model));
-                            cargo.Status = "COBRADO";
-                            await UpdateAsync(cargo.Id, cargo);
-                        }
-                        await session.CommitTransactionAsync();
-                    }
-                    catch (Exception)
-                    {
-                        await session.AbortTransactionAsync();
-                    }
+                    await CreateAsync(model);
+                    if (model.CajaDiaria != "-")
+                        await cashierDetailService.CreateAsync(GetCashierDetail(model));
+                }
+                else
+                {
+                    await CreateAsync(model);
+                    if (model.CajaDiaria != "-")
+                        await cashierDetailService.CreateAsync(GetCashierDetail(model));
+                    cargo.Status = "COBRADO";
+                    await UpdateAsync(cargo.Id, cargo);
                 }
             }
         }
 
         public async Task RemoveAbonoAsync(Receivable abono)
         {
-            using (var session = await mongoClient.StartSessionAsync())
+            var cargo = await GetAsync(abono.ReceivableId);
+            var abonos = await GetAbonosAsync(cargo.Id);
+            var totalAbonos = abonos.Sum(x => x.Abono) - abono.Abono;
+            if ((cargo.Cargo - totalAbonos) > 0)
             {
-                session.StartTransaction();
-
-                try
-                {
-                    var cargo = await GetAsync(abono.ReceivableId);
-                    var abonos = await GetAbonosAsync(cargo.Id);
-                    var totalAbonos = abonos.Sum(x => x.Abono) - abono.Abono;
-                    if ((cargo.Cargo - totalAbonos) > 0)
-                    {
-                        await RemoveAsync(abono.Id);
-                        cargo.Status = "PENDIENTE";
-                        await UpdateAsync(cargo.Id, cargo);
-                    }
-                    else
-                    {
-                        await RemoveAsync(abono.Id);
-                    }
-                    await session.CommitTransactionAsync();
-                }
-                catch (Exception)
-                {
-                    await session.AbortTransactionAsync();
-                }
+                await RemoveAsync(abono.Id);
+                cargo.Status = "PENDIENTE";
+                await UpdateAsync(cargo.Id, cargo);
+            }
+            else
+            {
+                await RemoveAsync(abono.Id);
             }
         }
 
