@@ -28,9 +28,14 @@ public class CashierDetail : Generic
     public string Document { get; set; } = "-";
 
     /// <summary>
-    /// Nombre Contacto.
+    /// Identificador de Contacto.
     /// </summary>
-    public string Contact { get; set; } = "-";
+    public string ContactId { get; set; } = "-";
+
+    /// <summary>
+    /// Nombre de Contacto.
+    /// </summary>
+    public string ContactName { get; set; } = "-";
 
     /// <summary>
     /// Observación de la Operación.

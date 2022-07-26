@@ -85,7 +85,8 @@ namespace Nebula.Database.Services
         {
             var cashierDetail = new CashierDetail();
             cashierDetail.Hour = DateTime.Now.ToString("HH:mm");
-            cashierDetail.Contact = $"{abono.ContactId}:{abono.ContactName}";
+            cashierDetail.ContactId = abono.ContactId;
+            cashierDetail.ContactName = abono.ContactName;
             string document = abono.Document != "-" ? abono.Document.Split(":")[1].Trim() : "-";
             string remark = abono.Document != "-" ? $"COBRANZA, {document}" : abono.Remark;
             cashierDetail.Remark = remark;
