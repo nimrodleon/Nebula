@@ -4,9 +4,9 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Nebula.Data.Helpers;
-using Nebula.Data.Services.Common;
-using Nebula.Data.ViewModels;
+using Nebula.Database.Helpers;
+using Nebula.Database.Services.Common;
+using Nebula.Database.ViewModels;
 
 namespace Nebula.Controllers;
 
@@ -29,7 +29,7 @@ public class AuthController : ControllerBase
     {
         var userName = User.FindFirstValue(ClaimTypes.Name);
         var role = User.FindFirstValue(ClaimTypes.Role);
-        return Task.FromResult<IActionResult>(Ok(new {userName, role}));
+        return Task.FromResult<IActionResult>(Ok(new { userName, role }));
     }
 
     [HttpPost("Login"), AllowAnonymous]
@@ -56,7 +56,7 @@ public class AuthController : ControllerBase
                 SecurityAlgorithms.HmacSha256Signature);
             var expires = DateTime.UtcNow.AddHours(12);
             var token = new JwtSecurityToken(claims: claims, expires: expires, signingCredentials: credentials);
-            return Ok(new {token = new JwtSecurityTokenHandler().WriteToken(token), expires});
+            return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), expires });
         }
         catch (Exception)
         {

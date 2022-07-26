@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Data.Helpers;
-using Nebula.Data.Models.Common;
-using Nebula.Data.Services.Common;
-using Nebula.Data.ViewModels.Common;
+using Nebula.Database.Helpers;
+using Nebula.Database.Models.Common;
+using Nebula.Database.Services.Common;
+using Nebula.Database.ViewModels.Common;
 
 namespace Nebula.Controllers.Common;
 
@@ -47,7 +47,7 @@ public class UserController : ControllerBase
         };
         await _userService.CreateAsync(user);
 
-        return Ok(new {Ok = true, User = user});
+        return Ok(new { Ok = true, User = user });
     }
 
     [AllowAnonymous]
@@ -66,7 +66,7 @@ public class UserController : ControllerBase
         };
         await _userService.CreateAsync(user);
 
-        return Ok(new {Ok = true, User = user});
+        return Ok(new { Ok = true, User = user });
     }
 
     [HttpPut("Update/{id}"), Authorize(Roles = AuthRoles.Admin)]
@@ -106,6 +106,6 @@ public class UserController : ControllerBase
     {
         var user = await _userService.GetAsync(id);
         await _userService.RemoveAsync(id);
-        return Ok(new {Ok = true, Data = user, Msg = "El usuario ha sido borrado!"});
+        return Ok(new { Ok = true, Data = user, Msg = "El usuario ha sido borrado!" });
     }
 }

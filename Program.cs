@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Nebula.Data;
-using Nebula.Data.Services;
-using Nebula.Data.Services.Cashier;
-using Nebula.Data.Services.Common;
-using Nebula.Data.Services.Sales;
+using Nebula.Database;
+using Nebula.Database.Services;
+using Nebula.Database.Services.Cashier;
+using Nebula.Database.Services.Common;
+using Nebula.Database.Services.Sales;
 
 var builder = WebApplication.CreateBuilder(args);
 

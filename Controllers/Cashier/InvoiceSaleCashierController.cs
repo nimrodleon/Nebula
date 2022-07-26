@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Data.Helpers;
-using Nebula.Data.Models.Sales;
-using Nebula.Data.Services.Cashier;
-using Nebula.Data.Services.Sales;
-using Nebula.Data.ViewModels.Cashier;
+using Nebula.Database.Helpers;
+using Nebula.Database.Models.Sales;
+using Nebula.Database.Services.Cashier;
+using Nebula.Database.Services.Sales;
+using Nebula.Database.ViewModels.Cashier;
 
 namespace Nebula.Controllers.Cashier;
 
@@ -51,7 +51,7 @@ public class InvoiceSaleCashierController : ControllerBase
         }
         catch (Exception e)
         {
-            return BadRequest(new {Ok = false, Msg = e.Message});
+            return BadRequest(new { Ok = false, Msg = e.Message });
         }
     }
 

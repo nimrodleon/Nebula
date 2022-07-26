@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Data.Helpers;
-using Nebula.Data.Services.Sales;
-using Nebula.Data.ViewModels.Sales;
+using Nebula.Database.Helpers;
+using Nebula.Database.Services.Sales;
+using Nebula.Database.ViewModels.Sales;
 
 namespace Nebula.Controllers.Sales
 {
@@ -42,7 +42,7 @@ namespace Nebula.Controllers.Sales
             await _invoiceSaleService.RemoveAsync(invoiceSale.Id);
             await _invoiceSaleDetailService.RemoveAsync(invoiceSale.Id);
             await _tributoSaleService.RemoveAsync(invoiceSale.Id);
-            return Ok(new {Ok = true, Data = invoiceSale, Msg = "El comprobante de venta ha sido borrado!"});
+            return Ok(new { Ok = true, Data = invoiceSale, Msg = "El comprobante de venta ha sido borrado!" });
         }
     }
 }

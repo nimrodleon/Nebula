@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Data.Services;
-using Nebula.Data.Services.Cashier;
-using Nebula.Data.Models;
+using Nebula.Database.Services;
+using Nebula.Database.Services.Cashier;
+using Nebula.Database.Models;
 using Microsoft.AspNetCore.Authorization;
-using Nebula.Data.Helpers;
+using Nebula.Database.Helpers;
 
 namespace Nebula.Controllers
 {

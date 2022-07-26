@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Data.Helpers;
-using Nebula.Data.Models.Cashier;
-using Nebula.Data.Services.Cashier;
-using Nebula.Data.ViewModels.Cashier;
-using Nebula.Data.ViewModels.Common;
-using Nebula.Data.Services;
-using Nebula.Data.Models.Common;
+using Nebula.Database.Helpers;
+using Nebula.Database.Models.Cashier;
+using Nebula.Database.Services.Cashier;
+using Nebula.Database.ViewModels.Cashier;
+using Nebula.Database.ViewModels.Common;
+using Nebula.Database.Services;
+using Nebula.Database.Models.Common;
 
 namespace Nebula.Controllers.Cashier;
 

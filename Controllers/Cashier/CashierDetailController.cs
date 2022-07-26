@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Data.Helpers;
-using Nebula.Data.Models.Cashier;
-using Nebula.Data.Services.Cashier;
+using Nebula.Database.Helpers;
+using Nebula.Database.Models.Cashier;
+using Nebula.Database.Services.Cashier;
 
 namespace Nebula.Controllers.Cashier;
 
@@ -52,6 +52,6 @@ public class CashierDetailController : ControllerBase
     {
         var cashierDetail = await _cashierDetailService.GetAsync(id);
         await _cashierDetailService.RemoveAsync(cashierDetail.Id);
-        return Ok(new {Ok = true, Data = cashierDetail, Msg = "El detalle de caja ha sido borrado!"});
+        return Ok(new { Ok = true, Data = cashierDetail, Msg = "El detalle de caja ha sido borrado!" });
     }
 }
