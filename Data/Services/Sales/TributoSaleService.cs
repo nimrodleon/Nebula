@@ -1,26 +1,19 @@
-﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Data.Models.Sales;
 
 namespace Nebula.Data.Services.Sales;
 
-public class TributoSaleService
+public class TributoSaleService : CrudOperationService<TributoSale>
 {
-    private readonly IMongoCollection<TributoSale> _collection;
-
-    public TributoSaleService(IOptions<DatabaseSettings> options)
-    {
-        var mongoClient = new MongoClient(options.Value.ConnectionString);
-        var mongoDatabase = mongoClient.GetDatabase(options.Value.DatabaseName);
-        _collection = mongoDatabase.GetCollection<TributoSale>("TributoSales");
-    }
+    public TributoSaleService(IOptions<DatabaseSettings> options) : base(options) { }
 
     public async Task<List<TributoSale>> GetListAsync(string id) =>
         await _collection.Find(x => x.InvoiceSale == id).ToListAsync();
 
-    public async Task CreateAsync(List<TributoSale> tributoSales) =>
+    public async Task CreateManyAsync(List<TributoSale> tributoSales) =>
         await _collection.InsertManyAsync(tributoSales);
 
-    public async Task RemoveAsync(string id) =>
+    public async Task RemoveManyAsync(string id) =>
         await _collection.DeleteManyAsync(x => x.InvoiceSale == id);
 }

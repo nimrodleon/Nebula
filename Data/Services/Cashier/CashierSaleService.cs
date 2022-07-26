@@ -66,11 +66,11 @@ public class CashierSaleService
 
         // Agregar detalles del comprobante.
         var invoiceSaleDetails = _generarVenta.GetInvoiceSaleDetails(invoiceSale.Id, cajaDiaria.Id);
-        await _invoiceSaleDetailService.CreateAsync(invoiceSaleDetails);
+        await _invoiceSaleDetailService.CreateManyAsync(invoiceSaleDetails);
 
         // Agregar Tributos de Factura.
         var tributoSales = _generarVenta.GetTributoSales(invoiceSale.Id);
-        await _tributoSaleService.CreateAsync(tributoSales);
+        await _tributoSaleService.CreateManyAsync(tributoSales);
 
         // Registrar operación de Caja.
         var cashierDetail = new CashierDetail()

@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Nebula.Data.Models.Sales;
 
-public class InvoiceSaleDetail
+public class InvoiceSaleDetail : Generic
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

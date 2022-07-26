@@ -1,29 +1,22 @@
-﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Data.Models.Sales;
 
 namespace Nebula.Data.Services.Sales;
 
-public class InvoiceSaleDetailService
+public class InvoiceSaleDetailService : CrudOperationService<InvoiceSaleDetail>
 {
-    private readonly IMongoCollection<InvoiceSaleDetail> _collection;
-
-    public InvoiceSaleDetailService(IOptions<DatabaseSettings> options)
-    {
-        var mongoClient = new MongoClient(options.Value.ConnectionString);
-        var mongoDatabase = mongoClient.GetDatabase(options.Value.DatabaseName);
-        _collection = mongoDatabase.GetCollection<InvoiceSaleDetail>("InvoiceSaleDetails");
-    }
+    public InvoiceSaleDetailService(IOptions<DatabaseSettings> options) : base(options) { }
 
     public async Task<List<InvoiceSaleDetail>> GetListAsync(string id) =>
         await _collection.Find(x => x.InvoiceSale == id).ToListAsync();
 
-    public async Task CreateAsync(List<InvoiceSaleDetail> invoiceSaleDetails) =>
+    public async Task CreateManyAsync(List<InvoiceSaleDetail> invoiceSaleDetails) =>
         await _collection.InsertManyAsync(invoiceSaleDetails);
 
     public async Task<List<InvoiceSaleDetail>> GetItemsByCajaDiaria(string cajaDiaria) =>
         await _collection.Find(x => x.CajaDiaria == cajaDiaria).ToListAsync();
 
-    public async Task RemoveAsync(string id) =>
+    public async Task RemoveManyAsync(string id) =>
         await _collection.DeleteManyAsync(x => x.InvoiceSale == id);
 }
