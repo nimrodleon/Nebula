@@ -6,7 +6,7 @@ namespace Nebula.Data.Models.Cashier;
 /// <summary>
 /// Detalle de caja diaria.
 /// </summary>
-public class CashierDetail
+public class CashierDetail : Generic
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

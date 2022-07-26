@@ -53,9 +53,9 @@ builder.Services.AddSingleton<ReceivableService>();
 builder.Services.AddSingleton<ConfigurationService>();
 builder.Services.AddSingleton<ProductService>();
 builder.Services.AddSingleton<UserService>();
-// TODO: refactoring.
 builder.Services.AddSingleton<CajaDiariaService>();
 builder.Services.AddSingleton<CashierDetailService>();
+// TODO: refactoring.
 builder.Services.AddSingleton<InvoiceSaleDetailService>();
 builder.Services.AddSingleton<InvoiceSaleService>();
 builder.Services.AddSingleton<TributoSaleService>();
