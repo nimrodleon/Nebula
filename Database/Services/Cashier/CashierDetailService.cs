@@ -20,4 +20,13 @@ public class CashierDetailService : CrudOperationService<CashierDetail>
 
     public async Task<long> CountDocumentsAsync(string id) =>
         await _collection.CountDocumentsAsync(x => x.CajaDiaria == id);
+
+    public async Task<List<CashierDetail>> GetEntradaSalidaAsync(string contactId, string month, string year)
+    {
+        var builder = Builders<CashierDetail>.Filter;
+        var filter = builder.And(builder.Eq(x => x.ContactId, contactId),
+            builder.Eq(x => x.Month, month), builder.Eq(x => x.Year, year),
+            builder.In("TypeOperation", new List<string>() { "ENTRADA_DE_DINERO", "SALIDA_DE_DINERO" }));
+        return await _collection.Find(filter).ToListAsync();
+    }
 }

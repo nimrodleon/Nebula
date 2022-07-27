@@ -4,6 +4,8 @@ using Nebula.Database.Helpers;
 using Nebula.Database.Models.Common;
 using Nebula.Database.ViewModels.Common;
 using Nebula.Database.Services;
+using Nebula.Database.Services.Cashier;
+using Nebula.Database.Services.Sales;
 
 namespace Nebula.Controllers.Common;
 
@@ -13,9 +15,16 @@ namespace Nebula.Controllers.Common;
 public class ContactController : ControllerBase
 {
     private readonly CrudOperationService<Contact> _contactService;
+    private readonly CashierDetailService _cashierDetailService;
+    private readonly InvoiceSaleService _invoiceSaleService;
 
-    public ContactController(CrudOperationService<Contact> contactService) =>
+    public ContactController(CrudOperationService<Contact> contactService,
+        CashierDetailService cashierDetailService, InvoiceSaleService invoiceSaleService)
+    {
         _contactService = contactService;
+        _cashierDetailService = cashierDetailService;
+        _invoiceSaleService = invoiceSaleService;
+    }
 
     [HttpGet("Index")]
     public async Task<IActionResult> Index([FromQuery] string? query)
@@ -79,5 +88,19 @@ public class ContactController : ControllerBase
         var contact = await _contactService.GetAsync(id);
         await _contactService.RemoveAsync(id);
         return Ok(new { Ok = true, Data = contact, Msg = "El contacto ha sido borrado!" });
+    }
+
+    [HttpGet("EntradaSalida/{id}")]
+    public async Task<IActionResult> EntradaSalida(string id, [FromQuery] string month, [FromQuery] string year)
+    {
+        var responseData = await _cashierDetailService.GetEntradaSalidaAsync(id, month, year);
+        return Ok(responseData);
+    }
+
+    [HttpGet("InvoiceSale/{id}")]
+    public async Task<IActionResult> InvoiceSale(string id, [FromQuery] string month, [FromQuery] string year)
+    {
+        var responseData = await _invoiceSaleService.GetByContactIdAsync(id, month, year);
+        return Ok(responseData);
     }
 }
