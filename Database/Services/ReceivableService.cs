@@ -42,6 +42,7 @@ namespace Nebula.Database.Services
                 var cargo = await GetAsync(model.ReceivableId);
                 model.ContactId = cargo.ContactId;
                 model.ContactName = cargo.ContactName;
+                model.InvoiceSale = cargo.InvoiceSale;
                 model.Document = cargo.Document;
                 model.Month = cargo.Month;
                 model.Year = cargo.Year;
@@ -87,8 +88,8 @@ namespace Nebula.Database.Services
             cashierDetail.Hour = DateTime.Now.ToString("HH:mm");
             cashierDetail.ContactId = abono.ContactId;
             cashierDetail.ContactName = abono.ContactName;
-            string document = abono.Document != "-" ? abono.Document.Split(":")[1].Trim() : "-";
-            string remark = abono.Document != "-" ? $"COBRANZA, {document}" : abono.Remark;
+            string document = abono.InvoiceSale != "-" ? abono.Document : "-";
+            string remark = abono.InvoiceSale != "-" ? $"COBRANZA, {document}" : abono.Remark;
             cashierDetail.Remark = remark;
             cashierDetail.TypeOperation = TypeOperationCaja.EntradaDeDinero;
             cashierDetail.FormaPago = abono.FormaPago;

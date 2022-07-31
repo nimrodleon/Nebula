@@ -33,6 +33,11 @@ public class Receivable : Generic
     public string Remark { get; set; } = string.Empty;
 
     /// <summary>
+    /// Clave foránea comprobante de venta.
+    /// </summary>
+    public string InvoiceSale { get; set; } = "-";
+
+    /// <summary>
     /// Documento de Venta: F001-1.
     /// </summary>
     public string Document { get; set; } = string.Empty;
