@@ -37,16 +37,19 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet("Select2")]
-    public async Task<IActionResult> Select2([FromQuery] string term)
+    public async Task<IActionResult> Select2([FromQuery] string? term)
     {
         var responseData = await _productService.GetListAsync(term, 10);
-        var data = new List<Select2>();
+        var data = new List<ProductSelect>();
         responseData.ForEach(item =>
         {
-            data.Add(new Select2()
+            data.Add(new ProductSelect()
             {
                 Id = item.Id,
-                Text = $"{item.Description} | {Convert.ToDecimal(item.Price1):N2}"
+                Text = $"{item.Description} | {Convert.ToDecimal(item.Price1):N2}",
+                Description = item.Description,
+                Barcode = item.Barcode,
+                Price = item.Price1
             });
         });
         return Ok(new { Results = data });
