@@ -37,13 +37,7 @@ namespace Nebula.Controllers.Inventory
         {
             model.Description = model.Description.ToUpper();
             var location = await _locationService.CreateAsync(model);
-
-            return Ok(new
-            {
-                Ok = true,
-                Data = location,
-                Msg = $"La ubicación {location.Description} ha sido registrado!"
-            });
+            return Ok(location);
         }
 
         [HttpPut("Update/{id}")]
@@ -52,14 +46,8 @@ namespace Nebula.Controllers.Inventory
             var location = await _locationService.GetAsync(id);
             model.Id = location.Id;
             model.Description = model.Description.ToUpper();
-            await _locationService.UpdateAsync(id, model);
-
-            return Ok(new
-            {
-                Ok = true,
-                Data = model,
-                Msg = $"La ubicación {model.Description} ha sido actualizado!"
-            });
+            var responseData = await _locationService.UpdateAsync(id, model);
+            return Ok(responseData);
         }
 
         [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
@@ -67,7 +55,7 @@ namespace Nebula.Controllers.Inventory
         {
             var location = await _locationService.GetAsync(id);
             await _locationService.RemoveAsync(location.Id);
-            return Ok(new { Ok = true, Data = location, Msg = "La ubicación ha sido borrado!" });
+            return Ok(location);
         }
     }
 }
