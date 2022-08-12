@@ -14,4 +14,7 @@ public class LocationDetailService : CrudOperationService<LocationDetail>
         var query = filter.Eq(x => x.LocationId, id);
         return await _collection.Find(query).ToListAsync();
     }
+
+    public async Task<long> CountDocumentsAsync(string id) =>
+        await _collection.CountDocumentsAsync(x => x.LocationId == id);
 }
