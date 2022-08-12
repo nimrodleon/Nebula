@@ -48,7 +48,7 @@ namespace Nebula.Controllers.Inventory
             return Ok(responseData);
         }
 
-        [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
+        [HttpDelete("Delete/{id}")]
         public async Task<IActionResult> Delete(string id)
         {
             var locationDetail = await _locationDetailService.GetAsync(id);
