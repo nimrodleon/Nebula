@@ -28,14 +28,18 @@ public class CrudOperationService<T> where T : class, Generic
     public async Task<T> GetAsync(string id) =>
         await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
-    public async Task CreateAsync(T obj)
+    public async Task<T> CreateAsync(T obj)
     {
         obj.Id = string.Empty;
         await _collection.InsertOneAsync(obj);
+        return obj;
     }
 
-    public async Task UpdateAsync(string id, T obj) =>
+    public async Task<T> UpdateAsync(string id, T obj)
+    {
         await _collection.ReplaceOneAsync(x => x.Id == id, obj);
+        return obj;
+    }
 
     public async Task RemoveAsync(string id) =>
         await _collection.DeleteOneAsync(x => x.Id == id);

@@ -36,13 +36,13 @@ namespace Nebula.Controllers.Inventory
         public async Task<IActionResult> Create([FromBody] Location model)
         {
             model.Description = model.Description.ToUpper();
-            await _locationService.CreateAsync(model);
+            var location = await _locationService.CreateAsync(model);
 
             return Ok(new
             {
                 Ok = true,
-                Data = model,
-                Msg = $"La ubicación {model.Description} ha sido registrado!"
+                Data = location,
+                Msg = $"La ubicación {location.Description} ha sido registrado!"
             });
         }
 
