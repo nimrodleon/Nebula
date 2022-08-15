@@ -44,10 +44,17 @@ public class ContactController : ControllerBase
     public async Task<IActionResult> Select2([FromQuery] string? term)
     {
         var responseData = await _contactService.GetAsync("Name", term, 10);
-        var data = new List<Select2>();
+        var data = new List<ContactSelect>();
         responseData.ForEach(item =>
         {
-            data.Add(new Select2() { Id = item.Id, Text = $"{item.Document} - {item.Name}" });
+            data.Add(new ContactSelect()
+            {
+                Id = item.Id,
+                Text = $"{item.Document} - {item.Name}",
+                DocType = item.DocType,
+                Document = item.Document,
+                Name = item.Name
+            });
         });
         return Ok(new { Results = data });
     }
