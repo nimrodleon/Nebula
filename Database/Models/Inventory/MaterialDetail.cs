@@ -3,7 +3,7 @@ using MongoDB.Bson;
 
 namespace Nebula.Database.Models.Inventory;
 
-public class MaterialDetail
+public class MaterialDetail : Generic
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
