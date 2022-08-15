@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Helpers;
 using Nebula.Database.Models.Inventory;
-using Nebula.Database.Services.Inventory;
+using Nebula.Database.Services;
 
 namespace Nebula.Controllers.Inventory
 {
@@ -11,9 +11,9 @@ namespace Nebula.Controllers.Inventory
     [ApiController]
     public class LocationController : ControllerBase
     {
-        private readonly LocationService _locationService;
+        private readonly CrudOperationService<Location> _locationService;
 
-        public LocationController(LocationService locationService)
+        public LocationController(CrudOperationService<Location> locationService)
         {
             _locationService = locationService;
         }

@@ -36,10 +36,10 @@ public class CategoryController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(term)) term = string.Empty;
         var responseData = await _categoryService.GetAsync("Name", term, 10);
-        var data = new List<Select2>();
+        var data = new List<InputSelect2>();
         responseData.ForEach(item =>
         {
-            data.Add(new Select2()
+            data.Add(new InputSelect2()
             {
                 Id = item.Id,
                 Text = item.Name
