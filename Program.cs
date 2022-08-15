@@ -61,6 +61,7 @@ builder.Services.AddSingleton<InvoiceSaleService>();
 builder.Services.AddSingleton<TributoSaleService>();
 builder.Services.AddSingleton<CashierSaleService>();
 builder.Services.AddSingleton<LocationDetailService>();
+builder.Services.AddSingleton<MaterialService>();
 builder.Services.AddSingleton<MaterialDetailService>();
 
 builder.Services.AddControllers();
