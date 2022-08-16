@@ -4,7 +4,7 @@ using Nebula.Database.Helpers;
 
 namespace Nebula.Database.Models.Inventory;
 
-public class InventoryNotas
+public class InventoryNotas : Generic
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
