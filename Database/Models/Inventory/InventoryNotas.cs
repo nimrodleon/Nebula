@@ -38,7 +38,7 @@ public class InventoryNotas : Generic
     /// <summary>
     /// Tipo de Inventario. ENTRADA | SALIDA
     /// </summary>
-    public string Type { get; set; } = "ENTRADA";
+    public string Type { get; set; } = InventoryType.ENTRADA;
 
     /// <summary>
     /// Estado del Inventario.
