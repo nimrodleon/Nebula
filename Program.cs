@@ -65,6 +65,8 @@ builder.Services.AddSingleton<MaterialService>();
 builder.Services.AddSingleton<MaterialDetailService>();
 builder.Services.AddSingleton<InventoryNotasService>();
 builder.Services.AddSingleton<InventoryNotasDetailService>();
+builder.Services.AddSingleton<ProductStockService>();
+builder.Services.AddSingleton<ValidateStockService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

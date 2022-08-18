@@ -13,10 +13,12 @@ namespace Nebula.Controllers.Inventory;
 public class InventoryNotasController : ControllerBase
 {
     private readonly InventoryNotasService _inventoryNotasService;
+    private readonly ValidateStockService _validateStockService;
 
-    public InventoryNotasController(InventoryNotasService inventoryNotasService)
+    public InventoryNotasController(InventoryNotasService inventoryNotasService, ValidateStockService validateStockService)
     {
         _inventoryNotasService = inventoryNotasService;
+        _validateStockService = validateStockService;
     }
 
     [HttpGet("Index")]
@@ -54,6 +56,13 @@ public class InventoryNotasController : ControllerBase
     {
         var inventoryNotas = await _inventoryNotasService.GetAsync(id);
         await _inventoryNotasService.RemoveAsync(inventoryNotas.Id);
+        return Ok(inventoryNotas);
+    }
+
+    [HttpGet("Validate/{id}")]
+    public async Task<IActionResult> Validate(string id)
+    {
+        var inventoryNotas = await _validateStockService.ValidarNotas(id);
         return Ok(inventoryNotas);
     }
 }
