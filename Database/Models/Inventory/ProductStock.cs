@@ -26,12 +26,7 @@ public class ProductStock : Generic
     public string Type { get; set; } = InventoryType.ENTRADA;
 
     /// <summary>
-    /// Entrada de Inventario.
+    /// Cantidad de Productos.
     /// </summary>
-    public int Entrada { get; set; }
-
-    /// <summary>
-    /// Salida de Inventario.
-    /// </summary>
-    public int Salida { get; set; }
+    public long Quantity { get; set; }
 }

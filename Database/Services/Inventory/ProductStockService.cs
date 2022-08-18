@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using Nebula.Database.Models;
 using Nebula.Database.Models.Inventory;
 
 namespace Nebula.Database.Services.Inventory;
@@ -15,11 +14,11 @@ public class ProductStockService : CrudOperationService<ProductStock>
         return obj;
     }
 
-    public async Task RemoveAsync(string warehouseId, string productId)
+    public async Task<DeleteResult> RemoveAsync(string warehouseId, string productId)
     {
         var filter = Builders<ProductStock>.Filter;
         var dbQuery = filter.And(filter.Eq(x => x.WarehouseId, warehouseId),
             filter.Eq(x => x.ProductId, productId));
-
+        return await _collection.DeleteManyAsync(dbQuery);
     }
 }
