@@ -23,12 +23,27 @@ public class ProductStockService : CrudOperationService<ProductStock>
         return obj;
     }
 
-    public async Task<DeleteResult> RemoveAsync(string warehouseId, string productId)
+    public async Task<DeleteResult> RemoveManyAsync(string warehouseId, string productId)
     {
         var filter = Builders<ProductStock>.Filter;
         var dbQuery = filter.And(filter.Eq(x => x.WarehouseId, warehouseId),
             filter.Eq(x => x.ProductId, productId));
         return await _collection.DeleteManyAsync(dbQuery);
+    }
+
+    public async Task<ProductStock> ChangeQuantity(ChangeQuantityStock model)
+    {
+        await RemoveManyAsync(model.WarehouseId, model.ProductId);
+        var productStock = new ProductStock()
+        {
+            Id = string.Empty,
+            WarehouseId = model.WarehouseId,
+            ProductId = model.ProductId,
+            Type = InventoryType.ENTRADA,
+            Quantity = model.Quantity,
+        };
+        productStock = await CreateAsync(productStock);
+        return productStock;
     }
 
     public async Task<List<ProductStockReport>> GetReport(string id)

@@ -5,6 +5,7 @@ using Nebula.Database.Models.Common;
 using Nebula.Database.Services.Common;
 using Nebula.Database.Services.Inventory;
 using Nebula.Database.ViewModels.Common;
+using Nebula.Database.ViewModels.Inventory;
 
 namespace Nebula.Controllers.Common;
 
@@ -174,5 +175,12 @@ public class ProductController : ControllerBase
     {
         var productStocks = await _productStockService.GetReport(id);
         return Ok(productStocks);
+    }
+
+    [HttpPost("ChangeQuantity"), Authorize(Roles = AuthRoles.Admin)]
+    public async Task<IActionResult> ChangeQuantity([FromBody] ChangeQuantityStock model)
+    {
+        var productStock = await _productStockService.ChangeQuantity(model);
+        return Ok(productStock);
     }
 }
