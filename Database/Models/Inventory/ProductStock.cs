@@ -4,7 +4,7 @@ using Nebula.Database.Helpers;
 
 namespace Nebula.Database.Models.Inventory;
 
-public class ProductStock
+public class ProductStock : Generic
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
