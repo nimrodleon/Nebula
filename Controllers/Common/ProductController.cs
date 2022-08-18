@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Helpers;
 using Nebula.Database.Models.Common;
 using Nebula.Database.Services.Common;
+using Nebula.Database.Services.Inventory;
 using Nebula.Database.ViewModels.Common;
 
 namespace Nebula.Controllers.Common;
@@ -13,9 +14,13 @@ namespace Nebula.Controllers.Common;
 public class ProductController : ControllerBase
 {
     private readonly ProductService _productService;
+    private readonly ProductStockService _productStockService;
 
-    public ProductController(ProductService productService) =>
+    public ProductController(ProductService productService, ProductStockService productStockService)
+    {
         _productService = productService;
+        _productStockService = productStockService;
+    }
 
     public class FormData : Product
     {
@@ -162,5 +167,12 @@ public class ProductController : ControllerBase
         // borrar registro.
         await _productService.RemoveAsync(id);
         return Ok(new { Ok = true, Data = product, Msg = "El producto ha sido borrado!" });
+    }
+
+    [HttpGet("Stock/{id}")]
+    public async Task<IActionResult> Stock(string id)
+    {
+        var productStocks = await _productStockService.GetReport(id);
+        return Ok(productStocks);
     }
 }
