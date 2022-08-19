@@ -69,4 +69,24 @@ public class ProductStockService : CrudOperationService<ProductStock>
         });
         return productStockReports;
     }
+
+    public async Task<List<TransferenciaDetail>> GetTransferenciaDetailsAsync(List<TransferenciaDetail> transferenciaDetails, string warehouseId)
+    {
+        var productIds = new List<string>();
+        transferenciaDetails.ForEach(item => productIds.Add(item.ProductId));
+        var builder = Builders<ProductStock>.Filter;
+        var filter = builder.And(builder.Eq(x => x.WarehouseId, warehouseId), builder.In("ProductId", productIds));
+        var productStocks = await _collection.Find(filter).ToListAsync();
+        transferenciaDetails.ForEach(item =>
+        {
+            item.Id = string.Empty;
+            var products = productStocks.Where(x => x.ProductId == item.ProductId).ToList();
+            var entrada = products.Where(x => x.Type == InventoryType.ENTRADA).Sum(x => x.Quantity);
+            var salida = products.Where(x => x.Type == InventoryType.SALIDA).Sum(x => x.Quantity);
+            item.CantExistente = entrada - salida;
+            item.CantRestante = item.CantExistente - item.CantTransferido;
+        });
+        return transferenciaDetails;
+    }
+
 }

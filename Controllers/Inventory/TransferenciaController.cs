@@ -13,10 +13,12 @@ namespace Nebula.Controllers.Inventory;
 public class TransferenciaController : ControllerBase
 {
     private readonly TransferenciaService _transferenciaService;
+    private readonly ValidateStockService _validateStockService;
 
-    public TransferenciaController(TransferenciaService transferenciaService)
+    public TransferenciaController(TransferenciaService transferenciaService, ValidateStockService validateStockService)
     {
         _transferenciaService = transferenciaService;
+        _validateStockService = validateStockService;
     }
 
     [HttpGet("Index")]
@@ -54,6 +56,13 @@ public class TransferenciaController : ControllerBase
     {
         var transferencia = await _transferenciaService.GetAsync(id);
         await _transferenciaService.RemoveAsync(transferencia.Id);
+        return Ok(transferencia);
+    }
+
+    [HttpGet("Validate/{id}")]
+    public async Task<IActionResult> Validate(string id)
+    {
+        var transferencia = await _validateStockService.ValidarTransferencia(id);
         return Ok(transferencia);
     }
 }

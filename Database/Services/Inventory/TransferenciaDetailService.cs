@@ -17,4 +17,14 @@ public class TransferenciaDetailService : CrudOperationService<TransferenciaDeta
 
     public async Task<long> CountDocumentsAsync(string id) =>
         await _collection.CountDocumentsAsync(x => x.TransferenciaId == id);
+
+    public async Task<DeleteResult> DeleteManyAsync(string transferenciaId)
+    {
+        var builder = Builders<TransferenciaDetail>.Filter;
+        var filter = builder.Eq(x => x.TransferenciaId, transferenciaId);
+        return await _collection.DeleteManyAsync(filter);
+    }
+
+    public async Task InsertManyAsync(List<TransferenciaDetail> transferenciaDetails) =>
+        await _collection.InsertManyAsync(transferenciaDetails);
 }
