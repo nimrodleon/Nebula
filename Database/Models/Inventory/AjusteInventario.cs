@@ -41,6 +41,11 @@ public class AjusteInventario : Generic
     public string Status { get; set; } = InventoryStatus.BORRADOR;
 
     /// <summary>
+    /// Observación.
+    /// </summary>
+    public string Remark { get; set; } = string.Empty;
+
+    /// <summary>
     /// Fecha de Registro.
     /// </summary>
     public string CreatedAt { get; set; } = DateTime.Now.ToString("yyyy-MM-dd");
