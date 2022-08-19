@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Helpers;
 using Nebula.Database.Models.Inventory;
-using Nebula.Database.Services;
+using Nebula.Database.Services.Inventory;
 
 namespace Nebula.Controllers.Inventory;
 
@@ -11,9 +11,9 @@ namespace Nebula.Controllers.Inventory;
 [ApiController]
 public class LocationController : ControllerBase
 {
-    private readonly CrudOperationService<Location> _locationService;
+    private readonly LocationService _locationService;
 
-    public LocationController(CrudOperationService<Location> locationService)
+    public LocationController(LocationService locationService)
     {
         _locationService = locationService;
     }
@@ -56,5 +56,12 @@ public class LocationController : ControllerBase
         var location = await _locationService.GetAsync(id);
         await _locationService.RemoveAsync(location.Id);
         return Ok(location);
+    }
+
+    [HttpGet("Warehouse/{id}")]
+    public async Task<IActionResult> Warehouse(string id)
+    {
+        var locations = await _locationService.GetByWarehouseIdAsync(id);
+        return Ok(locations);
     }
 }
