@@ -70,6 +70,8 @@ builder.Services.AddSingleton<ProductStockService>();
 builder.Services.AddSingleton<ValidateStockService>();
 builder.Services.AddSingleton<TransferenciaService>();
 builder.Services.AddSingleton<TransferenciaDetailService>();
+builder.Services.AddSingleton<AjusteInventarioService>();
+builder.Services.AddSingleton<AjusteInventarioDetailService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

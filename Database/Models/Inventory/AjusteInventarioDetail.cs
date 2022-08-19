@@ -3,7 +3,7 @@ using MongoDB.Bson;
 
 namespace Nebula.Database.Models.Inventory;
 
-public class AjusteInventarioDetail
+public class AjusteInventarioDetail : Generic
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

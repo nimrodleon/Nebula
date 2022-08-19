@@ -4,7 +4,7 @@ using Nebula.Database.Helpers;
 
 namespace Nebula.Database.Models.Inventory;
 
-public class AjusteInventario
+public class AjusteInventario : Generic
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

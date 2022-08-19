@@ -10,11 +10,31 @@ public class LocationDetailService : CrudOperationService<LocationDetail>
 
     public async Task<List<LocationDetail>> GetListAsync(string id)
     {
-        var filter = Builders<LocationDetail>.Filter;
-        var query = filter.Eq(x => x.LocationId, id);
-        return await _collection.Find(query).ToListAsync();
+        var builder = Builders<LocationDetail>.Filter;
+        var filter = builder.Eq(x => x.LocationId, id);
+        return await _collection.Find(filter).ToListAsync();
     }
 
     public async Task<long> CountDocumentsAsync(string id) =>
         await _collection.CountDocumentsAsync(x => x.LocationId == id);
+
+    public async Task<List<AjusteInventarioDetail>> GetAjusteInventarioDetailsAsync(string locationId, string ajusteInventarioId)
+    {
+        var locationDetails = await GetListAsync(locationId);
+        var ajusteInventarioDetails = new List<AjusteInventarioDetail>();
+        locationDetails.ForEach(item =>
+        {
+            ajusteInventarioDetails.Add(new AjusteInventarioDetail()
+            {
+                Id = string.Empty,
+                AjusteInventarioId = ajusteInventarioId,
+                ProductId = item.ProductId,
+                ProductName = item.ProductName,
+                CantExistente = -1,
+                CantContada = 0,
+                CantRestante = -1,
+            });
+        });
+        return ajusteInventarioDetails;
+    }
 }
