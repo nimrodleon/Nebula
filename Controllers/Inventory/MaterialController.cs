@@ -28,6 +28,13 @@ public class MaterialController : ControllerBase
         return Ok(responseData);
     }
 
+    [HttpGet("Contact/{id}")]
+    public async Task<IActionResult> Index([FromQuery] DateQuery model, string id)
+    {
+        var responseData = await _materialService.GetListByContactIdAsync(model, id);
+        return Ok(responseData);
+    }
+
     [HttpGet("Show/{id}")]
     public async Task<IActionResult> Show(string id)
     {
