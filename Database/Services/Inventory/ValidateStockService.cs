@@ -1,5 +1,6 @@
 using Nebula.Database.Helpers;
 using Nebula.Database.Models.Inventory;
+using Nebula.Database.Services.Sales;
 
 namespace Nebula.Database.Services.Inventory;
 
@@ -14,8 +15,9 @@ public class ValidateStockService
     private readonly AjusteInventarioDetailService _ajusteInventarioDetailService;
     private readonly MaterialService _materialService;
     private readonly MaterialDetailService _materialDetailService;
+    private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
 
-    public ValidateStockService(ProductStockService productStockService, InventoryNotasService inventoryNotasService, InventoryNotasDetailService inventoryNotasDetailService, TransferenciaService transferenciaService, TransferenciaDetailService transferenciaDetailService, AjusteInventarioService ajusteInventarioService, AjusteInventarioDetailService ajusteInventarioDetailService, MaterialService materialService, MaterialDetailService materialDetailService)
+    public ValidateStockService(ProductStockService productStockService, InventoryNotasService inventoryNotasService, InventoryNotasDetailService inventoryNotasDetailService, TransferenciaService transferenciaService, TransferenciaDetailService transferenciaDetailService, AjusteInventarioService ajusteInventarioService, AjusteInventarioDetailService ajusteInventarioDetailService, MaterialService materialService, MaterialDetailService materialDetailService, InvoiceSaleDetailService invoiceSaleDetailService)
     {
         _productStockService = productStockService;
         _inventoryNotasService = inventoryNotasService;
@@ -26,6 +28,7 @@ public class ValidateStockService
         _ajusteInventarioDetailService = ajusteInventarioDetailService;
         _materialService = materialService;
         _materialDetailService = materialDetailService;
+        _invoiceSaleDetailService = invoiceSaleDetailService;
     }
 
     public async Task<InventoryNotas> ValidarNotas(string id)
@@ -132,4 +135,10 @@ public class ValidateStockService
         await _materialService.UpdateAsync(material.Id, material);
         return material;
     }
+
+    //public async Task ValidarInvoiceSale(string id)
+    //{
+    //    var invoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(id);
+
+    //}
 }
