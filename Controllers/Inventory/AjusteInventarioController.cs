@@ -14,11 +14,13 @@ public class AjusteInventarioController : ControllerBase
 {
     private readonly AjusteInventarioService _ajusteInventarioService;
     private readonly AjusteInventarioDetailService _ajusteInventarioDetailService;
+    private readonly ValidateStockService _validateStockService;
 
-    public AjusteInventarioController(AjusteInventarioService ajusteInventarioService, AjusteInventarioDetailService ajusteInventarioDetailService)
+    public AjusteInventarioController(AjusteInventarioService ajusteInventarioService, AjusteInventarioDetailService ajusteInventarioDetailService, ValidateStockService validateStockService)
     {
         _ajusteInventarioService = ajusteInventarioService;
         _ajusteInventarioDetailService = ajusteInventarioDetailService;
+        _validateStockService = validateStockService;
     }
 
     [HttpGet("Index")]
@@ -57,6 +59,13 @@ public class AjusteInventarioController : ControllerBase
     {
         var ajusteInventario = await _ajusteInventarioService.GetAsync(id);
         await _ajusteInventarioService.RemoveAsync(ajusteInventario.Id);
+        return Ok(ajusteInventario);
+    }
+
+    [HttpGet("Validate/{id}")]
+    public async Task<IActionResult> Validate(string id)
+    {
+        var ajusteInventario = await _validateStockService.ValidarAjusteInventario(id);
         return Ok(ajusteInventario);
     }
 }

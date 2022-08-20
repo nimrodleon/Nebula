@@ -13,10 +13,12 @@ namespace Nebula.Controllers.Inventory;
 public class MaterialController : ControllerBase
 {
     private readonly MaterialService _materialService;
+    private readonly ValidateStockService _validateStockService;
 
-    public MaterialController(MaterialService materialService)
+    public MaterialController(MaterialService materialService, ValidateStockService validateStockService)
     {
         _materialService = materialService;
+        _validateStockService = validateStockService;
     }
 
     [HttpGet("Index")]
@@ -57,4 +59,10 @@ public class MaterialController : ControllerBase
         return Ok(material);
     }
 
+    [HttpGet("Validate/{id}")]
+    public async Task<IActionResult> Validate(string id)
+    {
+        var material = await _validateStockService.ValidarMaterial(id);
+        return Ok(material);
+    }
 }
