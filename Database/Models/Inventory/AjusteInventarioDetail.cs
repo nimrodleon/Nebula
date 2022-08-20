@@ -33,9 +33,4 @@ public class AjusteInventarioDetail : Generic
     /// Cantidad Contada.
     /// </summary>
     public long CantContada { get; set; }
-
-    /// <summary>
-    /// Cantidad Restante.
-    /// </summary>
-    public long CantRestante { get; set; }
 }

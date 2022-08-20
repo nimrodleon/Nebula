@@ -32,7 +32,6 @@ public class LocationDetailService : CrudOperationService<LocationDetail>
                 ProductName = item.ProductName,
                 CantExistente = -1,
                 CantContada = 0,
-                CantRestante = -1,
             });
         });
         return ajusteInventarioDetails;
