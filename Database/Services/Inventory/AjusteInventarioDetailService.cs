@@ -30,4 +30,13 @@ public class AjusteInventarioDetailService : CrudOperationService<AjusteInventar
         await _collection.InsertManyAsync(ajusteInventarioDetails);
     }
 
+    public async Task<DeleteResult> DeleteManyAsync(string ajusteInventarioId)
+    {
+        var builder = Builders<AjusteInventarioDetail>.Filter;
+        var filter = builder.Eq(x => x.AjusteInventarioId, ajusteInventarioId);
+        return await _collection.DeleteManyAsync(filter);
+    }
+
+    public async Task InsertManyAsync(List<AjusteInventarioDetail> ajusteInventarioDetails) =>
+        await _collection.InsertManyAsync(ajusteInventarioDetails);
 }
