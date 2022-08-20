@@ -12,8 +12,10 @@ public class ValidateStockService
     private readonly TransferenciaDetailService _transferenciaDetailService;
     private readonly AjusteInventarioService _ajusteInventarioService;
     private readonly AjusteInventarioDetailService _ajusteInventarioDetailService;
+    private readonly MaterialService _materialService;
+    private readonly MaterialDetailService _materialDetailService;
 
-    public ValidateStockService(ProductStockService productStockService, InventoryNotasService inventoryNotasService, InventoryNotasDetailService inventoryNotasDetailService, TransferenciaService transferenciaService, TransferenciaDetailService transferenciaDetailService, AjusteInventarioService ajusteInventarioService, AjusteInventarioDetailService ajusteInventarioDetailService)
+    public ValidateStockService(ProductStockService productStockService, InventoryNotasService inventoryNotasService, InventoryNotasDetailService inventoryNotasDetailService, TransferenciaService transferenciaService, TransferenciaDetailService transferenciaDetailService, AjusteInventarioService ajusteInventarioService, AjusteInventarioDetailService ajusteInventarioDetailService, MaterialService materialService, MaterialDetailService materialDetailService)
     {
         _productStockService = productStockService;
         _inventoryNotasService = inventoryNotasService;
@@ -22,6 +24,8 @@ public class ValidateStockService
         _transferenciaDetailService = transferenciaDetailService;
         _ajusteInventarioService = ajusteInventarioService;
         _ajusteInventarioDetailService = ajusteInventarioDetailService;
+        _materialService = materialService;
+        _materialDetailService = materialDetailService;
     }
 
     public async Task<InventoryNotas> ValidarNotas(string id)
@@ -105,5 +109,27 @@ public class ValidateStockService
         ajusteInventario.Status = InventoryStatus.VALIDADO;
         await _ajusteInventarioService.UpdateAsync(ajusteInventario.Id, ajusteInventario);
         return ajusteInventario;
+    }
+
+    public async Task<Material> ValidarMaterial(string id)
+    {
+        var material = await _materialService.GetAsync(id);
+        var materialDetails = await _materialDetailService.GetListAsync(material.Id);
+        var productStocks = new List<ProductStock>();
+        materialDetails.ForEach(item =>
+        {
+            productStocks.Add(new ProductStock()
+            {
+                Id = string.Empty,
+                WarehouseId = item.WarehouseId,
+                ProductId = item.ProductId,
+                Type = InventoryType.SALIDA,
+                Quantity = item.CantUsado,
+            });
+        });
+        await _productStockService.CreateAsync(productStocks);
+        material.Status = InventoryStatus.VALIDADO;
+        await _materialService.UpdateAsync(material.Id, material);
+        return material;
     }
 }
