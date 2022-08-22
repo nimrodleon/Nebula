@@ -78,9 +78,9 @@ public class ValidateStockService
                 Quantity = item.CantTransferido,
             });
         });
+        transferenciaDetails = await _productStockService.GetTransferenciaDetailsAsync(transferenciaDetails, transferencia.WarehouseOriginId);
         await _productStockService.CreateAsync(productStocksEntrada);
         await _productStockService.CreateAsync(productStocksSalida);
-        transferenciaDetails = await _productStockService.GetTransferenciaDetailsAsync(transferenciaDetails, transferencia.WarehouseOriginId);
         await _transferenciaDetailService.DeleteManyAsync(transferencia.Id);
         await _transferenciaDetailService.InsertManyAsync(transferenciaDetails);
         transferencia.Status = InventoryStatus.VALIDADO;
