@@ -136,9 +136,21 @@ public class ValidateStockService
         return material;
     }
 
-    //public async Task ValidarInvoiceSale(string id)
-    //{
-    //    var invoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(id);
-
-    //}
+    public async Task ValidarInvoiceSale(string id)
+    {
+        var invoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(id);
+        var productStocks = new List<ProductStock>();
+        invoiceSaleDetails.ForEach(item =>
+        {
+            productStocks.Add(new ProductStock()
+            {
+                Id = string.Empty,
+                WarehouseId = item.WarehouseId,
+                ProductId = item.CodProducto,
+                Type = InventoryType.SALIDA,
+                Quantity = (long)item.CtdUnidadItem,
+            });
+        });
+        await _productStockService.CreateAsync(productStocks);
+    }
 }

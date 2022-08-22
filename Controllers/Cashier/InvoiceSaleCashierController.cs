@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Helpers;
 using Nebula.Database.Models.Sales;
 using Nebula.Database.Services.Cashier;
+using Nebula.Database.Services.Inventory;
 using Nebula.Database.Services.Sales;
 using Nebula.Database.ViewModels.Cashier;
 
@@ -15,12 +16,13 @@ public class InvoiceSaleCashierController : ControllerBase
 {
     private readonly CashierSaleService _cashierSaleService;
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
+    private readonly ValidateStockService _validateStockService;
 
-    public InvoiceSaleCashierController(CashierSaleService cashierSaleService,
-        InvoiceSaleDetailService invoiceSaleDetailService)
+    public InvoiceSaleCashierController(CashierSaleService cashierSaleService, InvoiceSaleDetailService invoiceSaleDetailService, ValidateStockService validateStockService)
     {
         _cashierSaleService = cashierSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
+        _validateStockService = validateStockService;
     }
 
     /// <summary>
@@ -37,6 +39,9 @@ public class InvoiceSaleCashierController : ControllerBase
             _cashierSaleService.SetModel(model);
             var invoiceSale = await _cashierSaleService.SaveChanges(id);
             bool fileExist = true;
+
+            // Validar Inventario.
+            await _validateStockService.ValidarInvoiceSale(invoiceSale.Id);
 
             // Configurar valor de retorno.
             model.Comprobante.InvoiceSale = invoiceSale.Id;
