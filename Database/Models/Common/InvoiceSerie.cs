@@ -18,9 +18,14 @@ public class InvoiceSerie : Generic
     public string Name { get; set; } = string.Empty;
 
     /// <summary>
-    /// Identificar Almacén.
+    /// Identificador del Almacén.
     /// </summary>
-    public string Warehouse { get; set; } = string.Empty;
+    public string WarehouseId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Nombre del Almacén.
+    /// </summary>
+    public string WarehouseName { get; set; } = string.Empty;
 
     /// <summary>
     /// Serie Factura.
