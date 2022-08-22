@@ -142,4 +142,9 @@ public class InvoiceSaleDetail : Generic
     /// Valor REFERENCIAL unitario (gratuitos) cac:InvoiceLine/cac:PricingReference/cac:AlternativeConditionPrice
     /// </summary>
     public decimal MtoValorReferencialUnitario { get; set; } = 0;
+
+    /// <summary>
+    /// Identificador del Almacén.
+    /// </summary>
+    public string WarehouseId { get; set; } = string.Empty;
 }

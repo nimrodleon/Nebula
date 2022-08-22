@@ -68,7 +68,7 @@ public class GenerarVenta
     /// <param name="invoice">ID Cabecera</param>
     /// <param name="cajaDiaria">ID Caja diaria</param>
     /// <returns>Detalles de Factura</returns>
-    public List<InvoiceSaleDetail> GetInvoiceSaleDetails(string invoice, string cajaDiaria)
+    public List<InvoiceSaleDetail> GetInvoiceSaleDetails(string invoice, string cajaDiaria, string warehouseId)
     {
         var invoiceSaleDetails = new List<InvoiceSaleDetail>();
         DetallesComprobante.ForEach(item =>
@@ -130,7 +130,8 @@ public class GenerarVenta
                 MtoTriIcbperUnidad = item.ValorIcbper,
                 // Precio de Venta Unitario.
                 MtoPrecioVentaUnitario = item.Price,
-                MtoValorVentaItem = item.MtoBaseIgvItem
+                MtoValorVentaItem = item.MtoBaseIgvItem,
+                WarehouseId = warehouseId,
             });
         });
         return invoiceSaleDetails;
