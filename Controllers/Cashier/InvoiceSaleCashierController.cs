@@ -38,7 +38,7 @@ public class InvoiceSaleCashierController : ControllerBase
         {
             _cashierSaleService.SetModel(model);
             var invoiceSale = await _cashierSaleService.SaveChanges(id);
-            bool fileExist = true;
+            bool fileExist = await _cashierSaleService.JsonInvoiceParser(invoiceSale.Id);
 
             // Validar Inventario.
             await _validateStockService.ValidarInvoiceSale(invoiceSale.Id);
