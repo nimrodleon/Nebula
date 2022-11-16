@@ -13,7 +13,7 @@ public class JsonBoletaParser
         cabecera.horEmision = dto.InvoiceSale.HorEmision;
         cabecera.fecVencimiento = dto.InvoiceSale.FecVencimiento;
         cabecera.codLocalEmisor = dto.InvoiceSale.CodLocalEmisor;
-        cabecera.tipDocUsuario = dto.InvoiceSale.TipDocUsuario;
+        cabecera.tipDocUsuario = dto.InvoiceSale.TipDocUsuario.Split(":")[0];
         cabecera.numDocUsuario = dto.InvoiceSale.NumDocUsuario;
         cabecera.rznSocialUsuario = dto.InvoiceSale.RznSocialUsuario;
         cabecera.tipMoneda = dto.InvoiceSale.TipMoneda;

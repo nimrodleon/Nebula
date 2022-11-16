@@ -63,8 +63,8 @@ public class FacturadorService
 
         if (invoiceSaleDto.InvoiceSale.DocType == "FACTURA")
         {
-            //var facturaParser = new JsonFacturaParser(invoiceSaleDto);
-            //facturaParser.CreateJson(pathFile);
+            var facturaParser = new JsonFacturaParser(invoiceSaleDto);
+            facturaParser.CreateJson(pathFile);
         }
 
         return File.Exists(pathFile);

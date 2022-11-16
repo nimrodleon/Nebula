@@ -20,20 +20,20 @@ public class InvoiceDetail
     #endregion
     #region Tributo ISC (2000)
     public string codTriISC { get; set; } = "-";
-    public string mtoIscItem { get; set; } = string.Empty;
-    public string mtoBaseIscItem { get; set; } = string.Empty;
-    public string nomTributoIscItem { get; set; } = string.Empty;
-    public string codTipTributoIscItem { get; set; } = string.Empty;
-    public string tipSisISC { get; set; } = string.Empty;
-    public string porIscItem { get; set; } = string.Empty;
+    //public string mtoIscItem { get; set; } = string.Empty;
+    //public string mtoBaseIscItem { get; set; } = string.Empty;
+    //public string nomTributoIscItem { get; set; } = string.Empty;
+    //public string codTipTributoIscItem { get; set; } = string.Empty;
+    //public string tipSisISC { get; set; } = string.Empty;
+    //public string porIscItem { get; set; } = string.Empty;
     #endregion
     #region Tributo Otro 9999
     public string codTriOtro { get; set; } = "-";
-    public string mtoTriOtroItem { get; set; } = string.Empty;
-    public string mtoBaseTriOtroItem { get; set; } = string.Empty;
-    public string nomTributoOtroItem { get; set; } = string.Empty;
-    public string codTipTributoOtroItem { get; set; } = string.Empty;
-    public string porTriOtroItem { get; set; } = string.Empty;
+    //public string mtoTriOtroItem { get; set; } = string.Empty;
+    //public string mtoBaseTriOtroItem { get; set; } = string.Empty;
+    //public string nomTributoOtroItem { get; set; } = string.Empty;
+    //public string codTipTributoOtroItem { get; set; } = string.Empty;
+    //public string porTriOtroItem { get; set; } = string.Empty;
     #endregion
     #region Tributo ICBPER 7152
     public string codTriIcbper { get; set; } = "-";
