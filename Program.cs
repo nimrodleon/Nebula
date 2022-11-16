@@ -8,6 +8,7 @@ using Nebula.Database;
 using Nebula.Database.Services;
 using Nebula.Database.Services.Cashier;
 using Nebula.Database.Services.Common;
+using Nebula.Database.Services.Facturador;
 using Nebula.Database.Services.Inventory;
 using Nebula.Database.Services.Sales;
 
@@ -72,6 +73,7 @@ builder.Services.AddSingleton<TransferenciaService>();
 builder.Services.AddSingleton<TransferenciaDetailService>();
 builder.Services.AddSingleton<AjusteInventarioService>();
 builder.Services.AddSingleton<AjusteInventarioDetailService>();
+builder.Services.AddSingleton<FacturadorService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
