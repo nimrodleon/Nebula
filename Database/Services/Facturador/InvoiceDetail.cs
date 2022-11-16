@@ -45,5 +45,5 @@ public class InvoiceDetail
     #endregion
     public string mtoPrecioVentaUnitario { get; set; } = string.Empty;
     public string mtoValorVentaItem { get; set; } = string.Empty;
-    public string mtoValorReferencialUnitario { get; set; } = "-";
+    public string mtoValorReferencialUnitario { get; set; } = "0.00";
 }

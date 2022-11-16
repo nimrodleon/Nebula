@@ -1,3 +1,4 @@
+using Nebula.Database.Helpers;
 using System.Text.Json;
 
 namespace Nebula.Database.Services.Facturador;
@@ -25,7 +26,7 @@ public class JsonBoletaParser
         {
             detalle.Add(new InvoiceDetail
             {
-                codUnidadMedida = item.CodUnidadMedida,
+                codUnidadMedida = item.CodUnidadMedida.Split(":")[0],
                 ctdUnidadItem = item.CtdUnidadItem.ToString("N2"),
                 codProducto = item.CodProducto,
                 codProductoSUNAT = item.CodProductoSunat,
@@ -64,8 +65,13 @@ public class JsonBoletaParser
                 mtoBaseImponible = item.MtoBaseImponible.ToString("N2"),
                 mtoTributo = item.MtoTributo.ToString("N2"),
             });
+            var montoTotal = item.MtoBaseImponible + item.MtoTributo;
+            leyendas.Add(new Leyenda
+            {
+                codLeyenda = item.IdeTributo,
+                desLeyenda = new NumberToLetters(montoTotal).ToString()
+            });
         });
-
     }
 
     public Invoice cabecera { get; set; } = new Invoice();

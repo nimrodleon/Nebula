@@ -52,7 +52,9 @@ public class FacturadorService
         if (invoiceSaleDto.InvoiceSale.DocType == "FACTURA") typeDoc = "01";
         string fileName = $"{configuration.Ruc}-{typeDoc}-{invoiceSaleDto.InvoiceSale.Serie}-{invoiceSaleDto.InvoiceSale.Number}.json";
         // generar archivo json.
-        string pathFile = Path.Combine(configuration.FileSunat, fileName);
+        string pathBase = Path.Combine(configuration.FileSunat, "sfs");
+        string pathData = Path.Combine(pathBase, "DATA");
+        string pathFile = Path.Combine(pathData, fileName);
         if (invoiceSaleDto.InvoiceSale.DocType == "BOLETA")
         {
             var boletaParser = new JsonBoletaParser(invoiceSaleDto);
