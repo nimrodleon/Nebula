@@ -53,6 +53,19 @@ public class JsonBoletaParser
                 mtoValorReferencialUnitario = item.MtoValorReferencialUnitario.ToString("N2")
             });
         });
+        // tributos.
+        dto.TributoSales.ForEach(item =>
+        {
+            tributos.Add(new Tributo
+            {
+                ideTributo = item.IdeTributo,
+                nomTributo = item.NomTributo,
+                codTipTributo = item.CodTipTributo,
+                mtoBaseImponible = item.MtoBaseImponible.ToString("N2"),
+                mtoTributo = item.MtoTributo.ToString("N2"),
+            });
+        });
+
     }
 
     public Invoice cabecera { get; set; } = new Invoice();
