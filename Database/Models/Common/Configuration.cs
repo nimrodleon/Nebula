@@ -63,6 +63,11 @@ public class Configuration
     public string ContactId { get; set; } = string.Empty;
 
     /// <summary>
+    /// #Dias para créditos automáticos.
+    /// </summary>
+    public int DiasPlazo { get; set; } = 0;
+
+    /// <summary>
     /// URL Api. CPE - SUNAT.
     /// </summary>
     public string UrlApi { get; set; } = string.Empty;
@@ -71,9 +76,4 @@ public class Configuration
     /// Path Archivos SUNAT.
     /// </summary>
     public string FileSunat { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Path Archivos de Control.
-    /// </summary>
-    public string FileControl { get; set; } = string.Empty;
 }
