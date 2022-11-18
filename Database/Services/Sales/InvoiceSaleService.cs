@@ -1,12 +1,23 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Database.Models.Sales;
+using Nebula.Database.ViewModels.Common;
 
 namespace Nebula.Database.Services.Sales;
 
 public class InvoiceSaleService : CrudOperationService<InvoiceSale>
 {
     public InvoiceSaleService(IOptions<DatabaseSettings> options) : base(options) { }
+
+    public async Task<List<InvoiceSale>> GetListAsync(DateQuery query)
+    {
+        var builder = Builders<InvoiceSale>.Filter;
+        var filter = builder.And(
+            builder.Eq(x => x.Month, query.Month),
+            builder.Eq(x => x.Year, query.Year),
+            builder.In("DocType", new List<string>() { "BOLETA", "FACTURA" }));
+        return await _collection.Find(filter).ToListAsync();
+    }
 
     public async Task<InvoiceSale> GetByIdAsync(string id) =>
         await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
