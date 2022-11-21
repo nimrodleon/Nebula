@@ -9,4 +9,9 @@ public class ItemComprobanteDto
     public string DesItem { get; set; } = string.Empty;
     public bool TriIcbper { get; set; } = false;
     public string IgvSunat { get; set; } = "GRAVADO";
+    #region INVENTORY_CONFIGURATION!
+    public string ProductId { get; set; } = "-";
+    public string SalidaInventario { get; set; } = "NO";
+    public string WarehouseId { get; set; } = "-";
+    #endregion
 }
