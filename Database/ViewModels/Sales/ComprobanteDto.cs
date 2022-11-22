@@ -5,6 +5,40 @@ namespace Nebula.Database.ViewModels.Sales;
 
 public class ComprobanteDto
 {
+    struct Item
+    {
+        /// <summary>
+        /// Valor Unitario sin Ningún Tributo.
+        /// </summary>
+        public decimal MtoValorUnitario { get; set; }
+        /// <summary>
+        /// Sumatorio de Todos los Tributos sin ICBPER.
+        /// </summary>
+        public decimal SumTotTributosItem { get; set; }
+        /// <summary>
+        /// Monto de IGV por ítem.
+        /// </summary>
+        public decimal MtoIgvItem { get; set; }
+        /// <summary>
+        /// Base Imponible IGV por Item.
+        /// Siempre mayor a cero. Si el item tiene ISC, agregar dicho monto a la base imponible.
+        /// </summary>
+        public decimal MtoBaseIgvItem { get; set; }
+        /// <summary>
+        /// Monto de tributo ICBPER por iItem.
+        /// </summary>
+        public decimal MtoTriIcbperItem { get; set; }
+        /// <summary>
+        /// Total Venta Total Item sin Ningún Tributo.
+        /// </summary>
+        public decimal MtoValorVentaItem { get; set; }
+    }
+    struct Total
+    {
+        public decimal SumTotValVenta { get; set; }
+        public decimal SumTotTributos { get; set; }
+        public decimal SumImpVenta { get; set; }
+    }
     private Configuration _configuration = new Configuration();
     #region ORIGIN_HTTP_REQUEST!
     public CabeceraComprobanteDto Cabecera { get; set; } = new CabeceraComprobanteDto();
@@ -70,6 +104,11 @@ public class ComprobanteDto
                     codTipTributoIgvItem = "FRE";
                     break;
             }
+            Item itemObj = new Item();
+            decimal porcentajeIGV = item.IgvSunat == "GRAVADO" ? (_configuration.PorcentajeIgv / 100) + 1 : 1;
+            itemObj.MtoValorVentaItem = item.ImporteTotalItem / porcentajeIGV;
+            itemObj.MtoTriIcbperItem = item.CtdUnidadItem * _configuration.ValorImpuestoBolsa;
+
             // agregar items al comprobante.
             invoiceSaleDetails.Add(new InvoiceSaleDetail
             {
@@ -94,14 +133,14 @@ public class ComprobanteDto
                 PorIgvItem = item.IgvSunat == "EXONERADO" ? "0.00" : _configuration.PorcentajeIgv.ToString("N2"),
                 // Tributo ICBPER 7152.
                 CodTriIcbper = item.TriIcbper ? "7152" : "-",
-                MtoTriIcbperItem = item.TriIcbper ? _configuration.ValorImpuestoBolsa : 0,
+                MtoTriIcbperItem = itemObj.MtoTriIcbperItem,
                 CtdBolsasTriIcbperItem = item.TriIcbper ? Convert.ToInt32(item.CtdUnidadItem) : 0,
                 NomTributoIcbperItem = "ICBPER",
                 CodTipTributoIcbperItem = "OTH",
-                // MtoTriIcbperUnidad =
+                MtoTriIcbperUnidad = item.TriIcbper ? _configuration.ValorImpuestoBolsa : 0,
                 // Precio de Venta Unitario.
-                MtoPrecioVentaUnitario = item.MtoPrecioVentaUnitario,
-                // MtoValorVentaItem =
+                MtoPrecioVentaUnitario = item.SalidaInventario == "SI" ? item.MtoPrecioVentaUnitario : 0,
+                MtoValorVentaItem = itemObj.MtoValorVentaItem,
                 WarehouseId = item.WarehouseId,
             });
         });
