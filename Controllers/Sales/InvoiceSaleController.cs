@@ -15,13 +15,16 @@ public class InvoiceSaleController : ControllerBase
     private readonly InvoiceSaleService _invoiceSaleService;
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly TributoSaleService _tributoSaleService;
+    private readonly ComprobanteService _comprobanteService;
 
     public InvoiceSaleController(InvoiceSaleService invoiceSaleService,
-        InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService)
+        InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService,
+        ComprobanteService comprobanteService)
     {
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _tributoSaleService = tributoSaleService;
+        _comprobanteService = comprobanteService;
     }
 
     [HttpGet("Index")]
@@ -29,6 +32,14 @@ public class InvoiceSaleController : ControllerBase
     {
         var invoiceSales = await _invoiceSaleService.GetListAsync(model);
         return Ok(invoiceSales);
+    }
+
+    [HttpPost("Create")]
+    public async Task<IActionResult> Create([FromBody] ComprobanteDto dto)
+    {
+        _comprobanteService.SetComprobanteDto(dto);
+        var invoiceSale = await _comprobanteService.SaveChangesAsync();
+        return Ok(invoiceSale);
     }
 
     [HttpGet("Show/{id}")]

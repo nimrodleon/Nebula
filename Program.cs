@@ -74,6 +74,7 @@ builder.Services.AddSingleton<TransferenciaDetailService>();
 builder.Services.AddSingleton<AjusteInventarioService>();
 builder.Services.AddSingleton<AjusteInventarioDetailService>();
 builder.Services.AddSingleton<FacturadorService>();
+builder.Services.AddSingleton<ComprobanteService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
