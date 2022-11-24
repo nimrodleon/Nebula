@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Helpers;
+using Nebula.Database.Services.Facturador;
 using Nebula.Database.Services.Sales;
 using Nebula.Database.ViewModels.Common;
 using Nebula.Database.ViewModels.Sales;
@@ -16,15 +17,17 @@ public class InvoiceSaleController : ControllerBase
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly TributoSaleService _tributoSaleService;
     private readonly ComprobanteService _comprobanteService;
+    private readonly FacturadorService _facturadorService;
 
     public InvoiceSaleController(InvoiceSaleService invoiceSaleService,
         InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService,
-        ComprobanteService comprobanteService)
+        ComprobanteService comprobanteService, FacturadorService facturadorService)
     {
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _tributoSaleService = tributoSaleService;
         _comprobanteService = comprobanteService;
+        _facturadorService = facturadorService;
     }
 
     [HttpGet("Index")]
@@ -39,6 +42,7 @@ public class InvoiceSaleController : ControllerBase
     {
         _comprobanteService.SetComprobanteDto(dto);
         var invoiceSale = await _comprobanteService.SaveChangesAsync();
+        await _facturadorService.JsonInvoiceParser(invoiceSale.Id);
         return Ok(invoiceSale);
     }
 
