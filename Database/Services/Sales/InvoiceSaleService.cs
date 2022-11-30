@@ -16,7 +16,7 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>
             builder.Eq(x => x.Month, query.Month),
             builder.Eq(x => x.Year, query.Year),
             builder.In("DocType", new List<string>() { "BOLETA", "FACTURA" }));
-        return await _collection.Find(filter).ToListAsync();
+        return await _collection.Find(filter).Sort(new SortDefinitionBuilder<InvoiceSale>().Descending("$natural")).ToListAsync();
     }
 
     public async Task<InvoiceSale> GetByIdAsync(string id) =>
