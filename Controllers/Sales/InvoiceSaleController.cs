@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Helpers;
+using Nebula.Database.Services.Common;
 using Nebula.Database.Services.Facturador;
 using Nebula.Database.Services.Sales;
 using Nebula.Database.ViewModels.Common;
@@ -13,16 +14,18 @@ namespace Nebula.Controllers.Sales;
 [ApiController]
 public class InvoiceSaleController : ControllerBase
 {
+    private readonly ConfigurationService _configurationService;
     private readonly InvoiceSaleService _invoiceSaleService;
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly TributoSaleService _tributoSaleService;
     private readonly ComprobanteService _comprobanteService;
     private readonly FacturadorService _facturadorService;
 
-    public InvoiceSaleController(InvoiceSaleService invoiceSaleService,
-        InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService,
+    public InvoiceSaleController(ConfigurationService configurationService,
+        InvoiceSaleService invoiceSaleService, InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService,
         ComprobanteService comprobanteService, FacturadorService facturadorService)
     {
+        _configurationService = configurationService;
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _tributoSaleService = tributoSaleService;
@@ -66,5 +69,23 @@ public class InvoiceSaleController : ControllerBase
         await _invoiceSaleDetailService.RemoveAsync(invoiceSale.Id);
         await _tributoSaleService.RemoveAsync(invoiceSale.Id);
         return Ok(new { Ok = true, Data = invoiceSale, Msg = "El comprobante de venta ha sido borrado!" });
+    }
+
+    [AllowAnonymous]
+    [HttpGet("GetPdf/{id}")]
+    public async Task<IActionResult> GetPdf(string id)
+    {
+        var configuration = await _configurationService.GetAsync();
+        var comprobante = await _invoiceSaleService.GetAsync(id);
+        string tipDocu = string.Empty;
+        if (comprobante.DocType.Equals("FACTURA")) tipDocu = "01";
+        if (comprobante.DocType.Equals("BOLETA")) tipDocu = "03";
+        // 20520485750-03-B001-00000015
+        string nomArch = $"{configuration.Ruc}-{tipDocu}-{comprobante.Serie}-{comprobante.Number}.pdf";
+        string sfs = Path.Combine(configuration.FileSunat, "sfs");
+        string pdfFolder = Path.Combine(sfs, "REPO");
+        string pathPdf = Path.Combine(pdfFolder, nomArch);
+        FileStream stream = new FileStream(pathPdf, FileMode.Open);
+        return new FileStreamResult(stream, "application/pdf");
     }
 }
