@@ -27,11 +27,11 @@ public class JsonBoletaParser
             detalle.Add(new InvoiceDetail
             {
                 codUnidadMedida = item.CodUnidadMedida.Split(":")[0],
-                ctdUnidadItem = item.CtdUnidadItem.ToString("N2"),
+                ctdUnidadItem = item.CtdUnidadItem.ToString("N1"),
                 codProducto = item.CodProducto,
                 codProductoSUNAT = item.CodProductoSunat,
                 desItem = item.DesItem,
-                mtoValorUnitario = item.MtoValorUnitario.ToString("N2"),
+                mtoValorUnitario = item.MtoValorUnitario.ToString("N4"),
                 sumTotTributosItem = item.SumTotTributosItem.ToString("N2"),
                 // Tributo: IGV(1000).
                 codTriIGV = item.CodTriIgv,
@@ -49,9 +49,9 @@ public class JsonBoletaParser
                 codTipTributoIcbperItem = item.CodTipTributoIcbperItem,
                 mtoTriIcbperUnidad = item.MtoTriIcbperUnidad.ToString("N2"),
                 // ...
-                mtoPrecioVentaUnitario = item.MtoPrecioVentaUnitario.ToString("N2"),
+                mtoPrecioVentaUnitario = item.MtoPrecioVentaUnitario.ToString("N3"),
                 mtoValorVentaItem = item.MtoValorVentaItem.ToString("N2"),
-                mtoValorReferencialUnitario = item.MtoValorReferencialUnitario.ToString("N2")
+                mtoValorReferencialUnitario = item.MtoValorReferencialUnitario.ToString("N4")
             });
         });
         // tributos.

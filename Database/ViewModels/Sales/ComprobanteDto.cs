@@ -108,9 +108,9 @@ public class ComprobanteDto
             NumDocUsuario = Cabecera.NumDocUsuario,
             RznSocialUsuario = Cabecera.RznSocialUsuario,
             TipMoneda = _configuration.TipMoneda,
-            SumTotValVenta = decimal.Round(importeVenta.SumTotValVenta, 4),
-            SumTotTributos = decimal.Round(importeVenta.SumTotTributos, 4),
-            SumImpVenta = decimal.Round(importeVenta.SumImpVenta),
+            SumTotValVenta = importeVenta.SumTotValVenta,
+            SumTotTributos = importeVenta.SumTotTributos,
+            SumImpVenta = importeVenta.SumImpVenta,
             Year = DateTime.Now.ToString("yyyy"),
             Month = DateTime.Now.ToString("MM"),
         };
@@ -164,30 +164,30 @@ public class ComprobanteDto
                 CajaDiaria = "-",
                 TipoItem = item.TipoItem,
                 CodUnidadMedida = item.CodUnidadMedida,
-                CtdUnidadItem = decimal.Round(item.CtdUnidadItem, 4),
-                CodProducto = item.ProductId,
-                CodProductoSunat = "-",
+                CtdUnidadItem = item.CtdUnidadItem,
+                CodProducto = "-",
+                CodProductoSunat = "-", // refactorizar agregar código de barra.
                 DesItem = item.DesItem,
-                MtoValorUnitario = decimal.Round(importeItem.MtoValorUnitario, 4),
-                SumTotTributosItem = decimal.Round(importeItem.SumTotTributosItem, 4),
+                MtoValorUnitario = importeItem.MtoValorUnitario,
+                SumTotTributosItem = importeItem.SumTotTributosItem,
                 // Tributo: IGV(1000).
                 CodTriIgv = codTriIgv,
-                MtoIgvItem = decimal.Round(importeItem.MtoIgvItem, 4),
-                MtoBaseIgvItem = decimal.Round(importeItem.MtoBaseIgvItem, 4),
+                MtoIgvItem = importeItem.MtoIgvItem,
+                MtoBaseIgvItem = importeItem.MtoBaseIgvItem,
                 NomTributoIgvItem = nomTributoIgvItem,
                 CodTipTributoIgvItem = codTipTributoIgvItem,
                 TipAfeIgv = tipAfeIgv,
                 PorIgvItem = item.IgvSunat == "EXONERADO" ? "0.00" : _configuration.PorcentajeIgv.ToString("N2"),
                 // Tributo ICBPER 7152.
                 CodTriIcbper = item.TriIcbper ? "7152" : "-",
-                MtoTriIcbperItem = item.TriIcbper ? decimal.Round(importeItem.MtoTriIcbperItem, 4) : 0,
+                MtoTriIcbperItem = item.TriIcbper ? importeItem.MtoTriIcbperItem : 0,
                 CtdBolsasTriIcbperItem = item.TriIcbper ? Convert.ToInt32(item.CtdUnidadItem) : 0,
                 NomTributoIcbperItem = "ICBPER",
                 CodTipTributoIcbperItem = "OTH",
                 MtoTriIcbperUnidad = item.TriIcbper ? _configuration.ValorImpuestoBolsa : 0,
                 // Precio de Venta Unitario.
-                MtoPrecioVentaUnitario = item.SalidaInventario == "SI" ? decimal.Round(item.MtoPrecioVentaUnitario, 4) : 0,
-                MtoValorVentaItem = decimal.Round(importeItem.MtoValorVentaItem, 4),
+                MtoPrecioVentaUnitario = item.SalidaInventario == "SI" ? item.MtoPrecioVentaUnitario : 0,
+                MtoValorVentaItem = importeItem.MtoValorVentaItem,
                 WarehouseId = item.WarehouseId,
             });
         });
@@ -227,7 +227,7 @@ public class ComprobanteDto
                 IdeTributo = "9996",
                 NomTributo = "GRA",
                 CodTipTributo = "FRE",
-                MtoBaseImponible = decimal.Round(opGratuita, 4),
+                MtoBaseImponible = opGratuita,
                 MtoTributo = 0,
                 Year = DateTime.Now.ToString("yyyy"),
                 Month = DateTime.Now.ToString("MM")
@@ -242,7 +242,7 @@ public class ComprobanteDto
                 IdeTributo = "9997",
                 NomTributo = "EXO",
                 CodTipTributo = "VAT",
-                MtoBaseImponible = decimal.Round(opExonerada, 4),
+                MtoBaseImponible = opExonerada,
                 MtoTributo = 0,
                 Year = DateTime.Now.ToString("yyyy"),
                 Month = DateTime.Now.ToString("MM")
@@ -257,8 +257,8 @@ public class ComprobanteDto
                 IdeTributo = "1000",
                 NomTributo = "IGV",
                 CodTipTributo = "VAT",
-                MtoBaseImponible = decimal.Round(opGravada, 4),
-                MtoTributo = decimal.Round(totalIgv, 4),
+                MtoBaseImponible = opGravada,
+                MtoTributo = totalIgv,
                 Year = DateTime.Now.ToString("yyyy"),
                 Month = DateTime.Now.ToString("MM")
             });
@@ -273,7 +273,7 @@ public class ComprobanteDto
                 NomTributo = "ICBPER",
                 CodTipTributo = "OTH",
                 MtoBaseImponible = 0,
-                MtoTributo = decimal.Round(totalIcbper, 4),
+                MtoTributo = totalIcbper,
                 Year = DateTime.Now.ToString("yyyy"),
                 Month = DateTime.Now.ToString("MM")
             });
