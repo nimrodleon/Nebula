@@ -41,6 +41,10 @@ public class ComprobanteDto
     struct ImporteVenta
     {
         /// <summary>
+        /// Total Precio de Venta.
+        /// </summary>
+        public decimal SumPrecioVenta { get; set; }
+        /// <summary>
         /// Total valor de venta.
         /// </summary>
         public decimal SumTotValVenta { get; set; }
@@ -83,6 +87,7 @@ public class ComprobanteDto
             itemObj.MtoIgvItem = item.ImporteTotalItem - itemObj.MtoBaseIgvItem;
             itemObj.SumTotTributosItem = itemObj.MtoIgvItem; // el sistema soporta solo IGV/ICBPER.
             itemObj.MtoValorUnitario = itemObj.MtoValorVentaItem / item.CtdUnidadItem;
+            importeVenta.SumPrecioVenta += item.CtdUnidadItem * item.MtoPrecioVentaUnitario;
             importeVenta.SumTotValVenta += itemObj.MtoValorVentaItem;
             importeVenta.SumTotTributos += itemObj.SumTotTributosItem;
             importeVenta.SumTotTriIcbper += itemObj.MtoTriIcbperItem;
@@ -109,6 +114,7 @@ public class ComprobanteDto
             RznSocialUsuario = Cabecera.RznSocialUsuario,
             TipMoneda = _configuration.TipMoneda,
             SumTotValVenta = importeVenta.SumTotValVenta,
+            SumPrecioVenta = importeVenta.SumPrecioVenta,
             SumTotTributos = importeVenta.SumTotTributos,
             SumImpVenta = importeVenta.SumImpVenta,
             Year = DateTime.Now.ToString("yyyy"),

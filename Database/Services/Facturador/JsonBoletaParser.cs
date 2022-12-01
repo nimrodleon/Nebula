@@ -49,7 +49,7 @@ public class JsonBoletaParser
                 codTipTributoIcbperItem = item.CodTipTributoIcbperItem,
                 mtoTriIcbperUnidad = item.MtoTriIcbperUnidad.ToString("N2"),
                 // ...
-                mtoPrecioVentaUnitario = item.MtoPrecioVentaUnitario.ToString("N3"),
+                mtoPrecioVentaUnitario = item.MtoPrecioVentaUnitario.ToString("N2"),
                 mtoValorVentaItem = item.MtoValorVentaItem.ToString("N2"),
                 mtoValorReferencialUnitario = item.MtoValorReferencialUnitario.ToString("N4")
             });
