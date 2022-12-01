@@ -27,11 +27,11 @@ public class JsonFacturaParser
             detalle.Add(new InvoiceDetail
             {
                 codUnidadMedida = item.CodUnidadMedida.Split(":")[0],
-                ctdUnidadItem = item.CtdUnidadItem.ToString("N2"),
+                ctdUnidadItem = item.CtdUnidadItem.ToString("N1"),
                 codProducto = item.CodProducto,
                 codProductoSUNAT = item.CodProductoSunat,
                 desItem = item.DesItem,
-                mtoValorUnitario = item.MtoValorUnitario.ToString("N2"),
+                mtoValorUnitario = item.MtoValorUnitario.ToString("N4"),
                 sumTotTributosItem = item.SumTotTributosItem.ToString("N2"),
                 // Tributo: IGV(1000).
                 codTriIGV = item.CodTriIgv,
@@ -51,7 +51,7 @@ public class JsonFacturaParser
                 // ...
                 mtoPrecioVentaUnitario = item.MtoPrecioVentaUnitario.ToString("N2"),
                 mtoValorVentaItem = item.MtoValorVentaItem.ToString("N2"),
-                mtoValorReferencialUnitario = item.MtoValorReferencialUnitario.ToString("N2")
+                mtoValorReferencialUnitario = item.MtoValorReferencialUnitario.ToString("N4")
             });
         });
         // tributos.
@@ -77,7 +77,7 @@ public class JsonFacturaParser
         if (formaPago == "Contado")
         {
             datoPago.formaPago = "Contado";
-            datoPago.mtoNetoPendientePago= dto.InvoiceSale.SumImpVenta.ToString("N2");
+            datoPago.mtoNetoPendientePago = dto.InvoiceSale.SumImpVenta.ToString("N2");
             datoPago.tipMonedaMtoNetoPendientePago = dto.InvoiceSale.TipMoneda;
         }
         if (formaPago == "Credito")
