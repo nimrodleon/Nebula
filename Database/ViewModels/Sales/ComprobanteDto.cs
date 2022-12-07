@@ -12,7 +12,7 @@ public class ComprobanteDto
         /// </summary>
         public decimal MtoValorUnitario { get; set; }
         /// <summary>
-        /// Sumatorio de Todos los Tributos sin ICBPER.
+        /// Sumatoria Tributos por item, = 9 + 16 + 23
         /// </summary>
         public decimal SumTotTributosItem { get; set; }
         /// <summary>
@@ -35,6 +35,7 @@ public class ComprobanteDto
         /// <summary>
         /// El mismo valor que ItemComprobante.
         /// Solo para Generar los Tributos del Comprobante.
+        /// GRAVADO, EXONERADO, GRATUITO.
         /// </summary>
         public string IgvSunat { get; set; }
     }
@@ -81,17 +82,19 @@ public class ComprobanteDto
         {
             ImporteItem itemObj = new ImporteItem();
             decimal porcentajeIGV = item.IgvSunat == "GRAVADO" ? (_configuration.PorcentajeIgv / 100) + 1 : 1;
-            itemObj.MtoValorVentaItem = item.ImporteTotalItem / porcentajeIGV;
+            itemObj.MtoValorVentaItem = item.MtoTotalItem / porcentajeIGV;
             itemObj.MtoTriIcbperItem = item.TriIcbper ? item.CtdUnidadItem * _configuration.ValorImpuestoBolsa : 0;
-            itemObj.MtoBaseIgvItem = item.ImporteTotalItem / porcentajeIGV;
-            itemObj.MtoIgvItem = item.ImporteTotalItem - itemObj.MtoBaseIgvItem;
-            itemObj.SumTotTributosItem = itemObj.MtoIgvItem; // el sistema soporta solo IGV/ICBPER.
-            itemObj.MtoValorUnitario = itemObj.MtoValorVentaItem / item.CtdUnidadItem;
-            importeVenta.SumPrecioVenta += item.CtdUnidadItem * item.MtoPrecioVentaUnitario;
-            importeVenta.SumTotValVenta += itemObj.MtoValorVentaItem;
+            itemObj.MtoBaseIgvItem = item.MtoTotalItem / porcentajeIGV;
+            itemObj.MtoIgvItem = item.MtoTotalItem - itemObj.MtoBaseIgvItem;
+            itemObj.SumTotTributosItem = itemObj.MtoIgvItem + itemObj.MtoTriIcbperItem; // el sistema soporta solo IGV/ICBPER.
+            itemObj.MtoValorUnitario = item.IgvSunat != "GRATUITO" ? itemObj.MtoValorVentaItem / item.CtdUnidadItem : 0;
+            decimal precioVentaUnitario = item.IgvSunat != "GRATUITO" ? item.MtoPrecioVentaUnitario : 0;
             importeVenta.SumTotTributos += itemObj.SumTotTributosItem;
-            importeVenta.SumTotTriIcbper += itemObj.MtoTriIcbperItem;
-            importeVenta.SumImpVenta = importeVenta.SumTotValVenta + importeVenta.SumTotTributos + importeVenta.SumTotTriIcbper;
+            importeVenta.SumTotValVenta += item.IgvSunat != "GRATUITO" ? itemObj.MtoValorVentaItem : 0;
+            importeVenta.SumPrecioVenta += item.CtdUnidadItem * precioVentaUnitario;
+            // importeVenta.SumTotTriIcbper += itemObj.MtoTriIcbperItem;
+            // importeVenta.SumImpVenta = importeVenta.SumTotValVenta + importeVenta.SumTotTributos + importeVenta.SumTotTriIcbper;
+            importeVenta.SumImpVenta = importeVenta.SumTotValVenta + importeVenta.SumTotTributos;
         });
         return importeVenta;
     }
@@ -156,12 +159,12 @@ public class ComprobanteDto
             ImporteItem importeItem = new ImporteItem();
             importeItem.IgvSunat = item.IgvSunat;
             decimal porcentajeIGV = item.IgvSunat == "GRAVADO" ? (_configuration.PorcentajeIgv / 100) + 1 : 1;
-            importeItem.MtoValorVentaItem = item.ImporteTotalItem / porcentajeIGV;
+            importeItem.MtoValorVentaItem = item.MtoTotalItem / porcentajeIGV;
             importeItem.MtoTriIcbperItem = item.TriIcbper ? item.CtdUnidadItem * _configuration.ValorImpuestoBolsa : 0;
-            importeItem.MtoBaseIgvItem = item.ImporteTotalItem / porcentajeIGV;
-            importeItem.MtoIgvItem = item.ImporteTotalItem - importeItem.MtoBaseIgvItem;
-            importeItem.SumTotTributosItem = importeItem.MtoIgvItem; // el sistema soporta solo IGV/ICBPER.
-            importeItem.MtoValorUnitario = importeItem.MtoValorVentaItem / item.CtdUnidadItem;
+            importeItem.MtoBaseIgvItem = item.MtoTotalItem / porcentajeIGV;
+            importeItem.MtoIgvItem = item.MtoTotalItem - importeItem.MtoBaseIgvItem;
+            importeItem.SumTotTributosItem = importeItem.MtoIgvItem + importeItem.MtoTriIcbperItem; // el sistema soporta solo IGV/ICBPER.
+            importeItem.MtoValorUnitario = item.IgvSunat != "GRATUITO" ? importeItem.MtoValorVentaItem / item.CtdUnidadItem : 0;
             ImporteItems.Add(importeItem);
             // agregar items al comprobante.
             invoiceSaleDetails.Add(new InvoiceSaleDetail
@@ -183,7 +186,7 @@ public class ComprobanteDto
                 NomTributoIgvItem = nomTributoIgvItem,
                 CodTipTributoIgvItem = codTipTributoIgvItem,
                 TipAfeIgv = tipAfeIgv,
-                PorIgvItem = item.IgvSunat == "EXONERADO" ? "0.00" : _configuration.PorcentajeIgv.ToString("N2"),
+                PorIgvItem = item.IgvSunat == "GRAVADO" ? _configuration.PorcentajeIgv.ToString("N2") : "0.00",
                 // Tributo ICBPER 7152.
                 CodTriIcbper = item.TriIcbper ? "7152" : "-",
                 MtoTriIcbperItem = item.TriIcbper ? importeItem.MtoTriIcbperItem : 0,
@@ -192,8 +195,9 @@ public class ComprobanteDto
                 CodTipTributoIcbperItem = "OTH",
                 MtoTriIcbperUnidad = item.TriIcbper ? _configuration.ValorImpuestoBolsa : 0,
                 // Precio de Venta Unitario.
-                MtoPrecioVentaUnitario = item.SalidaInventario == "SI" ? item.MtoPrecioVentaUnitario : 0,
+                MtoPrecioVentaUnitario = item.IgvSunat != "GRATUITO" ? item.MtoPrecioVentaUnitario : 0,
                 MtoValorVentaItem = importeItem.MtoValorVentaItem,
+                MtoValorReferencialUnitario = item.IgvSunat == "GRATUITO" ? item.MtoPrecioVentaUnitario : 0,
                 WarehouseId = item.WarehouseId,
             });
         });
