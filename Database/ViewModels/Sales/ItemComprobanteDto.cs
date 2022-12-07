@@ -11,8 +11,8 @@ public class ItemComprobanteDto
     #region INVENTORY_CONFIGURATION!
     public string ProductId { get; set; } = "-";
     public decimal MtoPrecioVentaUnitario { get; set; } = 0;
-    public string SalidaInventario { get; set; } = "NO";
+    // public string SalidaInventario { get; set; } = "NO";
     public string WarehouseId { get; set; } = "-";
     #endregion
-    public decimal ImporteTotalItem { get; set; } = 0;
+    public decimal MtoTotalItem { get; set; } = 0;
 }
