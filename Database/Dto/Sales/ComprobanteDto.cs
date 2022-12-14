@@ -1,7 +1,7 @@
 using Nebula.Database.Models.Common;
 using Nebula.Database.Models.Sales;
 
-namespace Nebula.Database.ViewModels.Sales;
+namespace Nebula.Database.Dto.Sales;
 
 public class ComprobanteDto
 {

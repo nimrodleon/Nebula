@@ -1,4 +1,4 @@
-namespace Nebula.Database.ViewModels;
+namespace Nebula.Database.Dto;
 
 /// <summary>
 /// Modelo para el inicio de session.

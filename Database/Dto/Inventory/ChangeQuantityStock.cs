@@ -1,4 +1,4 @@
-namespace Nebula.Database.ViewModels.Inventory;
+namespace Nebula.Database.Dto.Inventory;
 
 public class ChangeQuantityStock
 {

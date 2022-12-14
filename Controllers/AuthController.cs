@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Nebula.Database.Helpers;
 using Nebula.Database.Services.Common;
-using Nebula.Database.ViewModels;
+using Nebula.Database.Dto;
 
 namespace Nebula.Controllers;
 

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Helpers;
 using Nebula.Database.Models.Common;
 using Nebula.Database.Services.Common;
-using Nebula.Database.ViewModels.Common;
+using Nebula.Database.Dto.Common;
 
 namespace Nebula.Controllers.Common;
 

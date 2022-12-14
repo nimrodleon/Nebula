@@ -3,7 +3,7 @@ using MongoDB.Driver;
 using Nebula.Database.Helpers;
 using Nebula.Database.Models.Common;
 using Nebula.Database.Models.Inventory;
-using Nebula.Database.ViewModels.Inventory;
+using Nebula.Database.Dto.Inventory;
 
 namespace Nebula.Database.Services.Inventory;
 

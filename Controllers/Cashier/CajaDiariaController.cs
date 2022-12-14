@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Helpers;
 using Nebula.Database.Models.Cashier;
 using Nebula.Database.Services.Cashier;
-using Nebula.Database.ViewModels.Cashier;
-using Nebula.Database.ViewModels.Common;
+using Nebula.Database.Dto.Cashier;
+using Nebula.Database.Dto.Common;
 using Nebula.Database.Services;
 using Nebula.Database.Models.Common;
 

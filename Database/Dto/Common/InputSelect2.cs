@@ -1,4 +1,4 @@
-namespace Nebula.Database.ViewModels.Common;
+namespace Nebula.Database.Dto.Common;
 
 public class InputSelect2
 {

@@ -1,4 +1,4 @@
-namespace Nebula.Database.ViewModels.Sales;
+namespace Nebula.Database.Dto.Sales;
 
 public class DatoPagoComprobanteDto
 {

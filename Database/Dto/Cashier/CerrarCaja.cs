@@ -1,4 +1,4 @@
-namespace Nebula.Database.ViewModels.Cashier;
+namespace Nebula.Database.Dto.Cashier;
 
 public class CerrarCaja
 {

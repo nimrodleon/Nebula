@@ -1,4 +1,4 @@
-namespace Nebula.Database.ViewModels.Common;
+namespace Nebula.Database.Dto.Common;
 
 /// <summary>
 /// Modelo para el filtro por mes y año.

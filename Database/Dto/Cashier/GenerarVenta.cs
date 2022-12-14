@@ -1,7 +1,7 @@
 using Nebula.Database.Models.Common;
 using Nebula.Database.Models.Sales;
 
-namespace Nebula.Database.ViewModels.Cashier;
+namespace Nebula.Database.Dto.Cashier;
 
 public class GenerarVenta
 {

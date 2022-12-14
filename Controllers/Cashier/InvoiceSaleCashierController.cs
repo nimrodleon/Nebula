@@ -6,7 +6,7 @@ using Nebula.Database.Services.Cashier;
 using Nebula.Database.Services.Facturador;
 using Nebula.Database.Services.Inventory;
 using Nebula.Database.Services.Sales;
-using Nebula.Database.ViewModels.Cashier;
+using Nebula.Database.Dto.Cashier;
 
 namespace Nebula.Controllers.Cashier;
 
