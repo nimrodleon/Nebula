@@ -58,7 +58,6 @@ public class JsonFacturaParser
             });
         });
         // tributos.
-        bool existeOperaciónGratuita = false;
         dto.TributoSales.ForEach(item =>
         {
             tributos.Add(new Tributo
@@ -69,21 +68,12 @@ public class JsonFacturaParser
                 mtoBaseImponible = item.MtoBaseImponible.ToString("N2", numberFormatInfo),
                 mtoTributo = item.MtoTributo.ToString("N2", numberFormatInfo),
             });
-            existeOperaciónGratuita = item.IdeTributo == "9996";
         });
         leyendas.Add(new Leyenda
         {
             codLeyenda = "1000",
             desLeyenda = new NumberToLetters(dto.InvoiceSale.SumImpVenta).ToString(),
         });
-        if (existeOperaciónGratuita)
-        {
-            leyendas.Add(new Leyenda
-            {
-                codLeyenda = "1002",
-                desLeyenda = "TRANSFERENCIA GRATUITA DE UN BIEN Y/O SERVICIO PRESTADO GRATUITAMENTE",
-            });
-        }
         // configurar forma de pago.
         string formaPago = dto.InvoiceSale.FormaPago.Split(":")[0];
         if (formaPago == "Contado")
