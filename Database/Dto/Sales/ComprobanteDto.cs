@@ -1,3 +1,4 @@
+using Nebula.Database.Helpers;
 using Nebula.Database.Models.Common;
 using Nebula.Database.Models.Sales;
 
@@ -35,7 +36,7 @@ public class ComprobanteDto
         /// <summary>
         /// El mismo valor que ItemComprobante.
         /// Solo para Generar los Tributos del Comprobante.
-        /// GRAVADO, EXONERADO, GRATUITO.
+        /// GRAVADO, EXONERADO, INAFECTO.
         /// </summary>
         public string IgvSunat { get; set; }
     }
@@ -53,10 +54,6 @@ public class ComprobanteDto
         /// Sumatoria Tributos.
         /// </summary>
         public decimal SumTotTributos { get; set; }
-        /// <summary>
-        /// Sumatoria Tributo ICBPER.
-        /// </summary>
-        public decimal SumTotTriIcbper { get; set; }
         /// <summary>
         /// Importe total de la venta, cesión en uso o del servicio prestado.
         /// </summary>
@@ -81,19 +78,17 @@ public class ComprobanteDto
         Detalle.ForEach(item =>
         {
             ImporteItem itemObj = new ImporteItem();
-            decimal porcentajeIGV = item.IgvSunat == "GRAVADO" ? (_configuration.PorcentajeIgv / 100) + 1 : 1;
-            itemObj.MtoValorVentaItem = item.MtoTotalItem / porcentajeIGV;
+            decimal mtoTotalItem = item.CtdUnidadItem * item.MtoPrecioVentaUnitario;
+            decimal porcentajeIGV = item.IgvSunat == TipoIGV.Gravado ? (_configuration.PorcentajeIgv / 100) + 1 : 1;
+            itemObj.MtoValorVentaItem = mtoTotalItem / porcentajeIGV;
             itemObj.MtoTriIcbperItem = item.TriIcbper ? item.CtdUnidadItem * _configuration.ValorImpuestoBolsa : 0;
-            itemObj.MtoBaseIgvItem = item.MtoTotalItem / porcentajeIGV;
-            itemObj.MtoIgvItem = item.MtoTotalItem - itemObj.MtoBaseIgvItem;
+            itemObj.MtoBaseIgvItem = mtoTotalItem / porcentajeIGV;
+            itemObj.MtoIgvItem = mtoTotalItem - itemObj.MtoBaseIgvItem;
             itemObj.SumTotTributosItem = itemObj.MtoIgvItem + itemObj.MtoTriIcbperItem; // el sistema soporta solo IGV/ICBPER.
-            itemObj.MtoValorUnitario = item.IgvSunat != "GRATUITO" ? itemObj.MtoValorVentaItem / item.CtdUnidadItem : 0;
-            decimal precioVentaUnitario = item.IgvSunat != "GRATUITO" ? item.MtoPrecioVentaUnitario : 0;
+            itemObj.MtoValorUnitario = itemObj.MtoValorVentaItem / item.CtdUnidadItem;
             importeVenta.SumTotTributos += itemObj.SumTotTributosItem;
-            importeVenta.SumTotValVenta += item.IgvSunat != "GRATUITO" ? itemObj.MtoValorVentaItem : 0;
-            importeVenta.SumPrecioVenta += item.CtdUnidadItem * precioVentaUnitario;
-            // importeVenta.SumTotTriIcbper += itemObj.MtoTriIcbperItem;
-            // importeVenta.SumImpVenta = importeVenta.SumTotValVenta + importeVenta.SumTotTributos + importeVenta.SumTotTriIcbper;
+            importeVenta.SumTotValVenta += itemObj.MtoValorVentaItem;
+            importeVenta.SumPrecioVenta += item.CtdUnidadItem * item.MtoPrecioVentaUnitario;
             importeVenta.SumImpVenta = importeVenta.SumTotValVenta + importeVenta.SumTotTributos;
         });
         return importeVenta;
@@ -137,34 +132,35 @@ public class ComprobanteDto
             string codTipTributoIgvItem = string.Empty;
             switch (item.IgvSunat)
             {
-                case "GRAVADO":
+                case TipoIGV.Gravado:
                     tipAfeIgv = "10";
                     codTriIgv = "1000";
                     nomTributoIgvItem = "IGV";
                     codTipTributoIgvItem = "VAT";
                     break;
-                case "EXONERADO":
+                case TipoIGV.Exonerado:
                     tipAfeIgv = "20";
                     codTriIgv = "9997";
                     nomTributoIgvItem = "EXO";
                     codTipTributoIgvItem = "VAT";
                     break;
-                case "GRATUITO":
-                    tipAfeIgv = "21";
-                    codTriIgv = "9996";
-                    nomTributoIgvItem = "GRA";
+                case TipoIGV.Inafecto:
+                    tipAfeIgv = "30";
+                    codTriIgv = "9998";
+                    nomTributoIgvItem = "INA";
                     codTipTributoIgvItem = "FRE";
                     break;
             }
             ImporteItem importeItem = new ImporteItem();
             importeItem.IgvSunat = item.IgvSunat;
-            decimal porcentajeIGV = item.IgvSunat == "GRAVADO" ? (_configuration.PorcentajeIgv / 100) + 1 : 1;
-            importeItem.MtoValorVentaItem = item.MtoTotalItem / porcentajeIGV;
+            decimal mtoTotalItem = item.CtdUnidadItem * item.MtoPrecioVentaUnitario;
+            decimal porcentajeIGV = item.IgvSunat == TipoIGV.Gravado ? (_configuration.PorcentajeIgv / 100) + 1 : 1;
+            importeItem.MtoValorVentaItem = mtoTotalItem / porcentajeIGV;
             importeItem.MtoTriIcbperItem = item.TriIcbper ? item.CtdUnidadItem * _configuration.ValorImpuestoBolsa : 0;
-            importeItem.MtoBaseIgvItem = item.MtoTotalItem / porcentajeIGV;
-            importeItem.MtoIgvItem = item.MtoTotalItem - importeItem.MtoBaseIgvItem;
+            importeItem.MtoBaseIgvItem = mtoTotalItem / porcentajeIGV;
+            importeItem.MtoIgvItem = mtoTotalItem - importeItem.MtoBaseIgvItem;
             importeItem.SumTotTributosItem = importeItem.MtoIgvItem + importeItem.MtoTriIcbperItem; // el sistema soporta solo IGV/ICBPER.
-            importeItem.MtoValorUnitario = item.IgvSunat != "GRATUITO" ? importeItem.MtoValorVentaItem / item.CtdUnidadItem : 0;
+            importeItem.MtoValorUnitario = importeItem.MtoValorVentaItem / item.CtdUnidadItem;
             ImporteItems.Add(importeItem);
             // agregar items al comprobante.
             invoiceSaleDetails.Add(new InvoiceSaleDetail
@@ -186,7 +182,7 @@ public class ComprobanteDto
                 NomTributoIgvItem = nomTributoIgvItem,
                 CodTipTributoIgvItem = codTipTributoIgvItem,
                 TipAfeIgv = tipAfeIgv,
-                PorIgvItem = item.IgvSunat == "GRAVADO" ? _configuration.PorcentajeIgv.ToString("N2") : "0.00",
+                PorIgvItem = item.IgvSunat == TipoIGV.Gravado ? _configuration.PorcentajeIgv.ToString("N2") : "0.00",
                 // Tributo ICBPER 7152.
                 CodTriIcbper = item.TriIcbper ? "7152" : "-",
                 MtoTriIcbperItem = item.TriIcbper ? importeItem.MtoTriIcbperItem : 0,
@@ -195,9 +191,8 @@ public class ComprobanteDto
                 CodTipTributoIcbperItem = "OTH",
                 MtoTriIcbperUnidad = item.TriIcbper ? _configuration.ValorImpuestoBolsa : 0,
                 // Precio de Venta Unitario.
-                MtoPrecioVentaUnitario = item.IgvSunat != "GRATUITO" ? item.MtoPrecioVentaUnitario : 0,
+                MtoPrecioVentaUnitario = item.MtoPrecioVentaUnitario,
                 MtoValorVentaItem = importeItem.MtoValorVentaItem,
-                MtoValorReferencialUnitario = item.IgvSunat == "GRATUITO" ? item.MtoPrecioVentaUnitario : 0,
                 WarehouseId = item.WarehouseId,
             });
         });
@@ -206,45 +201,45 @@ public class ComprobanteDto
 
     public List<TributoSale> GetTributoSales(string invoiceId)
     {
-        decimal opGravada = 0;
-        decimal opExonerada = 0;
-        decimal opGratuita = 0;
-        decimal totalIgv = 0;
-        decimal totalIcbper = 0;
+        decimal operaciónGravado = 0;
+        decimal operaciónExonerado = 0;
+        decimal operaciónInafecto = 0;
+        decimal mtoTotalIgv = 0;
+        decimal mtoTotalIcbper = 0;
         ImporteItems.ForEach(item =>
         {
-            totalIcbper += item.MtoTriIcbperItem;
+            mtoTotalIcbper += item.MtoTriIcbperItem;
             switch (item.IgvSunat)
             {
-                case "GRAVADO":
-                    opGravada += item.MtoBaseIgvItem;
-                    totalIgv += item.MtoIgvItem;
+                case TipoIGV.Gravado:
+                    operaciónGravado += item.MtoBaseIgvItem;
+                    mtoTotalIgv += item.MtoIgvItem;
                     break;
-                case "EXONERADO":
-                    opExonerada += item.MtoBaseIgvItem;
+                case TipoIGV.Exonerado:
+                    operaciónExonerado += item.MtoBaseIgvItem;
                     break;
-                case "GRATUITO":
-                    opGratuita += item.MtoBaseIgvItem;
+                case TipoIGV.Inafecto:
+                    operaciónInafecto += item.MtoBaseIgvItem;
                     break;
             }
         });
         var tributos = new List<TributoSale>();
-        if (opGratuita > 0)
+        if (operaciónInafecto > 0)
         {
             tributos.Add(new TributoSale()
             {
                 InvoiceSale = invoiceId,
-                IdeTributo = "9996",
-                NomTributo = "GRA",
+                IdeTributo = "9998",
+                NomTributo = "INA",
                 CodTipTributo = "FRE",
-                MtoBaseImponible = opGratuita,
+                MtoBaseImponible = operaciónInafecto,
                 MtoTributo = 0,
                 Year = DateTime.Now.ToString("yyyy"),
                 Month = DateTime.Now.ToString("MM")
             });
         }
 
-        if (opExonerada > 0)
+        if (operaciónExonerado > 0)
         {
             tributos.Add(new TributoSale()
             {
@@ -252,14 +247,14 @@ public class ComprobanteDto
                 IdeTributo = "9997",
                 NomTributo = "EXO",
                 CodTipTributo = "VAT",
-                MtoBaseImponible = opExonerada,
+                MtoBaseImponible = operaciónExonerado,
                 MtoTributo = 0,
                 Year = DateTime.Now.ToString("yyyy"),
                 Month = DateTime.Now.ToString("MM")
             });
         }
 
-        if (opGravada > 0)
+        if (operaciónGravado > 0)
         {
             tributos.Add(new TributoSale()
             {
@@ -267,14 +262,14 @@ public class ComprobanteDto
                 IdeTributo = "1000",
                 NomTributo = "IGV",
                 CodTipTributo = "VAT",
-                MtoBaseImponible = opGravada,
-                MtoTributo = totalIgv,
+                MtoBaseImponible = operaciónGravado,
+                MtoTributo = mtoTotalIgv,
                 Year = DateTime.Now.ToString("yyyy"),
                 Month = DateTime.Now.ToString("MM")
             });
         }
 
-        if (totalIcbper > 0)
+        if (mtoTotalIcbper > 0)
         {
             tributos.Add(new TributoSale()
             {
@@ -283,7 +278,7 @@ public class ComprobanteDto
                 NomTributo = "ICBPER",
                 CodTipTributo = "OTH",
                 MtoBaseImponible = 0,
-                MtoTributo = totalIcbper,
+                MtoTributo = mtoTotalIcbper,
                 Year = DateTime.Now.ToString("yyyy"),
                 Month = DateTime.Now.ToString("MM")
             });
