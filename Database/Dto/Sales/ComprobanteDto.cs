@@ -88,7 +88,7 @@ public class ComprobanteDto
             itemObj.MtoValorUnitario = itemObj.MtoValorVentaItem / item.CtdUnidadItem;
             importeVenta.SumTotTributos += itemObj.SumTotTributosItem;
             importeVenta.SumTotValVenta += itemObj.MtoValorVentaItem;
-            importeVenta.SumPrecioVenta += item.CtdUnidadItem * item.MtoPrecioVentaUnitario;
+            importeVenta.SumPrecioVenta += mtoTotalItem + itemObj.MtoTriIcbperItem;
             importeVenta.SumImpVenta = importeVenta.SumTotValVenta + importeVenta.SumTotTributos;
         });
         return importeVenta;
