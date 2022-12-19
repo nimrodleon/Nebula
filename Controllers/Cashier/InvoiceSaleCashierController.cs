@@ -6,7 +6,7 @@ using Nebula.Database.Services.Cashier;
 using Nebula.Database.Services.Facturador;
 using Nebula.Database.Services.Inventory;
 using Nebula.Database.Services.Sales;
-using Nebula.Database.Dto.Cashier;
+using Nebula.Database.Dto.Sales;
 
 namespace Nebula.Controllers.Cashier;
 
@@ -35,27 +35,18 @@ public class InvoiceSaleCashierController : ControllerBase
     /// <param name="model">GenerarVenta</param>
     /// <returns>IActionResult</returns>
     [HttpPost("GenerarVenta/{id}")]
-    public async Task<IActionResult> GenerarVenta(string id, [FromBody] GenerarVenta model)
+    public async Task<IActionResult> GenerarVenta(string id, [FromBody] ComprobanteDto model)
     {
         try
         {
-            _cashierSaleService.SetModel(model);
-            var invoiceSale = await _cashierSaleService.SaveChanges(id);
-            bool fileExist = await _facturadorService.JsonInvoiceParser(invoiceSale.Id);
+            _cashierSaleService.SetComprobanteDto(model);
+            var invoiceSale = await _cashierSaleService.SaveChangesAsync(id);
+            await _facturadorService.JsonInvoiceParser(invoiceSale.Id);
 
             // Validar Inventario.
             await _validateStockService.ValidarInvoiceSale(invoiceSale.Id);
 
-            // Configurar valor de retorno.
-            model.Comprobante.InvoiceSale = invoiceSale.Id;
-            model.Comprobante.Vuelto = model.Comprobante.MontoRecibido - model.Comprobante.SumImpVenta;
-
-            return Ok(new
-            {
-                Ok = fileExist,
-                Data = model.Comprobante,
-                Msg = $"El comprobante {invoiceSale.Serie}-{invoiceSale.Number} ha sido registrado!"
-            });
+            return Ok(invoiceSale);
         }
         catch (Exception e)
         {

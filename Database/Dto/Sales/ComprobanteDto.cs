@@ -233,4 +233,39 @@ public class ComprobanteDto
 
         return tributos;
     }
+
+    public void GenerarSerieComprobante(ref InvoiceSerie invoiceSerie, ref InvoiceSale invoiceSale)
+    {
+        int numComprobante = 0;
+        string THROW_MESSAGE = "Ingresa serie de comprobante!";
+        switch (invoiceSale.DocType)
+        {
+            case "FACTURA":
+                invoiceSale.Serie = invoiceSerie.Factura;
+                numComprobante = invoiceSerie.CounterFactura;
+                if (numComprobante > 99999999)
+                    throw new Exception(THROW_MESSAGE);
+                numComprobante += 1;
+                invoiceSerie.CounterFactura = numComprobante;
+                break;
+            case "BOLETA":
+                invoiceSale.Serie = invoiceSerie.Boleta;
+                numComprobante = invoiceSerie.CounterBoleta;
+                if (numComprobante > 99999999)
+                    throw new Exception(THROW_MESSAGE);
+                numComprobante += 1;
+                invoiceSerie.CounterBoleta = numComprobante;
+                break;
+            case "NOTA":
+                invoiceSale.Serie = invoiceSerie.NotaDeVenta;
+                numComprobante = invoiceSerie.CounterNotaDeVenta;
+                if (numComprobante > 99999999)
+                    throw new Exception(THROW_MESSAGE);
+                numComprobante += 1;
+                invoiceSerie.CounterNotaDeVenta = numComprobante;
+                break;
+        }
+
+        invoiceSale.Number = numComprobante.ToString("D8");
+    }
 }
