@@ -41,7 +41,8 @@ public class InvoiceSaleCashierController : ControllerBase
         {
             _cashierSaleService.SetComprobanteDto(model);
             var invoiceSale = await _cashierSaleService.SaveChangesAsync(id);
-            await _facturadorService.JsonInvoiceParser(invoiceSale.Id);
+            if (invoiceSale.DocType != "NOTA")
+                await _facturadorService.JsonInvoiceParser(invoiceSale.Id);
 
             // Validar Inventario.
             await _validateStockService.ValidarInvoiceSale(invoiceSale.Id);
