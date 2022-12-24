@@ -103,6 +103,11 @@ public class InvoiceSale : Generic
     public decimal SumImpVenta { get; set; }
 
     /// <summary>
+    /// Estado de Situación Facturador SUNAT.
+    /// </summary>
+    public string SituacionFacturador { get; set; } = string.Empty;
+
+    /// <summary>
     /// Año de registro.
     /// </summary>
     public string Year { get; set; } = DateTime.Now.ToString("yyyy");

@@ -2,6 +2,7 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Database.Models.Sales;
 using Nebula.Database.Dto.Common;
+using Nebula.Database.Dto.Sales;
 
 namespace Nebula.Database.Services.Sales;
 
@@ -28,5 +29,13 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>
         var filter = builder.And(builder.Eq(x => x.ContactId, id),
             builder.Eq(x => x.Month, month), builder.Eq(x => x.Year, year));
         return await _collection.Find(filter).ToListAsync();
+    }
+
+    public async Task<InvoiceSale> SetSituacionFacturador(string id, SituacionFacturadorDto dto)
+    {
+        var invoiceSale = await GetByIdAsync(id);
+        invoiceSale.SituacionFacturador = $"{dto.Id}:{dto.Nombre}";
+        invoiceSale = await UpdateAsync(invoiceSale.Id, invoiceSale);
+        return invoiceSale;
     }
 }
