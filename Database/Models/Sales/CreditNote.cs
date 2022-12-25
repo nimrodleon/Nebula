@@ -3,7 +3,7 @@ using MongoDB.Bson;
 
 namespace Nebula.Database.Models.Sales;
 
-public class CreditNote
+public class CreditNote : Generic
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
@@ -87,5 +87,5 @@ public class CreditNote
     /// <summary>
     /// Importe total de la venta, cesión en uso o del servicio prestado. an..15|n(12,2)
     /// </summary>
-    public decimal sumImpVenta { get; set; }
+    public decimal SumImpVenta { get; set; }
 }
