@@ -61,7 +61,7 @@ public class InvoiceSaleController : ControllerBase
         return Ok(responseData);
     }
 
-    [HttpPut("SituacionFacturador/{id}")]
+    [HttpPatch("SituacionFacturador/{id}")]
     public async Task<IActionResult> SituacionFacturador(string id, [FromBody] SituacionFacturadorDto dto)
     {
         var response = await _invoiceSaleService.SetSituacionFacturador(id, dto);
