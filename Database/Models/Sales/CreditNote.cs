@@ -10,6 +10,16 @@ public class CreditNote : Generic
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
+    /// Serie comprobante.
+    /// </summary>
+    public string Serie { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Número comprobante.
+    /// </summary>
+    public string Number { get; set; } = string.Empty;
+
+    /// <summary>
     /// Tipo de operación Catálogo: 51, n2
     /// </summary>
     public string TipOperacion { get; set; } = string.Empty;

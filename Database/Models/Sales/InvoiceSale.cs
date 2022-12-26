@@ -21,6 +21,11 @@ public class InvoiceSale : Generic
     public string Serie { get; set; } = string.Empty;
 
     /// <summary>
+    /// Identificador series de facturación.
+    /// </summary>
+    public string InvoiceSerieId { get; set; } = string.Empty;
+
+    /// <summary>
     /// Número comprobante.
     /// </summary>
     public string Number { get; set; } = string.Empty;
