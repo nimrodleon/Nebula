@@ -61,9 +61,11 @@ public class ComprobanteDto
             SumTotValVenta = importeVenta.SumTotValVenta,
             SumPrecioVenta = importeVenta.SumPrecioVenta,
             SumTotTributos = importeVenta.SumTotTributos,
-            SumImpVenta = importeVenta.SumImpVenta,
+            SumImpVenta = importeVenta.SumImpVenta,            
             Year = DateTime.Now.ToString("yyyy"),
             Month = DateTime.Now.ToString("MM"),
+            SituacionFacturador = "01:Por Generar XML",
+            Anulada = false,
         };
     }
 

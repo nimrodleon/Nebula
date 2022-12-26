@@ -38,4 +38,12 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>
         invoiceSale = await UpdateAsync(invoiceSale.Id, invoiceSale);
         return invoiceSale;
     }
+
+    public async Task<InvoiceSale> AnularComprobante(string id)
+    {
+        var invoiceSale = await GetByIdAsync(id);
+        invoiceSale.Anulada = true;
+        invoiceSale = await UpdateAsync(invoiceSale.Id, invoiceSale);
+        return invoiceSale;
+    }
 }

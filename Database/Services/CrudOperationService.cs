@@ -35,6 +35,9 @@ public class CrudOperationService<T> where T : class, Generic
         return obj;
     }
 
+    public async Task InsertManyAsync(List<T> objList) =>
+        await _collection.InsertManyAsync(objList);
+
     public async Task<T> UpdateAsync(string id, T obj)
     {
         await _collection.ReplaceOneAsync(x => x.Id == id, obj);

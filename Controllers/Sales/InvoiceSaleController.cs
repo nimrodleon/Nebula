@@ -20,10 +20,11 @@ public class InvoiceSaleController : ControllerBase
     private readonly TributoSaleService _tributoSaleService;
     private readonly ComprobanteService _comprobanteService;
     private readonly FacturadorService _facturadorService;
+    private readonly CreditNoteService _creditNoteService;
 
     public InvoiceSaleController(ConfigurationService configurationService,
         InvoiceSaleService invoiceSaleService, InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService,
-        ComprobanteService comprobanteService, FacturadorService facturadorService)
+        ComprobanteService comprobanteService, FacturadorService facturadorService, CreditNoteService creditNoteService)
     {
         _configurationService = configurationService;
         _invoiceSaleService = invoiceSaleService;
@@ -31,6 +32,7 @@ public class InvoiceSaleController : ControllerBase
         _tributoSaleService = tributoSaleService;
         _comprobanteService = comprobanteService;
         _facturadorService = facturadorService;
+        _creditNoteService = creditNoteService;
     }
 
     [HttpGet("Index")]
@@ -61,7 +63,14 @@ public class InvoiceSaleController : ControllerBase
         return Ok(responseData);
     }
 
-    [HttpPut("SituacionFacturador/{id}")]
+    [HttpPatch("AnularComprobante/{id}")]
+    public async Task<IActionResult> AnularComprobante(string id)
+    {
+        var response = await _creditNoteService.AnulaciónDeLaOperación(id);
+        return Ok(response);
+    }
+
+    [HttpPatch("SituacionFacturador/{id}")]
     public async Task<IActionResult> SituacionFacturador(string id, [FromBody] SituacionFacturadorDto dto)
     {
         var response = await _invoiceSaleService.SetSituacionFacturador(id, dto);
