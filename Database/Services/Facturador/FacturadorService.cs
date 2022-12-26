@@ -1,3 +1,4 @@
+using Nebula.Database.Dto.Sales;
 using Nebula.Database.Services.Common;
 using Nebula.Database.Services.Sales;
 
@@ -9,15 +10,18 @@ public class FacturadorService
     private readonly InvoiceSaleService _invoiceSaleService;
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly TributoSaleService _tributoSaleService;
+    // ======================================================================
+    private readonly CreditNoteService _creditNoteService;
 
     public FacturadorService(ConfigurationService configurationService,
         InvoiceSaleService invoiceSaleService, InvoiceSaleDetailService invoiceSaleDetailService,
-        TributoSaleService tributoSaleService)
+        TributoSaleService tributoSaleService, CreditNoteService creditNoteService)
     {
         _configurationService = configurationService;
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _tributoSaleService = tributoSaleService;
+        _creditNoteService = creditNoteService;
     }
 
     /// <summary>
@@ -67,6 +71,21 @@ public class FacturadorService
             facturaParser.CreateJson(pathFile);
         }
 
+        return File.Exists(pathFile);
+    }
+
+    public async Task<bool> CreateCreditNoteJsonFile(string creditNoteId)
+    {
+        var configuration = await _configurationService.GetAsync();
+        var dto = await _creditNoteService.GetCreditNoteDtoAsync(creditNoteId);
+        // configurar nombre del archivo.
+        string fileName = $"{configuration.Ruc}-07-{dto.CreditNote.Serie}-{dto.CreditNote.Number}.json";
+        // generar archivo json.
+        string pathBase = Path.Combine(configuration.FileSunat, "sfs");
+        string pathData = Path.Combine(pathBase, "DATA");
+        string pathFile = Path.Combine(pathData, fileName);
+        var creditNoteParser = new JsonCreditNoteParser(dto);
+        creditNoteParser.CreateJson(pathFile);
         return File.Exists(pathFile);
     }
 }

@@ -66,8 +66,10 @@ public class InvoiceSaleController : ControllerBase
     [HttpPatch("AnularComprobante/{id}")]
     public async Task<IActionResult> AnularComprobante(string id)
     {
-        var response = await _creditNoteService.AnulaciónDeLaOperación(id);
-        return Ok(response);
+        var creditNote = await _creditNoteService.AnulaciónDeLaOperación(id);
+        bool fileCreated = await _facturadorService.CreateCreditNoteJsonFile(creditNote.Id);
+        if (fileCreated) await _invoiceSaleService.AnularComprobante(creditNote.InvoiceSaleId);
+        return Ok(creditNote);
     }
 
     [HttpPatch("SituacionFacturador/{id}")]

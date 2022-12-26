@@ -1,6 +1,6 @@
 using Nebula.Database.Models.Sales;
 
-namespace Nebula.Database.Services.Facturador;
+namespace Nebula.Database.Dto.Sales;
 
 public class InvoiceSaleDto
 {

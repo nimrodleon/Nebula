@@ -1,3 +1,4 @@
+using Nebula.Database.Dto.Sales;
 using Nebula.Database.Models.Common;
 using Nebula.Database.Models.Sales;
 
@@ -11,12 +12,12 @@ public class CreditNoteService
     private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
     // ======================================================================
     private readonly CrudOperationService<CreditNote> _creditNoteService;
-    private readonly CrudOperationService<CreditNoteDetail> _creditNoteDetailService;
-    private readonly CrudOperationService<TributoCreditNote> _tributoCreditNoteService;
+    private readonly CreditNoteDetailService _creditNoteDetailService;
+    private readonly TributoCreditNoteService _tributoCreditNoteService;
 
     public CreditNoteService(InvoiceSaleService invoiceSaleService, InvoiceSaleDetailService invoiceSaleDetailService,
         TributoSaleService tributoSaleService, CrudOperationService<CreditNote> creditNoteService, CrudOperationService<InvoiceSerie> invoiceSerieService,
-        CrudOperationService<CreditNoteDetail> creditNoteDetailService, CrudOperationService<TributoCreditNote> tributoCreditNoteService)
+        CreditNoteDetailService creditNoteDetailService, TributoCreditNoteService tributoCreditNoteService)
     {
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
@@ -25,6 +26,19 @@ public class CreditNoteService
         _creditNoteService = creditNoteService;
         _creditNoteDetailService = creditNoteDetailService;
         _tributoCreditNoteService = tributoCreditNoteService;
+    }
+
+    public async Task<CreditNoteDto> GetCreditNoteDtoAsync(string id)
+    {
+        var creditNote = await _creditNoteService.GetAsync(id);
+        var creditNoteDetails = await _creditNoteDetailService.GetListAsync(creditNote.Id);
+        var tributosCreditNote = await _tributoCreditNoteService.GetListAsync(creditNote.Id);
+        return new CreditNoteDto()
+        {
+            CreditNote = creditNote,
+            CreditNoteDetails = creditNoteDetails,
+            TributosCreditNote = tributosCreditNote,
+        };
     }
 
     public async Task<CreditNote> AnulaciónDeLaOperación(string id)

@@ -5,28 +5,31 @@ using System.Text.Json;
 
 namespace Nebula.Database.Services.Facturador;
 
-public class JsonFacturaParser
+public class JsonCreditNoteParser
 {
-    public JsonFacturaParser(InvoiceSaleDto dto)
+    public JsonCreditNoteParser(CreditNoteDto dto)
     {
         var numberFormatInfo = new CultureInfo("en-US", false).NumberFormat;
         numberFormatInfo.NumberGroupSeparator = string.Empty;
         // cabecera.
-        cabecera.tipOperacion = dto.InvoiceSale.TipOperacion;
-        cabecera.fecEmision = dto.InvoiceSale.FecEmision;
-        cabecera.horEmision = dto.InvoiceSale.HorEmision;
-        cabecera.fecVencimiento = dto.InvoiceSale.FecVencimiento;
-        cabecera.codLocalEmisor = dto.InvoiceSale.CodLocalEmisor;
-        cabecera.tipDocUsuario = dto.InvoiceSale.TipDocUsuario.Split(":")[0];
-        cabecera.numDocUsuario = dto.InvoiceSale.NumDocUsuario;
-        cabecera.rznSocialUsuario = dto.InvoiceSale.RznSocialUsuario;
-        cabecera.tipMoneda = dto.InvoiceSale.TipMoneda;
-        cabecera.sumTotTributos = dto.InvoiceSale.SumTotTributos.ToString("N2", numberFormatInfo);
-        cabecera.sumTotValVenta = dto.InvoiceSale.SumTotValVenta.ToString("N2", numberFormatInfo);
-        cabecera.sumPrecioVenta = dto.InvoiceSale.SumPrecioVenta.ToString("N2", numberFormatInfo);
-        cabecera.sumImpVenta = dto.InvoiceSale.SumImpVenta.ToString("N2", numberFormatInfo);
+        cabecera.tipOperacion = dto.CreditNote.TipOperacion;
+        cabecera.fecEmision = dto.CreditNote.FecEmision;
+        cabecera.horEmision = dto.CreditNote.HorEmision;
+        cabecera.codLocalEmisor = dto.CreditNote.CodLocalEmisor;
+        cabecera.tipDocUsuario = dto.CreditNote.TipDocUsuario;
+        cabecera.numDocUsuario = dto.CreditNote.NumDocUsuario;
+        cabecera.rznSocialUsuario = dto.CreditNote.RznSocialUsuario;
+        cabecera.tipMoneda = dto.CreditNote.TipMoneda;
+        cabecera.codMotivo = dto.CreditNote.CodMotivo;
+        cabecera.desMotivo = dto.CreditNote.DesMotivo;
+        cabecera.tipDocAfectado = dto.CreditNote.TipDocAfectado;
+        cabecera.numDocAfectado = dto.CreditNote.NumDocAfectado;
+        cabecera.sumTotTributos = dto.CreditNote.SumTotTributos.ToString("N2", numberFormatInfo);
+        cabecera.sumTotValVenta = dto.CreditNote.SumTotValVenta.ToString("N2", numberFormatInfo);
+        cabecera.sumPrecioVenta = dto.CreditNote.SumPrecioVenta.ToString("N2", numberFormatInfo);
+        cabecera.sumImpVenta = dto.CreditNote.SumImpVenta.ToString("N2", numberFormatInfo);
         // detalle.
-        dto.InvoiceSaleDetails.ForEach(item =>
+        dto.CreditNoteDetails.ForEach(item =>
         {
             detalle.Add(new InvoiceDetail
             {
@@ -59,7 +62,7 @@ public class JsonFacturaParser
             });
         });
         // tributos.
-        dto.TributoSales.ForEach(item =>
+        dto.TributosCreditNote.ForEach(item =>
         {
             tributos.Add(new Tributo
             {
@@ -73,28 +76,14 @@ public class JsonFacturaParser
         leyendas.Add(new Leyenda
         {
             codLeyenda = "1000",
-            desLeyenda = new NumberToLetters(dto.InvoiceSale.SumImpVenta).ToString(),
+            desLeyenda = new NumberToLetters(dto.CreditNote.SumImpVenta).ToString(),
         });
-        // configurar forma de pago.
-        string formaPago = dto.InvoiceSale.FormaPago.Split(":")[0];
-        if (formaPago == "Contado")
-        {
-            datoPago.formaPago = "Contado";
-            datoPago.mtoNetoPendientePago = dto.InvoiceSale.SumImpVenta.ToString("N2", numberFormatInfo);
-            datoPago.tipMonedaMtoNetoPendientePago = dto.InvoiceSale.TipMoneda;
-        }
-        if (formaPago == "Credito")
-        {
-            // ...
-        }
     }
 
-    public Invoice cabecera { get; set; } = new Invoice();
+    public CreditNoteFact cabecera { get; set; } = new CreditNoteFact();
     public List<InvoiceDetail> detalle { get; set; } = new List<InvoiceDetail>();
     public List<Tributo> tributos { get; set; } = new List<Tributo>();
     public List<Leyenda> leyendas { get; set; } = new List<Leyenda>();
-    public FormaPago datoPago { get; set; } = new FormaPago();
-    public List<ItemFormaPago> detallePago { get; set; } = new List<ItemFormaPago>();
 
     public void CreateJson(string path)
     {
