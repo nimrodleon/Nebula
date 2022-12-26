@@ -56,6 +56,7 @@ public class CreditNoteService
 
         return new CreditNote()
         {
+            InvoiceSaleId = invoiceSale.Id,
             TipOperacion = invoiceSale.TipOperacion,
             FecEmision = DateTime.Now.ToString("yyyy-MM-dd"),
             HorEmision = DateTime.Now.ToString("HH:mm:ss"),

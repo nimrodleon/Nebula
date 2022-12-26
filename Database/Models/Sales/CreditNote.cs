@@ -10,6 +10,11 @@ public class CreditNote : Generic
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
+    /// Identificador Comprobante de Venta.
+    /// </summary>
+    public string InvoiceSaleId { get; set; } = string.Empty;
+
+    /// <summary>
     /// Serie comprobante.
     /// </summary>
     public string Serie { get; set; } = string.Empty;

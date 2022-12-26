@@ -21,14 +21,14 @@ public class InvoiceSale : Generic
     public string Serie { get; set; } = string.Empty;
 
     /// <summary>
-    /// Identificador series de facturación.
-    /// </summary>
-    public string InvoiceSerieId { get; set; } = string.Empty;
-
-    /// <summary>
     /// Número comprobante.
     /// </summary>
     public string Number { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Identificador series de facturación.
+    /// </summary>
+    public string InvoiceSerieId { get; set; } = string.Empty;
 
     /// <summary>
     /// Tipo de operación Catálogo: 51, n4
@@ -108,9 +108,14 @@ public class InvoiceSale : Generic
     public decimal SumImpVenta { get; set; }
 
     /// <summary>
+    /// Anulación de la Operación.
+    /// </summary>
+    public bool Anulada { get; set; } = false;
+
+    /// <summary>
     /// Estado de Situación Facturador SUNAT.
     /// </summary>
-    public string SituacionFacturador { get; set; } = string.Empty;
+    public string SituacionFacturador { get; set; } = "01:Por Generar XML";
 
     /// <summary>
     /// Año de registro.
