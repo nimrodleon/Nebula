@@ -28,14 +28,14 @@ public class InvoiceSerie : Generic
     public string WarehouseName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Serie Factura.
+    /// Serie Nota de Venta.
     /// </summary>
-    public string Factura { get; set; } = string.Empty;
+    public string NotaDeVenta { get; set; } = string.Empty;
 
     /// <summary>
-    /// Contador Factura.
+    /// Contador Nota de Venta.
     /// </summary>
-    public int CounterFactura { get; set; }
+    public int CounterNotaDeVenta { get; set; }
 
     /// <summary>
     /// Serie Boleta.
@@ -48,32 +48,32 @@ public class InvoiceSerie : Generic
     public int CounterBoleta { get; set; }
 
     /// <summary>
-    /// Serie Nota de Venta.
+    /// Serie Factura.
     /// </summary>
-    public string NotaDeVenta { get; set; } = string.Empty;
+    public string Factura { get; set; } = string.Empty;
 
     /// <summary>
-    /// Contador Nota de Venta.
+    /// Contador Factura.
     /// </summary>
-    public int CounterNotaDeVenta { get; set; }
+    public int CounterFactura { get; set; }
 
     /// <summary>
-    /// Serie Nota de Crédito.
+    /// Serie Nota de Crédito Boleta.
     /// </summary>
-    public string CreditNote { get; set; } = string.Empty;
+    public string CreditNoteBoleta { get; set; } = string.Empty;
 
     /// <summary>
-    /// Contador Nota de Crédito.
+    /// Contador Nota de Crédito Boleta.
     /// </summary>
-    public int CounterCreditNote { get; set; }
+    public int CounterCreditNoteBoleta { get; set; }
 
     /// <summary>
-    /// Serie Nota de Débito.
+    /// Serie Nota de Crédito Factura.
     /// </summary>
-    public string DebitNote { get; set; } = string.Empty;
+    public string CreditNoteFactura { get; set; } = string.Empty;
 
     /// <summary>
-    /// Contador Nota de Débito.
+    /// Contador Nota de Crédito Factura.
     /// </summary>
-    public int CounterDebitNote { get; set; }
+    public int CounterCreditNoteFactura { get; set; }
 }

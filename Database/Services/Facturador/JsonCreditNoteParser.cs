@@ -16,7 +16,7 @@ public class JsonCreditNoteParser
         cabecera.fecEmision = dto.CreditNote.FecEmision;
         cabecera.horEmision = dto.CreditNote.HorEmision;
         cabecera.codLocalEmisor = dto.CreditNote.CodLocalEmisor;
-        cabecera.tipDocUsuario = dto.CreditNote.TipDocUsuario;
+        cabecera.tipDocUsuario = dto.CreditNote.TipDocUsuario.Split(":")[0];
         cabecera.numDocUsuario = dto.CreditNote.NumDocUsuario;
         cabecera.rznSocialUsuario = dto.CreditNote.RznSocialUsuario;
         cabecera.tipMoneda = dto.CreditNote.TipMoneda;
