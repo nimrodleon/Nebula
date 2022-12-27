@@ -149,13 +149,28 @@ public class CreditNoteService
 
     public void GenerarSerieComprobante(ref InvoiceSerie invoiceSerie, ref CreditNote creditNote)
     {
+        int numComprobante = 0;
         string THROW_MESSAGE = "Ingresa serie de comprobante!";
-        creditNote.Serie = invoiceSerie.CreditNote;
-        int numComprobante = invoiceSerie.CounterCreditNote;
-        if (numComprobante > 99999999)
-            throw new Exception(THROW_MESSAGE);
-        numComprobante += 1;
-        invoiceSerie.CounterCreditNote = numComprobante;
+        switch (creditNote.TipDocAfectado)
+        {
+            case "01": // FACTURA.
+                creditNote.Serie = invoiceSerie.CreditNoteFactura;
+                numComprobante = invoiceSerie.CounterCreditNoteFactura;
+                if (numComprobante > 99999999)
+                    throw new Exception(THROW_MESSAGE);
+                numComprobante += 1;
+                invoiceSerie.CounterCreditNoteFactura = numComprobante;
+                break;
+            case "03": // BOLETA.
+                creditNote.Serie = invoiceSerie.CreditNoteBoleta;
+                numComprobante = invoiceSerie.CounterCreditNoteBoleta;
+                if (numComprobante > 99999999)
+                    throw new Exception(THROW_MESSAGE);
+                numComprobante += 1;
+                invoiceSerie.CounterCreditNoteBoleta = numComprobante;
+                break;
+        }
+
         creditNote.Number = numComprobante.ToString("D8");
     }
 }
