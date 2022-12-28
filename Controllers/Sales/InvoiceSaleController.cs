@@ -42,6 +42,13 @@ public class InvoiceSaleController : ControllerBase
         return Ok(invoiceSales);
     }
 
+    [HttpGet("Pendientes")]
+    public async Task<IActionResult> Pendientes()
+    {
+        var invoiceSales = await _invoiceSaleService.GetInvoiceSalesPendingAsync();
+        return Ok(invoiceSales);
+    }
+
     [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] ComprobanteDto dto)
     {
