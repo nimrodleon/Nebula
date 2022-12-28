@@ -1,36 +1,47 @@
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Models.Common;
 using Nebula.Database.Models.Sales;
 
 namespace Nebula.Database.Services.Sales;
 
-public class CreditNoteService
+public class CreditNoteService : CrudOperationService<CreditNote>
 {
     private readonly InvoiceSaleService _invoiceSaleService;
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly TributoSaleService _tributoSaleService;
     private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
     // ======================================================================
-    private readonly CrudOperationService<CreditNote> _creditNoteService;
     private readonly CreditNoteDetailService _creditNoteDetailService;
     private readonly TributoCreditNoteService _tributoCreditNoteService;
 
-    public CreditNoteService(InvoiceSaleService invoiceSaleService, InvoiceSaleDetailService invoiceSaleDetailService,
-        TributoSaleService tributoSaleService, CrudOperationService<CreditNote> creditNoteService, CrudOperationService<InvoiceSerie> invoiceSerieService,
-        CreditNoteDetailService creditNoteDetailService, TributoCreditNoteService tributoCreditNoteService)
+    public CreditNoteService(IOptions<DatabaseSettings> options, InvoiceSaleService invoiceSaleService,
+        InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService, CrudOperationService<InvoiceSerie> invoiceSerieService,
+        CreditNoteDetailService creditNoteDetailService, TributoCreditNoteService tributoCreditNoteService) : base(options)
     {
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _tributoSaleService = tributoSaleService;
         _invoiceSerieService = invoiceSerieService;
-        _creditNoteService = creditNoteService;
         _creditNoteDetailService = creditNoteDetailService;
         _tributoCreditNoteService = tributoCreditNoteService;
     }
 
+    public async Task<CreditNote> GetCreditNoteByInvoiceSaleIdAsync(string invoiceSaleId) =>
+        await _collection.Find(x => x.InvoiceSaleId == invoiceSaleId).FirstOrDefaultAsync();
+
+    public async Task<CreditNote> SetSituacionFacturador(string id, SituacionFacturadorDto dto)
+    {
+        var creditNote = await GetAsync(id);
+        creditNote.SituacionFacturador = $"{dto.Id}:{dto.Nombre}";
+        creditNote = await UpdateAsync(creditNote.Id, creditNote);
+        return creditNote;
+    }
+
     public async Task<CreditNoteDto> GetCreditNoteDtoAsync(string id)
     {
-        var creditNote = await _creditNoteService.GetAsync(id);
+        var creditNote = await GetAsync(id);
         var creditNoteDetails = await _creditNoteDetailService.GetListAsync(creditNote.Id);
         var tributosCreditNote = await _tributoCreditNoteService.GetListAsync(creditNote.Id);
         return new CreditNoteDto()
@@ -51,7 +62,7 @@ public class CreditNoteService
         GenerarSerieComprobante(ref invoiceSerie, ref creditNote);
 
         await _invoiceSerieService.UpdateAsync(invoiceSerie.Id, invoiceSerie);
-        await _creditNoteService.CreateAsync(creditNote);
+        await CreateAsync(creditNote);
 
         var creditNoteDetails = GetCreditNoteDetails(creditNote.Id, invoiceSaleDetails);
         await _creditNoteDetailService.InsertManyAsync(creditNoteDetails);

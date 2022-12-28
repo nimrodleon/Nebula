@@ -103,4 +103,9 @@ public class CreditNote : Generic
     /// Importe total de la venta, cesión en uso o del servicio prestado. an..15|n(12,2)
     /// </summary>
     public decimal SumImpVenta { get; set; }
+
+    /// <summary>
+    /// Estado de Situación Facturador SUNAT.
+    /// </summary>
+    public string SituacionFacturador { get; set; } = "01:Por Generar XML";
 }

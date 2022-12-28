@@ -24,7 +24,4 @@ public class TransferenciaDetailService : CrudOperationService<TransferenciaDeta
         var filter = builder.Eq(x => x.TransferenciaId, transferenciaId);
         return await _collection.DeleteManyAsync(filter);
     }
-
-    public async Task InsertManyAsync(List<TransferenciaDetail> transferenciaDetails) =>
-        await _collection.InsertManyAsync(transferenciaDetails);
 }
