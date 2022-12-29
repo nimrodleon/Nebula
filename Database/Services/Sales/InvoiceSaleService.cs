@@ -50,7 +50,7 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>
     public async Task<List<InvoiceSale>> GetInvoiceSalesPendingAsync()
     {
         var filter = Builders<InvoiceSale>.Filter;
-        var query = filter.In("SituacionFacturador", new List<string>() { "01:Por Generar XML", "02:XML Generado" });
+        var query = filter.Eq(x => x.SituacionFacturador, "02:XML Generado");
         return await _collection.Find(query).ToListAsync();
     }
 }
