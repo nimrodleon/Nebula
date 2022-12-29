@@ -53,4 +53,15 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>
         var query = filter.Eq(x => x.SituacionFacturador, "02:XML Generado");
         return await _collection.Find(query).ToListAsync();
     }
+
+    public async Task<List<InvoiceSale>> BusquedaAvanzadaAsync(BuscarComprobanteFormDto dto)
+    {
+        var filter = Builders<InvoiceSale>.Filter;
+        var query = filter.And(filter.Gte(x => x.FecEmision, dto.FechaDesde),
+            filter.Lte(x => x.FecEmision, dto.FechaHasta));
+        if (!string.IsNullOrEmpty(dto.ContactId))
+            query = filter.And(filter.Gte(x => x.FecEmision, dto.FechaDesde),
+            filter.Lte(x => x.FecEmision, dto.FechaHasta), filter.Eq(x => x.ContactId, dto.ContactId));
+        return await _collection.Find(query).ToListAsync();
+    }
 }

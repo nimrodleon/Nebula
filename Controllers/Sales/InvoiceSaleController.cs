@@ -49,6 +49,13 @@ public class InvoiceSaleController : ControllerBase
         return Ok(invoiceSales);
     }
 
+    [HttpPost("BusquedaAvanzada")]
+    public async Task<IActionResult> BusquedaAvanzada([FromBody] BuscarComprobanteFormDto dto)
+    {
+        var invoiceSales = await _invoiceSaleService.BusquedaAvanzadaAsync(dto);
+        return Ok(invoiceSales);
+    }
+
     [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] ComprobanteDto dto)
     {
