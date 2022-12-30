@@ -6,7 +6,8 @@ using Nebula.Database.Services.Facturador;
 using Nebula.Database.Services.Sales;
 using Nebula.Database.Dto.Common;
 using Nebula.Database.Dto.Sales;
-using ClosedXML.Excel;
+using Nebula.Database.Services;
+using Nebula.Database.Models.Common;
 
 namespace Nebula.Controllers.Sales;
 
@@ -16,6 +17,7 @@ namespace Nebula.Controllers.Sales;
 public class InvoiceSaleController : ControllerBase
 {
     private readonly ConfigurationService _configurationService;
+    private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
     private readonly InvoiceSaleService _invoiceSaleService;
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly TributoSaleService _tributoSaleService;
@@ -23,11 +25,12 @@ public class InvoiceSaleController : ControllerBase
     private readonly FacturadorService _facturadorService;
     private readonly CreditNoteService _creditNoteService;
 
-    public InvoiceSaleController(ConfigurationService configurationService,
+    public InvoiceSaleController(ConfigurationService configurationService, CrudOperationService<InvoiceSerie> invoiceSerieService,
         InvoiceSaleService invoiceSaleService, InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService,
         ComprobanteService comprobanteService, FacturadorService facturadorService, CreditNoteService creditNoteService)
     {
         _configurationService = configurationService;
+        _invoiceSerieService = invoiceSerieService;
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _tributoSaleService = tributoSaleService;
@@ -45,12 +48,13 @@ public class InvoiceSaleController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet("ReporteMensual")]
-    public async Task<IActionResult> ReporteMensual([FromQuery] DateQuery model)
+    public async Task<IActionResult> ReporteMensual([FromQuery] DateQuery dto)
     {
-        var invoiceSales = await _invoiceSaleService.GetListAsync(model);
-        string filePath = new ExportarReporteMensual(invoiceSales).GuardarCambios();
-
-        return Ok();
+        var invoiceSeries = await _invoiceSerieService.GetAsync("Name", string.Empty);
+        var invoiceSales = await _invoiceSaleService.GetListAsync(dto);
+        string filePath = new ExportarReporteMensual(invoiceSeries, invoiceSales).GuardarCambios();
+        FileStream stream = new FileStream(filePath, FileMode.Open);
+        return new FileStreamResult(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
     }
 
     [HttpGet("Pendientes")]

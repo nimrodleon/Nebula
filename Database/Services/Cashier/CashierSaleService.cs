@@ -54,6 +54,7 @@ public class CashierSaleService
         var invoiceSerieId = comprobanteDto.Cabecera.InvoiceSerieId;
         var invoiceSerie = await _invoiceSerieService.GetAsync(invoiceSerieId);
         comprobanteDto.GenerarSerieComprobante(ref invoiceSerie, ref invoiceSale);
+        invoiceSale.InvoiceSerieId = invoiceSerie.Id;
 
         // Agregar Información del comprobante.
         await _invoiceSerieService.UpdateAsync(invoiceSerie.Id, invoiceSerie);
