@@ -6,6 +6,7 @@ using Nebula.Database.Services.Facturador;
 using Nebula.Database.Services.Sales;
 using Nebula.Database.Dto.Common;
 using Nebula.Database.Dto.Sales;
+using ClosedXML.Excel;
 
 namespace Nebula.Controllers.Sales;
 
@@ -40,6 +41,16 @@ public class InvoiceSaleController : ControllerBase
     {
         var invoiceSales = await _invoiceSaleService.GetListAsync(model);
         return Ok(invoiceSales);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("ReporteMensual")]
+    public async Task<IActionResult> ReporteMensual([FromQuery] DateQuery model)
+    {
+        var invoiceSales = await _invoiceSaleService.GetListAsync(model);
+        string filePath = new ExportarReporteMensual(invoiceSales).GuardarCambios();
+
+        return Ok();
     }
 
     [HttpGet("Pendientes")]
