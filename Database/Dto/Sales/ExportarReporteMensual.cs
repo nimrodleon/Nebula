@@ -41,17 +41,19 @@ public class ExportarReporteMensual
                 worksheet.Cell("B1").Value = "N° BOLETA";
                 worksheet.Cell("C1").Value = "IMPORTE TOTAL";
                 worksheet.Cell("D1").Value = "ESTADO SUNAT";
-                // E1 - empty.
-                worksheet.Cell("F1").Value = "FECHA";
-                worksheet.Cell("G1").Value = "N° FACTURA";
-                worksheet.Cell("H1").Value = "IMPORTE TOTAL";
-                worksheet.Cell("I1").Value = "ESTADO SUNAT";
+                worksheet.Cell("E1").Value = "ANULADO";
+                // F1 - empty.
+                worksheet.Cell("G1").Value = "FECHA";
+                worksheet.Cell("H1").Value = "N° FACTURA";
+                worksheet.Cell("I1").Value = "IMPORTE TOTAL";
+                worksheet.Cell("J1").Value = "ESTADO SUNAT";
+                worksheet.Cell("K1").Value = "ANULADO";
                 // formato cabecera documento.
-                var cabeceraBoletas = worksheet.Range("A1:D1");
+                var cabeceraBoletas = worksheet.Range("A1:E1");
                 cabeceraBoletas.Style.Font.Bold = true;
                 cabeceraBoletas.Style.Font.FontColor = XLColor.White;
                 cabeceraBoletas.Style.Fill.BackgroundColor = XLColor.Black;
-                var cabeceraFacturas = worksheet.Range("F1:I1");
+                var cabeceraFacturas = worksheet.Range("G1:K1");
                 cabeceraFacturas.Style.Font.Bold = true;
                 cabeceraFacturas.Style.Font.FontColor = XLColor.White;
                 cabeceraFacturas.Style.Fill.BackgroundColor = XLColor.Black;
@@ -64,6 +66,7 @@ public class ExportarReporteMensual
                     worksheet.Cell(contador, 2).Value = $"{item.Serie}-{item.Number}";
                     worksheet.Cell(contador, 3).Value = item.SumImpVenta;
                     worksheet.Cell(contador, 4).Value = item.SituacionFacturador;
+                    worksheet.Cell(contador, 5).Value = item.Anulada ? "SI" : "NO";
                     contador++;
                 }
                 // generar registro de facturas.
@@ -71,15 +74,16 @@ public class ExportarReporteMensual
                 List<InvoiceSale> facturas = GetFacturas(serieComprobante.Id);
                 foreach (var item in facturas)
                 {
-                    worksheet.Cell(contador, 6).Value = item.FecEmision;
-                    worksheet.Cell(contador, 7).Value = $"{item.Serie}-{item.Number}";
-                    worksheet.Cell(contador, 8).Value = item.SumImpVenta;
-                    worksheet.Cell(contador, 9).Value = item.SituacionFacturador;
+                    worksheet.Cell(contador, 7).Value = item.FecEmision;
+                    worksheet.Cell(contador, 8).Value = $"{item.Serie}-{item.Number}";
+                    worksheet.Cell(contador, 9).Value = item.SumImpVenta;
+                    worksheet.Cell(contador, 10).Value = item.SituacionFacturador;
+                    worksheet.Cell(contador, 11).Value = item.Anulada ? "SI" : "NO";
                     contador++;
                 }
                 // ajustar ancho de las columnas para que se muestren todo el contenido.
-                worksheet.Columns(1, 4).AdjustToContents();
-                worksheet.Columns(6, 9).AdjustToContents();
+                worksheet.Columns(1, 5).AdjustToContents();
+                worksheet.Columns(7, 11).AdjustToContents();
             });
             workbook.SaveAs(filePath);
         }
