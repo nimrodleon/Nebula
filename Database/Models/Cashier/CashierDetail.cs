@@ -6,6 +6,7 @@ namespace Nebula.Database.Models.Cashier;
 /// <summary>
 /// Detalle de caja diaria.
 /// </summary>
+[BsonIgnoreExtraElements]
 public class CashierDetail : Generic
 {
     [BsonId]

@@ -3,6 +3,7 @@ using MongoDB.Bson;
 
 namespace Nebula.Database.Models.Sales;
 
+[BsonIgnoreExtraElements]
 public class TributoCreditNote : Generic
 {
     [BsonId]

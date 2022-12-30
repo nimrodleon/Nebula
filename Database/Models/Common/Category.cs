@@ -6,6 +6,7 @@ namespace Nebula.Database.Models.Common;
 /// <summary>
 /// categoría de productos.
 /// </summary>
+[BsonIgnoreExtraElements]
 public class Category : Generic
 {
     [BsonId]

@@ -2,6 +2,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Nebula.Database.Models.Common;
 
+[BsonIgnoreExtraElements]
 public class Configuration
 {
     [BsonId] public string Id { get; set; } = "DEFAULT";
@@ -66,11 +67,6 @@ public class Configuration
     /// #Dias para créditos automáticos.
     /// </summary>
     public int DiasPlazo { get; set; } = 0;
-
-    /// <summary>
-    /// URL Api. CPE - SUNAT.
-    /// </summary>
-    public string UrlApi { get; set; } = string.Empty;
 
     /// <summary>
     /// Path Archivos SUNAT.

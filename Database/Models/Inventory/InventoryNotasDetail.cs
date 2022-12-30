@@ -3,6 +3,7 @@ using MongoDB.Bson;
 
 namespace Nebula.Database.Models.Inventory;
 
+[BsonIgnoreExtraElements]
 public class InventoryNotasDetail : Generic
 {
     [BsonId]

@@ -3,6 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Nebula.Database.Models.Inventory;
 
+[BsonIgnoreExtraElements]
 public class Location : Generic
 {
     [BsonId]

@@ -6,6 +6,7 @@ namespace Nebula.Database.Models;
 /// <summary>
 /// Cuentas por Cobrar.
 /// </summary>
+[BsonIgnoreExtraElements]
 public class Receivable : Generic
 {
     [BsonId]

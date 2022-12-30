@@ -3,6 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Nebula.Database.Models.Common;
 
+[BsonIgnoreExtraElements]
 public class Product : Generic
 {
     [BsonId]
