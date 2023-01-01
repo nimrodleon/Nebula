@@ -32,6 +32,13 @@ public class LocationController : ControllerBase
         return Ok(location);
     }
 
+    [HttpGet("Stock/{id}")]
+    public async Task<IActionResult> Stock(string id)
+    {
+        var locationDetailStockDtos = await _locationService.GetLocationDetailStocksAsync(id);
+        return Ok(locationDetailStockDtos);
+    }
+
     [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] Location model)
     {
