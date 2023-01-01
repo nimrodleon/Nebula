@@ -25,7 +25,7 @@ public class LocationService : CrudOperationService<Location>
         return await _collection.Find(filter).ToListAsync();
     }
 
-    public async Task<List<LocationDetailStockDto>> GetLocationDetailStocksAsync(string id)
+    public async Task<RespLocationDetailStock> GetLocationDetailStocksAsync(string id, bool reponer = false)
     {
         var location = await GetAsync(id);
         var locationDetails = await _locationDetailService.GetListAsync(location.Id);
@@ -33,11 +33,11 @@ public class LocationService : CrudOperationService<Location>
         // obtener lista de identificadores.
         locationDetails.ForEach(item => productArrId.Add(item.ProductId));
         var productStocks = await _productStockService.GetProductStockByWarehouseIdAsync(location.WarehouseId, productArrId);
-        var locationDetailStocks = new List<LocationDetailStockDto>();
+        var locationDetailStocks = new List<LocationItemStockDto>();
         locationDetails.ForEach(item =>
         {
             var products = productStocks.Where(x => x.ProductId == item.ProductId).ToList();
-            var itemStock = new LocationDetailStockDto();
+            var itemStock = new LocationItemStockDto();
             itemStock.ProductId = item.ProductId;
             itemStock.Description = item.ProductName;
             itemStock.QuantityMax = item.QuantityMax;
@@ -48,8 +48,15 @@ public class LocationService : CrudOperationService<Location>
             long totalEntradas = entradasList.Sum(x => x.Quantity);
             long totalSalidas = salidasList.Sum(x => x.Quantity);
             itemStock.Stock = totalEntradas - totalSalidas;
-            locationDetailStocks.Add(itemStock);
+            if (!reponer)
+                locationDetailStocks.Add(itemStock);
+            else if (itemStock.Stock <= item.QuantityMin)
+                locationDetailStocks.Add(itemStock);
         });
-        return locationDetailStocks;
+        return new RespLocationDetailStock()
+        {
+            Location = location,
+            LocationDetailStocks = locationDetailStocks
+        };
     }
 }

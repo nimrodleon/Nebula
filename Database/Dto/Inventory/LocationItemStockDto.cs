@@ -1,6 +1,6 @@
 namespace Nebula.Database.Dto.Inventory;
 
-public class LocationDetailStockDto
+public class LocationItemStockDto
 {
     public string ProductId { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;

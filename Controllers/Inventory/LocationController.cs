@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Database.Dto.Inventory;
 using Nebula.Database.Helpers;
 using Nebula.Database.Models.Inventory;
 using Nebula.Database.Services.Inventory;
@@ -35,8 +36,20 @@ public class LocationController : ControllerBase
     [HttpGet("Stock/{id}")]
     public async Task<IActionResult> Stock(string id)
     {
-        var locationDetailStockDtos = await _locationService.GetLocationDetailStocksAsync(id);
-        return Ok(locationDetailStockDtos);
+        var respLocationDetailStock = await _locationService.GetLocationDetailStocksAsync(id);
+        return Ok(respLocationDetailStock.LocationDetailStocks);
+    }
+
+    [HttpGet("Reponer/{ids}")]
+    public async Task<IActionResult> Reponer(string ids)
+    {
+        var respLocationDetailStocks = new List<RespLocationDetailStock>();
+        foreach (string id in ids.Split(","))
+        {
+            var respItem = await _locationService.GetLocationDetailStocksAsync(id, true);
+            respLocationDetailStocks.Add(respItem);
+        }
+        return Ok(respLocationDetailStocks);
     }
 
     [HttpPost("Create")]
