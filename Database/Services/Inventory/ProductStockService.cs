@@ -116,4 +116,17 @@ public class ProductStockService : CrudOperationService<ProductStock>
         return await _collection.DeleteManyAsync(filter);
     }
 
+    public async Task<List<ProductStock>> GetProductStockByWarehouseIdAsync(string warehouseId, List<string> productArrId)
+    {
+        var builder = Builders<ProductStock>.Filter;
+        var filter = builder.And(builder.Eq(x => x.WarehouseId, warehouseId), builder.In("ProductId", productArrId));
+        return await _collection.Find(filter).ToListAsync();
+    }
+
+    public async Task<List<ProductStock>> GetProductStockByProductIdAsync(string productId, List<string> warehouseArrId)
+    {
+        var builder = Builders<ProductStock>.Filter;
+        var filter = builder.And(builder.Eq(x => x.ProductId, productId), builder.In("WarehouseId", warehouseArrId));
+        return await _collection.Find(filter).ToListAsync();
+    }
 }
