@@ -16,11 +16,14 @@ public class ProductController : ControllerBase
 {
     private readonly ProductService _productService;
     private readonly ProductStockService _productStockService;
+    private readonly ConfigurationService _configurationService;
 
-    public ProductController(ProductService productService, ProductStockService productStockService)
+    public ProductController(ProductService productService,
+        ProductStockService productStockService, ConfigurationService configurationService)
     {
         _productService = productService;
         _productStockService = productStockService;
+        _configurationService = configurationService;
     }
 
     public class FormData : Product
@@ -31,8 +34,8 @@ public class ProductController : ControllerBase
     [HttpGet("Index")]
     public async Task<IActionResult> Index([FromQuery] string? query)
     {
-        var responseData = await _productService.GetListAsync(query);
-        return Ok(responseData);
+        var products = await _productService.GetListAsync(query);
+        return Ok(products);
     }
 
     [HttpGet("Show/{id}")]
@@ -45,17 +48,21 @@ public class ProductController : ControllerBase
     [HttpGet("Select2")]
     public async Task<IActionResult> Select2([FromQuery] string? term)
     {
-        var responseData = await _productService.GetListAsync(term, 10);
+        var products = await _productService.GetListAsync(term, 10);
         var data = new List<ProductSelect>();
-        responseData.ForEach(item =>
+        products.ForEach(item =>
         {
             data.Add(new ProductSelect()
             {
                 Id = item.Id,
-                Text = $"{item.Description} | {Convert.ToDecimal(item.Price1):N2}",
+                Text = $"{item.Description} | {Convert.ToDecimal(item.PrecioVentaUnitario):N2}",
                 Description = item.Description,
                 Barcode = item.Barcode,
-                Price = item.Price1
+                CodProductoSUNAT = item.CodProductoSUNAT,
+                PrecioVentaUnitario = item.PrecioVentaUnitario,
+                IgvSunat = item.IgvSunat,
+                Icbper = item.Icbper,
+                ControlStock = item.ControlStock,
             });
         });
         return Ok(new { Results = data });
@@ -79,28 +86,29 @@ public class ProductController : ControllerBase
             model.PathImage = "default.jpg";
         }
 
+        var configuration = await _configurationService.GetAsync();
+        decimal porcentajeIgv = (configuration.PorcentajeIgv / 100) + 1;
+        decimal porcentajeTributo = model.IgvSunat == TipoIGV.Gravado ? porcentajeIgv : 1;
+        model.ValorUnitario = model.PrecioVentaUnitario / porcentajeTributo;
+
         Product product = new Product()
         {
             Description = model.Description.ToUpper(),
-            Barcode = model.Barcode.ToUpper(),
-            Price1 = model.Price1,
-            Price2 = model.Price2,
-            FromQty = model.FromQty,
             IgvSunat = model.IgvSunat,
             Icbper = model.Icbper,
-            Category = model.Category,
-            UndMedida = model.UndMedida,
+            ValorUnitario = model.ValorUnitario,
+            PrecioVentaUnitario = model.PrecioVentaUnitario,
+            Barcode = model.Barcode.ToUpper(),
+            CodProductoSUNAT = model.CodProductoSUNAT.ToUpper(),
             Type = model.Type,
+            UndMedida = model.UndMedida,
+            Category = model.Category,
+            ControlStock = model.ControlStock,
             PathImage = model.PathImage
         };
         await _productService.CreateAsync(product);
 
-        return Ok(new
-        {
-            Ok = true,
-            Data = model,
-            Msg = $"El producto {model.Description} ha sido registrado!"
-        });
+        return Ok(product);
     }
 
     [HttpPut("Update/{id}")]
@@ -130,25 +138,26 @@ public class ProductController : ControllerBase
             model.PathImage = product.PathImage;
         }
 
+        var configuration = await _configurationService.GetAsync();
+        decimal porcentajeIgv = (configuration.PorcentajeIgv / 100) + 1;
+        decimal porcentajeTributo = model.IgvSunat == TipoIGV.Gravado ? porcentajeIgv : 1;
+        model.ValorUnitario = model.PrecioVentaUnitario / porcentajeTributo;
+        // actualización de datos del modelo.
         product.Description = model.Description.ToUpper();
-        product.Barcode = model.Barcode.ToUpper();
-        product.Price1 = model.Price1;
-        product.Price2 = model.Price2;
-        product.FromQty = model.FromQty;
         product.IgvSunat = model.IgvSunat;
         product.Icbper = model.Icbper;
-        product.Category = model.Category;
-        product.UndMedida = model.UndMedida;
+        product.ValorUnitario = model.ValorUnitario;
+        product.PrecioVentaUnitario = model.PrecioVentaUnitario;
+        product.Barcode = model.Barcode.ToUpper();
+        product.CodProductoSUNAT = model.CodProductoSUNAT.ToUpper();
         product.Type = model.Type;
+        product.UndMedida = model.UndMedida;
+        product.Category = model.Category;
+        product.ControlStock = model.ControlStock;
         product.PathImage = model.PathImage;
         await _productService.UpdateAsync(id, product);
 
-        return Ok(new
-        {
-            Ok = true,
-            Data = model,
-            Msg = $"El producto {model.Description} ha sido actualizado!"
-        });
+        return Ok(product);
     }
 
     [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
@@ -167,7 +176,7 @@ public class ProductController : ControllerBase
 
         // borrar registro.
         await _productService.RemoveAsync(id);
-        return Ok(new { Ok = true, Data = product, Msg = "El producto ha sido borrado!" });
+        return Ok(product);
     }
 
     [HttpGet("Stock/{id}")]

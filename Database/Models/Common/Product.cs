@@ -1,5 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Nebula.Database.Helpers;
 
 namespace Nebula.Database.Models.Common;
 
@@ -16,39 +17,39 @@ public class Product : Generic
     public string Description { get; set; } = string.Empty;
 
     /// <summary>
-    /// Código de Barra.
-    /// </summary>
-    public string Barcode { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Precio de producto.
-    /// </summary>
-    public decimal Price1 { get; set; }
-
-    /// <summary>
-    /// Precio mayor del producto.
-    /// </summary>
-    public decimal Price2 { get; set; }
-
-    /// <summary>
-    /// Cantidad minima para aplicar precio a mayor.
-    /// </summary>
-    public decimal FromQty { get; set; }
-
-    /// <summary>
     /// Tipo IGV Sunat.
     /// </summary>
-    public string IgvSunat { get; set; } = string.Empty;
+    public string IgvSunat { get; set; } = TipoIGV.Gravado;
 
     /// <summary>
     /// Impuesto a la bolsa plástica.
     /// </summary>
-    public string Icbper { get; set; } = string.Empty;
+    public string Icbper { get; set; } = "NO";
 
     /// <summary>
-    /// Categoría de producto.
+    /// Valor Unitario (monto sin IGV).
     /// </summary>
-    public string Category { get; set; } = string.Empty;
+    public decimal ValorUnitario { get; set; }
+
+    /// <summary>
+    /// Precio Venta Unitario (Incluye IGV).
+    /// </summary>
+    public decimal PrecioVentaUnitario { get; set; }
+
+    /// <summary>
+    /// Código de Barra.
+    /// </summary>
+    public string Barcode { get; set; } = "-";
+
+    /// <summary>
+    /// Código de producto SUNAT.
+    /// </summary>
+    public string CodProductoSUNAT { get; set; } = "-";
+
+    /// <summary>
+    /// Tipo de Bien/Servicio.
+    /// </summary>
+    public string Type { get; set; } = string.Empty;
 
     /// <summary>
     /// Unidad de Medida.
@@ -56,9 +57,14 @@ public class Product : Generic
     public string UndMedida { get; set; } = string.Empty;
 
     /// <summary>
-    /// Tipo de Bien/Servicio.
+    /// Categoría de producto.
     /// </summary>
-    public string Type { get; set; } = string.Empty;
+    public string Category { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Control de Inventario en Tiempo Real.
+    /// </summary>
+    public string ControlStock { get; set; } = "NONE";
 
     /// <summary>
     /// Path de la imagen del producto.
