@@ -80,6 +80,7 @@ public class CashierSaleService
         {
             CajaDiaria = cajaDiaria.Id,
             InvoiceSale = invoiceSale.Id,
+            DocType = invoiceSale.DocType,
             Document = $"{invoiceSale.Serie}-{invoiceSale.Number}",
             ContactId = invoiceSale.ContactId,
             ContactName = invoiceSale.RznSocialUsuario,

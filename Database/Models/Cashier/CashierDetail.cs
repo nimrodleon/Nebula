@@ -24,6 +24,11 @@ public class CashierDetail : Generic
     public string InvoiceSale { get; set; } = "-";
 
     /// <summary>
+    /// Configura el Tipo de comprobante.
+    /// </summary>
+    public string DocType { get; set; } = "NOTA";
+
+    /// <summary>
     /// Serie y Número de documento.
     /// </summary>
     public string Document { get; set; } = "-";
