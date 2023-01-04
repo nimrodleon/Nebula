@@ -94,7 +94,7 @@ namespace Nebula.Database.Services
             cashierDetail.TypeOperation = TypeOperationCaja.EntradaDeDinero;
             cashierDetail.FormaPago = abono.FormaPago;
             cashierDetail.Amount = abono.Abono;
-            cashierDetail.CajaDiaria = abono.CajaDiaria.Split(':')[0].Trim();
+            cashierDetail.CajaDiaria = abono.CajaDiaria;
             cashierDetail.CreatedAt = DateTime.Now.ToString("yyyy-MM-dd");
             cashierDetail.Month = DateTime.Now.ToString("MM");
             cashierDetail.Year = DateTime.Now.ToString("yyyy");

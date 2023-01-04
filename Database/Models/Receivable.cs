@@ -39,6 +39,11 @@ public class Receivable : Generic
     public string InvoiceSale { get; set; } = "-";
 
     /// <summary>
+    /// Configura el Tipo de comprobante.
+    /// </summary>
+    public string DocType { get; set; } = "-";
+
+    /// <summary>
     /// Documento de Venta: F001-1.
     /// </summary>
     public string Document { get; set; } = string.Empty;
@@ -67,6 +72,11 @@ public class Receivable : Generic
     /// Identificador del Terminal de Venta.
     /// </summary>
     public string CajaDiaria { get; set; } = "-";
+
+    /// <summary>
+    /// Nombre del Terminal de Venta.
+    /// </summary>
+    public string Terminal { get; set; } = string.Empty;
 
     /// <summary>
     /// Identificador del Cargo.

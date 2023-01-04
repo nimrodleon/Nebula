@@ -5,6 +5,7 @@ using Nebula.Database.Models.Sales;
 using Nebula.Database.Services.Common;
 using Nebula.Database.Services.Sales;
 using Nebula.Database.Dto.Sales;
+using Nebula.Database.Models;
 
 namespace Nebula.Database.Services.Cashier;
 
@@ -19,10 +20,13 @@ public class CashierSaleService
     private readonly TributoSaleService _tributoSaleService;
     private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
     private readonly CashierDetailService _cashierDetailService;
+    private readonly ReceivableService _receivableService;
+    private readonly CajaDiariaService _cajaDiariaService;
 
     public CashierSaleService(ConfigurationService configurationService,
         InvoiceSaleService invoiceSaleService, InvoiceSaleDetailService invoiceSaleDetailService,
-        TributoSaleService tributoSaleService, CrudOperationService<InvoiceSerie> invoiceSerieService, CashierDetailService cashierDetailService)
+        TributoSaleService tributoSaleService, CrudOperationService<InvoiceSerie> invoiceSerieService,
+        CashierDetailService cashierDetailService, ReceivableService receivableService, CajaDiariaService cajaDiariaService)
     {
         _configurationService = configurationService;
         _invoiceSaleService = invoiceSaleService;
@@ -30,6 +34,8 @@ public class CashierSaleService
         _tributoSaleService = tributoSaleService;
         _invoiceSerieService = invoiceSerieService;
         _cashierDetailService = cashierDetailService;
+        _receivableService = receivableService;
+        _cajaDiariaService = cajaDiariaService;
     }
 
     /// <summary>
@@ -56,22 +62,23 @@ public class CashierSaleService
         comprobanteDto.GenerarSerieComprobante(ref invoiceSerie, ref invoiceSale);
         invoiceSale.InvoiceSerieId = invoiceSerie.Id;
 
-        // Agregar Información del comprobante.
+        // agregar Información del comprobante.
         await _invoiceSerieService.UpdateAsync(invoiceSerie.Id, invoiceSerie);
         await _invoiceSaleService.CreateAsync(invoiceSale);
 
-        // Agregar detalles del comprobante.
+        // agregar detalles del comprobante.
         var invoiceSaleDetails = comprobanteDto.GetInvoiceSaleDetails(invoiceSale.Id);
         await _invoiceSaleDetailService.CreateManyAsync(invoiceSaleDetails);
 
-        // Agregar Tributos de Factura.
+        // agregar Tributos de Factura.
         var tributoSales = comprobanteDto.GetTributoSales(invoiceSale.Id);
         await _tributoSaleService.CreateManyAsync(tributoSales);
 
-        // Registrar operación de Caja.
+        // registrar operación de Caja.
+        var cajaDiaria = await _cajaDiariaService.GetAsync(cajaDiariaId);
         var cashierDetail = new CashierDetail()
         {
-            CajaDiaria = cajaDiariaId,
+            CajaDiaria = cajaDiaria.Id,
             InvoiceSale = invoiceSale.Id,
             Document = $"{invoiceSale.Serie}-{invoiceSale.Number}",
             ContactId = invoiceSale.ContactId,
@@ -82,6 +89,37 @@ public class CashierSaleService
             Amount = invoiceSale.SumImpVenta
         };
         await _cashierDetailService.CreateAsync(cashierDetail);
+
+        // registrar cargo si la operación es a crédito.
+        if (comprobanteDto.DatoPago.FormaPago == FormaPago.Credito)
+        {
+            var cargo = GenerarCargo(invoiceSale, cajaDiaria, configuration.DiasPlazo);
+            await _receivableService.CreateAsync(cargo);
+        }
+
         return invoiceSale;
+    }
+
+    private Receivable GenerarCargo(InvoiceSale invoiceSale, CajaDiaria cajaDiaria, int diasPlazo)
+    {
+        return new Receivable()
+        {
+            Type = "CARGO",
+            ContactId = comprobanteDto.Cabecera.ContactId,
+            ContactName = comprobanteDto.Cabecera.RznSocialUsuario,
+            Remark = comprobanteDto.Cabecera.Remark,
+            InvoiceSale = invoiceSale.Id,
+            DocType = invoiceSale.DocType,
+            Document = $"{invoiceSale.Serie}-{invoiceSale.Number}",
+            FormaPago = "-",
+            Cargo = invoiceSale.SumImpVenta,
+            Status = "PENDIENTE",
+            CajaDiaria = cajaDiaria.Id,
+            Terminal = cajaDiaria.Terminal,
+            CreatedAt = DateTime.Now.ToString("yyyy-MM-dd"),
+            EndDate = DateTime.Now.AddDays(diasPlazo).ToString("yyyy-MM-dd"),
+            Year = DateTime.Now.ToString("yyyy"),
+            Month = DateTime.Now.ToString("MM"),
+        };
     }
 }
