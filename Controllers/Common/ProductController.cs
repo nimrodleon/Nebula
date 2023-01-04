@@ -182,7 +182,7 @@ public class ProductController : ControllerBase
     [HttpGet("Stock/{id}")]
     public async Task<IActionResult> Stock(string id)
     {
-        var productStocks = await _productStockService.GetReport(id);
+        var productStocks = await _productStockService.GetProductStockReportAsync(id);
         return Ok(productStocks);
     }
 

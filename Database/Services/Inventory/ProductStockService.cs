@@ -46,14 +46,13 @@ public class ProductStockService : CrudOperationService<ProductStock>
         return productStock;
     }
 
-    public async Task<List<ProductStockReport>> GetReport(string id)
+    public async Task<List<ProductStockReport>> GetProductStockReportAsync(string id)
     {
         var warehouses = await _warehouseService.GetAsync("Name", string.Empty);
         var filter = Builders<ProductStock>.Filter;
-        var warehouseIds = new List<string>();
-        warehouses.ForEach(item => warehouseIds.Add(item.Id));
-        var dbQuery = filter.And(filter.Eq(x => x.ProductId, id), filter.In("WarehouseId", warehouseIds));
-        var productStocks = await _collection.Find(dbQuery).ToListAsync();
+        var warehouseArrId = new List<string>();
+        warehouses.ForEach(item => warehouseArrId.Add(item.Id));
+        var productStocks = await GetProductStockByProductIdAsync(id, warehouseArrId);
         var productStockReports = new List<ProductStockReport>();
         warehouses.ForEach(item =>
         {
