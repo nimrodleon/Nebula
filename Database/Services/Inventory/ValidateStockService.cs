@@ -57,11 +57,11 @@ public class ValidateStockService
     {
         var transferencia = await _transferenciaService.GetAsync(id);
         var transferenciaDetails = await _transferenciaDetailService.GetListAsync(transferencia.Id);
-        var productStocksEntrada = new List<ProductStock>();
-        var productStocksSalida = new List<ProductStock>();
+        var productStockDestino = new List<ProductStock>();
+        var productStockOrigen = new List<ProductStock>();
         transferenciaDetails.ForEach(item =>
         {
-            productStocksEntrada.Add(new ProductStock()
+            productStockDestino.Add(new ProductStock()
             {
                 Id = string.Empty,
                 WarehouseId = transferencia.WarehouseTargetId,
@@ -69,7 +69,7 @@ public class ValidateStockService
                 Type = InventoryType.ENTRADA,
                 Quantity = item.CantTransferido,
             });
-            productStocksSalida.Add(new ProductStock()
+            productStockOrigen.Add(new ProductStock()
             {
                 Id = string.Empty,
                 WarehouseId = transferencia.WarehouseOriginId,
@@ -78,9 +78,9 @@ public class ValidateStockService
                 Quantity = item.CantTransferido,
             });
         });
-        transferenciaDetails = await _productStockService.GetTransferenciaDetailsAsync(transferenciaDetails, transferencia.WarehouseOriginId);
-        await _productStockService.CreateAsync(productStocksEntrada);
-        await _productStockService.CreateAsync(productStocksSalida);
+        transferenciaDetails = await _productStockService.CalcularCantidadExistenteRestanteTransferenciaAsync(transferenciaDetails, transferencia.WarehouseOriginId);
+        await _productStockService.CreateAsync(productStockDestino);
+        await _productStockService.CreateAsync(productStockOrigen);
         await _transferenciaDetailService.DeleteManyAsync(transferencia.Id);
         await _transferenciaDetailService.InsertManyAsync(transferenciaDetails);
         transferencia.Status = InventoryStatus.VALIDADO;
@@ -92,8 +92,10 @@ public class ValidateStockService
     {
         var ajusteInventario = await _ajusteInventarioService.GetAsync(id);
         var ajusteInventarioDetails = await _ajusteInventarioDetailService.GetListAsync(ajusteInventario.Id);
-        ajusteInventarioDetails = await _productStockService.GetAjusteInventarioDetailsAsync(ajusteInventarioDetails, ajusteInventario.WarehouseId);
-        await _productStockService.ClearAjusteInventarioDetailAsync(ajusteInventarioDetails, ajusteInventario.WarehouseId);
+        ajusteInventarioDetails = await _productStockService.CalcularCantidadExistenteAjusteInventarioAsync(ajusteInventarioDetails, ajusteInventario.WarehouseId);
+        var productArrId = new List<string>();
+        ajusteInventarioDetails.ForEach(item => productArrId.Add(item.ProductId));
+        await _productStockService.DeleteProductStockByWarehouseIdAsync(ajusteInventario.WarehouseId, productArrId);
         var productStocks = new List<ProductStock>();
         ajusteInventarioDetails.ForEach(item =>
         {
@@ -142,14 +144,17 @@ public class ValidateStockService
         var productStocks = new List<ProductStock>();
         invoiceSaleDetails.ForEach(item =>
         {
-            productStocks.Add(new ProductStock()
+            if (item.ControlStock == TipoControlStock.STOCK)
             {
-                Id = string.Empty,
-                WarehouseId = item.WarehouseId,
-                ProductId = item.CodProducto,
-                Type = InventoryType.SALIDA,
-                Quantity = (long)item.CtdUnidadItem,
-            });
+                productStocks.Add(new ProductStock()
+                {
+                    Id = string.Empty,
+                    WarehouseId = item.WarehouseId,
+                    ProductId = item.CodProducto,
+                    Type = InventoryType.SALIDA,
+                    Quantity = (long)item.CtdUnidadItem,
+                });
+            }
         });
         await _productStockService.CreateAsync(productStocks);
     }

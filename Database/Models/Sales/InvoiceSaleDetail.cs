@@ -1,5 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Nebula.Database.Helpers;
 
 namespace Nebula.Database.Models.Sales;
 
@@ -148,4 +149,9 @@ public class InvoiceSaleDetail : Generic
     /// Identificador del Almacén.
     /// </summary>
     public string WarehouseId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Control de Inventario.
+    /// </summary>
+    public string ControlStock { get; set; } = TipoControlStock.NONE;
 }
