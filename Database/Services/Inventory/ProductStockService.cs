@@ -9,12 +9,15 @@ namespace Nebula.Database.Services.Inventory;
 
 public class ProductStockService : CrudOperationService<ProductStock>
 {
+    private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
     private readonly CrudOperationService<Warehouse> _warehouseService;
 
     public ProductStockService(IOptions<DatabaseSettings> options,
-        CrudOperationService<Warehouse> warehouseService) : base(options)
+        CrudOperationService<Warehouse> warehouseService,
+        CrudOperationService<InvoiceSerie> invoiceSerieService) : base(options)
     {
         _warehouseService = warehouseService;
+        _invoiceSerieService = invoiceSerieService;
     }
 
     public async Task<List<ProductStock>> CreateAsync(List<ProductStock> obj)
@@ -44,6 +47,15 @@ public class ProductStockService : CrudOperationService<ProductStock>
         };
         productStock = await CreateAsync(productStock);
         return productStock;
+    }
+
+    public async Task<long> GetStockItemComprobanteAsync(string invoiceSerieId, string productId)
+    {
+        var invoiceSerie = await _invoiceSerieService.GetAsync(invoiceSerieId);
+        var productStocks = await GetProductStockByWarehouseIdAndProductIdAsync(invoiceSerie.WarehouseId, productId);
+        var totalEntrada = productStocks.Where(x => x.Type == InventoryType.ENTRADA).Sum(x => x.Quantity);
+        var totalSalida = productStocks.Where(x => x.Type == InventoryType.SALIDA).Sum(x => x.Quantity);
+        return totalEntrada - totalSalida;
     }
 
     public async Task<List<ProductStockReport>> GetProductStockReportAsync(string id)
@@ -107,6 +119,13 @@ public class ProductStockService : CrudOperationService<ProductStock>
         var builder = Builders<ProductStock>.Filter;
         var filter = builder.And(builder.Eq(x => x.WarehouseId, warehouseId), builder.In("ProductId", productArrId));
         return await _collection.DeleteManyAsync(filter);
+    }
+
+    public async Task<List<ProductStock>> GetProductStockByWarehouseIdAndProductIdAsync(string warehouseId, string productId)
+    {
+        var builder = Builders<ProductStock>.Filter;
+        var filter = builder.And(builder.Eq(x => x.WarehouseId, warehouseId), builder.Eq(x => x.ProductId, productId));
+        return await _collection.Find(filter).ToListAsync();
     }
 
     public async Task<List<ProductStock>> GetProductStockByWarehouseIdAsync(string warehouseId, List<string> productArrId)

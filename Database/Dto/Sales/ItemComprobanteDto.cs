@@ -14,5 +14,6 @@ public class ItemComprobanteDto
     public string ProductId { get; set; } = "-";
     public decimal MtoPrecioVentaUnitario { get; set; } = 0;
     public string WarehouseId { get; set; } = "-";
+    public string ControlStock { get; set; } = TipoControlStock.NONE;
     #endregion
 }

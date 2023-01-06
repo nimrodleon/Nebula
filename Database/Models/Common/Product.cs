@@ -64,7 +64,7 @@ public class Product : Generic
     /// <summary>
     /// Control de Inventario en Tiempo Real.
     /// </summary>
-    public string ControlStock { get; set; } = "NONE";
+    public string ControlStock { get; set; } = TipoControlStock.NONE;
 
     /// <summary>
     /// Path de la imagen del producto.
