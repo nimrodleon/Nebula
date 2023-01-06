@@ -17,10 +17,17 @@ public class ProductStockController : ControllerBase
         _productStockService = productStockService;
     }
 
-    [HttpGet("ItemComprobante/{invoiceSerieId}/{productId}")]
-    public async Task<IActionResult> ItemComprobante(string invoiceSerieId, string productId)
+    [HttpGet("StockItemCaja/{invoiceSerieId}/{productId}")]
+    public async Task<IActionResult> StockItemCaja(string invoiceSerieId, string productId)
     {
-        long quantity = await _productStockService.GetStockItemComprobanteAsync(invoiceSerieId, productId);
+        long quantity = await _productStockService.GetStockItemCajaAsync(invoiceSerieId, productId);
+        return Ok(quantity);
+    }
+
+    [HttpGet("StockItemComprobante/{warehouseId}/{productId}")]
+    public async Task<IActionResult> ItemComprobante(string warehouseId, string productId)
+    {
+        long quantity = await _productStockService.GetStockItemComprobanteAsync(warehouseId, productId);
         return Ok(quantity);
     }
 }

@@ -49,10 +49,18 @@ public class ProductStockService : CrudOperationService<ProductStock>
         return productStock;
     }
 
-    public async Task<long> GetStockItemComprobanteAsync(string invoiceSerieId, string productId)
+    public async Task<long> GetStockItemCajaAsync(string invoiceSerieId, string productId)
     {
         var invoiceSerie = await _invoiceSerieService.GetAsync(invoiceSerieId);
         var productStocks = await GetProductStockByWarehouseIdAndProductIdAsync(invoiceSerie.WarehouseId, productId);
+        var totalEntrada = productStocks.Where(x => x.Type == InventoryType.ENTRADA).Sum(x => x.Quantity);
+        var totalSalida = productStocks.Where(x => x.Type == InventoryType.SALIDA).Sum(x => x.Quantity);
+        return totalEntrada - totalSalida;
+    }
+
+    public async Task<long> GetStockItemComprobanteAsync(string warehouseId, string productId)
+    {
+        var productStocks = await GetProductStockByWarehouseIdAndProductIdAsync(warehouseId, productId);
         var totalEntrada = productStocks.Where(x => x.Type == InventoryType.ENTRADA).Sum(x => x.Quantity);
         var totalSalida = productStocks.Where(x => x.Type == InventoryType.SALIDA).Sum(x => x.Quantity);
         return totalEntrada - totalSalida;
