@@ -58,6 +58,11 @@ public class Configuration
     public string CpeSunat { get; set; } = string.Empty;
 
     /// <summary>
+    /// Modo de Envío SUNAT - para la terminal.
+    /// </summary>
+    public string ModoEnvioSunat { get; set; } = "FIRMAR";
+
+    /// <summary>
     /// Contacto por defecto para operaciones
     /// menores a 700 soles con boleta.
     /// </summary>

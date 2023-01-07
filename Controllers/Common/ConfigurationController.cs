@@ -38,11 +38,6 @@ public class ConfigurationController : ControllerBase
         model.Id = configuration.Id;
         await _configurationService.UpdateAsync(model);
 
-        return Ok(new
-        {
-            Ok = true,
-            Data = configuration,
-            Msg = $"La configuración {configuration.Ruc}, ha sido actualizado!"
-        });
+        return Ok(configuration);
     }
 }
