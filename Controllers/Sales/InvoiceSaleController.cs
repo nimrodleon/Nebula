@@ -52,7 +52,8 @@ public class InvoiceSaleController : ControllerBase
     {
         var invoiceSeries = await _invoiceSerieService.GetAsync("Name", string.Empty);
         var invoiceSales = await _invoiceSaleService.GetListAsync(dto);
-        string filePath = new ExportarReporteMensual(invoiceSeries, invoiceSales).GuardarCambios();
+        var creditNotes = await _creditNoteService.GetListAsync(dto);
+        string filePath = new ExportarReporteMensual(invoiceSeries, invoiceSales, creditNotes).GuardarCambios();
         FileStream stream = new FileStream(filePath, FileMode.Open);
         return new FileStreamResult(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
     }

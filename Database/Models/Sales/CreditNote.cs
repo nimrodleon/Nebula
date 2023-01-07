@@ -26,6 +26,11 @@ public class CreditNote : Generic
     public string Number { get; set; } = string.Empty;
 
     /// <summary>
+    /// Identificador series de facturación.
+    /// </summary>
+    public string InvoiceSerieId { get; set; } = string.Empty;
+
+    /// <summary>
     /// Tipo de operación Catálogo: 51, n2
     /// </summary>
     public string TipOperacion { get; set; } = string.Empty;
@@ -109,4 +114,14 @@ public class CreditNote : Generic
     /// Estado de Situación Facturador SUNAT.
     /// </summary>
     public string SituacionFacturador { get; set; } = "01:Por Generar XML";
+
+    /// <summary>
+    /// Año de registro.
+    /// </summary>
+    public string Year { get; set; } = DateTime.Now.ToString("yyyy");
+
+    /// <summary>
+    /// Mes de registro.
+    /// </summary>
+    public string Month { get; set; } = DateTime.Now.ToString("MM");
 }

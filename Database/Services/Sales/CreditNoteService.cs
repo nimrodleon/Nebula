@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using Nebula.Database.Dto.Common;
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Models.Common;
 using Nebula.Database.Models.Sales;
@@ -26,6 +27,13 @@ public class CreditNoteService : CrudOperationService<CreditNote>
         _invoiceSerieService = invoiceSerieService;
         _creditNoteDetailService = creditNoteDetailService;
         _tributoCreditNoteService = tributoCreditNoteService;
+    }
+
+    public async Task<List<CreditNote>> GetListAsync(DateQuery query)
+    {
+        var builder = Builders<CreditNote>.Filter;
+        var filter = builder.And(builder.Eq(x => x.Month, query.Month), builder.Eq(x => x.Year, query.Year));
+        return await _collection.Find(filter).Sort(new SortDefinitionBuilder<CreditNote>().Descending("$natural")).ToListAsync();
     }
 
     public async Task<CreditNote> GetCreditNoteByInvoiceSaleIdAsync(string invoiceSaleId) =>
@@ -62,6 +70,7 @@ public class CreditNoteService : CrudOperationService<CreditNote>
         GenerarSerieComprobante(ref invoiceSerie, ref creditNote);
 
         await _invoiceSerieService.UpdateAsync(invoiceSerie.Id, invoiceSerie);
+        creditNote.InvoiceSerieId = invoiceSerie.Id;
         await CreateAsync(creditNote);
 
         var creditNoteDetails = GetCreditNoteDetails(creditNote.Id, invoiceSaleDetails);
