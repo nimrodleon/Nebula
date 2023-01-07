@@ -156,6 +156,7 @@ public class ValidateStockService
                 });
             }
         });
-        await _productStockService.CreateAsync(productStocks);
+        if (productStocks.Count > 0)
+            await _productStockService.CreateAsync(productStocks);
     }
 }

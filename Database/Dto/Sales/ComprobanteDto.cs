@@ -61,7 +61,7 @@ public class ComprobanteDto
             SumTotValVenta = importeVenta.SumTotValVenta,
             SumPrecioVenta = importeVenta.SumPrecioVenta,
             SumTotTributos = importeVenta.SumTotTributos,
-            SumImpVenta = importeVenta.SumImpVenta,            
+            SumImpVenta = importeVenta.SumImpVenta,
             Year = DateTime.Now.ToString("yyyy"),
             Month = DateTime.Now.ToString("MM"),
             SituacionFacturador = "01:Por Generar XML",
@@ -119,7 +119,7 @@ public class ComprobanteDto
                 TipoItem = item.TipoItem,
                 CodUnidadMedida = item.CodUnidadMedida,
                 CtdUnidadItem = item.CtdUnidadItem,
-                CodProducto = "-",
+                CodProducto = item.ProductId,
                 CodProductoSunat = "-", // refactorizar agregar código de barra.
                 DesItem = item.DesItem,
                 MtoValorUnitario = impItemDto.MtoValorUnitario,
@@ -143,6 +143,7 @@ public class ComprobanteDto
                 MtoPrecioVentaUnitario = item.MtoPrecioVentaUnitario,
                 MtoValorVentaItem = impItemDto.MtoValorVentaItem,
                 WarehouseId = item.WarehouseId,
+                ControlStock = item.ControlStock,
             });
         });
         return invoiceSaleDetails;
