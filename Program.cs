@@ -60,6 +60,7 @@ builder.Services.AddSingleton<CashierDetailService>();
 builder.Services.AddSingleton<InvoiceSaleDetailService>();
 builder.Services.AddSingleton<InvoiceSaleService>();
 builder.Services.AddSingleton<TributoSaleService>();
+builder.Services.AddSingleton<DetallePagoSaleService>();
 builder.Services.AddSingleton<CashierSaleService>();
 builder.Services.AddSingleton<LocationService>();
 builder.Services.AddSingleton<LocationDetailService>();
