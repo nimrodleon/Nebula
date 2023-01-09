@@ -36,7 +36,7 @@ public class Contact : Generic
     public string PhoneNumber { get; set; } = string.Empty;
 
     /// <summary>
-    /// E-Mail de Contacto.
+    /// Dirección del contacto (Código de ubigeo).
     /// </summary>
-    public string Email { get; set; } = string.Empty;
+    public string CodUbigeo { get; set; } = string.Empty;
 }
