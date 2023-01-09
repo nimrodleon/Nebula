@@ -29,8 +29,8 @@ public class ContactController : ControllerBase
     [HttpGet("Index")]
     public async Task<IActionResult> Index([FromQuery] string? query)
     {
-        var responseData = await _contactService.GetAsync("Name", query);
-        return Ok(responseData);
+        var contacts = await _contactService.GetAsync("Name", query);
+        return Ok(contacts);
     }
 
     [HttpGet("Show/{id}")]
@@ -64,13 +64,7 @@ public class ContactController : ControllerBase
     {
         model.Name = model.Name.ToUpper();
         await _contactService.CreateAsync(model);
-
-        return Ok(new
-        {
-            Ok = true,
-            Data = model,
-            Msg = $"El contacto {model.Name} ha sido registrado!"
-        });
+        return Ok(model);
     }
 
     [HttpPut("Update/{id}")]
@@ -79,14 +73,8 @@ public class ContactController : ControllerBase
         var contact = await _contactService.GetAsync(id);
         model.Id = contact.Id;
         model.Name = model.Name.ToUpper();
-        await _contactService.UpdateAsync(id, model);
-
-        return Ok(new
-        {
-            Ok = true,
-            Data = model,
-            Msg = $"El contacto {model.Name} ha sido actualizado!"
-        });
+        contact = await _contactService.UpdateAsync(id, model);
+        return Ok(contact);
     }
 
     [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
@@ -94,7 +82,7 @@ public class ContactController : ControllerBase
     {
         var contact = await _contactService.GetAsync(id);
         await _contactService.RemoveAsync(id);
-        return Ok(new { Ok = true, Data = contact, Msg = "El contacto ha sido borrado!" });
+        return Ok(contact);
     }
 
     [HttpGet("EntradaSalida/{id}")]
