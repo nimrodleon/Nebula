@@ -10,18 +10,20 @@ public class FacturadorService
     private readonly InvoiceSaleService _invoiceSaleService;
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly TributoSaleService _tributoSaleService;
+    private readonly DetallePagoSaleService _detallePagoSaleService;
     // ======================================================================
     private readonly CreditNoteService _creditNoteService;
 
     public FacturadorService(ConfigurationService configurationService,
         InvoiceSaleService invoiceSaleService, InvoiceSaleDetailService invoiceSaleDetailService,
-        TributoSaleService tributoSaleService, CreditNoteService creditNoteService)
+        TributoSaleService tributoSaleService, CreditNoteService creditNoteService, DetallePagoSaleService detallePagoSaleService)
     {
         _configurationService = configurationService;
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _tributoSaleService = tributoSaleService;
         _creditNoteService = creditNoteService;
+        _detallePagoSaleService = detallePagoSaleService;
     }
 
     /// <summary>
@@ -34,11 +36,13 @@ public class FacturadorService
         var invoiceSale = await _invoiceSaleService.GetAsync(invoiceSaleId);
         var invoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(invoiceSaleId);
         var tributoSales = await _tributoSaleService.GetListAsync(invoiceSaleId);
+        var detallePagos = await _detallePagoSaleService.GetListAsync(invoiceSaleId);
         return new InvoiceSaleDto
         {
             InvoiceSale = invoiceSale,
             InvoiceSaleDetails = invoiceSaleDetails,
-            TributoSales = tributoSales
+            TributoSales = tributoSales,
+            DetallePagoSales = detallePagos,
         };
     }
 

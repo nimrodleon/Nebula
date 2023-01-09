@@ -237,6 +237,22 @@ public class ComprobanteDto
         return tributos;
     }
 
+    public List<DetallePagoSale> GetDetallePagos(string invoiceId)
+    {
+        var detallePagos = new List<DetallePagoSale>();
+        DetallePago.ForEach(item =>
+        {
+            detallePagos.Add(new DetallePagoSale()
+            {
+                InvoiceSale = invoiceId,
+                MtoCuotaPago = item.MtoCuotaPago,
+                FecCuotaPago = item.FecCuotaPago,
+                TipMonedaCuotaPago = _configuration.TipMoneda,
+            });
+        });
+        return detallePagos;
+    }
+
     public void GenerarSerieComprobante(ref InvoiceSerie invoiceSerie, ref InvoiceSale invoiceSale)
     {
         int numComprobante = 0;

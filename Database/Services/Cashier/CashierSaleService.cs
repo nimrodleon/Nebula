@@ -22,11 +22,13 @@ public class CashierSaleService
     private readonly CashierDetailService _cashierDetailService;
     private readonly ReceivableService _receivableService;
     private readonly CajaDiariaService _cajaDiariaService;
+    private readonly DetallePagoSaleService _detallePagoSaleService;
 
     public CashierSaleService(ConfigurationService configurationService,
         InvoiceSaleService invoiceSaleService, InvoiceSaleDetailService invoiceSaleDetailService,
         TributoSaleService tributoSaleService, CrudOperationService<InvoiceSerie> invoiceSerieService,
-        CashierDetailService cashierDetailService, ReceivableService receivableService, CajaDiariaService cajaDiariaService)
+        CashierDetailService cashierDetailService, ReceivableService receivableService,
+        CajaDiariaService cajaDiariaService, DetallePagoSaleService detallePagoSaleService)
     {
         _configurationService = configurationService;
         _invoiceSaleService = invoiceSaleService;
@@ -36,6 +38,7 @@ public class CashierSaleService
         _cashierDetailService = cashierDetailService;
         _receivableService = receivableService;
         _cajaDiariaService = cajaDiariaService;
+        _detallePagoSaleService = detallePagoSaleService;
     }
 
     /// <summary>
@@ -91,9 +94,14 @@ public class CashierSaleService
         };
         await _cashierDetailService.CreateAsync(cashierDetail);
 
-        // registrar cargo si la operación es a crédito.
+        // registrar cargo y detalle de pago si la operación es a crédito.
         if (comprobanteDto.DatoPago.FormaPago == FormaPago.Credito)
         {
+            if (invoiceSale.DocType == "FACTURA")
+            {
+                var detallePagos = comprobanteDto.GetDetallePagos(invoiceSale.Id);
+                if (detallePagos.Count() > 0) await _detallePagoSaleService.InsertManyAsync(detallePagos);
+            }
             var cargo = GenerarCargo(invoiceSale, cajaDiaria, configuration.DiasPlazo);
             await _receivableService.CreateAsync(cargo);
         }

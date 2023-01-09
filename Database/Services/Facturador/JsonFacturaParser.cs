@@ -85,7 +85,18 @@ public class JsonFacturaParser
         }
         if (formaPago == "Credito")
         {
-            // ...
+            datoPago.formaPago = "Credito";
+            datoPago.mtoNetoPendientePago = dto.InvoiceSale.SumImpVenta.ToString("N2", numberFormatInfo);
+            datoPago.tipMonedaMtoNetoPendientePago = dto.InvoiceSale.TipMoneda;
+            dto.DetallePagoSales.ForEach(item =>
+            {
+                detallePago.Add(new ItemFormaPago()
+                {
+                    mtoCuotaPago = item.MtoCuotaPago.ToString("N2", numberFormatInfo),
+                    fecCuotaPago = item.FecCuotaPago,
+                    tipMonedaCuotaPago = item.TipMonedaCuotaPago,
+                });
+            });
         }
     }
 
