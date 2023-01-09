@@ -2,6 +2,7 @@ using Nebula.Database.Models.Common;
 using Nebula.Database.Models.Sales;
 using Nebula.Database.Services.Common;
 using Nebula.Database.Dto.Sales;
+using Nebula.Database.Helpers;
 
 namespace Nebula.Database.Services.Sales;
 
@@ -12,16 +13,19 @@ public class ComprobanteService
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly TributoSaleService _tributoSaleService;
     private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
+    private readonly DetallePagoSaleService _detallePagoSaleService;
 
     public ComprobanteService(ConfigurationService configurationService,
         InvoiceSaleService invoiceSaleService, InvoiceSaleDetailService invoiceSaleDetailService,
-        TributoSaleService tributoSaleService, CrudOperationService<InvoiceSerie> invoiceSerieService)
+        TributoSaleService tributoSaleService, CrudOperationService<InvoiceSerie> invoiceSerieService,
+        DetallePagoSaleService detallePagoSaleService)
     {
         _configurationService = configurationService;
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _tributoSaleService = tributoSaleService;
         _invoiceSerieService = invoiceSerieService;
+        _detallePagoSaleService = detallePagoSaleService;
     }
 
     /// <summary>
@@ -44,17 +48,27 @@ public class ComprobanteService
         comprobanteDto.GenerarSerieComprobante(ref invoiceSerie, ref invoiceSale);
         invoiceSale.InvoiceSerieId = invoiceSerie.Id;
 
-        // Agregar Información del comprobante.
+        // agregar Información del comprobante.
         await _invoiceSerieService.UpdateAsync(invoiceSerie.Id, invoiceSerie);
         await _invoiceSaleService.CreateAsync(invoiceSale);
 
-        // Agregar detalles del comprobante.
+        // agregar detalles del comprobante.
         var invoiceSaleDetails = comprobanteDto.GetInvoiceSaleDetails(invoiceSale.Id);
         await _invoiceSaleDetailService.CreateManyAsync(invoiceSaleDetails);
 
-        // Agregar Tributos de Factura.
+        // agregar Tributos de Factura.
         var tributoSales = comprobanteDto.GetTributoSales(invoiceSale.Id);
         await _tributoSaleService.CreateManyAsync(tributoSales);
+
+        // registrar detalle de pago si la operación es a crédito.
+        if (comprobanteDto.DatoPago.FormaPago == FormaPago.Credito)
+        {
+            if (invoiceSale.DocType == "FACTURA")
+            {
+                var detallePagos = comprobanteDto.GetDetallePagos(invoiceSale.Id);
+                if (detallePagos.Count() > 0) await _detallePagoSaleService.InsertManyAsync(detallePagos);
+            }
+        }
 
         return invoiceSale;
     }
