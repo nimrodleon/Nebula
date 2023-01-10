@@ -51,7 +51,7 @@ builder.Services.AddCors(options =>
 
 // Add services to the container.
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
-builder.Services.AddDbContext<FacturadorDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("FacturadorDb")));
+builder.Services.AddDbContext<FacturadorDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("BDFacturador")));
 builder.Services.AddSingleton(typeof(CrudOperationService<>));
 builder.Services.AddSingleton<ReceivableService>();
 builder.Services.AddSingleton<ConfigurationService>();
