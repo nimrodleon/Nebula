@@ -8,6 +8,7 @@ using Nebula.Database.Dto.Common;
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Services;
 using Nebula.Database.Models.Common;
+using Nebula.Database.Services.Inventory;
 
 namespace Nebula.Controllers.Sales;
 
@@ -24,10 +25,13 @@ public class InvoiceSaleController : ControllerBase
     private readonly ComprobanteService _comprobanteService;
     private readonly FacturadorService _facturadorService;
     private readonly CreditNoteService _creditNoteService;
+    private readonly ValidateStockService _validateStockService;
 
-    public InvoiceSaleController(ConfigurationService configurationService, CrudOperationService<InvoiceSerie> invoiceSerieService,
-        InvoiceSaleService invoiceSaleService, InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService,
-        ComprobanteService comprobanteService, FacturadorService facturadorService, CreditNoteService creditNoteService)
+    public InvoiceSaleController(ConfigurationService configurationService,
+        CrudOperationService<InvoiceSerie> invoiceSerieService, InvoiceSaleService invoiceSaleService,
+        InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService,
+        ComprobanteService comprobanteService, FacturadorService facturadorService, CreditNoteService creditNoteService,
+        ValidateStockService validateStockService)
     {
         _configurationService = configurationService;
         _invoiceSerieService = invoiceSerieService;
@@ -37,6 +41,7 @@ public class InvoiceSaleController : ControllerBase
         _comprobanteService = comprobanteService;
         _facturadorService = facturadorService;
         _creditNoteService = creditNoteService;
+        _validateStockService = validateStockService;
     }
 
     [HttpGet("Index")]
@@ -78,6 +83,7 @@ public class InvoiceSaleController : ControllerBase
         _comprobanteService.SetComprobanteDto(dto);
         var invoiceSale = await _comprobanteService.SaveChangesAsync();
         await _facturadorService.JsonInvoiceParser(invoiceSale.Id);
+        await _validateStockService.ValidarInvoiceSale(invoiceSale.Id);
         return Ok(invoiceSale);
     }
 

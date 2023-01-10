@@ -28,6 +28,16 @@ public class JsonCreditNoteParser
         cabecera.sumTotValVenta = dto.CreditNote.SumTotValVenta.ToString("N2", numberFormatInfo);
         cabecera.sumPrecioVenta = dto.CreditNote.SumPrecioVenta.ToString("N2", numberFormatInfo);
         cabecera.sumImpVenta = dto.CreditNote.SumImpVenta.ToString("N2", numberFormatInfo);
+        // adicionales de cabecera.
+        if (dto.CreditNote.CodUbigeoCliente.Length == 6)
+        {
+            cabecera.adicionalCabecera = new AdicionalCabecera()
+            {
+                codPaisCliente = "PE",
+                codUbigeoCliente = dto.CreditNote.CodUbigeoCliente,
+                desDireccionCliente = dto.CreditNote.DesDireccionCliente,
+            };
+        }
         // detalle.
         dto.CreditNoteDetails.ForEach(item =>
         {

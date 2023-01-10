@@ -107,6 +107,9 @@ public class CreditNoteService : CrudOperationService<CreditNote>
             SumTotValVenta = invoiceSale.SumTotValVenta,
             SumPrecioVenta = invoiceSale.SumPrecioVenta,
             SumImpVenta = invoiceSale.SumImpVenta,
+            // DIRECCIÓN_DEL_CLIENTE!
+            CodUbigeoCliente = invoiceSale.CodUbigeoCliente,
+            DesDireccionCliente = invoiceSale.DesDireccionCliente,
         };
     }
 
