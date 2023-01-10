@@ -127,4 +127,16 @@ public class InvoiceSale : Generic
     /// Mes de registro.
     /// </summary>
     public string Month { get; set; } = DateTime.Now.ToString("MM");
+
+    #region DIRECCIÓN_DEL_CLIENTE!
+    /// <summary>
+    /// Dirección del cliente (Código de ubigeo).
+    /// </summary>
+    public string CodUbigeoCliente { get; set; } = "-";
+
+    /// <summary>
+    /// Dirección del cliente (Dirección completa y detallada).
+    /// </summary>
+    public string DesDireccionCliente { get; set; } = string.Empty;
+    #endregion
 }
