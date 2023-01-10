@@ -25,6 +25,16 @@ public class JsonBoletaParser
         cabecera.sumTotValVenta = dto.InvoiceSale.SumTotValVenta.ToString("N2", numberFormatInfo);
         cabecera.sumPrecioVenta = dto.InvoiceSale.SumPrecioVenta.ToString("N2", numberFormatInfo);
         cabecera.sumImpVenta = dto.InvoiceSale.SumImpVenta.ToString("N2", numberFormatInfo);
+        // adicionales de cabecera.
+        if (dto.InvoiceSale.CodUbigeoCliente.Length == 6)
+        {
+            cabecera.adicionalCabecera = new AdicionalCabecera()
+            {
+                codPaisCliente = "PE",
+                codUbigeoCliente = dto.InvoiceSale.CodUbigeoCliente,
+                desDireccionCliente = dto.InvoiceSale.DesDireccionCliente,
+            };
+        }
         // detalle.
         dto.InvoiceSaleDetails.ForEach(item =>
         {

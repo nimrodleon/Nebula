@@ -20,4 +20,5 @@ public class Invoice
     public string sumImpVenta { get; set; } = string.Empty;
     public string ublVersionId { get; set; } = "2.1";
     public string customizationId { get; set; } = "2.0";
+    public AdicionalCabecera? adicionalCabecera { get; set; } = null;
 }

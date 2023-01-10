@@ -66,6 +66,9 @@ public class ComprobanteDto
             Month = DateTime.Now.ToString("MM"),
             SituacionFacturador = "01:Por Generar XML",
             Anulada = false,
+            // DIRECCIÓN_DEL_CLIENTE!
+            CodUbigeoCliente = Cabecera.CodUbigeoCliente,
+            DesDireccionCliente = Cabecera.DesDireccionCliente,
         };
     }
 
