@@ -53,7 +53,9 @@ public class ContactController : ControllerBase
                 Text = $"{item.Document} - {item.Name}",
                 DocType = item.DocType,
                 Document = item.Document,
-                Name = item.Name
+                Name = item.Name,
+                Address = item.Address,
+                CodUbigeo = item.CodUbigeo,
             });
         });
         return Ok(new { Results = data });
