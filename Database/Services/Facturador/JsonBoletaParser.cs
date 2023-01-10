@@ -42,7 +42,8 @@ public class JsonBoletaParser
             {
                 codUnidadMedida = item.CodUnidadMedida.Split(":")[0],
                 ctdUnidadItem = item.CtdUnidadItem.ToString("N1", numberFormatInfo),
-                codProducto = item.CodProducto,
+                // codProducto = item.CodProducto,
+                codProducto = "-",
                 codProductoSUNAT = item.CodProductoSunat,
                 desItem = item.DesItem,
                 mtoValorUnitario = item.MtoValorUnitario.ToString("N4", numberFormatInfo),
