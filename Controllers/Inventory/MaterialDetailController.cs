@@ -28,7 +28,7 @@ public class MaterialDetailController : ControllerBase
     [HttpGet("Show/{id}")]
     public async Task<IActionResult> Show(string id)
     {
-        var materialDetail = await _materialDetailService.GetAsync(id);
+        var materialDetail = await _materialDetailService.GetByIdAsync(id);
         return Ok(materialDetail);
     }
 
@@ -42,7 +42,7 @@ public class MaterialDetailController : ControllerBase
     [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] MaterialDetail model)
     {
-        var materialDetail = await _materialDetailService.GetAsync(id);
+        var materialDetail = await _materialDetailService.GetByIdAsync(id);
         model.Id = materialDetail.Id;
         var responseData = await _materialDetailService.UpdateAsync(id, model);
         return Ok(responseData);
@@ -51,7 +51,7 @@ public class MaterialDetailController : ControllerBase
     [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(string id)
     {
-        var materialDetail = await _materialDetailService.GetAsync(id);
+        var materialDetail = await _materialDetailService.GetByIdAsync(id);
         await _materialDetailService.RemoveAsync(materialDetail.Id);
         return Ok(materialDetail);
     }

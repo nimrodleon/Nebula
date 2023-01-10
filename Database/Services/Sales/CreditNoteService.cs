@@ -41,7 +41,7 @@ public class CreditNoteService : CrudOperationService<CreditNote>
 
     public async Task<CreditNote> SetSituacionFacturador(string id, SituacionFacturadorDto dto)
     {
-        var creditNote = await GetAsync(id);
+        var creditNote = await GetByIdAsync(id);
         creditNote.SituacionFacturador = $"{dto.Id}:{dto.Nombre}";
         creditNote = await UpdateAsync(creditNote.Id, creditNote);
         return creditNote;
@@ -49,7 +49,7 @@ public class CreditNoteService : CrudOperationService<CreditNote>
 
     public async Task<CreditNoteDto> GetCreditNoteDtoAsync(string id)
     {
-        var creditNote = await GetAsync(id);
+        var creditNote = await GetByIdAsync(id);
         var creditNoteDetails = await _creditNoteDetailService.GetListAsync(creditNote.Id);
         var tributosCreditNote = await _tributoCreditNoteService.GetListAsync(creditNote.Id);
         return new CreditNoteDto()
@@ -62,10 +62,10 @@ public class CreditNoteService : CrudOperationService<CreditNote>
 
     public async Task<CreditNote> AnulaciónDeLaOperación(string id)
     {
-        var invoiceSale = await _invoiceSaleService.GetAsync(id);
+        var invoiceSale = await _invoiceSaleService.GetByIdAsync(id);
         var invoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(invoiceSale.Id);
         var tributoSales = await _tributoSaleService.GetListAsync(invoiceSale.Id);
-        var invoiceSerie = await _invoiceSerieService.GetAsync(invoiceSale.InvoiceSerieId);
+        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(invoiceSale.InvoiceSerieId);
         var creditNote = GetCreditNote(invoiceSale);
         GenerarSerieComprobante(ref invoiceSerie, ref creditNote);
 

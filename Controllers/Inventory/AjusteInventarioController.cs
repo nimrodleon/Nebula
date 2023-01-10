@@ -33,7 +33,7 @@ public class AjusteInventarioController : ControllerBase
     [HttpGet("Show/{id}")]
     public async Task<IActionResult> Show(string id)
     {
-        var ajusteInventario = await _ajusteInventarioService.GetAsync(id);
+        var ajusteInventario = await _ajusteInventarioService.GetByIdAsync(id);
         return Ok(ajusteInventario);
     }
 
@@ -48,7 +48,7 @@ public class AjusteInventarioController : ControllerBase
     [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] AjusteInventario model)
     {
-        var ajusteInventario = await _ajusteInventarioService.GetAsync(id);
+        var ajusteInventario = await _ajusteInventarioService.GetByIdAsync(id);
         model.Id = ajusteInventario.Id;
         var responseData = await _ajusteInventarioService.UpdateAsync(id, model);
         return Ok(responseData);
@@ -57,7 +57,7 @@ public class AjusteInventarioController : ControllerBase
     [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
-        var ajusteInventario = await _ajusteInventarioService.GetAsync(id);
+        var ajusteInventario = await _ajusteInventarioService.GetByIdAsync(id);
         await _ajusteInventarioService.RemoveAsync(ajusteInventario.Id);
         return Ok(ajusteInventario);
     }

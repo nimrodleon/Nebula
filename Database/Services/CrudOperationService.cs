@@ -25,7 +25,7 @@ public class CrudOperationService<T> where T : class, Generic
         return await _collection.Find(filter).Limit(limit).ToListAsync();
     }
 
-    public async Task<T> GetAsync(string id) =>
+    public async Task<T> GetByIdAsync(string id) =>
         await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
     public async Task<T> CreateAsync(T obj)

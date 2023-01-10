@@ -33,7 +33,7 @@ public class ValidateStockService
 
     public async Task<InventoryNotas> ValidarNotas(string id)
     {
-        var inventoryNotas = await _inventoryNotasService.GetAsync(id);
+        var inventoryNotas = await _inventoryNotasService.GetByIdAsync(id);
         var inventoryNotasDetails = await _inventoryNotasDetailService.GetListAsync(inventoryNotas.Id);
         var productStocks = new List<ProductStock>();
         inventoryNotasDetails.ForEach(item =>
@@ -55,7 +55,7 @@ public class ValidateStockService
 
     public async Task<Transferencia> ValidarTransferencia(string id)
     {
-        var transferencia = await _transferenciaService.GetAsync(id);
+        var transferencia = await _transferenciaService.GetByIdAsync(id);
         var transferenciaDetails = await _transferenciaDetailService.GetListAsync(transferencia.Id);
         var productStockDestino = new List<ProductStock>();
         var productStockOrigen = new List<ProductStock>();
@@ -90,7 +90,7 @@ public class ValidateStockService
 
     public async Task<AjusteInventario> ValidarAjusteInventario(string id)
     {
-        var ajusteInventario = await _ajusteInventarioService.GetAsync(id);
+        var ajusteInventario = await _ajusteInventarioService.GetByIdAsync(id);
         var ajusteInventarioDetails = await _ajusteInventarioDetailService.GetListAsync(ajusteInventario.Id);
         ajusteInventarioDetails = await _productStockService.CalcularCantidadExistenteAjusteInventarioAsync(ajusteInventarioDetails, ajusteInventario.WarehouseId);
         var productArrId = new List<string>();
@@ -118,7 +118,7 @@ public class ValidateStockService
 
     public async Task<Material> ValidarMaterial(string id)
     {
-        var material = await _materialService.GetAsync(id);
+        var material = await _materialService.GetByIdAsync(id);
         var materialDetails = await _materialDetailService.GetListAsync(material.Id);
         var productStocks = new List<ProductStock>();
         materialDetails.ForEach(item =>

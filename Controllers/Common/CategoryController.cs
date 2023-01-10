@@ -27,7 +27,7 @@ public class CategoryController : ControllerBase
     [HttpGet("Show/{id}")]
     public async Task<IActionResult> Show(string id)
     {
-        var category = await _categoryService.GetAsync(id);
+        var category = await _categoryService.GetByIdAsync(id);
         return Ok(category);
     }
 
@@ -65,7 +65,7 @@ public class CategoryController : ControllerBase
     [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] Category model)
     {
-        var category = await _categoryService.GetAsync(id);
+        var category = await _categoryService.GetByIdAsync(id);
 
         model.Id = category.Id;
         model.Name = model.Name.ToUpper();
@@ -82,7 +82,7 @@ public class CategoryController : ControllerBase
     [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
-        var category = await _categoryService.GetAsync(id);
+        var category = await _categoryService.GetByIdAsync(id);
         await _categoryService.RemoveAsync(id);
         return Ok(new { Ok = true, Data = category, Msg = "La categoría ha sido borrado!" });
     }

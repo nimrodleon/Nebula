@@ -61,7 +61,7 @@ public class CashierSaleService
 
         var invoiceSale = comprobanteDto.GetInvoiceSale();
         var invoiceSerieId = comprobanteDto.Cabecera.InvoiceSerieId;
-        var invoiceSerie = await _invoiceSerieService.GetAsync(invoiceSerieId);
+        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(invoiceSerieId);
         comprobanteDto.GenerarSerieComprobante(ref invoiceSerie, ref invoiceSale);
         invoiceSale.InvoiceSerieId = invoiceSerie.Id;
 
@@ -78,7 +78,7 @@ public class CashierSaleService
         await _tributoSaleService.CreateManyAsync(tributoSales);
 
         // registrar operación de Caja.
-        var cajaDiaria = await _cajaDiariaService.GetAsync(cajaDiariaId);
+        var cajaDiaria = await _cajaDiariaService.GetByIdAsync(cajaDiariaId);
         var cashierDetail = new CashierDetail()
         {
             CajaDiaria = cajaDiaria.Id,

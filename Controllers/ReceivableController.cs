@@ -31,7 +31,7 @@ namespace Nebula.Controllers
         [HttpGet("Show/{id}")]
         public async Task<IActionResult> Show(string id)
         {
-            var receivable = await _receivableService.GetAsync(id);
+            var receivable = await _receivableService.GetByIdAsync(id);
             return Ok(receivable);
         }
 
@@ -51,7 +51,7 @@ namespace Nebula.Controllers
         [HttpPut("Update/{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] Receivable model)
         {
-            var receivable = await _receivableService.GetAsync(id);
+            var receivable = await _receivableService.GetByIdAsync(id);
 
             model.Id = receivable.Id;
             await _receivableService.UpdateAsync(id, model);
@@ -67,7 +67,7 @@ namespace Nebula.Controllers
         [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
         public async Task<IActionResult> Delete(string id)
         {
-            var receivable = await _receivableService.GetAsync(id);
+            var receivable = await _receivableService.GetByIdAsync(id);
             if (receivable.Type == "CARGO")
                 await _receivableService.RemoveAsync(receivable.Id);
             if (receivable.Type == "ABONO")

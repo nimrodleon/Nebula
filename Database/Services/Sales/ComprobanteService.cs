@@ -44,7 +44,7 @@ public class ComprobanteService
         comprobanteDto.SetConfiguration(configuration);
         var invoiceSale = comprobanteDto.GetInvoiceSale();
         var invoiceSerieId = comprobanteDto.Cabecera.InvoiceSerieId;
-        var invoiceSerie = await _invoiceSerieService.GetAsync(invoiceSerieId);
+        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(invoiceSerieId);
         comprobanteDto.GenerarSerieComprobante(ref invoiceSerie, ref invoiceSale);
         invoiceSale.InvoiceSerieId = invoiceSerie.Id;
 

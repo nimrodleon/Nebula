@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Helpers;
 using Nebula.Database.Models.Common;
 using Nebula.Database.Dto.Common;
-using Nebula.Database.Services;
 using Nebula.Database.Services.Cashier;
 using Nebula.Database.Services.Sales;
+using Nebula.Database.Services.Common;
 
 namespace Nebula.Controllers.Common;
 
@@ -14,11 +14,11 @@ namespace Nebula.Controllers.Common;
 [ApiController]
 public class ContactController : ControllerBase
 {
-    private readonly CrudOperationService<Contact> _contactService;
+    private readonly ContactService _contactService;
     private readonly CashierDetailService _cashierDetailService;
     private readonly InvoiceSaleService _invoiceSaleService;
 
-    public ContactController(CrudOperationService<Contact> contactService,
+    public ContactController(ContactService contactService,
         CashierDetailService cashierDetailService, InvoiceSaleService invoiceSaleService)
     {
         _contactService = contactService;
@@ -36,7 +36,14 @@ public class ContactController : ControllerBase
     [HttpGet("Show/{id}")]
     public async Task<IActionResult> Show(string id)
     {
-        var contact = await _contactService.GetAsync(id);
+        var contact = await _contactService.GetByIdAsync(id);
+        return Ok(contact);
+    }
+
+    [HttpGet("Document/{document}")]
+    public async Task<IActionResult> Document(string document)
+    {
+        var contact = await _contactService.GetContactByDocumentAsync(document);
         return Ok(contact);
     }
 
@@ -72,7 +79,7 @@ public class ContactController : ControllerBase
     [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] Contact model)
     {
-        var contact = await _contactService.GetAsync(id);
+        var contact = await _contactService.GetByIdAsync(id);
         model.Id = contact.Id;
         model.Name = model.Name.ToUpper();
         contact = await _contactService.UpdateAsync(id, model);
@@ -82,7 +89,7 @@ public class ContactController : ControllerBase
     [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
-        var contact = await _contactService.GetAsync(id);
+        var contact = await _contactService.GetByIdAsync(id);
         await _contactService.RemoveAsync(id);
         return Ok(contact);
     }

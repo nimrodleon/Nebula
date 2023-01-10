@@ -28,7 +28,7 @@ public class InventoryNotasDetailController : ControllerBase
     [HttpGet("Show/{id}")]
     public async Task<IActionResult> Show(string id)
     {
-        var inventoryNotasDetail = await _inventoryNotasDetailService.GetAsync(id);
+        var inventoryNotasDetail = await _inventoryNotasDetailService.GetByIdAsync(id);
         return Ok(inventoryNotasDetail);
     }
 
@@ -42,7 +42,7 @@ public class InventoryNotasDetailController : ControllerBase
     [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] InventoryNotasDetail model)
     {
-        var inventoryNotasDetail = await _inventoryNotasDetailService.GetAsync(id);
+        var inventoryNotasDetail = await _inventoryNotasDetailService.GetByIdAsync(id);
         model.Id = inventoryNotasDetail.Id;
         var responseData = await _inventoryNotasDetailService.UpdateAsync(id, model);
         return Ok(responseData);
@@ -51,7 +51,7 @@ public class InventoryNotasDetailController : ControllerBase
     [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(string id)
     {
-        var inventoryNotasDetail = await _inventoryNotasDetailService.GetAsync(id);
+        var inventoryNotasDetail = await _inventoryNotasDetailService.GetByIdAsync(id);
         await _inventoryNotasDetailService.RemoveAsync(inventoryNotasDetail.Id);
         return Ok(inventoryNotasDetail);
     }

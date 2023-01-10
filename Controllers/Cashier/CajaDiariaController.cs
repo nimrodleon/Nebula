@@ -37,14 +37,14 @@ public class CajaDiariaController : ControllerBase
     [HttpGet("Show/{id}")]
     public async Task<IActionResult> Show(string id)
     {
-        var cajaDiaria = await _cajaDiariaService.GetAsync(id);
+        var cajaDiaria = await _cajaDiariaService.GetByIdAsync(id);
         return Ok(cajaDiaria);
     }
 
     [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] AperturaCaja model)
     {
-        var invoiceSerie = await _invoiceSerieService.GetAsync(model.InvoiceSerie);
+        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(model.InvoiceSerie);
         var cajaDiaria = new CajaDiaria()
         {
             InvoiceSerie = invoiceSerie.Id,
@@ -79,7 +79,7 @@ public class CajaDiariaController : ControllerBase
     [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] CerrarCaja model)
     {
-        var cajaDiaria = await _cajaDiariaService.GetAsync(id);
+        var cajaDiaria = await _cajaDiariaService.GetByIdAsync(id);
         cajaDiaria.TotalContabilizado = model.TotalContabilizado;
         cajaDiaria.TotalCierre = model.TotalCierre;
         cajaDiaria.Status = "CERRADO";
@@ -95,7 +95,7 @@ public class CajaDiariaController : ControllerBase
     [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
-        var cajaDiaria = await _cajaDiariaService.GetAsync(id);
+        var cajaDiaria = await _cajaDiariaService.GetByIdAsync(id);
         await _cajaDiariaService.RemoveAsync(cajaDiaria.Id);
         return Ok(new { Ok = true, Data = cajaDiaria, Msg = "La caja diaria ha sido borrado!" });
     }

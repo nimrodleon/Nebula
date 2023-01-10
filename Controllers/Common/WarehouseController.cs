@@ -26,7 +26,7 @@ public class WarehouseController : ControllerBase
     [HttpGet("Show/{id}")]
     public async Task<IActionResult> Show(string id)
     {
-        var warehouse = await _warehouseService.GetAsync(id);
+        var warehouse = await _warehouseService.GetByIdAsync(id);
         return Ok(warehouse);
     }
 
@@ -47,7 +47,7 @@ public class WarehouseController : ControllerBase
     [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] Warehouse model)
     {
-        var warehouse = await _warehouseService.GetAsync(id);
+        var warehouse = await _warehouseService.GetByIdAsync(id);
 
         model.Id = warehouse.Id;
         model.Name = model.Name.ToUpper();
@@ -64,7 +64,7 @@ public class WarehouseController : ControllerBase
     [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
-        var warehouse = await _warehouseService.GetAsync(id);
+        var warehouse = await _warehouseService.GetByIdAsync(id);
         await _warehouseService.RemoveAsync(id);
         return Ok(new { Ok = true, Data = warehouse, Msg = "El almacén ha sido borrado!" });
     }

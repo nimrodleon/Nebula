@@ -27,7 +27,7 @@ public class LocationService : CrudOperationService<Location>
 
     public async Task<RespLocationDetailStock> GetLocationDetailStocksAsync(string id, bool reponer = false)
     {
-        var location = await GetAsync(id);
+        var location = await GetByIdAsync(id);
         var locationDetails = await _locationDetailService.GetListAsync(location.Id);
         var productArrId = new List<string>();
         // obtener lista de identificadores.

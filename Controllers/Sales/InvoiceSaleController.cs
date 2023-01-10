@@ -86,7 +86,7 @@ public class InvoiceSaleController : ControllerBase
     {
         var responseData = new ResponseInvoiceSale()
         {
-            InvoiceSale = await _invoiceSaleService.GetAsync(id),
+            InvoiceSale = await _invoiceSaleService.GetByIdAsync(id),
             InvoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(id),
             TributoSales = await _tributoSaleService.GetListAsync(id)
         };
@@ -117,7 +117,7 @@ public class InvoiceSaleController : ControllerBase
     [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
-        var invoiceSale = await _invoiceSaleService.GetAsync(id);
+        var invoiceSale = await _invoiceSaleService.GetByIdAsync(id);
         await _invoiceSaleService.RemoveAsync(invoiceSale.Id);
         await _invoiceSaleDetailService.RemoveAsync(invoiceSale.Id);
         await _tributoSaleService.RemoveAsync(invoiceSale.Id);
@@ -129,7 +129,7 @@ public class InvoiceSaleController : ControllerBase
     public async Task<IActionResult> GetPdf(string id)
     {
         var configuration = await _configurationService.GetAsync();
-        var comprobante = await _invoiceSaleService.GetAsync(id);
+        var comprobante = await _invoiceSaleService.GetByIdAsync(id);
         string tipDocu = string.Empty;
         if (comprobante.DocType.Equals("FACTURA")) tipDocu = "01";
         if (comprobante.DocType.Equals("BOLETA")) tipDocu = "03";

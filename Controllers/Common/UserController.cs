@@ -31,7 +31,7 @@ public class UserController : ControllerBase
     [HttpGet("Show/{id}")]
     public async Task<IActionResult> Show(string id)
     {
-        var user = await _userService.GetAsync(id);
+        var user = await _userService.GetByIdAsync(id);
         return Ok(user);
     }
 
@@ -72,7 +72,7 @@ public class UserController : ControllerBase
     [HttpPut("Update/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Update(string id, [FromBody] UserRegister model)
     {
-        var user = await _userService.GetAsync(id);
+        var user = await _userService.GetByIdAsync(id);
         user.UserName = model.UserName;
         user.Email = model.Email;
         user.Role = model.Role;
@@ -89,7 +89,7 @@ public class UserController : ControllerBase
     [HttpPut("PasswordChange/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> PasswordChange(string id, [FromBody] UserRegister model)
     {
-        var user = await _userService.GetAsync(id);
+        var user = await _userService.GetByIdAsync(id);
         user.PasswordHash = PasswordHasher.HashPassword(model.Password);
         await _userService.UpdateAsync(id, user);
 
@@ -104,7 +104,7 @@ public class UserController : ControllerBase
     [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
-        var user = await _userService.GetAsync(id);
+        var user = await _userService.GetByIdAsync(id);
         await _userService.RemoveAsync(id);
         return Ok(new { Ok = true, Data = user, Msg = "El usuario ha sido borrado!" });
     }

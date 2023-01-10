@@ -28,7 +28,7 @@ public class LocationDetailController : ControllerBase
     [HttpGet("Show/{id}")]
     public async Task<IActionResult> Show(string id)
     {
-        var locationDetail = await _locationDetailService.GetAsync(id);
+        var locationDetail = await _locationDetailService.GetByIdAsync(id);
         return Ok(locationDetail);
     }
 
@@ -42,7 +42,7 @@ public class LocationDetailController : ControllerBase
     [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] LocationDetail model)
     {
-        var locationDetail = await _locationDetailService.GetAsync(id);
+        var locationDetail = await _locationDetailService.GetByIdAsync(id);
         model.Id = locationDetail.Id;
         var responseData = await _locationDetailService.UpdateAsync(id, model);
         return Ok(responseData);
@@ -51,7 +51,7 @@ public class LocationDetailController : ControllerBase
     [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(string id)
     {
-        var locationDetail = await _locationDetailService.GetAsync(id);
+        var locationDetail = await _locationDetailService.GetByIdAsync(id);
         await _locationDetailService.RemoveAsync(locationDetail.Id);
         return Ok(locationDetail);
     }

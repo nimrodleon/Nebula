@@ -39,7 +39,7 @@ namespace Nebula.Database.Services
 
             if (model.Type.Equals("ABONO"))
             {
-                var cargo = await GetAsync(model.ReceivableId);
+                var cargo = await GetByIdAsync(model.ReceivableId);
                 model.ContactId = cargo.ContactId;
                 model.ContactName = cargo.ContactName;
                 model.InvoiceSale = cargo.InvoiceSale;
@@ -67,7 +67,7 @@ namespace Nebula.Database.Services
 
         public async Task RemoveAbonoAsync(Receivable abono)
         {
-            var cargo = await GetAsync(abono.ReceivableId);
+            var cargo = await GetByIdAsync(abono.ReceivableId);
             var abonos = await GetAbonosAsync(cargo.Id);
             var totalAbonos = abonos.Sum(x => x.Abono) - abono.Abono;
             if ((cargo.Cargo - totalAbonos) > 0)

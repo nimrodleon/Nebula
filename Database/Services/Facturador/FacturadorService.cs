@@ -33,7 +33,7 @@ public class FacturadorService
     /// <returns>InvoiceSaleDto</returns>
     private async Task<InvoiceSaleDto> GetInvoiceSaleDto(string invoiceSaleId)
     {
-        var invoiceSale = await _invoiceSaleService.GetAsync(invoiceSaleId);
+        var invoiceSale = await _invoiceSaleService.GetByIdAsync(invoiceSaleId);
         var invoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(invoiceSaleId);
         var tributoSales = await _tributoSaleService.GetListAsync(invoiceSaleId);
         var detallePagos = await _detallePagoSaleService.GetListAsync(invoiceSaleId);

@@ -26,7 +26,7 @@ public class InvoiceSerieController : ControllerBase
     [HttpGet("Show/{id}")]
     public async Task<IActionResult> Show(string id)
     {
-        var invoiceSerie = await _invoiceSerieService.GetAsync(id);
+        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(id);
         return Ok(invoiceSerie);
     }
 
@@ -47,7 +47,7 @@ public class InvoiceSerieController : ControllerBase
     [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] InvoiceSerie model)
     {
-        var invoiceSerie = await _invoiceSerieService.GetAsync(id);
+        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(id);
 
         model.Id = invoiceSerie.Id;
         model.Name = model.Name.ToUpper();
@@ -64,7 +64,7 @@ public class InvoiceSerieController : ControllerBase
     [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
-        var invoiceSerie = await _invoiceSerieService.GetAsync(id);
+        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(id);
         await _invoiceSerieService.RemoveAsync(id);
         return Ok(new { Ok = true, Data = invoiceSerie, Msg = "La serie de facturación ha sido borrado!" });
     }

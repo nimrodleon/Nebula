@@ -41,7 +41,7 @@ public class ProductController : ControllerBase
     [HttpGet("Show/{id}")]
     public async Task<IActionResult> Show(string id)
     {
-        var product = await _productService.GetAsync(id);
+        var product = await _productService.GetByIdAsync(id);
         return Ok(product);
     }
 
@@ -115,7 +115,7 @@ public class ProductController : ControllerBase
     public async Task<IActionResult> Update(string id, [FromForm] FormData model)
     {
         if (id != model.Id) return BadRequest();
-        var product = await _productService.GetAsync(id);
+        var product = await _productService.GetByIdAsync(id);
 
         if (model.File?.Length > 0)
         {
@@ -163,7 +163,7 @@ public class ProductController : ControllerBase
     [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
-        var product = await _productService.GetAsync(id);
+        var product = await _productService.GetByIdAsync(id);
         // directorio principal.
         var dirPath = Path.Combine(Environment
             .GetFolderPath(Environment.SpecialFolder.UserProfile), "StaticFiles");

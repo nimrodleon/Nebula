@@ -28,7 +28,7 @@ public class TransferenciaDetailController : ControllerBase
     [HttpGet("Show/{id}")]
     public async Task<IActionResult> Show(string id)
     {
-        var transferenciaDetail = await _transferenciaDetailService.GetAsync(id);
+        var transferenciaDetail = await _transferenciaDetailService.GetByIdAsync(id);
         return Ok(transferenciaDetail);
     }
 
@@ -42,7 +42,7 @@ public class TransferenciaDetailController : ControllerBase
     [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] TransferenciaDetail model)
     {
-        var transferenciaDetail = await _transferenciaDetailService.GetAsync(id);
+        var transferenciaDetail = await _transferenciaDetailService.GetByIdAsync(id);
         model.Id = transferenciaDetail.Id;
         var responseData = await _transferenciaDetailService.UpdateAsync(id, model);
         return Ok(responseData);
@@ -51,7 +51,7 @@ public class TransferenciaDetailController : ControllerBase
     [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(string id)
     {
-        var transferenciaDetail = await _transferenciaDetailService.GetAsync(id);
+        var transferenciaDetail = await _transferenciaDetailService.GetByIdAsync(id);
         await _transferenciaDetailService.RemoveAsync(transferenciaDetail.Id);
         return Ok(transferenciaDetail);
     }
