@@ -120,6 +120,20 @@ public class InvoiceSaleController : ControllerBase
         return Ok(response);
     }
 
+    [HttpPatch("SaveInControlFolder/{invoiceSaleId}")]
+    public async Task<IActionResult> SituacionFacturador(string invoiceSaleId)
+    {
+        try
+        {
+            var invoiceSale = await _facturadorService.SaveInvoiceInControlFolder(invoiceSaleId);
+            return Ok(invoiceSale);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
     [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
@@ -141,9 +155,18 @@ public class InvoiceSaleController : ControllerBase
         if (comprobante.DocType.Equals("BOLETA")) tipDocu = "03";
         // 20520485750-03-B001-00000015
         string nomArch = $"{configuration.Ruc}-{tipDocu}-{comprobante.Serie}-{comprobante.Number}.pdf";
-        string sfs = Path.Combine(configuration.FileSunat, "sfs");
-        string pdfFolder = Path.Combine(sfs, "REPO");
-        string pathPdf = Path.Combine(pdfFolder, nomArch);
+        string pathPdf = string.Empty;
+        if (comprobante.DocumentPath == DocumentPathType.SFS)
+        {
+            string carpetaArchivoSunat = Path.Combine(configuration.FileSunat, "sfs");
+            pathPdf = Path.Combine(carpetaArchivoSunat, "REPO", nomArch);
+        }
+        if (comprobante.DocumentPath == DocumentPathType.CONTROL)
+        {
+            string carpetaArchivoSunat = Path.Combine(configuration.FileSunat, "CONTROL");
+            string carpetaRepo = Path.Combine(carpetaArchivoSunat, "REPO", comprobante.Year, comprobante.Month);
+            pathPdf = Path.Combine(carpetaRepo, nomArch);
+        }
         FileStream stream = new FileStream(pathPdf, FileMode.Open);
         return new FileStreamResult(stream, "application/pdf");
     }

@@ -1,4 +1,6 @@
 using Nebula.Database.Dto.Sales;
+using Nebula.Database.Helpers;
+using Nebula.Database.Models.Sales;
 using Nebula.Database.Services.Common;
 using Nebula.Database.Services.Sales;
 
@@ -26,10 +28,41 @@ public class FacturadorService
         _detallePagoSaleService = detallePagoSaleService;
     }
 
-    public async Task CrearDirectorioControlAsync(string year, string month)
+    /// <summary>
+    /// Mover facturas a la carpeta control.
+    /// </summary>
+    public async Task<InvoiceSale> SaveInvoiceInControlFolder(string invoiceSaleId)
     {
         var configuration = await _configurationService.GetAsync();
-        FacturadorControl.CrearDirectorioControl(configuration, year, month);
+        var invoiceSale = await _invoiceSaleService.GetByIdAsync(invoiceSaleId);
+        // configurar nombre del archivo.
+        string typeDoc = string.Empty;
+        if (invoiceSale.DocType == "BOLETA") typeDoc = "03";
+        if (invoiceSale.DocType == "FACTURA") typeDoc = "01";
+        string nomArch = $"{configuration.Ruc}-{typeDoc}-{invoiceSale.Serie}-{invoiceSale.Number}";
+        FacturadorControl.CrearDirectorioControl(configuration, invoiceSale.Year, invoiceSale.Month);
+        FacturadorControl.MoverArchivosControl(configuration, nomArch, invoiceSale.Year, invoiceSale.Month);
+        FacturadorControl.BorrarArchivosTemporales(configuration, nomArch);
+        invoiceSale.DocumentPath = DocumentPathType.CONTROL;
+        await _invoiceSaleService.UpdateAsync(invoiceSale.Id, invoiceSale);
+        return invoiceSale;
+    }
+
+    /// <summary>
+    /// Mover notas de crédito a la carpeta control.
+    /// </summary>
+    public async Task<CreditNote> SaveCreditNoteInControlFolder(string creditNoteId)
+    {
+        var configuration = await _configurationService.GetAsync();
+        var creditNote = await _creditNoteService.GetByIdAsync(creditNoteId);
+        // configurar nombre del archivo.
+        string nomArch = $"{configuration.Ruc}-07-{creditNote.Serie}-{creditNote.Number}";
+        FacturadorControl.CrearDirectorioControl(configuration, creditNote.Year, creditNote.Month);
+        FacturadorControl.MoverArchivosControl(configuration, nomArch, creditNote.Year, creditNote.Month);
+        FacturadorControl.BorrarArchivosTemporales(configuration, nomArch);
+        creditNote.DocumentPath = DocumentPathType.CONTROL;
+        await _creditNoteService.UpdateAsync(creditNote.Id, creditNote);
+        return creditNote;
     }
 
     /// <summary>
@@ -81,6 +114,11 @@ public class FacturadorService
             facturaParser.CreateJson(pathFile);
         }
 
+        // actualizar ruta del archivo.
+        var invoiceSale = invoiceSaleDto.InvoiceSale;
+        invoiceSale.DocumentPath = DocumentPathType.SFS;
+        await _invoiceSaleService.UpdateAsync(invoiceSale.Id, invoiceSale);
+
         return File.Exists(pathFile);
     }
 
@@ -96,6 +134,10 @@ public class FacturadorService
         string pathFile = Path.Combine(pathData, fileName);
         var creditNoteParser = new JsonCreditNoteParser(dto);
         creditNoteParser.CreateJson(pathFile);
+        // actualizar ruta del archivo.
+        var creditNote = dto.CreditNote;
+        creditNote.DocumentPath = DocumentPathType.SFS;
+        await _creditNoteService.UpdateAsync(creditNote.Id, creditNote);
         return File.Exists(pathFile);
     }
 }

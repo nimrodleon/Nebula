@@ -1,5 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Nebula.Database.Helpers;
 
 namespace Nebula.Database.Models.Sales;
 
@@ -139,4 +140,9 @@ public class InvoiceSale : Generic
     /// </summary>
     public string DesDireccionCliente { get; set; } = string.Empty;
     #endregion
+
+    /// <summary>
+    /// Ubicación de los documentos electrónicos.
+    /// </summary>
+    public string DocumentPath { get; set; } = DocumentPathType.NONE;
 }

@@ -1,5 +1,6 @@
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
+using Nebula.Database.Helpers;
 
 namespace Nebula.Database.Models.Sales;
 
@@ -136,4 +137,9 @@ public class CreditNote : Generic
     /// </summary>
     public string DesDireccionCliente { get; set; } = string.Empty;
     #endregion
+
+    /// <summary>
+    /// Ubicación de los documentos electrónicos.
+    /// </summary>
+    public string DocumentPath { get; set; } = DocumentPathType.NONE;
 }

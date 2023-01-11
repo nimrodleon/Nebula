@@ -36,4 +36,17 @@ public static class FacturadorControl
         if (File.Exists(archivoRptaOrigen)) File.Move(archivoRptaOrigen, Path.Combine(carpetaDestRpta, $"R{nomArch}.zip"));
     }
 
+    public static void BorrarArchivosTemporales(Configuration configuration, string nomArch)
+    {
+        string carpetaSFS = Path.Combine(configuration.FileSunat, "sfs");
+        string archivoFirma = Path.Combine(carpetaSFS, "FIRMA", $"{nomArch}.xml");
+        string archivoOriDat = Path.Combine(carpetaSFS, "ORIDAT", $"{nomArch}.xml");
+        string archivoParse = Path.Combine(carpetaSFS, "PARSE", $"{nomArch}.xml");
+        string archivoTemp = Path.Combine(carpetaSFS, "TEMP", $"{nomArch}.xml");
+        if (File.Exists(archivoFirma)) File.Delete(archivoFirma);
+        if (File.Exists(archivoOriDat)) File.Delete(archivoOriDat);
+        if (File.Exists(archivoParse)) File.Delete(archivoParse);
+        if (File.Exists(archivoTemp)) File.Delete(archivoTemp);
+    }
+
 }
