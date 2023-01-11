@@ -26,6 +26,12 @@ public class FacturadorService
         _detallePagoSaleService = detallePagoSaleService;
     }
 
+    public async Task CrearDirectorioControlAsync(string year, string month)
+    {
+        var configuration = await _configurationService.GetAsync();
+        FacturadorControl.CrearDirectorioControl(configuration, year, month);
+    }
+
     /// <summary>
     /// Devolver Boleta/Factura Registrada.
     /// </summary>
