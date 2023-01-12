@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Helpers;
 using Nebula.Database.Models.Sales;
@@ -48,16 +47,8 @@ public class FacturadorService
         invoiceSale.DocumentPath = DocumentPathType.CONTROL;
         await _invoiceSaleService.UpdateAsync(invoiceSale.Id, invoiceSale);
         // borrar registro del facturador sunat.
-        using var dbContext = new FacturadorDbContext();
-        var docSqlite = await dbContext.Documentos.Where(x =>
-            x.NUM_RUC.Equals(configuration.Ruc) && x.TIP_DOCU.Equals(typeDoc)
-            && x.NUM_DOCU.Equals($"{invoiceSale.Serie}-{invoiceSale.Number}"))
-            .SingleOrDefaultAsync();
-        if (docSqlite != null)
-        {
-            dbContext.Documentos.Remove(docSqlite);
-            await dbContext.SaveChangesAsync();
-        }
+        var facturador = new FacturadorSqlite();
+        facturador.BorrarDocumento(nomArch);
         return invoiceSale;
     }
 
@@ -76,10 +67,8 @@ public class FacturadorService
         creditNote.DocumentPath = DocumentPathType.CONTROL;
         await _creditNoteService.UpdateAsync(creditNote.Id, creditNote);
         // borrar registro del facturador sunat.
-        using var dbContext = new FacturadorDbContext();
-        DocumentoFacturador docSqlite = await dbContext.Documentos.Where(x => x.NOM_ARCH.Equals(nomArch)).SingleAsync();
-        dbContext.Documentos.Remove(docSqlite);
-        await dbContext.SaveChangesAsync();
+        var facturador = new FacturadorSqlite();
+        facturador.BorrarDocumento(nomArch);
         return creditNote;
     }
 
