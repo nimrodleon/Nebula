@@ -9,6 +9,7 @@ using Nebula.Database.Dto.Sales;
 using Nebula.Database.Services;
 using Nebula.Database.Models.Common;
 using Nebula.Database.Services.Inventory;
+using Microsoft.EntityFrameworkCore;
 
 namespace Nebula.Controllers.Sales;
 
@@ -49,6 +50,15 @@ public class InvoiceSaleController : ControllerBase
     {
         var invoiceSales = await _invoiceSaleService.GetListAsync(model);
         return Ok(invoiceSales);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("Test")]
+    public async Task<IActionResult> Test()
+    {
+        using var dbContext = new FacturadorDbContext();
+        var lista = await dbContext.Documentos.ToListAsync();
+        return Ok(lista);
     }
 
     [AllowAnonymous]

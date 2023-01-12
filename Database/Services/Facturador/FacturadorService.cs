@@ -49,9 +49,15 @@ public class FacturadorService
         await _invoiceSaleService.UpdateAsync(invoiceSale.Id, invoiceSale);
         // borrar registro del facturador sunat.
         using var dbContext = new FacturadorDbContext();
-        DocumentoFacturador docSqlite = await dbContext.Documentos.Where(x => x.NOM_ARCH.Equals(nomArch)).SingleAsync();
-        dbContext.Documentos.Remove(docSqlite);
-        await dbContext.SaveChangesAsync();
+        var docSqlite = await dbContext.Documentos.Where(x =>
+            x.NUM_RUC.Equals(configuration.Ruc) && x.TIP_DOCU.Equals(typeDoc)
+            && x.NUM_DOCU.Equals($"{invoiceSale.Serie}-{invoiceSale.Number}"))
+            .SingleOrDefaultAsync();
+        if (docSqlite != null)
+        {
+            dbContext.Documentos.Remove(docSqlite);
+            await dbContext.SaveChangesAsync();
+        }
         return invoiceSale;
     }
 
