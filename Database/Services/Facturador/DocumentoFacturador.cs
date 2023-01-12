@@ -1,5 +1,8 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Nebula.Database.Services.Facturador;
 
+[Table("DOCUMENTO")]
 public class DocumentoFacturador
 {
     public string NUM_RUC { get; set; } = string.Empty;

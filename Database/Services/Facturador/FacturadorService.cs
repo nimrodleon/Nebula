@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Helpers;
 using Nebula.Database.Models.Sales;
@@ -43,8 +44,14 @@ public class FacturadorService
         FacturadorControl.CrearDirectorioControl(configuration, invoiceSale.Year, invoiceSale.Month);
         FacturadorControl.MoverArchivosControl(configuration, nomArch, invoiceSale.Year, invoiceSale.Month);
         FacturadorControl.BorrarArchivosTemporales(configuration, nomArch);
+        // actualizar ruta archivo.
         invoiceSale.DocumentPath = DocumentPathType.CONTROL;
         await _invoiceSaleService.UpdateAsync(invoiceSale.Id, invoiceSale);
+        // borrar registro del facturador sunat.
+        using var dbContext = new FacturadorDbContext();
+        DocumentoFacturador docSqlite = await dbContext.Documentos.Where(x => x.NOM_ARCH.Equals(nomArch)).SingleAsync();
+        dbContext.Documentos.Remove(docSqlite);
+        await dbContext.SaveChangesAsync();
         return invoiceSale;
     }
 
@@ -62,6 +69,11 @@ public class FacturadorService
         FacturadorControl.BorrarArchivosTemporales(configuration, nomArch);
         creditNote.DocumentPath = DocumentPathType.CONTROL;
         await _creditNoteService.UpdateAsync(creditNote.Id, creditNote);
+        // borrar registro del facturador sunat.
+        using var dbContext = new FacturadorDbContext();
+        DocumentoFacturador docSqlite = await dbContext.Documentos.Where(x => x.NOM_ARCH.Equals(nomArch)).SingleAsync();
+        dbContext.Documentos.Remove(docSqlite);
+        await dbContext.SaveChangesAsync();
         return creditNote;
     }
 

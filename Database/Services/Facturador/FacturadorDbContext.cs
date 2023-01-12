@@ -4,13 +4,11 @@ namespace Nebula.Database.Services.Facturador;
 
 public class FacturadorDbContext : DbContext
 {
-    public FacturadorDbContext(DbContextOptions<FacturadorDbContext> options) : base(options) { }
-
     public DbSet<DocumentoFacturador> Documentos { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        modelBuilder.Entity<DocumentoFacturador>().ToTable("DOCUMENTO");
-        base.OnModelCreating(modelBuilder);
+        optionsBuilder.UseSqlite("Data Source=C:\\SFS_v1.6\\bd\\BDFacturador.db");
+        base.OnConfiguring(optionsBuilder);
     }
 }

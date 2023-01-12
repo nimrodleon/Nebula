@@ -1,7 +1,6 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -14,14 +13,6 @@ using Nebula.Database.Services.Inventory;
 using Nebula.Database.Services.Sales;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Configure Kestrel web server.
-builder.WebHost.ConfigureKestrel((context, serverOptions) =>
-{
-    var kestrelSection = context.Configuration.GetSection("Kestrel");
-    serverOptions.Configure(kestrelSection);
-});
-
 var secretKey = Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("SecretKey"));
 
 builder.Services.AddAuthentication(options =>
@@ -51,7 +42,6 @@ builder.Services.AddCors(options =>
 
 // Add services to the container.
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
-builder.Services.AddDbContext<FacturadorDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("BDFacturador")));
 builder.Services.AddSingleton(typeof(CrudOperationService<>));
 builder.Services.AddSingleton<ReceivableService>();
 builder.Services.AddSingleton<ConfigurationService>();
