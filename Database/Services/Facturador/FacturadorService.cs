@@ -73,6 +73,25 @@ public class FacturadorService
     }
 
     /// <summary>
+    /// Borrar antiguos documentos XML del comprobante.
+    /// </summary>
+    public async Task<InvoiceSale> BorrarArchivosAntiguosInvoice(string invoiceSaleId)
+    {
+        var configuration = await _configurationService.GetAsync();
+        var invoiceSale = await _invoiceSaleService.GetByIdAsync(invoiceSaleId);
+        // configurar nombre del archivo.
+        string typeDoc = string.Empty;
+        if (invoiceSale.DocType == "BOLETA") typeDoc = "03";
+        if (invoiceSale.DocType == "FACTURA") typeDoc = "01";
+        string nomArch = $"{configuration.Ruc}-{typeDoc}-{invoiceSale.Serie}-{invoiceSale.Number}";
+        FacturadorControl.BorrarTodosLosArchivos(configuration, nomArch);
+        // borrar registro del facturador sunat.
+        var facturador = new FacturadorSqlite();
+        facturador.BorrarDocumento(nomArch);
+        return invoiceSale;
+    }
+
+    /// <summary>
     /// Devolver Boleta/Factura Registrada.
     /// </summary>
     /// <param name="invoiceSaleId">Id Venta</param>
