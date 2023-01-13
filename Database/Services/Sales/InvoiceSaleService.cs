@@ -46,9 +46,13 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>
 
     public async Task<List<InvoiceSale>> GetInvoiceSalesPendingAsync()
     {
-        var filter = Builders<InvoiceSale>.Filter;
-        var query = filter.Eq(x => x.SituacionFacturador, "02:XML Generado");
-        return await _collection.Find(query).ToListAsync();
+        var builder = Builders<InvoiceSale>.Filter;
+        var filter = builder.And(builder.Not(builder.Eq(x => x.DocType, "NOTA")),
+            builder.Nin("SituacionFacturador", new List<string>() {
+            "03:Enviado y Aceptado SUNAT", "04:Enviado y Aceptado SUNAT con Obs.",
+            "11:Enviado y Aceptado SUNAT", "12:Enviado y Aceptado SUNAT con Obs.",
+        }));
+        return await _collection.Find(filter).ToListAsync();
     }
 
     public async Task<List<InvoiceSale>> BusquedaAvanzadaAsync(BuscarComprobanteFormDto dto)
