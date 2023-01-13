@@ -144,6 +144,14 @@ public class InvoiceSaleController : ControllerBase
         return Ok(new { Ok = true, Data = invoiceSale, Msg = "El comprobante de venta ha sido borrado!" });
     }
 
+    [HttpDelete("BorrarArchivosAntiguos/{invoiceSaleId}")]
+    public async Task<IActionResult> BorrarArchivos(string invoiceSaleId)
+    {
+        var invoiceSale = await _facturadorService.BorrarArchivosAntiguosInvoice(invoiceSaleId);
+        await _facturadorService.JsonInvoiceParser(invoiceSale.Id);
+        return Ok(invoiceSale);
+    }
+
     [AllowAnonymous]
     [HttpGet("GetPdf/{id}")]
     public async Task<IActionResult> GetPdf(string id)

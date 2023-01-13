@@ -49,4 +49,18 @@ public static class FacturadorControl
         if (File.Exists(archivoTemp)) File.Delete(archivoTemp);
     }
 
+    public static void BorrarTodosLosArchivos(Configuration configuration, string nomArch)
+    {
+        BorrarArchivosTemporales(configuration, nomArch);
+        string carpetaSFS = Path.Combine(configuration.FileSunat, "sfs");
+        string archivoData = Path.Combine(carpetaSFS, "DATA", $"{nomArch}.json");
+        string archivoEnvio = Path.Combine(carpetaSFS, "ENVIO", $"{nomArch}.zip");
+        string archivoRepo = Path.Combine(carpetaSFS, "REPO", $"{nomArch}.pdf");
+        string archivoRpta = Path.Combine(carpetaSFS, "RPTA", $"R{nomArch}.zip");
+        if (File.Exists(archivoData)) File.Delete(archivoData);
+        if (File.Exists(archivoEnvio)) File.Delete(archivoEnvio);
+        if (File.Exists(archivoRepo)) File.Exists(archivoRepo);
+        if (File.Exists(archivoRpta)) File.Exists(archivoRpta);
+    }
+
 }
