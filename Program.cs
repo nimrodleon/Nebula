@@ -107,10 +107,12 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+var applicationPort = builder.Configuration.GetValue<string>("ApplicationPort");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    applicationPort = "5042";
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Nebula v1"));
@@ -128,9 +130,11 @@ app.UseStaticFiles(new StaticFileOptions()
     RequestPath = "/StaticFiles"
 });
 
+string applicationUrl = $"http://localhost:{applicationPort}";
+
 app.UseRouting();
 app.UseCors("MyPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.Run();
+app.Run(applicationUrl);
