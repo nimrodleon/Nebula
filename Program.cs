@@ -108,6 +108,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 var applicationPort = builder.Configuration.GetValue<string>("ApplicationPort");
+var storagePath = builder.Configuration.GetValue<string>("StoragePath");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -125,9 +126,8 @@ app.UseForwardedHeaders(new ForwardedHeadersOptions
 
 app.UseStaticFiles(new StaticFileOptions()
 {
-    FileProvider = new PhysicalFileProvider(Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "StaticFiles")),
-    RequestPath = "/StaticFiles"
+    FileProvider = new PhysicalFileProvider(Path.Combine(storagePath, "uploads")),
+    RequestPath = "/uploads"
 });
 
 string applicationUrl = $"http://localhost:{applicationPort}";
