@@ -17,6 +17,7 @@ namespace Nebula.Controllers.Sales;
 [ApiController]
 public class InvoiceSaleController : ControllerBase
 {
+    private readonly IConfiguration _configuration;
     private readonly ConfigurationService _configurationService;
     private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
     private readonly InvoiceSaleService _invoiceSaleService;
@@ -31,8 +32,9 @@ public class InvoiceSaleController : ControllerBase
         CrudOperationService<InvoiceSerie> invoiceSerieService, InvoiceSaleService invoiceSaleService,
         InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService,
         ComprobanteService comprobanteService, FacturadorService facturadorService, CreditNoteService creditNoteService,
-        ValidateStockService validateStockService)
+        ValidateStockService validateStockService, IConfiguration configuration)
     {
+        _configuration = configuration;
         _configurationService = configurationService;
         _invoiceSerieService = invoiceSerieService;
         _invoiceSaleService = invoiceSaleService;
@@ -164,6 +166,7 @@ public class InvoiceSaleController : ControllerBase
         // 20520485750-03-B001-00000015
         string nomArch = $"{configuration.Ruc}-{tipDocu}-{comprobante.Serie}-{comprobante.Number}.pdf";
         string pathPdf = string.Empty;
+        var storagePath = _configuration.GetValue<string>("StoragePath");
         if (comprobante.DocumentPath == DocumentPathType.SFS)
         {
             string carpetaArchivoSunat = Path.Combine(configuration.SunatArchivos, "sfs");
@@ -171,7 +174,7 @@ public class InvoiceSaleController : ControllerBase
         }
         if (comprobante.DocumentPath == DocumentPathType.CONTROL)
         {
-            string carpetaArchivoSunat = Path.Combine(configuration.SunatArchivos, "CONTROL");
+            string carpetaArchivoSunat = Path.Combine(storagePath, "sunat");
             string carpetaRepo = Path.Combine(carpetaArchivoSunat, "REPO", comprobante.Year, comprobante.Month);
             pathPdf = Path.Combine(carpetaRepo, nomArch);
         }

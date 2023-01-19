@@ -13,13 +13,15 @@ namespace Nebula.Controllers.Sales;
 [ApiController]
 public class CreditNoteController : ControllerBase
 {
+    private readonly IConfiguration _configuration;
     private readonly ConfigurationService _configurationService;
     private readonly CreditNoteService _creditNoteService;
     private readonly FacturadorService _facturadorService;
 
-    public CreditNoteController(ConfigurationService configurationService,
+    public CreditNoteController(IConfiguration configuration, ConfigurationService configurationService,
         CreditNoteService creditNoteService, FacturadorService facturadorService)
     {
+        _configuration = configuration;
         _configurationService = configurationService;
         _creditNoteService = creditNoteService;
         _facturadorService = facturadorService;
@@ -62,6 +64,7 @@ public class CreditNoteController : ControllerBase
         // 20520485750-07-BC01-00000008
         string nomArch = $"{configuration.Ruc}-07-{creditNote.Serie}-{creditNote.Number}.pdf";
         string pathPdf = string.Empty;
+        var storagePath = _configuration.GetValue<string>("StoragePath");
         if (creditNote.DocumentPath == DocumentPathType.SFS)
         {
             string carpetaArchivoSunat = Path.Combine(configuration.SunatArchivos, "sfs");
@@ -69,7 +72,7 @@ public class CreditNoteController : ControllerBase
         }
         if (creditNote.DocumentPath == DocumentPathType.CONTROL)
         {
-            string carpetaArchivoSunat = Path.Combine(configuration.SunatArchivos, "CONTROL");
+            string carpetaArchivoSunat = Path.Combine(storagePath, "sunat");
             string carpetaRepo = Path.Combine(carpetaArchivoSunat, "REPO", creditNote.Year, creditNote.Month);
             pathPdf = Path.Combine(carpetaRepo, nomArch);
         }
