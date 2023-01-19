@@ -4,7 +4,12 @@ namespace Nebula.Database.Services.Facturador;
 
 public class FacturadorSqlite
 {
-    private const string dataSource = "Data Source=C:\\SFS_v1.6\\bd\\BDFacturador.db";
+    private string? dataSource = string.Empty;
+
+    public FacturadorSqlite(string? dataSource)
+    {
+        this.dataSource = dataSource;
+    }
 
     public int BorrarDocumento(string nomArch)
     {

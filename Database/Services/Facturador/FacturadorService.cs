@@ -8,6 +8,8 @@ namespace Nebula.Database.Services.Facturador;
 
 public class FacturadorService
 {
+    private readonly IConfiguration _configuration;
+    // ======================================================================
     private readonly ConfigurationService _configurationService;
     private readonly InvoiceSaleService _invoiceSaleService;
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
@@ -16,16 +18,17 @@ public class FacturadorService
     // ======================================================================
     private readonly CreditNoteService _creditNoteService;
 
-    public FacturadorService(ConfigurationService configurationService,
+    public FacturadorService(IConfiguration configuration, ConfigurationService configurationService,
         InvoiceSaleService invoiceSaleService, InvoiceSaleDetailService invoiceSaleDetailService,
         TributoSaleService tributoSaleService, CreditNoteService creditNoteService, DetallePagoSaleService detallePagoSaleService)
     {
+        _configuration = configuration;
         _configurationService = configurationService;
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _tributoSaleService = tributoSaleService;
         _creditNoteService = creditNoteService;
-        _detallePagoSaleService = detallePagoSaleService;
+        _detallePagoSaleService = detallePagoSaleService;        
     }
 
     /// <summary>
@@ -47,7 +50,8 @@ public class FacturadorService
         invoiceSale.DocumentPath = DocumentPathType.CONTROL;
         await _invoiceSaleService.UpdateAsync(invoiceSale.Id, invoiceSale);
         // borrar registro del facturador sunat.
-        var facturador = new FacturadorSqlite();
+        var dataSource = _configuration.GetValue<string>("BDFacturador");
+        var facturador = new FacturadorSqlite(dataSource);
         facturador.BorrarDocumento(nomArch);
         return invoiceSale;
     }
@@ -67,7 +71,8 @@ public class FacturadorService
         creditNote.DocumentPath = DocumentPathType.CONTROL;
         await _creditNoteService.UpdateAsync(creditNote.Id, creditNote);
         // borrar registro del facturador sunat.
-        var facturador = new FacturadorSqlite();
+        var dataSource = _configuration.GetValue<string>("BDFacturador");
+        var facturador = new FacturadorSqlite(dataSource);
         facturador.BorrarDocumento(nomArch);
         return creditNote;
     }
@@ -86,7 +91,8 @@ public class FacturadorService
         string nomArch = $"{configuration.Ruc}-{typeDoc}-{invoiceSale.Serie}-{invoiceSale.Number}";
         FacturadorControl.BorrarTodosLosArchivos(configuration, nomArch);
         // borrar registro del facturador sunat.
-        var facturador = new FacturadorSqlite();
+        var dataSource = _configuration.GetValue<string>("BDFacturador");
+        var facturador = new FacturadorSqlite(dataSource);
         facturador.BorrarDocumento(nomArch);
         return invoiceSale;
     }
