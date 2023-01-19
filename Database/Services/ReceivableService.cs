@@ -43,6 +43,7 @@ namespace Nebula.Database.Services
                 model.ContactId = cargo.ContactId;
                 model.ContactName = cargo.ContactName;
                 model.InvoiceSale = cargo.InvoiceSale;
+                model.DocType = cargo.DocType;
                 model.Document = cargo.Document;
                 model.Month = cargo.Month;
                 model.Year = cargo.Year;
