@@ -14,13 +14,16 @@ namespace Nebula.Controllers.Common;
 [ApiController]
 public class ProductController : ControllerBase
 {
+    private readonly IConfiguration _configuration;
     private readonly ProductService _productService;
     private readonly ProductStockService _productStockService;
     private readonly ConfigurationService _configurationService;
 
-    public ProductController(ProductService productService,
-        ProductStockService productStockService, ConfigurationService configurationService)
+    public ProductController(IConfiguration configuration,
+        ProductService productService, ProductStockService productStockService,
+        ConfigurationService configurationService)
     {
+        _configuration = configuration;
         _productService = productService;
         _productStockService = productStockService;
         _configurationService = configurationService;
@@ -73,8 +76,8 @@ public class ProductController : ControllerBase
     {
         if (model.File?.Length > 0)
         {
-            var dirPath = Path.Combine(Environment
-                .GetFolderPath(Environment.SpecialFolder.UserProfile), "StaticFiles");
+            var storagePath = _configuration.GetValue<string>("StoragePath");
+            var dirPath = Path.Combine(storagePath, "uploads");
             var fileName = Guid.NewGuid() + model.File.FileName;
             var filePath = Path.Combine(dirPath, fileName);
             await using var stream = System.IO.File.Create(filePath);
@@ -119,8 +122,8 @@ public class ProductController : ControllerBase
 
         if (model.File?.Length > 0)
         {
-            var dirPath = Path.Combine(Environment
-                .GetFolderPath(Environment.SpecialFolder.UserProfile), "StaticFiles");
+            var storagePath = _configuration.GetValue<string>("StoragePath");
+            var dirPath = Path.Combine(storagePath, "uploads");
             // borrar archivo antiguo si existe.
             var oldFile = Path.Combine(dirPath, product.PathImage ?? string.Empty);
             if (product.PathImage != null && !product.PathImage.Equals("default.jpg"))
@@ -165,8 +168,8 @@ public class ProductController : ControllerBase
     {
         var product = await _productService.GetByIdAsync(id);
         // directorio principal.
-        var dirPath = Path.Combine(Environment
-            .GetFolderPath(Environment.SpecialFolder.UserProfile), "StaticFiles");
+        var storagePath = _configuration.GetValue<string>("StoragePath");
+        var dirPath = Path.Combine(storagePath, "uploads");
         // borrar archivo si existe.
         if (product.PathImage != "default.jpg")
         {
