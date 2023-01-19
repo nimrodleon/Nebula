@@ -64,12 +64,12 @@ public class CreditNoteController : ControllerBase
         string pathPdf = string.Empty;
         if (creditNote.DocumentPath == DocumentPathType.SFS)
         {
-            string carpetaArchivoSunat = Path.Combine(configuration.FileSunat, "sfs");
+            string carpetaArchivoSunat = Path.Combine(configuration.SunatArchivos, "sfs");
             pathPdf = Path.Combine(carpetaArchivoSunat, "REPO", nomArch);
         }
         if (creditNote.DocumentPath == DocumentPathType.CONTROL)
         {
-            string carpetaArchivoSunat = Path.Combine(configuration.FileSunat, "CONTROL");
+            string carpetaArchivoSunat = Path.Combine(configuration.SunatArchivos, "CONTROL");
             string carpetaRepo = Path.Combine(carpetaArchivoSunat, "REPO", creditNote.Year, creditNote.Month);
             pathPdf = Path.Combine(carpetaRepo, nomArch);
         }

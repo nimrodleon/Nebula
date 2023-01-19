@@ -166,12 +166,12 @@ public class InvoiceSaleController : ControllerBase
         string pathPdf = string.Empty;
         if (comprobante.DocumentPath == DocumentPathType.SFS)
         {
-            string carpetaArchivoSunat = Path.Combine(configuration.FileSunat, "sfs");
+            string carpetaArchivoSunat = Path.Combine(configuration.SunatArchivos, "sfs");
             pathPdf = Path.Combine(carpetaArchivoSunat, "REPO", nomArch);
         }
         if (comprobante.DocumentPath == DocumentPathType.CONTROL)
         {
-            string carpetaArchivoSunat = Path.Combine(configuration.FileSunat, "CONTROL");
+            string carpetaArchivoSunat = Path.Combine(configuration.SunatArchivos, "CONTROL");
             string carpetaRepo = Path.Combine(carpetaArchivoSunat, "REPO", comprobante.Year, comprobante.Month);
             pathPdf = Path.Combine(carpetaRepo, nomArch);
         }

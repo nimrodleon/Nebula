@@ -76,5 +76,5 @@ public class Configuration
     /// <summary>
     /// Path Archivos SUNAT.
     /// </summary>
-    public string FileSunat { get; set; } = string.Empty;
+    public string SunatArchivos { get; set; } = string.Empty;
 }

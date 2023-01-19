@@ -28,7 +28,7 @@ public class FacturadorService
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _tributoSaleService = tributoSaleService;
         _creditNoteService = creditNoteService;
-        _detallePagoSaleService = detallePagoSaleService;        
+        _detallePagoSaleService = detallePagoSaleService;
     }
 
     /// <summary>
@@ -43,9 +43,10 @@ public class FacturadorService
         if (invoiceSale.DocType == "BOLETA") typeDoc = "03";
         if (invoiceSale.DocType == "FACTURA") typeDoc = "01";
         string nomArch = $"{configuration.Ruc}-{typeDoc}-{invoiceSale.Serie}-{invoiceSale.Number}";
-        FacturadorControl.CrearDirectorioControl(configuration, invoiceSale.Year, invoiceSale.Month);
-        FacturadorControl.MoverArchivosControl(configuration, nomArch, invoiceSale.Year, invoiceSale.Month);
-        FacturadorControl.BorrarArchivosTemporales(configuration, nomArch);
+        var storagePath = _configuration.GetValue<string>("StoragePath");
+        FacturadorControl.CrearDirectorioControl(storagePath, invoiceSale.Year, invoiceSale.Month);
+        FacturadorControl.MoverArchivosControl(storagePath, configuration.SunatArchivos, nomArch, invoiceSale.Year, invoiceSale.Month);
+        FacturadorControl.BorrarArchivosTemporales(configuration.SunatArchivos, nomArch);
         // actualizar ruta archivo.
         invoiceSale.DocumentPath = DocumentPathType.CONTROL;
         await _invoiceSaleService.UpdateAsync(invoiceSale.Id, invoiceSale);
@@ -65,9 +66,10 @@ public class FacturadorService
         var creditNote = await _creditNoteService.GetByIdAsync(creditNoteId);
         // configurar nombre del archivo.
         string nomArch = $"{configuration.Ruc}-07-{creditNote.Serie}-{creditNote.Number}";
-        FacturadorControl.CrearDirectorioControl(configuration, creditNote.Year, creditNote.Month);
-        FacturadorControl.MoverArchivosControl(configuration, nomArch, creditNote.Year, creditNote.Month);
-        FacturadorControl.BorrarArchivosTemporales(configuration, nomArch);
+        var storagePath = _configuration.GetValue<string>("StoragePath");
+        FacturadorControl.CrearDirectorioControl(storagePath, creditNote.Year, creditNote.Month);
+        FacturadorControl.MoverArchivosControl(storagePath, configuration.SunatArchivos, nomArch, creditNote.Year, creditNote.Month);
+        FacturadorControl.BorrarArchivosTemporales(configuration.SunatArchivos, nomArch);
         creditNote.DocumentPath = DocumentPathType.CONTROL;
         await _creditNoteService.UpdateAsync(creditNote.Id, creditNote);
         // borrar registro del facturador sunat.
@@ -89,7 +91,7 @@ public class FacturadorService
         if (invoiceSale.DocType == "BOLETA") typeDoc = "03";
         if (invoiceSale.DocType == "FACTURA") typeDoc = "01";
         string nomArch = $"{configuration.Ruc}-{typeDoc}-{invoiceSale.Serie}-{invoiceSale.Number}";
-        FacturadorControl.BorrarTodosLosArchivos(configuration, nomArch);
+        FacturadorControl.BorrarTodosLosArchivos(configuration.SunatArchivos, nomArch);
         // borrar registro del facturador sunat.
         var dataSource = _configuration.GetValue<string>("BDFacturador");
         var facturador = new FacturadorSqlite(dataSource);
@@ -131,7 +133,7 @@ public class FacturadorService
         if (invoiceSaleDto.InvoiceSale.DocType == "FACTURA") typeDoc = "01";
         string fileName = $"{configuration.Ruc}-{typeDoc}-{invoiceSaleDto.InvoiceSale.Serie}-{invoiceSaleDto.InvoiceSale.Number}.json";
         // generar archivo json.
-        string pathBase = Path.Combine(configuration.FileSunat, "sfs");
+        string pathBase = Path.Combine(configuration.SunatArchivos, "sfs");
         string pathData = Path.Combine(pathBase, "DATA");
         string pathFile = Path.Combine(pathData, fileName);
         if (invoiceSaleDto.InvoiceSale.DocType == "BOLETA")
@@ -161,7 +163,7 @@ public class FacturadorService
         // configurar nombre del archivo.
         string fileName = $"{configuration.Ruc}-07-{dto.CreditNote.Serie}-{dto.CreditNote.Number}.json";
         // generar archivo json.
-        string pathBase = Path.Combine(configuration.FileSunat, "sfs");
+        string pathBase = Path.Combine(configuration.SunatArchivos, "sfs");
         string pathData = Path.Combine(pathBase, "DATA");
         string pathFile = Path.Combine(pathData, fileName);
         var creditNoteParser = new JsonCreditNoteParser(dto);

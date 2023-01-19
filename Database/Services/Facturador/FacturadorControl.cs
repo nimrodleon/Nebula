@@ -1,31 +1,29 @@
-using Nebula.Database.Models.Common;
-
 namespace Nebula.Database.Services.Facturador;
 
 public static class FacturadorControl
 {
-    public static void CrearDirectorioControl(Configuration configuration, string year, string month)
+    public static void CrearDirectorioControl(string storagePath, string year, string month)
     {
-        string carpetaControl = Path.Combine(configuration.FileSunat, "CONTROL");
-        string carpetaData = Path.Combine(carpetaControl, "DATA", year, month);
-        string carpetaEnvio = Path.Combine(carpetaControl, "ENVIO", year, month);
-        string carpetaRepo = Path.Combine(carpetaControl, "REPO", year, month);
-        string carpetaRpta = Path.Combine(carpetaControl, "RPTA", year, month);
-        if (!Directory.Exists(carpetaControl)) Directory.CreateDirectory(carpetaControl);
+        string carpetaSunat = Path.Combine(storagePath, "sunat");
+        string carpetaData = Path.Combine(carpetaSunat, "DATA", year, month);
+        string carpetaEnvio = Path.Combine(carpetaSunat, "ENVIO", year, month);
+        string carpetaRepo = Path.Combine(carpetaSunat, "REPO", year, month);
+        string carpetaRpta = Path.Combine(carpetaSunat, "RPTA", year, month);
+        if (!Directory.Exists(carpetaSunat)) Directory.CreateDirectory(carpetaSunat);
         if (!Directory.Exists(carpetaData)) Directory.CreateDirectory(carpetaData);
         if (!Directory.Exists(carpetaEnvio)) Directory.CreateDirectory(carpetaEnvio);
         if (!Directory.Exists(carpetaRepo)) Directory.CreateDirectory(carpetaRepo);
         if (!Directory.Exists(carpetaRpta)) Directory.CreateDirectory(carpetaRpta);
     }
 
-    public static void MoverArchivosControl(Configuration configuration, string nomArch, string year, string month)
+    public static void MoverArchivosControl(string storagePath, string sunatArchivos, string nomArch, string year, string month)
     {
-        string carpetaSFS = Path.Combine(configuration.FileSunat, "sfs");
-        string carpetaControl = Path.Combine(configuration.FileSunat, "CONTROL");
-        string carpetaDestData = Path.Combine(carpetaControl, "DATA", year, month);
-        string carpetaDestEnvio = Path.Combine(carpetaControl, "ENVIO", year, month);
-        string carpetaDestRepo = Path.Combine(carpetaControl, "REPO", year, month);
-        string carpetaDestRpta = Path.Combine(carpetaControl, "RPTA", year, month);
+        string carpetaSFS = Path.Combine(sunatArchivos, "sfs");
+        string carpetaSunat = Path.Combine(storagePath, "sunat");
+        string carpetaDestData = Path.Combine(carpetaSunat, "DATA", year, month);
+        string carpetaDestEnvio = Path.Combine(carpetaSunat, "ENVIO", year, month);
+        string carpetaDestRepo = Path.Combine(carpetaSunat, "REPO", year, month);
+        string carpetaDestRpta = Path.Combine(carpetaSunat, "RPTA", year, month);
         string archivoDataOrigen = Path.Combine(carpetaSFS, "DATA", $"{nomArch}.json");
         string archivoEnvioOrigen = Path.Combine(carpetaSFS, "ENVIO", $"{nomArch}.zip");
         string archivoRepoOrigen = Path.Combine(carpetaSFS, "REPO", $"{nomArch}.pdf");
@@ -36,9 +34,9 @@ public static class FacturadorControl
         if (File.Exists(archivoRptaOrigen)) File.Move(archivoRptaOrigen, Path.Combine(carpetaDestRpta, $"R{nomArch}.zip"));
     }
 
-    public static void BorrarArchivosTemporales(Configuration configuration, string nomArch)
+    public static void BorrarArchivosTemporales(string sunatArchivos, string nomArch)
     {
-        string carpetaSFS = Path.Combine(configuration.FileSunat, "sfs");
+        string carpetaSFS = Path.Combine(sunatArchivos, "sfs");
         string archivoFirma = Path.Combine(carpetaSFS, "FIRMA", $"{nomArch}.xml");
         string archivoOriDat = Path.Combine(carpetaSFS, "ORIDAT", $"{nomArch}.xml");
         string archivoParse = Path.Combine(carpetaSFS, "PARSE", $"{nomArch}.xml");
@@ -49,10 +47,10 @@ public static class FacturadorControl
         if (File.Exists(archivoTemp)) File.Delete(archivoTemp);
     }
 
-    public static void BorrarTodosLosArchivos(Configuration configuration, string nomArch)
+    public static void BorrarTodosLosArchivos(string sunatArchivos, string nomArch)
     {
-        BorrarArchivosTemporales(configuration, nomArch);
-        string carpetaSFS = Path.Combine(configuration.FileSunat, "sfs");
+        BorrarArchivosTemporales(sunatArchivos, nomArch);
+        string carpetaSFS = Path.Combine(sunatArchivos, "sfs");
         string archivoData = Path.Combine(carpetaSFS, "DATA", $"{nomArch}.json");
         string archivoEnvio = Path.Combine(carpetaSFS, "ENVIO", $"{nomArch}.zip");
         string archivoRepo = Path.Combine(carpetaSFS, "REPO", $"{nomArch}.pdf");
