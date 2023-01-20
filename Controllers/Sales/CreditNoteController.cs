@@ -55,6 +55,14 @@ public class CreditNoteController : ControllerBase
         }
     }
 
+    [HttpDelete("BorrarArchivosAntiguos/{creditNoteId}")]
+    public async Task<IActionResult> BorrarArchivos(string creditNoteId)
+    {
+        var creditNote = await _facturadorService.BorrarArchivosAntiguosCreditNote(creditNoteId);
+        await _facturadorService.CreateCreditNoteJsonFile(creditNote.Id);
+        return Ok(creditNote);
+    }
+
     [AllowAnonymous]
     [HttpGet("GetPdf/{id}")]
     public async Task<IActionResult> GetPdf(string id)

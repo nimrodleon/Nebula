@@ -100,6 +100,22 @@ public class FacturadorService
     }
 
     /// <summary>
+    /// Borrar documentos XML antiguos de la nota de crédito.
+    /// </summary>
+    public async Task<CreditNote> BorrarArchivosAntiguosCreditNote(string creditNoteId)
+    {
+        var configuration = await _configurationService.GetAsync();
+        var creditNote = await _creditNoteService.GetByIdAsync(creditNoteId);
+        string nomArch = $"{configuration.Ruc}-07-{creditNote.Serie}-{creditNote.Number}";
+        FacturadorControl.BorrarTodosLosArchivos(configuration.SunatArchivos, nomArch);
+        // borrar registro del facturador sunat.
+        var dataSource = _configuration.GetValue<string>("BDFacturador");
+        var facturador = new FacturadorSqlite(dataSource);
+        facturador.BorrarDocumento(nomArch);
+        return creditNote;
+    }
+
+    /// <summary>
     /// Devolver Boleta/Factura Registrada.
     /// </summary>
     /// <param name="invoiceSaleId">Id Venta</param>
