@@ -77,4 +77,14 @@ public class Configuration
     /// Path Archivos SUNAT.
     /// </summary>
     public string SunatArchivos { get; set; } = string.Empty;
+
+    /// <summary>
+    /// String cifrado para verificar Licencia.
+    /// </summary>
+    public string AccessToken { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Identificador para verificar la Suscripción.
+    /// </summary>
+    public string SubscriptionId { get; set; } = string.Empty;
 }
