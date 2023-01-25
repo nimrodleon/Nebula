@@ -40,4 +40,26 @@ public class ConfigurationController : ControllerBase
 
         return Ok(configuration);
     }
+
+    [HttpGet("SincronizarPago")]
+    public async Task<IActionResult> SincronizarPago()
+    {
+        var response = await _configurationService.SincronizarPago();
+        return Ok(response);
+    }
+
+    [HttpGet("ValidarAcceso")]
+    public async Task<IActionResult> ValidarAcceso()
+    {
+        var licenseDto = await _configurationService.ValidarAcceso();
+        return Ok(licenseDto);
+    }
+
+    [HttpPatch("UpdateKey/{subscriptionId}")]
+    public async Task<IActionResult> UpdateKey(string subscriptionId)
+    {
+        var configuration = await _configurationService.UpdateKey(subscriptionId);
+        return Ok(configuration);
+    }
+
 }

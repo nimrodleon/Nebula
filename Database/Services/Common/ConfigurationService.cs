@@ -48,6 +48,23 @@ public class ConfigurationService
         await _collection.ReplaceOneAsync(x => x.Id == "DEFAULT", _configuration);
     }
 
+    public async Task<LicenseDto> ValidarAcceso()
+    {
+        var licenseDto = new LicenseDto();
+        var configuration = await GetAsync();
+        if (configuration.AccessToken == "-") return new LicenseDto { Ok = false, OriginalText = "-" };
+        byte[] cipherText = Encoding.ASCII.GetBytes(configuration.AccessToken);
+        licenseDto.OriginalText = DecryptStringFromBytes(cipherText, key, IV);
+        string[] arrFecha = licenseDto.OriginalText.Split(":");
+        string fechaDesde = arrFecha[0];
+        string fechaHasta = arrFecha[1];
+        int diffDiasTranscurridos = DateTime.Now.Subtract(Convert.ToDateTime(fechaDesde)).Days;
+        int diffDiasQueFalta = Convert.ToDateTime(fechaHasta).Subtract(DateTime.Now).Days;
+        int diffCantidadDeDias = Convert.ToDateTime(fechaHasta).Subtract(Convert.ToDateTime(fechaDesde)).Days;
+        licenseDto.Ok = diffDiasTranscurridos <= diffCantidadDeDias && diffDiasQueFalta >= 0;
+        return licenseDto;
+    }
+
     private string GetMachineUUID()
     {
         return new DeviceIdBuilder()

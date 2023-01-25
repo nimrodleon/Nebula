@@ -3,7 +3,7 @@ namespace Nebula.Database.Dto;
 public class LicenseDto
 {
     public bool Ok { get; set; } = false;
-    public string OriginalText { get; set; } = string.Empty;
+    public string OriginalText { get; set; } = "-";
 }
 
 public class SubscriptionPaymentDto
