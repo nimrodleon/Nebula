@@ -12,8 +12,8 @@ public class SubscriptionPaymentDto
     public string Status { get; set; } = string.Empty;
     public string UuidAccess { get; set; } = string.Empty;
     public bool Payment { get; set; } = false;
-    public DateOnly Desde { get; set; } = new DateOnly();
-    public DateOnly Hasta { get; set; } = new DateOnly();
+    public string Desde { get; set; } = string.Empty;
+    public string Hasta { get; set; } = string.Empty;
 }
 
 public class ResponseSubscriptionPaymentDto
