@@ -77,7 +77,7 @@ public class ConfigurationService
             .ToString();
     }
 
-    public async Task<string> UpdateAccess(string subscriptionId)
+    private async Task<string> UpdateAccess(string subscriptionId)
     {
         var machine = GetMachineUUID();
         HttpClient httpClient = new HttpClient();
@@ -88,7 +88,7 @@ public class ConfigurationService
         return jsonResponse;
     }
 
-    public async Task<ResponseSubscriptionPaymentDto?> ValidarPago(string subscriptionId)
+    private async Task<ResponseSubscriptionPaymentDto?> ValidarPago(string subscriptionId)
     {
         var machine = GetMachineUUID();
         HttpClient httpClient = new HttpClient();
