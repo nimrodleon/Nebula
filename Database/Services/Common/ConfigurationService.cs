@@ -95,7 +95,8 @@ public class ConfigurationService
         using StringContent jsonContent = new(JsonSerializer.Serialize(new { machine = machine }), Encoding.UTF8, "application/json");
         using HttpResponseMessage response = await httpClient.PostAsync(URL, jsonContent);
         string jsonResponse = await response.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<ResponseSubscriptionPaymentDto>(jsonResponse);
+        return JsonSerializer.Deserialize<ResponseSubscriptionPaymentDto>(jsonResponse,
+            new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
     }
 
     public async Task<ResponseSubscriptionPaymentDto?> SincronizarPago()
