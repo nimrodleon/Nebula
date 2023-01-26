@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Helpers;
 using Nebula.Database.Models.Cashier;
 using Nebula.Database.Services.Cashier;
+using Nebula.Database.Services.Common;
 
 namespace Nebula.Controllers.Cashier;
 
@@ -11,10 +12,14 @@ namespace Nebula.Controllers.Cashier;
 [ApiController]
 public class CashierDetailController : ControllerBase
 {
+    private readonly ConfigurationService _configurationService;
     private readonly CashierDetailService _cashierDetailService;
 
-    public CashierDetailController(CashierDetailService cashierDetailService) =>
+    public CashierDetailController(ConfigurationService configurationService, CashierDetailService cashierDetailService)
+    {
+        _configurationService = configurationService;
         _cashierDetailService = cashierDetailService;
+    }
 
     [HttpGet("Index/{id}")]
     public async Task<IActionResult> Index(string id, [FromQuery] string? query)
@@ -26,6 +31,8 @@ public class CashierDetailController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] CashierDetail model)
     {
+        var license = await _configurationService.ValidarAcceso();
+        if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         if (model.TypeOperation == TypeOperationCaja.EntradaDeDinero)
             model.TypeOperation = TypeOperationCaja.EntradaDeDinero;
         if (model.TypeOperation == TypeOperationCaja.SalidaDeDinero)
@@ -50,6 +57,8 @@ public class CashierDetailController : ControllerBase
     [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
+        var license = await _configurationService.ValidarAcceso();
+        if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         var cashierDetail = await _cashierDetailService.GetByIdAsync(id);
         await _cashierDetailService.RemoveAsync(cashierDetail.Id);
         return Ok(new { Ok = true, Data = cashierDetail, Msg = "El detalle de caja ha sido borrado!" });

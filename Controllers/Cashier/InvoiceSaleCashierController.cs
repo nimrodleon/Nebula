@@ -7,6 +7,7 @@ using Nebula.Database.Services.Facturador;
 using Nebula.Database.Services.Inventory;
 using Nebula.Database.Services.Sales;
 using Nebula.Database.Dto.Sales;
+using Nebula.Database.Services.Common;
 
 namespace Nebula.Controllers.Cashier;
 
@@ -19,13 +20,17 @@ public class InvoiceSaleCashierController : ControllerBase
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly ValidateStockService _validateStockService;
     private readonly FacturadorService _facturadorService;
+    private readonly ConfigurationService _configurationService;
 
-    public InvoiceSaleCashierController(CashierSaleService cashierSaleService, InvoiceSaleDetailService invoiceSaleDetailService, ValidateStockService validateStockService, FacturadorService facturadorService)
+    public InvoiceSaleCashierController(CashierSaleService cashierSaleService,
+        InvoiceSaleDetailService invoiceSaleDetailService, ValidateStockService validateStockService,
+        FacturadorService facturadorService, ConfigurationService configurationService)
     {
         _cashierSaleService = cashierSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _validateStockService = validateStockService;
         _facturadorService = facturadorService;
+        _configurationService = configurationService;
     }
 
     /// <summary>
@@ -39,6 +44,8 @@ public class InvoiceSaleCashierController : ControllerBase
     {
         try
         {
+            var license = await _configurationService.ValidarAcceso();
+            if (!license.Ok) throw new Exception("Error, Verificar suscripción!");
             _cashierSaleService.SetComprobanteDto(model);
             var invoiceSale = await _cashierSaleService.SaveChangesAsync(id);
             if (invoiceSale.DocType != "NOTA")
