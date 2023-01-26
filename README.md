@@ -21,3 +21,15 @@ https://cpe.sunat.gob.pe/sites/default/files/inline-files/anexoIII.pdf
 ```bash
 https://www.mediafire.com/file/79v5dwy5fy7oaqb/SFS_v1.6.exe/file
 ```
+
+## Funciones Premium
+
+- CajaDiariaController => [Update]
+- CashierDetailController => [Create, Delete]
+- InvoiceSaleCashierController => [GenerarVenta]
+- InvoiceSaleController => [Create]
+- ReceivableController => [Create, Update, Delete]
+- InventoryNotasController => [Create, Update, Validate]
+- TransferenciaController => [Create, Update, Validate]
+- AjusteInventarioController => [Create, Update, Validate]
+- MaterialController => [Create, Update, Validate]
