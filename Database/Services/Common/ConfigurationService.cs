@@ -12,8 +12,9 @@ namespace Nebula.Database.Services.Common;
 public class ConfigurationService
 {
     private readonly IMongoCollection<Configuration> _collection;
-    private readonly byte[] key = Encoding.ASCII.GetBytes("secret");
-    private readonly byte[] IV = Encoding.ASCII.GetBytes("bsxnWolsAyO7kCfWuyrnqg==");
+    //##https://www.allkeysgenerator.com/Random/Security-Encryption-Key-Generator.aspx
+    private readonly byte[] key = Encoding.ASCII.GetBytes("q3t6w9z$C&F)J@NcRfUjWnZr4u7x!A%D");
+    private readonly byte[] IV = Encoding.ASCII.GetBytes("2r5u8x/A?D(G+KaP");
 
     public ConfigurationService(IOptions<DatabaseSettings> options)
     {
@@ -53,7 +54,7 @@ public class ConfigurationService
         var licenseDto = new LicenseDto();
         var configuration = await GetAsync();
         if (configuration.AccessToken == "-") return new LicenseDto { Ok = false, OriginalText = "-" };
-        byte[] cipherText = Encoding.ASCII.GetBytes(configuration.AccessToken);
+        byte[] cipherText = Convert.FromBase64String(configuration.AccessToken);
         licenseDto.OriginalText = DecryptStringFromBytes(cipherText, key, IV);
         string[] arrFecha = licenseDto.OriginalText.Split(":");
         string fechaDesde = arrFecha[0];
@@ -107,7 +108,7 @@ public class ConfigurationService
         {
             string plainText = $"{pago.Data.Desde}:{pago.Data.Hasta}";
             var encrypt = EncryptStringToBytes(plainText, key, IV);
-            configuration.AccessToken = pago.Data.Payment == true ? Encoding.Default.GetString(encrypt) : "-";
+            configuration.AccessToken = pago.Data.Payment == true ? Convert.ToBase64String(encrypt) : "-";
             await _collection.ReplaceOneAsync(x => x.Id == "DEFAULT", configuration);
         }
         return pago;
@@ -117,12 +118,15 @@ public class ConfigurationService
     {
         var configuration = await GetAsync();
         configuration.SubscriptionId = subscriptionId;
+        await UpdateAccess(configuration.SubscriptionId);
         var pago = await ValidarPago(configuration.SubscriptionId);
-        if (pago?.Ok == true)
+        if (pago?.Ok != true)
+            configuration.AccessToken = "-";
+        else
         {
             string plainText = $"{pago.Data.Desde}:{pago.Data.Hasta}";
             var encrypt = EncryptStringToBytes(plainText, key, IV);
-            configuration.AccessToken = pago.Data.Payment == true ? Encoding.Default.GetString(encrypt) : "-";
+            configuration.AccessToken = pago.Data.Payment == true ? Convert.ToBase64String(encrypt) : "-";
         }
         await _collection.ReplaceOneAsync(x => x.Id == "DEFAULT", configuration);
         return configuration;
