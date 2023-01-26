@@ -82,6 +82,8 @@ public class InvoiceSaleController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] ComprobanteDto dto)
     {
+        var license = await _configurationService.ValidarAcceso();
+        if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         _comprobanteService.SetComprobanteDto(dto);
         var invoiceSale = await _comprobanteService.SaveChangesAsync();
         await _facturadorService.JsonInvoiceParser(invoiceSale.Id);
