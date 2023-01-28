@@ -73,7 +73,7 @@ public class ConfigurationService
             .AddProcessorId()
             .AddMotherboardSerialNumber()
             .AddSystemDriveSerialNumber()
-            .AddMacAddressFromWmi(excludeWireless: true, excludeNonPhysical: true))
+            /*.AddMacAddressFromWmi(excludeWireless: true, excludeNonPhysical: true)*/)
             .ToString();
     }
 
