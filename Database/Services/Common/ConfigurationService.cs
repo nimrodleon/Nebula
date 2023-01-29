@@ -68,13 +68,12 @@ public class ConfigurationService
 
     private string GetMachineUUID()
     {
-        return new DeviceIdBuilder()
-            .OnWindows(windows => windows
-            .AddProcessorId()
-            .AddMotherboardSerialNumber()
-            .AddSystemDriveSerialNumber()
-            /*.AddMacAddressFromWmi(excludeWireless: true, excludeNonPhysical: true)*/)
-            .ToString();
+        string deviceId = new DeviceIdBuilder()
+            .AddMachineName().AddUserName()
+            .AddMacAddress(excludeWireless: true)
+            .OnWindows(windows => windows.AddMachineGuid())
+            .AddOsVersion().ToString();
+        return deviceId;
     }
 
     private async Task<string> UpdateAccess(string subscriptionId)
