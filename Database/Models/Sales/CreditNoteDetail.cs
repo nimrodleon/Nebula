@@ -90,7 +90,7 @@ public class CreditNoteDetail : Generic
     /// Tributo: Porcentaje de IGV. an..5 =18.0
     /// Colocar 18.00 para expresar 18%
     /// </summary>
-    public string PorIgvItem { get; set; } = string.Empty;
+    public decimal PorIgvItem { get; set; } = 0;
 
     /// <summary>
     /// Tributo ICBPER: Códigos de tipos de tributos ICBPER. Catálogo: 5 n4

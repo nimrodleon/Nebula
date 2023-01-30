@@ -55,7 +55,7 @@ public class JsonBoletaParser
                 nomTributoIgvItem = item.NomTributoIgvItem,
                 codTipTributoIgvItem = item.CodTipTributoIgvItem,
                 tipAfeIGV = item.TipAfeIgv,
-                porIgvItem = item.PorIgvItem,
+                porIgvItem = item.PorIgvItem.ToString("N2", numberFormatInfo),
                 // Tributo ICBPER 7152.
                 codTriIcbper = item.CodTriIcbper,
                 mtoTriIcbperItem = item.MtoTriIcbperItem.ToString("N2", numberFormatInfo),

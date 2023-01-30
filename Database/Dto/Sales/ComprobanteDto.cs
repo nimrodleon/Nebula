@@ -134,7 +134,7 @@ public class ComprobanteDto
                 NomTributoIgvItem = nomTributoIgvItem,
                 CodTipTributoIgvItem = codTipTributoIgvItem,
                 TipAfeIgv = tipAfeIgv,
-                PorIgvItem = item.IgvSunat == TipoIGV.Gravado ? _configuration.PorcentajeIgv.ToString("N2") : "0.00",
+                PorIgvItem = item.IgvSunat == TipoIGV.Gravado ? _configuration.PorcentajeIgv : 0,
                 // Tributo ICBPER 7152.
                 CodTriIcbper = item.TriIcbper ? "7152" : "-",
                 MtoTriIcbperItem = item.TriIcbper ? impItemDto.MtoTriIcbperItem : 0,
