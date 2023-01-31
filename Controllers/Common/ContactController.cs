@@ -71,7 +71,10 @@ public class ContactController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] Contact model)
     {
-        model.Name = model.Name.ToUpper();
+        model.Document = model.Document.Trim();
+        model.Name = model.Name.Trim().ToUpper();
+        model.Address = model.Address.Trim().ToUpper();
+        model.CodUbigeo = model.CodUbigeo.Trim();
         await _contactService.CreateAsync(model);
         return Ok(model);
     }
@@ -81,8 +84,11 @@ public class ContactController : ControllerBase
     {
         var contact = await _contactService.GetByIdAsync(id);
         model.Id = contact.Id;
-        model.Name = model.Name.ToUpper();
-        contact = await _contactService.UpdateAsync(id, model);
+        model.Document = model.Document.Trim();
+        model.Name = model.Name.Trim().ToUpper();
+        model.Address = model.Address.Trim().ToUpper();
+        model.CodUbigeo = model.CodUbigeo.Trim();
+        contact = await _contactService.UpdateAsync(contact.Id, model);
         return Ok(contact);
     }
 
