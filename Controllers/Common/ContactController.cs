@@ -29,7 +29,8 @@ public class ContactController : ControllerBase
     [HttpGet("Index")]
     public async Task<IActionResult> Index([FromQuery] string? query)
     {
-        var contacts = await _contactService.GetAsync("Name", query);
+        if (string.IsNullOrEmpty(query)) query = string.Empty;
+        var contacts = await _contactService.GetContactsAsync(query);
         return Ok(contacts);
     }
 
