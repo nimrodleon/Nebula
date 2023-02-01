@@ -53,13 +53,7 @@ public class CategoryController : ControllerBase
     {
         model.Name = model.Name.ToUpper();
         await _categoryService.CreateAsync(model);
-
-        return Ok(new
-        {
-            Ok = true,
-            Data = model,
-            Msg = $"La Categoría {model.Name} ha sido registrado!"
-        });
+        return Ok(model);
     }
 
     [HttpPut("Update/{id}")]
@@ -69,14 +63,8 @@ public class CategoryController : ControllerBase
 
         model.Id = category.Id;
         model.Name = model.Name.ToUpper();
-        await _categoryService.UpdateAsync(id, model);
-
-        return Ok(new
-        {
-            Ok = true,
-            Data = model,
-            Msg = $"La Categoría {model.Name} ha sido actualizado!"
-        });
+        model = await _categoryService.UpdateAsync(id, model);
+        return Ok(model);
     }
 
     [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
@@ -84,6 +72,6 @@ public class CategoryController : ControllerBase
     {
         var category = await _categoryService.GetByIdAsync(id);
         await _categoryService.RemoveAsync(id);
-        return Ok(new { Ok = true, Data = category, Msg = "La categoría ha sido borrado!" });
+        return Ok(category);
     }
 }
