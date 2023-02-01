@@ -24,6 +24,7 @@ public class CashierDetailController : ControllerBase
     [HttpGet("Index/{id}")]
     public async Task<IActionResult> Index(string id, [FromQuery] string? query)
     {
+        if (string.IsNullOrEmpty(query)) query = string.Empty;
         var responseData = await _cashierDetailService.GetListAsync(id, query);
         return Ok(responseData);
     }

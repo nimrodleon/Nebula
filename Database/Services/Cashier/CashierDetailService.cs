@@ -9,12 +9,13 @@ public class CashierDetailService : CrudOperationService<CashierDetail>
 {
     public CashierDetailService(IOptions<DatabaseSettings> options) : base(options) { }
 
-    public async Task<List<CashierDetail>> GetListAsync(string id, string? query)
+    public async Task<List<CashierDetail>> GetListAsync(string id, string query)
     {
         var builder = Builders<CashierDetail>.Filter;
-        var filter = builder.Eq(x => x.CajaDiaria, id);
-        if (!string.IsNullOrEmpty(query))
-            filter &= builder.Regex("Contact", new BsonRegularExpression(query.ToUpper(), "i"));
+        var filter = builder.And(builder.Eq(x => x.CajaDiaria, id),
+            builder.Or(builder.Regex("Document", new BsonRegularExpression(query.ToUpper(), "i")),
+            builder.Regex("ContactName", new BsonRegularExpression(query.ToUpper(), "i")),
+            builder.Regex("Remark", new BsonRegularExpression(query.ToUpper(), "i"))));
         return await _collection.Find(filter).ToListAsync();
     }
 
