@@ -35,13 +35,7 @@ public class WarehouseController : ControllerBase
     {
         model.Name = model.Name.ToUpper();
         await _warehouseService.CreateAsync(model);
-
-        return Ok(new
-        {
-            Ok = true,
-            Data = model,
-            Msg = $"El Almacén {model.Name} ha sido registrado!"
-        });
+        return Ok(model);
     }
 
     [HttpPut("Update/{id}")]
@@ -51,14 +45,8 @@ public class WarehouseController : ControllerBase
 
         model.Id = warehouse.Id;
         model.Name = model.Name.ToUpper();
-        await _warehouseService.UpdateAsync(id, model);
-
-        return Ok(new
-        {
-            Ok = true,
-            Data = model,
-            Msg = $"El Almacén {model.Name} ha sido actualizado!"
-        });
+        model = await _warehouseService.UpdateAsync(id, model);
+        return Ok(model);
     }
 
     [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
@@ -66,6 +54,6 @@ public class WarehouseController : ControllerBase
     {
         var warehouse = await _warehouseService.GetByIdAsync(id);
         await _warehouseService.RemoveAsync(id);
-        return Ok(new { Ok = true, Data = warehouse, Msg = "El almacén ha sido borrado!" });
+        return Ok(warehouse);
     }
 }
