@@ -18,8 +18,8 @@ public class JsonBoletaParser
         cabecera.fecVencimiento = dto.InvoiceSale.FecVencimiento;
         cabecera.codLocalEmisor = dto.InvoiceSale.CodLocalEmisor;
         cabecera.tipDocUsuario = dto.InvoiceSale.TipDocUsuario.Split(":")[0];
-        cabecera.numDocUsuario = dto.InvoiceSale.NumDocUsuario;
-        cabecera.rznSocialUsuario = dto.InvoiceSale.RznSocialUsuario;
+        cabecera.numDocUsuario = dto.InvoiceSale.NumDocUsuario.Trim();
+        cabecera.rznSocialUsuario = dto.InvoiceSale.RznSocialUsuario.Trim();
         cabecera.tipMoneda = dto.InvoiceSale.TipMoneda;
         cabecera.sumTotTributos = dto.InvoiceSale.SumTotTributos.ToString("N2", numberFormatInfo);
         cabecera.sumTotValVenta = dto.InvoiceSale.SumTotValVenta.ToString("N2", numberFormatInfo);
@@ -35,6 +35,7 @@ public class JsonBoletaParser
                 desDireccionCliente = dto.InvoiceSale.DesDireccionCliente,
             };
         }
+
         // detalle.
         dto.InvoiceSaleDetails.ForEach(item =>
         {

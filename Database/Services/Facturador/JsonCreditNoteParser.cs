@@ -17,8 +17,8 @@ public class JsonCreditNoteParser
         cabecera.horEmision = dto.CreditNote.HorEmision;
         cabecera.codLocalEmisor = dto.CreditNote.CodLocalEmisor;
         cabecera.tipDocUsuario = dto.CreditNote.TipDocUsuario.Split(":")[0];
-        cabecera.numDocUsuario = dto.CreditNote.NumDocUsuario;
-        cabecera.rznSocialUsuario = dto.CreditNote.RznSocialUsuario;
+        cabecera.numDocUsuario = dto.CreditNote.NumDocUsuario.Trim();
+        cabecera.rznSocialUsuario = dto.CreditNote.RznSocialUsuario.Trim();
         cabecera.tipMoneda = dto.CreditNote.TipMoneda;
         cabecera.codMotivo = dto.CreditNote.CodMotivo;
         cabecera.desMotivo = dto.CreditNote.DesMotivo;
@@ -29,15 +29,16 @@ public class JsonCreditNoteParser
         cabecera.sumPrecioVenta = dto.CreditNote.SumPrecioVenta.ToString("N2", numberFormatInfo);
         cabecera.sumImpVenta = dto.CreditNote.SumImpVenta.ToString("N2", numberFormatInfo);
         // adicionales de cabecera.
-        if (dto.CreditNote.CodUbigeoCliente.Length == 6)
+        if (dto.CreditNote.CodUbigeoCliente.Trim().Length == 6)
         {
             cabecera.adicionalCabecera = new AdicionalCabecera()
             {
                 codPaisCliente = "PE",
-                codUbigeoCliente = dto.CreditNote.CodUbigeoCliente,
-                desDireccionCliente = dto.CreditNote.DesDireccionCliente,
+                codUbigeoCliente = dto.CreditNote.CodUbigeoCliente.Trim(),
+                desDireccionCliente = dto.CreditNote.DesDireccionCliente.Trim(),
             };
         }
+
         // detalle.
         dto.CreditNoteDetails.ForEach(item =>
         {

@@ -18,23 +18,24 @@ public class JsonFacturaParser
         cabecera.fecVencimiento = dto.InvoiceSale.FecVencimiento;
         cabecera.codLocalEmisor = dto.InvoiceSale.CodLocalEmisor;
         cabecera.tipDocUsuario = dto.InvoiceSale.TipDocUsuario.Split(":")[0];
-        cabecera.numDocUsuario = dto.InvoiceSale.NumDocUsuario;
-        cabecera.rznSocialUsuario = dto.InvoiceSale.RznSocialUsuario;
+        cabecera.numDocUsuario = dto.InvoiceSale.NumDocUsuario.Trim();
+        cabecera.rznSocialUsuario = dto.InvoiceSale.RznSocialUsuario.Trim();
         cabecera.tipMoneda = dto.InvoiceSale.TipMoneda;
         cabecera.sumTotTributos = dto.InvoiceSale.SumTotTributos.ToString("N2", numberFormatInfo);
         cabecera.sumTotValVenta = dto.InvoiceSale.SumTotValVenta.ToString("N2", numberFormatInfo);
         cabecera.sumPrecioVenta = dto.InvoiceSale.SumPrecioVenta.ToString("N2", numberFormatInfo);
         cabecera.sumImpVenta = dto.InvoiceSale.SumImpVenta.ToString("N2", numberFormatInfo);
         // adicionales de cabecera.
-        if (dto.InvoiceSale.CodUbigeoCliente.Length == 6)
+        if (dto.InvoiceSale.CodUbigeoCliente.Trim().Length == 6)
         {
             cabecera.adicionalCabecera = new AdicionalCabecera()
             {
                 codPaisCliente = "PE",
-                codUbigeoCliente = dto.InvoiceSale.CodUbigeoCliente,
-                desDireccionCliente = dto.InvoiceSale.DesDireccionCliente,
+                codUbigeoCliente = dto.InvoiceSale.CodUbigeoCliente.Trim(),
+                desDireccionCliente = dto.InvoiceSale.DesDireccionCliente.Trim(),
             };
         }
+
         // detalle.
         dto.InvoiceSaleDetails.ForEach(item =>
         {
@@ -94,6 +95,7 @@ public class JsonFacturaParser
             datoPago.mtoNetoPendientePago = dto.InvoiceSale.SumImpVenta.ToString("N2", numberFormatInfo);
             datoPago.tipMonedaMtoNetoPendientePago = dto.InvoiceSale.TipMoneda;
         }
+
         if (formaPago == "Credito")
         {
             datoPago.formaPago = "Credito";
