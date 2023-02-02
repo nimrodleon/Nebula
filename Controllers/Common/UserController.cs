@@ -46,8 +46,7 @@ public class UserController : ControllerBase
             Role = model.Role
         };
         await _userService.CreateAsync(user);
-
-        return Ok(new { Ok = true, User = user });
+        return Ok(user);
     }
 
     [AllowAnonymous]
@@ -65,8 +64,7 @@ public class UserController : ControllerBase
             Role = AuthRoles.Admin
         };
         await _userService.CreateAsync(user);
-
-        return Ok(new { Ok = true, User = user });
+        return Ok(user);
     }
 
     [HttpPut("Update/{id}"), Authorize(Roles = AuthRoles.Admin)]
@@ -77,13 +75,7 @@ public class UserController : ControllerBase
         user.Email = model.Email;
         user.Role = model.Role;
         await _userService.UpdateAsync(id, user);
-
-        return Ok(new
-        {
-            Ok = true,
-            Data = user,
-            Msg = $"El usuario {user.UserName} ha sido actualizado!"
-        });
+        return Ok(user);
     }
 
     [HttpPut("PasswordChange/{id}"), Authorize(Roles = AuthRoles.Admin)]
@@ -92,13 +84,7 @@ public class UserController : ControllerBase
         var user = await _userService.GetByIdAsync(id);
         user.PasswordHash = PasswordHasher.HashPassword(model.Password);
         await _userService.UpdateAsync(id, user);
-
-        return Ok(new
-        {
-            Ok = true,
-            Data = user,
-            Msg = $"La contraseña de {user.UserName} ha sido actualizado!"
-        });
+        return Ok(user);
     }
 
     [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
@@ -106,6 +92,6 @@ public class UserController : ControllerBase
     {
         var user = await _userService.GetByIdAsync(id);
         await _userService.RemoveAsync(id);
-        return Ok(new { Ok = true, Data = user, Msg = "El usuario ha sido borrado!" });
+        return Ok(user);
     }
 }
