@@ -55,6 +55,13 @@ public class CashierDetailController : ControllerBase
         return Ok(countDocuments);
     }
 
+    [HttpGet("ResumenCaja/{id}")]
+    public async Task<IActionResult> ResumenCaja(string id)
+    {
+        var resumenCaja = await _cashierDetailService.GetResumenCaja(id);
+        return Ok(resumenCaja);
+    }
+
     [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
