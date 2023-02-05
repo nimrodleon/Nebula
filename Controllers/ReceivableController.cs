@@ -3,6 +3,7 @@ using Nebula.Database.Services;
 using Nebula.Database.Services.Cashier;
 using Nebula.Database.Models;
 using Microsoft.AspNetCore.Authorization;
+using Nebula.Database.Dto.Common;
 using Nebula.Database.Helpers;
 using Nebula.Database.Services.Common;
 
@@ -26,9 +27,9 @@ namespace Nebula.Controllers
         }
 
         [HttpGet("Index")]
-        public async Task<IActionResult> Index([FromQuery] string month, [FromQuery] string year, [FromQuery] string status)
+        public async Task<IActionResult> Index([FromQuery] ReceivableRequestParams requestParam)
         {
-            var responseData = await _receivableService.GetListAsync(month, year, status);
+            var responseData = await _receivableService.GetListAsync(requestParam);
             return Ok(responseData);
         }
 
@@ -36,6 +37,14 @@ namespace Nebula.Controllers
         public async Task<IActionResult> Show(string id)
         {
             var receivable = await _receivableService.GetByIdAsync(id);
+            return Ok(receivable);
+        }
+
+        [HttpGet("GetReceivablesByContactId/{ContactId}")]
+        public async Task<IActionResult> GetReceivablesByContactId(string contactId,
+            [FromQuery] ReceivableRequestParams requestParam)
+        {
+            var receivable = await _receivableService.GetReceivablesByContactId(contactId, requestParam);
             return Ok(receivable);
         }
 

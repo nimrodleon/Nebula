@@ -64,6 +64,12 @@ public class Receivable : Generic
     public decimal Abono { get; set; }
 
     /// <summary>
+    /// Saldo pendiente a Cobrar.
+    /// </summary>
+    [BsonIgnore]
+    public decimal Saldo { get; set; }
+
+    /// <summary>
     /// Estado del Cargo: 'PENDIENTE' | 'COBRADO' | '-'.
     /// </summary>
     public string Status { get; set; } = "PENDIENTE";
