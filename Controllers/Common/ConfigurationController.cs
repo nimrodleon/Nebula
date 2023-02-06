@@ -11,10 +11,14 @@ namespace Nebula.Controllers.Common;
 [ApiController]
 public class ConfigurationController : ControllerBase
 {
+    private readonly IConfiguration _configuration;
     private readonly ConfigurationService _configurationService;
 
-    public ConfigurationController(ConfigurationService configurationService) =>
+    public ConfigurationController(IConfiguration configuration, ConfigurationService configurationService)
+    {
+        _configuration = configuration;
         _configurationService = configurationService;
+    }
 
     [HttpGet("Show")]
     public async Task<IActionResult> Show()
@@ -62,4 +66,10 @@ public class ConfigurationController : ControllerBase
         return Ok(configuration);
     }
 
+    [HttpGet("FacturadorUrl")]
+    public Task<IActionResult> FacturadorUrl()
+    {
+        string? url = _configuration.GetValue<string>("facturadorUrl");
+        return Task.FromResult<IActionResult>(Ok(new { url }));
+    }
 }
