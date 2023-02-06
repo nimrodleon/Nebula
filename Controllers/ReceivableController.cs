@@ -4,6 +4,7 @@ using Nebula.Database.Services.Cashier;
 using Nebula.Database.Models;
 using Microsoft.AspNetCore.Authorization;
 using Nebula.Database.Dto.Common;
+using Nebula.Database.Dto.Finance;
 using Nebula.Database.Helpers;
 using Nebula.Database.Services.Common;
 
@@ -40,7 +41,7 @@ namespace Nebula.Controllers
             return Ok(receivable);
         }
 
-        [HttpGet("GetReceivablesByContactId/{ContactId}")]
+        [HttpGet("GetReceivablesByContactId/{contactId}")]
         public async Task<IActionResult> GetReceivablesByContactId(string contactId,
             [FromQuery] ReceivableRequestParams requestParam)
         {
@@ -108,6 +109,17 @@ namespace Nebula.Controllers
         {
             var total = await _receivableService.GetTotalAbonosAsync(id);
             return Ok(total);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("ExportDeudaExcel/{contactId}")]
+        public async Task<IActionResult> ExportDeudaExcel(string contactId, [FromQuery] string year)
+        {
+            List<Receivable> cuentasPorCobrar = await _receivableService.GetReceivablesByContactId(contactId, year);
+            ExportarCuentasPorCobrarDto exportar = new ExportarCuentasPorCobrarDto(cuentasPorCobrar);
+            string pathExcel = exportar.GenerarArchivoExcel();
+            FileStream stream = new FileStream(pathExcel, FileMode.Open);
+            return new FileStreamResult(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         }
     }
 }

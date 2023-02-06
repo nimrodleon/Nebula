@@ -122,7 +122,20 @@ public class ReceivableService : CrudOperationService<Receivable>
             builder.Eq(x => x.Year, requestParam.Year), builder.Eq(x => x.Month, requestParam.Month),
             builder.In("Status", new List<string>() { requestParam.Status, "-" }),
             builder.In("Type", new List<string>() { "CARGO", "ABONO" }));
-        var receivables = await _collection.Find(filter).ToListAsync();
+        List<Receivable> receivables = await _collection.Find(filter).ToListAsync();
+        List<Receivable> cuentasPorCobrar = receivables.Where(x => x.Type == "CARGO").ToList();
+        List<Receivable> listaDeAbonos = receivables.Where(x => x.Type == "ABONO").ToList();
+        cuentasPorCobrar.ForEach(item => { item.Saldo = CalcularSaldoCargo(listaDeAbonos, item); });
+        return cuentasPorCobrar;
+    }
+
+    public async Task<List<Receivable>> GetReceivablesByContactId(string contactId, string year)
+    {
+        var builder = Builders<Receivable>.Filter;
+        var filter = builder.And(builder.Eq(x => x.ContactId, contactId),
+            builder.Eq(x => x.Year, year), builder.In("Status", new List<string>() { "PENDIENTE", "-" }),
+            builder.In("Type", new List<string>() { "CARGO", "ABONO" }));
+        List<Receivable> receivables = await _collection.Find(filter).ToListAsync();
         List<Receivable> cuentasPorCobrar = receivables.Where(x => x.Type == "CARGO").ToList();
         List<Receivable> listaDeAbonos = receivables.Where(x => x.Type == "ABONO").ToList();
         cuentasPorCobrar.ForEach(item => { item.Saldo = CalcularSaldoCargo(listaDeAbonos, item); });
