@@ -12,6 +12,7 @@ namespace Nebula.Database.Services.Common;
 public class ConfigurationService
 {
     private readonly IMongoCollection<Configuration> _collection;
+
     //##https://www.allkeysgenerator.com/Random/Security-Encryption-Key-Generator.aspx
     private readonly byte[] key = Encoding.ASCII.GetBytes("q3t6w9z$C&F)J@NcRfUjWnZr4u7x!A%D");
     private readonly byte[] IV = Encoding.ASCII.GetBytes("2r5u8x/A?D(G+KaP");
@@ -45,7 +46,6 @@ public class ConfigurationService
         _configuration.ModoEnvioSunat = configuration.ModoEnvioSunat;
         _configuration.ContactId = configuration.ContactId;
         _configuration.DiasPlazo = configuration.DiasPlazo;
-        _configuration.SunatArchivos = configuration.SunatArchivos;
         await _collection.ReplaceOneAsync(x => x.Id == "DEFAULT", _configuration);
     }
 
@@ -81,7 +81,8 @@ public class ConfigurationService
         var machine = GetMachineUUID();
         HttpClient httpClient = new HttpClient();
         string URL = $"https://rd4lab.com/rbot/api/subscription/machine/{subscriptionId}";
-        using StringContent jsonContent = new(JsonSerializer.Serialize(new { machine = machine }), Encoding.UTF8, "application/json");
+        using StringContent jsonContent = new(JsonSerializer.Serialize(new { machine = machine }), Encoding.UTF8,
+            "application/json");
         using HttpResponseMessage response = await httpClient.PostAsync(URL, jsonContent);
         string jsonResponse = await response.Content.ReadAsStringAsync();
         return jsonResponse;
@@ -92,7 +93,8 @@ public class ConfigurationService
         var machine = GetMachineUUID();
         HttpClient httpClient = new HttpClient();
         string URL = $"https://rd4lab.com/rbot/api/subscription/validation/{subscriptionId}";
-        using StringContent jsonContent = new(JsonSerializer.Serialize(new { machine = machine }), Encoding.UTF8, "application/json");
+        using StringContent jsonContent = new(JsonSerializer.Serialize(new { machine = machine }), Encoding.UTF8,
+            "application/json");
         using HttpResponseMessage response = await httpClient.PostAsync(URL, jsonContent);
         string jsonResponse = await response.Content.ReadAsStringAsync();
         return JsonSerializer.Deserialize<ResponseSubscriptionPaymentDto>(jsonResponse,
@@ -110,6 +112,7 @@ public class ConfigurationService
             configuration.AccessToken = pago.Data.Payment == true ? Convert.ToBase64String(encrypt) : "-";
             await _collection.ReplaceOneAsync(x => x.Id == "DEFAULT", configuration);
         }
+
         return pago;
     }
 
@@ -127,6 +130,7 @@ public class ConfigurationService
             var encrypt = EncryptStringToBytes(plainText, key, IV);
             configuration.AccessToken = pago.Data.Payment == true ? Convert.ToBase64String(encrypt) : "-";
         }
+
         await _collection.ReplaceOneAsync(x => x.Id == "DEFAULT", configuration);
         return configuration;
     }
@@ -162,6 +166,7 @@ public class ConfigurationService
                         //Write all data to the stream.
                         swEncrypt.Write(plainText);
                     }
+
                     encrypted = msEncrypt.ToArray();
                 }
             }
@@ -202,7 +207,6 @@ public class ConfigurationService
                 {
                     using (StreamReader srDecrypt = new StreamReader(csDecrypt))
                     {
-
                         // Read the decrypted bytes from the decrypting stream
                         // and place them in a string.
                         plaintext = srDecrypt.ReadToEnd();
@@ -213,5 +217,4 @@ public class ConfigurationService
 
         return plaintext;
     }
-
 }

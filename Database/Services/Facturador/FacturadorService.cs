@@ -9,18 +9,22 @@ namespace Nebula.Database.Services.Facturador;
 public class FacturadorService
 {
     private readonly IConfiguration _configuration;
+
     // ======================================================================
     private readonly ConfigurationService _configurationService;
     private readonly InvoiceSaleService _invoiceSaleService;
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly TributoSaleService _tributoSaleService;
+
     private readonly DetallePagoSaleService _detallePagoSaleService;
+
     // ======================================================================
     private readonly CreditNoteService _creditNoteService;
 
     public FacturadorService(IConfiguration configuration, ConfigurationService configurationService,
         InvoiceSaleService invoiceSaleService, InvoiceSaleDetailService invoiceSaleDetailService,
-        TributoSaleService tributoSaleService, CreditNoteService creditNoteService, DetallePagoSaleService detallePagoSaleService)
+        TributoSaleService tributoSaleService, CreditNoteService creditNoteService,
+        DetallePagoSaleService detallePagoSaleService)
     {
         _configuration = configuration;
         _configurationService = configurationService;
@@ -43,12 +47,18 @@ public class FacturadorService
         if (invoiceSale.DocType == "BOLETA") typeDoc = "03";
         if (invoiceSale.DocType == "FACTURA") typeDoc = "01";
         string nomArch = $"{configuration.Ruc}-{typeDoc}-{invoiceSale.Serie}-{invoiceSale.Number}";
-        var storagePath = _configuration.GetValue<string>("StoragePath");
-        FacturadorControl.CrearDirectorioControl(storagePath, invoiceSale.Year, invoiceSale.Month);
-        FacturadorControl.MoverArchivosControl(storagePath, configuration.SunatArchivos, nomArch, invoiceSale.Year, invoiceSale.Month);
-        FacturadorControl.BorrarArchivosTemporales(configuration.SunatArchivos, nomArch);
-        // actualizar ruta archivo.
-        invoiceSale.DocumentPath = DocumentPathType.CONTROL;
+        string? storagePath = _configuration.GetValue<string>("StoragePath");
+        string? sunatArchivos = _configuration.GetValue<string>("sunatArchivos");
+        if (storagePath != null && sunatArchivos != null)
+        {
+            FacturadorControl.CrearDirectorioControl(storagePath, invoiceSale.Year, invoiceSale.Month);
+            FacturadorControl.MoverArchivosControl(storagePath, sunatArchivos, nomArch, invoiceSale.Year,
+                invoiceSale.Month);
+            FacturadorControl.BorrarArchivosTemporales(sunatArchivos, nomArch);
+            // actualizar ruta archivo.
+            invoiceSale.DocumentPath = DocumentPathType.CONTROL;
+        }
+
         await _invoiceSaleService.UpdateAsync(invoiceSale.Id, invoiceSale);
         // borrar registro del facturador sunat.
         var dataSource = _configuration.GetValue<string>("BDFacturador");
@@ -66,11 +76,17 @@ public class FacturadorService
         var creditNote = await _creditNoteService.GetByIdAsync(creditNoteId);
         // configurar nombre del archivo.
         string nomArch = $"{configuration.Ruc}-07-{creditNote.Serie}-{creditNote.Number}";
-        var storagePath = _configuration.GetValue<string>("StoragePath");
-        FacturadorControl.CrearDirectorioControl(storagePath, creditNote.Year, creditNote.Month);
-        FacturadorControl.MoverArchivosControl(storagePath, configuration.SunatArchivos, nomArch, creditNote.Year, creditNote.Month);
-        FacturadorControl.BorrarArchivosTemporales(configuration.SunatArchivos, nomArch);
-        creditNote.DocumentPath = DocumentPathType.CONTROL;
+        string? storagePath = _configuration.GetValue<string>("StoragePath");
+        string? sunatArchivos = _configuration.GetValue<string>("sunatArchivos");
+        if (storagePath != null && sunatArchivos != null)
+        {
+            FacturadorControl.CrearDirectorioControl(storagePath, creditNote.Year, creditNote.Month);
+            FacturadorControl.MoverArchivosControl(storagePath, sunatArchivos, nomArch, creditNote.Year,
+                creditNote.Month);
+            FacturadorControl.BorrarArchivosTemporales(sunatArchivos, nomArch);
+            creditNote.DocumentPath = DocumentPathType.CONTROL;
+        }
+
         await _creditNoteService.UpdateAsync(creditNote.Id, creditNote);
         // borrar registro del facturador sunat.
         var dataSource = _configuration.GetValue<string>("BDFacturador");
@@ -91,7 +107,8 @@ public class FacturadorService
         if (invoiceSale.DocType == "BOLETA") typeDoc = "03";
         if (invoiceSale.DocType == "FACTURA") typeDoc = "01";
         string nomArch = $"{configuration.Ruc}-{typeDoc}-{invoiceSale.Serie}-{invoiceSale.Number}";
-        FacturadorControl.BorrarTodosLosArchivos(configuration.SunatArchivos, nomArch);
+        string? sunatArchivos = _configuration.GetValue<string>("sunatArchivos");
+        if (sunatArchivos != null) FacturadorControl.BorrarTodosLosArchivos(sunatArchivos, nomArch);
         // borrar registro del facturador sunat.
         var dataSource = _configuration.GetValue<string>("BDFacturador");
         var facturador = new FacturadorSqlite(dataSource);
@@ -107,7 +124,8 @@ public class FacturadorService
         var configuration = await _configurationService.GetAsync();
         var creditNote = await _creditNoteService.GetByIdAsync(creditNoteId);
         string nomArch = $"{configuration.Ruc}-07-{creditNote.Serie}-{creditNote.Number}";
-        FacturadorControl.BorrarTodosLosArchivos(configuration.SunatArchivos, nomArch);
+        string? sunatArchivos = _configuration.GetValue<string>("sunatArchivos");
+        if (sunatArchivos != null) FacturadorControl.BorrarTodosLosArchivos(sunatArchivos, nomArch);
         // borrar registro del facturador sunat.
         var dataSource = _configuration.GetValue<string>("BDFacturador");
         var facturador = new FacturadorSqlite(dataSource);
@@ -147,9 +165,12 @@ public class FacturadorService
         string typeDoc = string.Empty;
         if (invoiceSaleDto.InvoiceSale.DocType == "BOLETA") typeDoc = "03";
         if (invoiceSaleDto.InvoiceSale.DocType == "FACTURA") typeDoc = "01";
-        string fileName = $"{configuration.Ruc}-{typeDoc}-{invoiceSaleDto.InvoiceSale.Serie}-{invoiceSaleDto.InvoiceSale.Number}.json";
+        string fileName =
+            $"{configuration.Ruc}-{typeDoc}-{invoiceSaleDto.InvoiceSale.Serie}-{invoiceSaleDto.InvoiceSale.Number}.json";
+        string? sunatArchivos = _configuration.GetValue<string>("sunatArchivos");
+        if (sunatArchivos is null) sunatArchivos = string.Empty;
         // generar archivo json.
-        string pathBase = Path.Combine(configuration.SunatArchivos, "sfs");
+        string pathBase = Path.Combine(sunatArchivos, "sfs");
         string pathData = Path.Combine(pathBase, "DATA");
         string pathFile = Path.Combine(pathData, fileName);
         if (invoiceSaleDto.InvoiceSale.DocType == "BOLETA")
@@ -178,8 +199,10 @@ public class FacturadorService
         var dto = await _creditNoteService.GetCreditNoteDtoAsync(creditNoteId);
         // configurar nombre del archivo.
         string fileName = $"{configuration.Ruc}-07-{dto.CreditNote.Serie}-{dto.CreditNote.Number}.json";
+        string? sunatArchivos = _configuration.GetValue<string>("sunatArchivos");
         // generar archivo json.
-        string pathBase = Path.Combine(configuration.SunatArchivos, "sfs");
+        if (sunatArchivos is null) sunatArchivos = string.Empty;
+        string pathBase = Path.Combine(sunatArchivos, "sfs");
         string pathData = Path.Combine(pathBase, "DATA");
         string pathFile = Path.Combine(pathData, fileName);
         var creditNoteParser = new JsonCreditNoteParser(dto);

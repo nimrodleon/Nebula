@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.JavaScript;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Helpers;
@@ -173,12 +174,15 @@ public class InvoiceSaleController : ControllerBase
         var storagePath = _configuration.GetValue<string>("StoragePath");
         if (comprobante.DocumentPath == DocumentPathType.SFS)
         {
-            string carpetaArchivoSunat = Path.Combine(configuration.SunatArchivos, "sfs");
+            string? sunatArchivos = _configuration.GetValue<string>("sunatArchivos");
+            if (sunatArchivos is null) sunatArchivos = string.Empty;
+            string carpetaArchivoSunat = Path.Combine(sunatArchivos, "sfs");
             pathPdf = Path.Combine(carpetaArchivoSunat, "REPO", nomArch);
         }
 
         if (comprobante.DocumentPath == DocumentPathType.CONTROL)
         {
+            if (storagePath is null) storagePath = string.Empty;
             string carpetaArchivoSunat = Path.Combine(storagePath, "sunat");
             string carpetaRepo = Path.Combine(carpetaArchivoSunat, "REPO", comprobante.Year, comprobante.Month);
             pathPdf = Path.Combine(carpetaRepo, nomArch);

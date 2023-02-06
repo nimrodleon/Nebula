@@ -75,15 +75,20 @@ public class CreditNoteController : ControllerBase
         var storagePath = _configuration.GetValue<string>("StoragePath");
         if (creditNote.DocumentPath == DocumentPathType.SFS)
         {
-            string carpetaArchivoSunat = Path.Combine(configuration.SunatArchivos, "sfs");
+            string? sunatArchivos = _configuration.GetValue<string>("sunatArchivos");
+            if (sunatArchivos is null) sunatArchivos = string.Empty;
+            string carpetaArchivoSunat = Path.Combine(sunatArchivos, "sfs");
             pathPdf = Path.Combine(carpetaArchivoSunat, "REPO", nomArch);
         }
+
         if (creditNote.DocumentPath == DocumentPathType.CONTROL)
         {
+            if (storagePath is null) storagePath = string.Empty;
             string carpetaArchivoSunat = Path.Combine(storagePath, "sunat");
             string carpetaRepo = Path.Combine(carpetaArchivoSunat, "REPO", creditNote.Year, creditNote.Month);
             pathPdf = Path.Combine(carpetaRepo, nomArch);
         }
+
         FileStream stream = new FileStream(pathPdf, FileMode.Open);
         return new FileStreamResult(stream, "application/pdf");
     }
