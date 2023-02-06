@@ -21,7 +21,11 @@ public class ReceivableService : CrudOperationService<Receivable>
             builder.Eq(x => x.Month, param.Month),
             builder.In("Status", new List<string>() { param.Status, "-" }),
             builder.In("Type", new List<string>() { "CARGO", "ABONO" }));
-        return await _collection.Find(filter).ToListAsync();
+        var receivables = await _collection.Find(filter).ToListAsync();
+        List<Receivable> cuentasPorCobrar = receivables.Where(x => x.Type == "CARGO").ToList();
+        List<Receivable> listaDeAbonos = receivables.Where(x => x.Type == "ABONO").ToList();
+        cuentasPorCobrar.ForEach(item => { item.Saldo = CalcularSaldoCargo(listaDeAbonos, item); });
+        return cuentasPorCobrar;
     }
 
     public async Task<List<Receivable>> GetAbonosAsync(string id)
