@@ -30,23 +30,27 @@ public class ConfigurationService
     public async Task CreateAsync() =>
         await _collection.InsertOneAsync(new Configuration());
 
-    public async Task UpdateAsync(Configuration configuration)
+    public async Task<Configuration> UpdateAsync(Configuration configuration)
     {
         var _configuration = await GetAsync();
-        _configuration.Ruc = configuration.Ruc;
-        _configuration.RznSocial = configuration.RznSocial;
-        _configuration.Address = configuration.Address;
+        _configuration.Ruc = configuration.Ruc.Trim();
+        _configuration.RznSocial = configuration.RznSocial.Trim();
+        _configuration.Address = configuration.Address.Trim();
         _configuration.PhoneNumber = configuration.PhoneNumber;
         _configuration.AnchoTicket = configuration.AnchoTicket;
-        _configuration.CodLocalEmisor = configuration.CodLocalEmisor;
-        _configuration.TipMoneda = configuration.TipMoneda;
+        _configuration.CodLocalEmisor = configuration.CodLocalEmisor.Trim();
+        _configuration.TipMoneda = configuration.TipMoneda.Trim();
         _configuration.PorcentajeIgv = configuration.PorcentajeIgv;
         _configuration.ValorImpuestoBolsa = configuration.ValorImpuestoBolsa;
         _configuration.CpeSunat = configuration.CpeSunat;
         _configuration.ModoEnvioSunat = configuration.ModoEnvioSunat;
         _configuration.ContactId = configuration.ContactId;
         _configuration.DiasPlazo = configuration.DiasPlazo;
+        // Consulta de Validez de Comprobante de Pago - API SUNAT
+        _configuration.CdPClientId = configuration.CdPClientId.Trim();
+        _configuration.CdPClientSecret = configuration.CdPClientSecret.Trim();
         await _collection.ReplaceOneAsync(x => x.Id == "DEFAULT", _configuration);
+        return _configuration;
     }
 
     public async Task<LicenseDto> ValidarAcceso()
@@ -119,7 +123,7 @@ public class ConfigurationService
     public async Task<Configuration> UpdateKey(string subscriptionId)
     {
         var configuration = await GetAsync();
-        configuration.SubscriptionId = subscriptionId;
+        configuration.SubscriptionId = subscriptionId.Trim();
         await UpdateAccess(configuration.SubscriptionId);
         var pago = await ValidarPago(configuration.SubscriptionId);
         if (pago?.Ok != true)

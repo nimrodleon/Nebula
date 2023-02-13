@@ -40,9 +40,8 @@ public class ConfigurationController : ControllerBase
         if (configuration is null) return NotFound();
 
         model.Id = configuration.Id;
-        await _configurationService.UpdateAsync(model);
-
-        return Ok(configuration);
+        model = await _configurationService.UpdateAsync(model);
+        return Ok(model);
     }
 
     [HttpGet("SincronizarPago")]

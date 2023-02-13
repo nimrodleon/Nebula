@@ -82,4 +82,18 @@ public class Configuration
     /// Identificador para verificar la Suscripción.
     /// </summary>
     public string SubscriptionId { get; set; } = string.Empty;
+
+    #region Consulta de Validez de Comprobante de Pago - API SUNAT
+
+    /// <summary>
+    /// Id Credenciales oauth2 - API SUNAT
+    /// </summary>
+    public string CdPClientId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Clave Credenciales oauth2 - API SUNAT
+    /// </summary>
+    public string CdPClientSecret { get; set; } = string.Empty;
+
+    #endregion
 }
