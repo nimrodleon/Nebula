@@ -141,7 +141,7 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>
                 ticket.InvoiceSaleDetails = responseInvoiceSale.InvoiceSaleDetails;
             if (responseInvoiceSale.TributoSales != null) ticket.TributoSales = responseInvoiceSale.TributoSales;
             LeerDigestValue digest = new LeerDigestValue();
-            ticket.DigestValue = digest.GetValue(pathXml);
+            if (invoice.DocType != "NOTA") ticket.DigestValue = digest.GetValue(pathXml);
         }
 
         return ticket;
