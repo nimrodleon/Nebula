@@ -4,7 +4,6 @@ using Nebula.Database.Models.Sales;
 using Nebula.Database.Dto.Common;
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Helpers;
-using Nebula.Database.Models.Common;
 using Nebula.Database.Services.Common;
 
 namespace Nebula.Database.Services.Sales;
@@ -13,12 +12,17 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>
 {
     private readonly IConfiguration _configuration;
     private readonly ConfigurationService _configurationService;
+    private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
+    private readonly TributoSaleService _tributoSaleService;
 
     public InvoiceSaleService(IOptions<DatabaseSettings> options,
-        IConfiguration configuration, ConfigurationService configurationService) : base(options)
+        IConfiguration configuration, ConfigurationService configurationService,
+        InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService) : base(options)
     {
         _configuration = configuration;
         _configurationService = configurationService;
+        _invoiceSaleDetailService = invoiceSaleDetailService;
+        _tributoSaleService = tributoSaleService;
     }
 
     public async Task<List<InvoiceSale>> GetListAsync(DateQuery query)
@@ -30,6 +34,19 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>
             builder.In("DocType", new List<string>() { "BOLETA", "FACTURA" }));
         return await _collection.Find(filter).Sort(new SortDefinitionBuilder<InvoiceSale>().Descending("$natural"))
             .ToListAsync();
+    }
+
+    public async Task<ResponseInvoiceSale> GetInvoiceSaleAsync(string invoiceId)
+    {
+        var invoiceSale = await GetByIdAsync(invoiceId);
+        var invoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(invoiceId);
+        var tributoSales = await _tributoSaleService.GetListAsync(invoiceId);
+        return new ResponseInvoiceSale()
+        {
+            InvoiceSale = invoiceSale,
+            InvoiceSaleDetails = invoiceSaleDetails,
+            TributoSales = tributoSales
+        };
     }
 
     public async Task<List<InvoiceSale>> GetByContactIdAsync(string id, string month, string year)
@@ -86,40 +103,47 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>
     /// <returns>TicketDto</returns>
     public async Task<TicketDto> GetTicketDto(string invoiceId)
     {
-        var invoice = await GetByIdAsync(invoiceId);
+        var ticket = new TicketDto();
         var configuration = await _configurationService.GetAsync();
+        var responseInvoiceSale = await GetInvoiceSaleAsync(invoiceId);
+        var invoice = responseInvoiceSale.InvoiceSale;
         string tipDocu = string.Empty;
-        if (invoice.DocType.Equals("FACTURA")) tipDocu = "01";
-        if (invoice.DocType.Equals("BOLETA")) tipDocu = "03";
+        if (invoice != null && invoice.DocType.Equals("FACTURA")) tipDocu = "01";
+        if (invoice != null && invoice.DocType.Equals("BOLETA")) tipDocu = "03";
         // 20520485750-03-B001-00000015
-        string nomArch = $"{configuration.Ruc}-{tipDocu}-{invoice.Serie}-{invoice.Number}.xml";
-        string pathXml = string.Empty;
-        var storagePath = _configuration.GetValue<string>("StoragePath");
-        // abrir en la ruta del facturador.
-        if (invoice.DocumentPath == DocumentPathType.SFS)
+        if (invoice != null)
         {
-            string? sunatArchivos = _configuration.GetValue<string>("sunatArchivos");
-            if (sunatArchivos is null) sunatArchivos = string.Empty;
-            string carpetaArchivoSunat = Path.Combine(sunatArchivos, "sfs");
-            pathXml = Path.Combine(carpetaArchivoSunat, "FIRMA", nomArch);
+            string nomArch = $"{configuration.Ruc}-{tipDocu}-{invoice.Serie}-{invoice.Number}.xml";
+            string pathXml = string.Empty;
+            var storagePath = _configuration.GetValue<string>("StoragePath");
+            // abrir en la ruta del facturador.
+            if (invoice.DocumentPath == DocumentPathType.SFS)
+            {
+                string? sunatArchivos = _configuration.GetValue<string>("sunatArchivos");
+                if (sunatArchivos is null) sunatArchivos = string.Empty;
+                string carpetaArchivoSunat = Path.Combine(sunatArchivos, "sfs");
+                pathXml = Path.Combine(carpetaArchivoSunat, "FIRMA", nomArch);
+            }
+
+            // abrir en la ruta de la carpeta control.
+            if (invoice.DocumentPath == DocumentPathType.CONTROL)
+            {
+                if (storagePath is null) storagePath = string.Empty;
+                string carpetaArchivoSunat = Path.Combine(storagePath, "sunat");
+                string carpetaRepo = Path.Combine(carpetaArchivoSunat, "FIRMA", invoice.Year, invoice.Month);
+                pathXml = Path.Combine(carpetaRepo, nomArch);
+            }
+
+            // establecer valores de retorno.
+            ticket.Configuration = configuration;
+            if (responseInvoiceSale.InvoiceSale != null) ticket.InvoiceSale = responseInvoiceSale.InvoiceSale;
+            if (responseInvoiceSale.InvoiceSaleDetails != null)
+                ticket.InvoiceSaleDetails = responseInvoiceSale.InvoiceSaleDetails;
+            if (responseInvoiceSale.TributoSales != null) ticket.TributoSales = responseInvoiceSale.TributoSales;
+            LeerDigestValue digest = new LeerDigestValue();
+            ticket.DigestValue = digest.GetValue(pathXml);
         }
 
-        // abrir en la ruta de la carpeta control.
-        if (invoice.DocumentPath == DocumentPathType.CONTROL)
-        {
-            if (storagePath is null) storagePath = string.Empty;
-            string carpetaArchivoSunat = Path.Combine(storagePath, "sunat");
-            string carpetaRepo = Path.Combine(carpetaArchivoSunat, "FIRMA", invoice.Year, invoice.Month);
-            pathXml = Path.Combine(carpetaRepo, nomArch);
-        }
-
-        TicketDto ticket = new TicketDto
-        {
-            Configuration = configuration,
-            InvoiceSale = invoice
-        };
-        LeerDigestValue digest = new LeerDigestValue();
-        ticket.DigestValue = digest.GetValue(pathXml);
         return ticket;
     }
 }

@@ -94,13 +94,8 @@ public class InvoiceSaleController : ControllerBase
     [HttpGet("Show/{id}")]
     public async Task<IActionResult> Show(string id)
     {
-        var responseData = new ResponseInvoiceSale()
-        {
-            InvoiceSale = await _invoiceSaleService.GetByIdAsync(id),
-            InvoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(id),
-            TributoSales = await _tributoSaleService.GetListAsync(id)
-        };
-        return Ok(responseData);
+        var responseInvoiceSale = await _invoiceSaleService.GetInvoiceSaleAsync(id);
+        return Ok(responseInvoiceSale);
     }
 
     [HttpPatch("AnularComprobante/{id}")]
