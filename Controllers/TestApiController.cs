@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Dto.Sales;
 
-namespace Nebula.Controllers.Sales;
+namespace Nebula.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]

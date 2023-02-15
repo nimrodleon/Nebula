@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices.JavaScript;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Helpers;
@@ -190,5 +189,12 @@ public class InvoiceSaleController : ControllerBase
 
         FileStream stream = new FileStream(pathPdf, FileMode.Open);
         return new FileStreamResult(stream, "application/pdf");
+    }
+
+    [HttpGet("Ticket/{id}")]
+    public async Task<IActionResult> Ticket(string id)
+    {
+        var ticket = await _invoiceSaleService.GetTicketDto(id);
+        return Ok(ticket);
     }
 }
