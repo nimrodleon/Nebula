@@ -142,6 +142,7 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>
             if (responseInvoiceSale.TributoSales != null) ticket.TributoSales = responseInvoiceSale.TributoSales;
             LeerDigestValue digest = new LeerDigestValue();
             if (invoice.DocType != "NOTA") ticket.DigestValue = digest.GetValue(pathXml);
+            ticket.TotalEnLetras = new NumberToLetters(invoice.SumImpVenta).ToString();
         }
 
         return ticket;
