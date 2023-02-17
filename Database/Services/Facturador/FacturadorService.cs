@@ -57,13 +57,13 @@ public class FacturadorService
             FacturadorControl.BorrarArchivosTemporales(sunatArchivos, nomArch);
             // actualizar ruta archivo.
             invoiceSale.DocumentPath = DocumentPathType.CONTROL;
+            await _invoiceSaleService.UpdateAsync(invoiceSale.Id, invoiceSale);
+            // borrar registro del facturador sunat.
+            var dataSource = _configuration.GetValue<string>("BDFacturador");
+            var facturador = new FacturadorSqlite(dataSource);
+            facturador.BorrarDocumento(nomArch);
         }
 
-        await _invoiceSaleService.UpdateAsync(invoiceSale.Id, invoiceSale);
-        // borrar registro del facturador sunat.
-        var dataSource = _configuration.GetValue<string>("BDFacturador");
-        var facturador = new FacturadorSqlite(dataSource);
-        facturador.BorrarDocumento(nomArch);
         return invoiceSale;
     }
 
@@ -85,13 +85,13 @@ public class FacturadorService
                 creditNote.Month);
             FacturadorControl.BorrarArchivosTemporales(sunatArchivos, nomArch);
             creditNote.DocumentPath = DocumentPathType.CONTROL;
+            await _creditNoteService.UpdateAsync(creditNote.Id, creditNote);
+            // borrar registro del facturador sunat.
+            var dataSource = _configuration.GetValue<string>("BDFacturador");
+            var facturador = new FacturadorSqlite(dataSource);
+            facturador.BorrarDocumento(nomArch);
         }
 
-        await _creditNoteService.UpdateAsync(creditNote.Id, creditNote);
-        // borrar registro del facturador sunat.
-        var dataSource = _configuration.GetValue<string>("BDFacturador");
-        var facturador = new FacturadorSqlite(dataSource);
-        facturador.BorrarDocumento(nomArch);
         return creditNote;
     }
 
