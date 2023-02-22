@@ -1,0 +1,110 @@
+﻿using System.IO.Compression;
+using Nebula.Database.Models.Common;
+using Nebula.Database.Models.Sales;
+
+namespace Nebula.Database.Dto.Sales;
+
+public class ConsultarValidezComprobante
+{
+    private readonly List<InvoiceSerie> _invoiceSeries;
+    private readonly List<InvoiceSale> _invoiceSales;
+    private readonly List<CreditNote> _creditNotes;
+
+    /// <summary>
+    /// Cargar Lista de Comprobantes a Exportar.
+    /// </summary>
+    /// <param name="invoiceSeries">Series de Facturación</param>
+    /// <param name="invoiceSales">Boletas/Facturas</param>
+    /// <param name="creditNotes">Notas de Crédito</param>
+    public ConsultarValidezComprobante(List<InvoiceSerie> invoiceSeries,
+        List<InvoiceSale> invoiceSales, List<CreditNote> creditNotes)
+    {
+        _invoiceSeries = invoiceSeries;
+        _invoiceSales = invoiceSales;
+        _creditNotes = creditNotes;
+    }
+
+    /// <summary>
+    /// Obtener Lista de Comprobantes por Tipo y serie.
+    /// </summary>
+    /// <param name="type">BOLETA|FACTURA</param>
+    /// <param name="serie">Serie Comprobante</param>
+    /// <returns>Lista de Comprobantes</returns>
+    private List<InvoiceSale> GetComprobantesByTypeAndSerie(string type, string serie)
+    {
+        return _invoiceSales.Where(x => x.DocType.Equals(type) && x.Serie.Equals(serie)).ToList();
+    }
+
+    /// <summary>
+    /// Crear un directorio en la carpeta temporal del usuario.
+    /// </summary>
+    /// <returns>Ruta del Directorio Creado!</returns>
+    private string CrearCarpetaTemporal()
+    {
+        string tempPath = Path.GetTempPath();
+        string dirName = Guid.NewGuid().ToString();
+        string fullPath = Path.Combine(tempPath, dirName);
+        // crear directorio temporal.
+        if (!Directory.Exists(fullPath))
+            Directory.CreateDirectory(fullPath);
+        // crear directorio de comprobantes.
+        if (Directory.Exists(fullPath))
+        {
+            string pathComprobantes = Path.Combine(fullPath, "Comprobantes");
+            if (!Directory.Exists(pathComprobantes))
+                Directory.CreateDirectory(pathComprobantes);
+        }
+
+        return fullPath;
+    }
+
+    /// <summary>
+    /// Comprimir la Carpeta de Comprobantes Generados.
+    /// </summary>
+    /// <param name="pathCarpetaZip">Path de la carpeta temporal.</param>
+    /// <returns>path del archivo comprimido</returns>
+    private string ComprimirCarpetaComprobantes(string pathCarpetaZip)
+    {
+        string pathArchivoComprimido = Path.Combine(pathCarpetaZip, "Comprobantes.zip");
+        string pathCarpetaComprobante = Path.Combine(pathCarpetaZip, "Comprobantes");
+        // Obtener la lista de archivos planos a incluir en el zip.
+        string[] listaDeArchivosPlanos = Directory.GetFiles(pathCarpetaComprobante, "*.txt");
+        // Crear el archivo zip y agregar los archivos planos.
+        using ZipArchive archive = ZipFile.Open(pathArchivoComprimido, ZipArchiveMode.Create);
+        foreach (string archivo in listaDeArchivosPlanos)
+            archive.CreateEntryFromFile(archivo, Path.GetFileName(archivo));
+        return pathArchivoComprimido;
+    }
+
+    /// <summary>
+    /// Generar archivo plano comprobantes.
+    /// </summary>
+    /// <param name="pathComprobante">path de la carpeta temporal</param>
+    /// <param name="rucEmisor">ruc del emisor</param>
+    /// <param name="type">tipo comprobante BOLETA|FACTURA</param>
+    /// <param name="serie">serie del comprobante</param>
+    private void GenerarArchivoPlanoComprobantes(string pathComprobante, string rucEmisor, string type, string serie)
+    {
+        string docType = string.Empty;
+        if (type.Equals("FACTURA")) docType = "01";
+        if (type.Equals("BOLETA")) docType = "03";
+        List<InvoiceSale> comprobantes = GetComprobantesByTypeAndSerie(type, serie);
+        // Dividir la lista en grupos de 100 comprobantes.
+        var gruposDeComprobantes = comprobantes
+            .Select((c, i) => new { Comprobante = c, Indice = i })
+            .GroupBy(x => x.Indice / 100)
+            .Select(g => g.Select(x => x.Comprobante));
+        // Guardar cada grupo en un archivo separado.
+        int numeroDeGrupo = 1;
+        foreach (var grupo in gruposDeComprobantes)
+        {
+            string nombreDeArchivo = $"{type}_{serie}_{numeroDeGrupo}.txt";
+            string pathArchivoPlano = Path.Combine(pathComprobante, nombreDeArchivo);
+            using StreamWriter streamWriter = new StreamWriter(pathArchivoPlano);
+            foreach (var comprobante in grupo)
+                streamWriter.WriteLine(
+                    $"{rucEmisor}|{docType}|{comprobante.Serie}|{comprobante.Number}|{comprobante.FecEmision}|{comprobante.SumImpVenta}");
+            numeroDeGrupo++;
+        }
+    }
+}
