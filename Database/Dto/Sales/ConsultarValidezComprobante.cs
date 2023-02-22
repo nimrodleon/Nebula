@@ -36,6 +36,16 @@ public class ConsultarValidezComprobante
     }
 
     /// <summary>
+    /// Obtener Lista de Notas de crédito según serie.
+    /// </summary>
+    /// <param name="serie">Serie Comprobante</param>
+    /// <returns>Lista de Notas de Crédito</returns>
+    private List<CreditNote> GetNotaDeCrédito(string serie)
+    {
+        return _creditNotes.Where(x => x.Serie.Equals(serie)).ToList();
+    }
+
+    /// <summary>
     /// Crear un directorio en la carpeta temporal del usuario.
     /// </summary>
     /// <returns>Ruta del Directorio Creado!</returns>
@@ -106,5 +116,60 @@ public class ConsultarValidezComprobante
                     $"{rucEmisor}|{docType}|{comprobante.Serie}|{comprobante.Number}|{comprobante.FecEmision}|{comprobante.SumImpVenta}");
             numeroDeGrupo++;
         }
+    }
+
+    /// <summary>
+    /// Generar Archivo Plano notas de Crédito.
+    /// </summary>
+    /// <param name="pathComprobante">path de la carpeta temporal</param>
+    /// <param name="rucEmisor">ruc del emisor</param>
+    /// <param name="serie">serie del comprobante</param>
+    private void GenerarArchivoPlanoNotaDeCrédito(string pathComprobante, string rucEmisor, string serie)
+    {
+        List<CreditNote> notasDeCrédito = GetNotaDeCrédito(serie);
+        // Dividir la lista en grupos de 100 comprobantes.
+        var gruposDeComprobantes = notasDeCrédito
+            .Select((c, i) => new { Comprobante = c, Indice = i })
+            .GroupBy(x => x.Indice / 100)
+            .Select(g => g.Select(x => x.Comprobante));
+        // Guardar cada grupo en un archivo separado.
+        int numeroDeGrupo = 1;
+        foreach (var grupo in gruposDeComprobantes)
+        {
+            string nombreDeArchivo = $"notas_crédito_{serie}_{numeroDeGrupo}.txt";
+            string pathArchivoPlano = Path.Combine(pathComprobante, nombreDeArchivo);
+            using StreamWriter streamWriter = new StreamWriter(pathArchivoPlano);
+            foreach (var comprobante in grupo)
+                streamWriter.WriteLine(
+                    $"{rucEmisor}|07|{comprobante.Serie}|{comprobante.Number}|{comprobante.FecEmision}|{comprobante.SumImpVenta}");
+            numeroDeGrupo++;
+        }
+    }
+
+    /// <summary>
+    /// Crea Todos los archivos de validación.
+    /// </summary>
+    /// <param name="rucEmisor">Ruc del Emisor</param>
+    /// <returns>path del archivo comprimido</returns>
+    public string CrearArchivosDeValidación(string rucEmisor)
+    {
+        string pathResult = string.Empty;
+        string tempPath = CrearCarpetaTemporal();
+        if (Directory.Exists(tempPath))
+        {
+            string carpetaDeTrabajo = Path.Combine(tempPath, "Comprobantes");
+            _invoiceSeries.ForEach(item =>
+            {
+                // generar archivos planos de comprobantes.
+                GenerarArchivoPlanoComprobantes(carpetaDeTrabajo, rucEmisor, "BOLETA", item.Boleta);
+                GenerarArchivoPlanoComprobantes(carpetaDeTrabajo, rucEmisor, "FACTURA", item.Factura);
+                GenerarArchivoPlanoNotaDeCrédito(carpetaDeTrabajo, rucEmisor, item.CreditNoteBoleta);
+                GenerarArchivoPlanoNotaDeCrédito(carpetaDeTrabajo, rucEmisor, item.CreditNoteFactura);
+            });
+            // comprimir carpeta de comprobantes.
+            pathResult = ComprimirCarpetaComprobantes(tempPath);
+        }
+
+        return pathResult;
     }
 }
