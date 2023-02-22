@@ -57,6 +57,32 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>
         return await _collection.Find(filter).ToListAsync();
     }
 
+    /// <summary>
+    /// Obtener lista de comprobantes por mes y año.
+    /// </summary>
+    /// <param name="month">mes</param>
+    /// <param name="year">año</param>
+    /// <returns>Lista de comprobantes</returns>
+    public async Task<List<InvoiceSale>> GetInvoiceSaleByMonthAndYear(string month, string year)
+    {
+        var builder = Builders<InvoiceSale>.Filter;
+        var filter = builder.And(builder.Eq(x => x.Month, month),
+            builder.Eq(x => x.Year, year));
+        return await _collection.Find(filter).ToListAsync();
+    }
+
+    /// <summary>
+    /// Obtener lista de comprobantes de una fecha especifica.
+    /// </summary>
+    /// <param name="date">fecha de emisión</param>
+    /// <returns>lista de comprobantes</returns>
+    public async Task<List<InvoiceSale>> GetInvoiceSaleByDate(string date)
+    {
+        var builder = Builders<InvoiceSale>.Filter;
+        var filter = builder.Eq(x => x.FecEmision, date);
+        return await _collection.Find(filter).ToListAsync();
+    }
+
     public async Task<InvoiceSale> SetSituacionFacturador(string id, SituacionFacturadorDto dto)
     {
         var invoiceSale = await GetByIdAsync(id);

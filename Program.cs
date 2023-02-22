@@ -72,6 +72,7 @@ builder.Services.AddSingleton<ComprobanteService>();
 builder.Services.AddSingleton<CreditNoteService>();
 builder.Services.AddSingleton<CreditNoteDetailService>();
 builder.Services.AddSingleton<TributoCreditNoteService>();
+builder.Services.AddSingleton<ConsultarValidezComprobanteService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

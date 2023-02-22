@@ -27,12 +27,14 @@ public class InvoiceSaleController : ControllerBase
     private readonly FacturadorService _facturadorService;
     private readonly CreditNoteService _creditNoteService;
     private readonly ValidateStockService _validateStockService;
+    private readonly ConsultarValidezComprobanteService _consultarValidezComprobanteService;
 
     public InvoiceSaleController(ConfigurationService configurationService,
         CrudOperationService<InvoiceSerie> invoiceSerieService, InvoiceSaleService invoiceSaleService,
         InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService,
         ComprobanteService comprobanteService, FacturadorService facturadorService, CreditNoteService creditNoteService,
-        ValidateStockService validateStockService, IConfiguration configuration)
+        ValidateStockService validateStockService, IConfiguration configuration,
+        ConsultarValidezComprobanteService consultarValidezComprobanteService)
     {
         _configuration = configuration;
         _configurationService = configurationService;
@@ -44,6 +46,7 @@ public class InvoiceSaleController : ControllerBase
         _facturadorService = facturadorService;
         _creditNoteService = creditNoteService;
         _validateStockService = validateStockService;
+        _consultarValidezComprobanteService = consultarValidezComprobanteService;
     }
 
     [HttpGet("Index")]
@@ -191,5 +194,14 @@ public class InvoiceSaleController : ControllerBase
     {
         var ticket = await _invoiceSaleService.GetTicketDto(id);
         return Ok(ticket);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("ConsultarValidez")]
+    public async Task<IActionResult> ConsultarValidez([FromQuery] QueryConsultarValidezComprobante query)
+    {
+        string pathArchivoZip = await _consultarValidezComprobanteService.CrearArchivosDeValidación(query);
+        FileStream stream = new FileStream(pathArchivoZip, FileMode.Open);
+        return new FileStreamResult(stream, "application/zip");
     }
 }

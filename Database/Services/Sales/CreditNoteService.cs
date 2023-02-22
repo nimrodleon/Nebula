@@ -12,14 +12,18 @@ public class CreditNoteService : CrudOperationService<CreditNote>
     private readonly InvoiceSaleService _invoiceSaleService;
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly TributoSaleService _tributoSaleService;
+
     private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
+
     // ======================================================================
     private readonly CreditNoteDetailService _creditNoteDetailService;
     private readonly TributoCreditNoteService _tributoCreditNoteService;
 
     public CreditNoteService(IOptions<DatabaseSettings> options, InvoiceSaleService invoiceSaleService,
-        InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService, CrudOperationService<InvoiceSerie> invoiceSerieService,
-        CreditNoteDetailService creditNoteDetailService, TributoCreditNoteService tributoCreditNoteService) : base(options)
+        InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService,
+        CrudOperationService<InvoiceSerie> invoiceSerieService,
+        CreditNoteDetailService creditNoteDetailService,
+        TributoCreditNoteService tributoCreditNoteService) : base(options)
     {
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
@@ -33,11 +37,38 @@ public class CreditNoteService : CrudOperationService<CreditNote>
     {
         var builder = Builders<CreditNote>.Filter;
         var filter = builder.And(builder.Eq(x => x.Month, query.Month), builder.Eq(x => x.Year, query.Year));
-        return await _collection.Find(filter).Sort(new SortDefinitionBuilder<CreditNote>().Descending("$natural")).ToListAsync();
+        return await _collection.Find(filter).Sort(new SortDefinitionBuilder<CreditNote>().Descending("$natural"))
+            .ToListAsync();
     }
 
     public async Task<CreditNote> GetCreditNoteByInvoiceSaleIdAsync(string invoiceSaleId) =>
         await _collection.Find(x => x.InvoiceSaleId == invoiceSaleId).FirstOrDefaultAsync();
+
+    /// <summary>
+    /// Obtener notas de crédito por mes y año.
+    /// </summary>
+    /// <param name="month">mes</param>
+    /// <param name="year">año</param>
+    /// <returns>Lista de notas de crédito</returns>
+    public async Task<List<CreditNote>> GetCreditNotesByMonthAndYear(string month, string year)
+    {
+        var builder = Builders<CreditNote>.Filter;
+        var filter = builder.And(builder.Eq(x => x.Month, month),
+            builder.Eq(x => x.Year, year));
+        return await _collection.Find(filter).ToListAsync();
+    }
+
+    /// <summary>
+    /// Obtener notas de crédito por fecha.
+    /// </summary>
+    /// <param name="date">fecha de emisión del comprobante</param>
+    /// <returns>Lista de notas de crédito</returns>
+    public async Task<List<CreditNote>> GetCreditNotesByDate(string date)
+    {
+        var builder = Builders<CreditNote>.Filter;
+        var filter = builder.Eq(x => x.FecEmision, date);
+        return await _collection.Find(filter).ToListAsync();
+    }
 
     public async Task<CreditNote> SetSituacionFacturador(string id, SituacionFacturadorDto dto)
     {

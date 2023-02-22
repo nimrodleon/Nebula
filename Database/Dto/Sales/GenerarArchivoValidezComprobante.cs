@@ -1,10 +1,11 @@
-﻿using System.IO.Compression;
+﻿using System.Globalization;
+using System.IO.Compression;
 using Nebula.Database.Models.Common;
 using Nebula.Database.Models.Sales;
 
 namespace Nebula.Database.Dto.Sales;
 
-public class ConsultarValidezComprobante
+public class GenerarArchivoValidezComprobante
 {
     private readonly List<InvoiceSerie> _invoiceSeries;
     private readonly List<InvoiceSale> _invoiceSales;
@@ -16,7 +17,7 @@ public class ConsultarValidezComprobante
     /// <param name="invoiceSeries">Series de Facturación</param>
     /// <param name="invoiceSales">Boletas/Facturas</param>
     /// <param name="creditNotes">Notas de Crédito</param>
-    public ConsultarValidezComprobante(List<InvoiceSerie> invoiceSeries,
+    public GenerarArchivoValidezComprobante(List<InvoiceSerie> invoiceSeries,
         List<InvoiceSale> invoiceSales, List<CreditNote> creditNotes)
     {
         _invoiceSeries = invoiceSeries;
@@ -108,12 +109,24 @@ public class ConsultarValidezComprobante
         int numeroDeGrupo = 1;
         foreach (var grupo in gruposDeComprobantes)
         {
+            var numberFormatInfo = new CultureInfo("en-US", false).NumberFormat;
+            numberFormatInfo.NumberGroupSeparator = string.Empty;
             string nombreDeArchivo = $"{type}_{serie}_{numeroDeGrupo}.txt";
             string pathArchivoPlano = Path.Combine(pathComprobante, nombreDeArchivo);
             using StreamWriter streamWriter = new StreamWriter(pathArchivoPlano);
             foreach (var comprobante in grupo)
-                streamWriter.WriteLine(
-                    $"{rucEmisor}|{docType}|{comprobante.Serie}|{comprobante.Number}|{comprobante.FecEmision}|{comprobante.SumImpVenta}");
+            {
+                DateTime date = DateTime.Parse(comprobante.FecEmision);
+                string fecEmision = date.ToString("dd/MM/yyyy");
+                string sumImpVenta = comprobante.SumImpVenta.ToString("N2", numberFormatInfo);
+                if (comprobante == grupo.Last())
+                    streamWriter.Write(
+                        $"{rucEmisor}|{docType}|{comprobante.Serie}|{comprobante.Number}|{fecEmision}|{sumImpVenta}");
+                else
+                    streamWriter.WriteLine(
+                        $"{rucEmisor}|{docType}|{comprobante.Serie}|{comprobante.Number}|{fecEmision}|{sumImpVenta}");
+            }
+
             numeroDeGrupo++;
         }
     }
@@ -136,12 +149,24 @@ public class ConsultarValidezComprobante
         int numeroDeGrupo = 1;
         foreach (var grupo in gruposDeComprobantes)
         {
+            var numberFormatInfo = new CultureInfo("en-US", false).NumberFormat;
+            numberFormatInfo.NumberGroupSeparator = string.Empty;
             string nombreDeArchivo = $"notas_crédito_{serie}_{numeroDeGrupo}.txt";
             string pathArchivoPlano = Path.Combine(pathComprobante, nombreDeArchivo);
             using StreamWriter streamWriter = new StreamWriter(pathArchivoPlano);
             foreach (var comprobante in grupo)
-                streamWriter.WriteLine(
-                    $"{rucEmisor}|07|{comprobante.Serie}|{comprobante.Number}|{comprobante.FecEmision}|{comprobante.SumImpVenta}");
+            {
+                DateTime date = DateTime.Parse(comprobante.FecEmision);
+                string fecEmision = date.ToString("dd/MM/yyyy");
+                string sumImpVenta = comprobante.SumImpVenta.ToString("N2", numberFormatInfo);
+                if (comprobante == grupo.Last())
+                    streamWriter.Write(
+                        $"{rucEmisor}|07|{comprobante.Serie}|{comprobante.Number}|{fecEmision}|{sumImpVenta}");
+                else
+                    streamWriter.WriteLine(
+                        $"{rucEmisor}|07|{comprobante.Serie}|{comprobante.Number}|{fecEmision}|{sumImpVenta}");
+            }
+
             numeroDeGrupo++;
         }
     }
