@@ -3,6 +3,7 @@ using Nebula.Database.Models.Sales;
 using Nebula.Database.Services.Common;
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Helpers;
+using Nebula.Database.Models;
 
 namespace Nebula.Database.Services.Sales;
 
@@ -14,11 +15,12 @@ public class ComprobanteService
     private readonly TributoSaleService _tributoSaleService;
     private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
     private readonly DetallePagoSaleService _detallePagoSaleService;
+    private readonly ReceivableService _receivableService;
 
     public ComprobanteService(ConfigurationService configurationService,
         InvoiceSaleService invoiceSaleService, InvoiceSaleDetailService invoiceSaleDetailService,
         TributoSaleService tributoSaleService, CrudOperationService<InvoiceSerie> invoiceSerieService,
-        DetallePagoSaleService detallePagoSaleService)
+        DetallePagoSaleService detallePagoSaleService, ReceivableService receivableService)
     {
         _configurationService = configurationService;
         _invoiceSaleService = invoiceSaleService;
@@ -26,6 +28,7 @@ public class ComprobanteService
         _tributoSaleService = tributoSaleService;
         _invoiceSerieService = invoiceSerieService;
         _detallePagoSaleService = detallePagoSaleService;
+        _receivableService = receivableService;
     }
 
     /// <summary>
@@ -36,7 +39,10 @@ public class ComprobanteService
     /// <summary>
     /// cargar modelo de datos al servicio.
     /// </summary>
-    public void SetComprobanteDto(ComprobanteDto dto) { comprobanteDto = dto; }
+    public void SetComprobanteDto(ComprobanteDto dto)
+    {
+        comprobanteDto = dto;
+    }
 
     public async Task<InvoiceSale> SaveChangesAsync()
     {
@@ -68,8 +74,38 @@ public class ComprobanteService
                 var detallePagos = comprobanteDto.GetDetallePagos(invoiceSale.Id);
                 if (detallePagos.Count() > 0) await _detallePagoSaleService.InsertManyAsync(detallePagos);
             }
+
+            // registrar cargo.
+            Receivable cargo = GenerarCargo(invoiceSale);
+            await _receivableService.CreateAsync(cargo);
         }
 
         return invoiceSale;
+    }
+
+    /// <summary>
+    /// Generar Cargo comprobante a crédito.
+    /// </summary>
+    /// <param name="invoiceSale">Comprobante</param>
+    /// <returns>Cargo</returns>
+    private Receivable GenerarCargo(InvoiceSale invoiceSale)
+    {
+        return new Receivable()
+        {
+            Type = "CARGO",
+            ContactId = comprobanteDto.Cabecera.ContactId,
+            ContactName = comprobanteDto.Cabecera.RznSocialUsuario,
+            Remark = comprobanteDto.Cabecera.Remark,
+            InvoiceSale = invoiceSale.Id,
+            DocType = invoiceSale.DocType,
+            Document = $"{invoiceSale.Serie}-{invoiceSale.Number}",
+            FormaPago = "-",
+            Cargo = invoiceSale.SumImpVenta,
+            Status = "PENDIENTE",
+            CreatedAt = DateTime.Now.ToString("yyyy-MM-dd"),
+            EndDate = comprobanteDto.Cabecera.FecVencimiento,
+            Year = DateTime.Now.ToString("yyyy"),
+            Month = DateTime.Now.ToString("MM"),
+        };
     }
 }
