@@ -23,4 +23,10 @@
     <Folder Include="Common" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\Nebula.Core\Nebula.Core.csproj" />
+    <ProjectReference Include="..\..\Libraries\Nebula.Data\Nebula.Data.csproj" />
+    <ProjectReference Include="..\..\Libraries\Nebula.Services\Nebula.Services.csproj" />
+  </ItemGroup>
+
 </Project>
