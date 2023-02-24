@@ -13,23 +13,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentatio
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7EC14AFA-7BFE-4888-8290-33E2833FF8DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.Core", "src\Libraries\Nebula.Core\Nebula.Core.csproj", "{5F3EF7A8-9448-4968-8EFC-2650597F5D54}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nebula.Core", "src\Libraries\Nebula.Core\Nebula.Core.csproj", "{5F3EF7A8-9448-4968-8EFC-2650597F5D54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.Data", "src\Libraries\Nebula.Data\Nebula.Data.csproj", "{2A42D7CE-1CB5-4575-8D50-963D3E2B25FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nebula.Data", "src\Libraries\Nebula.Data\Nebula.Data.csproj", "{2A42D7CE-1CB5-4575-8D50-963D3E2B25FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.Services", "src\Libraries\Nebula.Services\Nebula.Services.csproj", "{560675AC-FDA9-4314-BD64-DD662D1C3097}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nebula.Services", "src\Libraries\Nebula.Services\Nebula.Services.csproj", "{560675AC-FDA9-4314-BD64-DD662D1C3097}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.Facturador", "src\Plugins\Nebula.Facturador\Nebula.Facturador.csproj", "{35234D9B-F462-48D0-8CCD-ABA64F2ECDAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nebula.Facturador", "src\Plugins\Nebula.Facturador\Nebula.Facturador.csproj", "{35234D9B-F462-48D0-8CCD-ABA64F2ECDAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.Api", "src\Presentation\Nebula.Api\Nebula.Api.csproj", "{C5EA309C-FFB2-4A04-BAD0-3F10F5C2B2ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nebula.Api", "src\Presentation\Nebula.Api\Nebula.Api.csproj", "{C5EA309C-FFB2-4A04-BAD0-3F10F5C2B2ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.Core.Tests", "src\Tests\Nebula.Core.Tests\Nebula.Core.Tests.csproj", "{8F4C676F-8C91-42CC-8049-7E8E7706A8D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nebula.Core.Tests", "src\Tests\Nebula.Core.Tests\Nebula.Core.Tests.csproj", "{8F4C676F-8C91-42CC-8049-7E8E7706A8D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.Data.Tests", "src\Tests\Nebula.Data.Tests\Nebula.Data.Tests.csproj", "{487CFB2F-39AD-4B67-B4AC-3301CBD71D60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nebula.Services.Tests", "src\Tests\Nebula.Services.Tests\Nebula.Services.Tests.csproj", "{62D5B3C6-5137-4005-99DE-9CF2ADB109DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.Services.Tests", "src\Tests\Nebula.Services.Tests\Nebula.Services.Tests.csproj", "{62D5B3C6-5137-4005-99DE-9CF2ADB109DA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nebula.Facturador.Tests", "src\Tests\Nebula.Facturador.Tests\Nebula.Facturador.Tests.csproj", "{DEFD6F48-B3F9-41A0-9CE2-C23919CFE531}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nebula.Facturador.Tests", "src\Tests\Nebula.Facturador.Tests\Nebula.Facturador.Tests.csproj", "{DEFD6F48-B3F9-41A0-9CE2-C23919CFE531}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nebula", "src\Presentation\Nebula\Nebula.csproj", "{59D529A6-6486-46CE-9871-B9153B98DFC3}"
 EndProject
@@ -63,10 +61,6 @@ Global
 		{8F4C676F-8C91-42CC-8049-7E8E7706A8D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F4C676F-8C91-42CC-8049-7E8E7706A8D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F4C676F-8C91-42CC-8049-7E8E7706A8D9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{487CFB2F-39AD-4B67-B4AC-3301CBD71D60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{487CFB2F-39AD-4B67-B4AC-3301CBD71D60}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{487CFB2F-39AD-4B67-B4AC-3301CBD71D60}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{487CFB2F-39AD-4B67-B4AC-3301CBD71D60}.Release|Any CPU.Build.0 = Release|Any CPU
 		{62D5B3C6-5137-4005-99DE-9CF2ADB109DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{62D5B3C6-5137-4005-99DE-9CF2ADB109DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62D5B3C6-5137-4005-99DE-9CF2ADB109DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -94,7 +88,6 @@ Global
 		{35234D9B-F462-48D0-8CCD-ABA64F2ECDAC} = {05EAA59D-99D2-4ADB-928F-0A3F27076BF3}
 		{C5EA309C-FFB2-4A04-BAD0-3F10F5C2B2ED} = {C9639CF3-40D0-4EF4-8B2B-3B76F3AC6F1F}
 		{8F4C676F-8C91-42CC-8049-7E8E7706A8D9} = {7EC14AFA-7BFE-4888-8290-33E2833FF8DF}
-		{487CFB2F-39AD-4B67-B4AC-3301CBD71D60} = {7EC14AFA-7BFE-4888-8290-33E2833FF8DF}
 		{62D5B3C6-5137-4005-99DE-9CF2ADB109DA} = {7EC14AFA-7BFE-4888-8290-33E2833FF8DF}
 		{DEFD6F48-B3F9-41A0-9CE2-C23919CFE531} = {7EC14AFA-7BFE-4888-8290-33E2833FF8DF}
 		{59D529A6-6486-46CE-9871-B9153B98DFC3} = {C9639CF3-40D0-4EF4-8B2B-3B76F3AC6F1F}
