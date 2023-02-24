@@ -3,6 +3,9 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Nebula.Data.Inventario.Material;
 
+/// <summary>
+/// Detalle - Item salida de materiales.
+/// </summary>
 [BsonIgnoreExtraElements]
 public class MaterialDetail : IGenericDocument
 {

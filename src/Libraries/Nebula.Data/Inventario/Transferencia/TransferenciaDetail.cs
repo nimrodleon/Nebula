@@ -3,6 +3,9 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Nebula.Data.Inventario.Transferencia;
 
+/// <summary>
+/// Detalle - Item de la Transferencia entre almacenes.
+/// </summary>
 [BsonIgnoreExtraElements]
 public class TransferenciaDetail : IGenericDocument
 {

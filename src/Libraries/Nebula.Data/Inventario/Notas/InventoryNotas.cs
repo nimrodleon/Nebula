@@ -4,6 +4,9 @@ using Nebula.Core.Constants;
 
 namespace Nebula.Data.Inventario.Notas;
 
+/// <summary>
+/// Notas de Entrada|Salida.
+/// </summary>
 [BsonIgnoreExtraElements]
 public class InventoryNotas : IGenericDocument
 {

@@ -4,6 +4,9 @@ using Nebula.Core.Constants;
 
 namespace Nebula.Data.Inventario.Material;
 
+/// <summary>
+/// Salida de materiales - del almacén.
+/// </summary>
 [BsonIgnoreExtraElements]
 public class Material : IGenericDocument
 {

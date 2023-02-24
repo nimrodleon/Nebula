@@ -3,6 +3,9 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Nebula.Data.Inventario.Notas;
 
+/// <summary>
+/// Detalle - Item de la nota de entrada|salida.
+/// </summary>
 [BsonIgnoreExtraElements]
 public class InventoryNotasDetail : IGenericDocument
 {

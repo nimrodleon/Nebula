@@ -4,6 +4,9 @@ using Nebula.Core.Constants;
 
 namespace Nebula.Data.Inventario.Transferencia;
 
+/// <summary>
+/// Transferencia entre almacenes.
+/// </summary>
 [BsonIgnoreExtraElements]
 public class Transferencia : IGenericDocument
 {

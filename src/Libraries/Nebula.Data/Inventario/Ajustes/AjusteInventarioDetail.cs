@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace Nebula.Data.Inventario.Ajustes;
 
 /// <summary>
-/// Detalle - Item del ajuste de inventario.
+/// Items de los productos reinicializados por el ajuste de inventario.
 /// </summary>
 [BsonIgnoreExtraElements]
 public class AjusteInventarioDetail : IGenericDocument

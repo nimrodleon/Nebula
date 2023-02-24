@@ -4,6 +4,9 @@ using Nebula.Core.Constants;
 
 namespace Nebula.Data.Inventario.Ajustes;
 
+/// <summary>
+/// Inicializa los contadores de una ubicación.
+/// </summary>
 [BsonIgnoreExtraElements]
 public class AjusteInventario : IGenericDocument
 {

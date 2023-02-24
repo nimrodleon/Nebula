@@ -3,6 +3,9 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Nebula.Data.Inventario.Location;
 
+/// <summary>
+/// Configura las Ubicaciones de los almacenes.
+/// </summary>
 [BsonIgnoreExtraElements]
 public class Location : IGenericDocument
 {
