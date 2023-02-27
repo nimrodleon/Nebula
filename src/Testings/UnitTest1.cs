@@ -1,4 +1,4 @@
-namespace Nebula.Core.Tests;
+namespace Testings;
 
 [TestClass]
 public class UnitTest1
