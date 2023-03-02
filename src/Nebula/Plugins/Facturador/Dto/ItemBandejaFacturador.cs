@@ -2,15 +2,15 @@
 
 public class ItemBandejaFacturador
 {
-    public string NumRuc { get; set; } = string.Empty;
-    public string TipDocu { get; set; } = string.Empty;
-    public string NumDocu { get; set; } = string.Empty;
-    public string FecCarg { get; set; } = string.Empty;
-    public string FecGene { get; set; } = string.Empty;
-    public string FecEnvi { get; set; } = string.Empty;
-    public string DesObse { get; set; } = string.Empty;
-    public string NomArch { get; set; } = string.Empty;
-    public string IndSitu { get; set; } = string.Empty;
-    public string TipArch { get; set; } = string.Empty;
-    public string FirmDigital { get; set; } = string.Empty;
+    public string num_ruc { get; set; } = string.Empty;
+    public string tip_docu { get; set; } = string.Empty;
+    public string num_docu { get; set; } = string.Empty;
+    public string fec_carg { get; set; } = string.Empty;
+    public string fec_gene { get; set; } = string.Empty;
+    public string fec_envi { get; set; } = string.Empty;
+    public string des_obse { get; set; } = string.Empty;
+    public string nom_arch { get; set; } = string.Empty;
+    public string ind_situ { get; set; } = string.Empty;
+    public string tip_arch { get; set; } = string.Empty;
+    public string firm_digital { get; set; } = string.Empty;
 }

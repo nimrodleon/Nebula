@@ -2,6 +2,6 @@
 
 public class ItemSituacionFacturador
 {
-    public string Id { get; set; } = string.Empty;
-    public string Nombre { get; set; } = string.Empty;
+    public string id { get; set; } = string.Empty;
+    public string nombre { get; set; } = string.Empty;
 }

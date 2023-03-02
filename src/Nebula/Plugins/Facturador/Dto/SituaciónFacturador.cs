@@ -18,18 +18,18 @@ public class SituaciónFacturador
     {
         ListaDeSituacionesFacturador = new List<ItemSituacionFacturador>()
         {
-            new ItemSituacionFacturador() { Id = "01", Nombre = "Por Generar XML" },
-            new ItemSituacionFacturador() { Id = "02", Nombre = "XML Generado" },
-            new ItemSituacionFacturador() { Id = "03", Nombre = "Enviado y Aceptado SUNAT" },
-            new ItemSituacionFacturador() { Id = "04", Nombre = "Enviado y Aceptado SUNAT con Obs." },
-            new ItemSituacionFacturador() { Id = "05", Nombre = "Rechazado por SUNAT" },
-            new ItemSituacionFacturador() { Id = "06", Nombre = "Con Errores" },
-            new ItemSituacionFacturador() { Id = "07", Nombre = "Por Validar XML" },
-            new ItemSituacionFacturador() { Id = "08", Nombre = "Enviado a SUNAT Por Procesar" },
-            new ItemSituacionFacturador() { Id = "09", Nombre = "Enviado a SUNAT Procesando" },
-            new ItemSituacionFacturador() { Id = "10", Nombre = "Rechazado por SUNAT" },
-            new ItemSituacionFacturador() { Id = "11", Nombre = "Enviado y Aceptado SUNAT" },
-            new ItemSituacionFacturador() { Id = "12", Nombre = "Enviado y Aceptado SUNAT con Obs." }
+            new ItemSituacionFacturador() { id = "01", nombre = "Por Generar XML" },
+            new ItemSituacionFacturador() { id = "02", nombre = "XML Generado" },
+            new ItemSituacionFacturador() { id = "03", nombre = "Enviado y Aceptado SUNAT" },
+            new ItemSituacionFacturador() { id = "04", nombre = "Enviado y Aceptado SUNAT con Obs." },
+            new ItemSituacionFacturador() { id = "05", nombre = "Rechazado por SUNAT" },
+            new ItemSituacionFacturador() { id = "06", nombre = "Con Errores" },
+            new ItemSituacionFacturador() { id = "07", nombre = "Por Validar XML" },
+            new ItemSituacionFacturador() { id = "08", nombre = "Enviado a SUNAT Por Procesar" },
+            new ItemSituacionFacturador() { id = "09", nombre = "Enviado a SUNAT Procesando" },
+            new ItemSituacionFacturador() { id = "10", nombre = "Rechazado por SUNAT" },
+            new ItemSituacionFacturador() { id = "11", nombre = "Enviado y Aceptado SUNAT" },
+            new ItemSituacionFacturador() { id = "12", nombre = "Enviado y Aceptado SUNAT con Obs." }
         };
     }
 
@@ -40,6 +40,6 @@ public class SituaciónFacturador
     /// <returns>ItemSituaciónFacturador|null</returns>
     public ItemSituacionFacturador? GetItemSituaciónFacturador(string id)
     {
-        return ListaDeSituacionesFacturador.FirstOrDefault(x => x.Id == id);
+        return ListaDeSituacionesFacturador.FirstOrDefault(x => x.id == id);
     }
 }

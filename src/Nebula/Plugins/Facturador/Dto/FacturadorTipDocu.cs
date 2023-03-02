@@ -2,7 +2,7 @@
 
 public class FacturadorTipDocu
 {
-    public string NumRuc { get; set; } = string.Empty;
-    public string TipDocu { get; set; } = string.Empty;
-    public string NumDocu { get; set; } = string.Empty;
+    public string num_ruc { get; set; } = string.Empty;
+    public string tip_docu { get; set; } = string.Empty;
+    public string num_docu { get; set; } = string.Empty;
 }

@@ -2,13 +2,13 @@
 
 public class BandejaFacturador
 {
-    public string Validacion { get; set; } = string.Empty;
-    public string Mensaje { get; set; } = string.Empty;
+    public string validacion { get; set; } = string.Empty;
+    public string mensaje { get; set; } = string.Empty;
 
     /// <summary>
     /// Lista de comprobantes del facturador.
     /// </summary>
-    public List<ItemBandejaFacturador> ListaBandejaFacturador { get; set; } = new List<ItemBandejaFacturador>();
+    public List<ItemBandejaFacturador> listaBandejaFacturador { get; set; } = new List<ItemBandejaFacturador>();
 
     /// <summary>
     /// Obtener un Item de la ListaBandejaFacturador.
@@ -17,6 +17,6 @@ public class BandejaFacturador
     /// <returns>ItemBandejaFacturador|null</returns>
     public ItemBandejaFacturador? GetItemBandejaFacturador(string nomArch)
     {
-        return ListaBandejaFacturador.FirstOrDefault(x => x.NomArch == nomArch);
+        return listaBandejaFacturador.FirstOrDefault(x => x.nom_arch == nomArch);
     }
 }
