@@ -11,6 +11,7 @@ using Nebula.Database.Services.Common;
 using Nebula.Database.Services.Facturador;
 using Nebula.Database.Services.Inventory;
 using Nebula.Database.Services.Sales;
+using Nebula.Plugins.Facturador;
 
 var builder = WebApplication.CreateBuilder(args);
 var secretKey = Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("SecretKey"));
@@ -41,7 +42,9 @@ builder.Services.AddCors(options =>
 });
 
 // Add services to the container.
+// AddSingleton => crea una única instancia para toda la aplicación.
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
+builder.Services.AddSingleton<HttpRequestFacturadorService>();
 builder.Services.AddSingleton(typeof(CrudOperationService<>));
 builder.Services.AddSingleton<ReceivableService>();
 builder.Services.AddSingleton<ConfigurationService>();
