@@ -70,4 +70,21 @@ public class HttpRequestFacturadorService
         _logger.LogInformation($"GenerarComprobante - {JsonSerializer.Serialize(deserializeData)}");
         return deserializeData;
     }
+
+    /// <summary>
+    /// Envía el comprobante a la SUNAT.
+    /// </summary>
+    /// <param name="tipDocu">FacturadorTipDocu</param>
+    /// <returns>BandejaFacturador|null</returns>
+    public async Task<BandejaFacturador?> EnviarXml(FacturadorTipDocu tipDocu)
+    {
+        var data = JsonSerializer.Serialize(tipDocu);
+        _logger.LogInformation($"Parámetro del Método - {data}");
+        HttpContent content = new StringContent(data, Encoding.UTF8, "application/json");
+        var httpResponse = await _httpClient.PostAsync($"{_facturadorUrl}/api/enviarXML.htm", content);
+        var result = await httpResponse.Content.ReadAsStringAsync();
+        var deserializeData = JsonSerializer.Deserialize<BandejaFacturador>(result);
+        _logger.LogInformation($"EnviarXml - {JsonSerializer.Serialize(deserializeData)}");
+        return deserializeData;
+    }
 }
