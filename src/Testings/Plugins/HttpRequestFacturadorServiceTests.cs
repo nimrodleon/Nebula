@@ -6,6 +6,10 @@ using Moq;
 
 namespace Testings.Plugins;
 
+/// <summary>
+/// Para esta prueba debe existir al menos
+/// un archivo en la carpeta DATA del facturador.
+/// </summary>
 [TestClass]
 public class HttpRequestFacturadorServiceTests
 {
@@ -22,9 +26,6 @@ public class HttpRequestFacturadorServiceTests
         _loggerMock = new Mock<ILogger<HttpRequestFacturadorService>>();
     }
 
-    /// <summary>
-    /// Para esta prueba debe existir al menos un archivo en la carpeta DATA del facturador.
-    /// </summary>
     [TestMethod]
     public async Task ActualizarPantalla_ShouldReturn_BandejaFacturador()
     {
@@ -34,5 +35,14 @@ public class HttpRequestFacturadorServiceTests
         Assert.IsInstanceOfType(result, typeof(BandejaFacturador));
         Assert.AreEqual("EXITO", result.validacion);
         Assert.IsTrue(result.listaBandejaFacturador.Count > 0);
+    }
+
+    [TestMethod]
+    public async Task EliminarBandeja_ShouldReturn_BandejaFacturador()
+    {
+        var httpRequestFacturadorService = new HttpRequestFacturadorService(_configuration, _loggerMock.Object);
+        var result = await httpRequestFacturadorService.EliminarBandeja();
+        Assert.IsNotNull(result);
+        Assert.AreEqual("EXITO", result.validacion);
     }
 }
