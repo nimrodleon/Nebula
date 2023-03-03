@@ -44,8 +44,14 @@ builder.Services.AddCors(options =>
 // Add services to the container.
 // AddSingleton => crea una única instancia para toda la aplicación.
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
-builder.Services.AddSingleton<HttpRequestFacturadorService>();
 builder.Services.AddSingleton(typeof(CrudOperationService<>));
+
+#region FacturadorSUNAT
+
+builder.Services.AddSingleton<HttpRequestFacturadorService>();
+
+#endregion
+
 builder.Services.AddSingleton<ReceivableService>();
 builder.Services.AddSingleton<ConfigurationService>();
 builder.Services.AddSingleton<ProductService>();
