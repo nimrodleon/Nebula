@@ -74,4 +74,13 @@ public class HttpRequestFacturadorServiceTests
         Assert.AreEqual("EXITO", result.validacion);
         Assert.IsTrue(result.listaBandejaFacturador.Count > 0);
     }
+
+    [TestMethod]
+    public async Task CrearPdfComprobanteElectrónico()
+    {
+        var httpRequestFacturadorService = new HttpRequestFacturadorService(_configuration, _loggerMock.Object);
+        var result = await httpRequestFacturadorService.MostrarXml(_facturadorTipDocu);
+        Assert.IsInstanceOfType(result, typeof(bool));
+        Assert.AreEqual(true, result);
+    }
 }

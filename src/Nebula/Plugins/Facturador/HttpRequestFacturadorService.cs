@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Net;
+using System.Text;
 using System.Text.Json;
 using Nebula.Plugins.Facturador.Dto;
 
@@ -86,5 +87,21 @@ public class HttpRequestFacturadorService
         var deserializeData = JsonSerializer.Deserialize<BandejaFacturador>(result);
         _logger.LogInformation($"EnviarXml - {JsonSerializer.Serialize(deserializeData)}");
         return deserializeData;
+    }
+
+    /// <summary>
+    /// Genera el comprobante electrónico en Pdf.
+    /// </summary>
+    /// <param name="tipDocu">FacturadorTipDocu</param>
+    /// <returns>True|False</returns>
+    public async Task<bool> MostrarXml(FacturadorTipDocu tipDocu)
+    {
+        // formar la cadena: 20520485750-03-B002-00000122
+        string nomArch = $"{tipDocu.num_ruc}-{tipDocu.tip_docu}-{tipDocu.num_docu}";
+        var data = JsonSerializer.Serialize(new { nomArch });
+        _logger.LogInformation($"Parámetro del Método - {data}");
+        HttpContent content = new StringContent(data, Encoding.UTF8, "application/json");
+        var httpResponse = await _httpClient.PostAsync($"{_facturadorUrl}/api/MostrarXml.htm", content);
+        return httpResponse.StatusCode == HttpStatusCode.Created;
     }
 }
