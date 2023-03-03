@@ -4,6 +4,9 @@ using Nebula.Plugins.Facturador.Dto;
 
 namespace Nebula.Plugins.Facturador;
 
+/// <summary>
+/// ApiREST para manejar el Facturador SUNAT.
+/// </summary>
 public class HttpRequestFacturadorService
 {
     private readonly string? _facturadorUrl;
@@ -32,6 +35,8 @@ public class HttpRequestFacturadorService
         HttpContent content = new StringContent(data, Encoding.UTF8, "application/json");
         var httpResponse = await _httpClient.PostAsync($"{_facturadorUrl}/api/ActualizarPantalla.htm", content);
         var result = await httpResponse.Content.ReadAsStringAsync();
-        return JsonSerializer.Deserialize<BandejaFacturador>(result);
+        var deserializeData = JsonSerializer.Deserialize<BandejaFacturador>(result);
+        _logger.LogInformation($"ActualizarPantalla - {JsonSerializer.Serialize(deserializeData)}");
+        return deserializeData;
     }
 }
