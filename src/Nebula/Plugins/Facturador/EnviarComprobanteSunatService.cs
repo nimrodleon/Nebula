@@ -1,7 +1,7 @@
 ﻿namespace Nebula.Plugins.Facturador;
 
 /// <summary>
-/// Envia Comprobantes a SUNAT, cada 2 minutos.
+/// Envía Comprobantes a SUNAT, cada 2 minutos.
 /// </summary>
 public class EnviarComprobanteSunatService : IHostedService
 {
