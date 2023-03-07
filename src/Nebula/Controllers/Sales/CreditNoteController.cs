@@ -63,6 +63,18 @@ public class CreditNoteController : ControllerBase
         return Ok(creditNote);
     }
 
+    /// <summary>
+    /// Datos de Impresión Nota de Crédito.
+    /// </summary>
+    /// <param name="creditNoteId">Identificador de la Nota de crédito</param>
+    /// <returns>JSON[PrintCreditNoteDto]</returns>
+    [HttpGet("Print/{creditNoteId}")]
+    public async Task<IActionResult> Print(string creditNoteId)
+    {
+        var printCreditNoteDto = await _creditNoteService.GetPrintCreditNoteDto(creditNoteId);
+        return Ok(printCreditNoteDto);
+    }
+
     [AllowAnonymous]
     [HttpGet("GetPdf/{id}")]
     public async Task<IActionResult> GetPdf(string id)
