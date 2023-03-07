@@ -2,13 +2,17 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Database.Dto.Common;
 using Nebula.Database.Dto.Sales;
+using Nebula.Database.Helpers;
 using Nebula.Database.Models.Common;
 using Nebula.Database.Models.Sales;
+using Nebula.Database.Services.Common;
 
 namespace Nebula.Database.Services.Sales;
 
 public class CreditNoteService : CrudOperationService<CreditNote>
 {
+    private readonly IConfiguration _configuration;
+    private readonly ConfigurationService _configurationService;
     private readonly InvoiceSaleService _invoiceSaleService;
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly TributoSaleService _tributoSaleService;
@@ -19,12 +23,18 @@ public class CreditNoteService : CrudOperationService<CreditNote>
     private readonly CreditNoteDetailService _creditNoteDetailService;
     private readonly TributoCreditNoteService _tributoCreditNoteService;
 
-    public CreditNoteService(IOptions<DatabaseSettings> options, InvoiceSaleService invoiceSaleService,
-        InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService,
+    public CreditNoteService(IOptions<DatabaseSettings> options,
+        IConfiguration configuration,
+        ConfigurationService configurationService,
+        InvoiceSaleService invoiceSaleService,
+        InvoiceSaleDetailService invoiceSaleDetailService,
+        TributoSaleService tributoSaleService,
         CrudOperationService<InvoiceSerie> invoiceSerieService,
         CreditNoteDetailService creditNoteDetailService,
         TributoCreditNoteService tributoCreditNoteService) : base(options)
     {
+        _configurationService = configurationService;
+        _configuration = configuration;
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _tributoSaleService = tributoSaleService;
@@ -78,6 +88,11 @@ public class CreditNoteService : CrudOperationService<CreditNote>
         return creditNote;
     }
 
+    /// <summary>
+    /// Retorna los datos completos de una Nota de crédito.
+    /// </summary>
+    /// <param name="id">Identificador Nota de Crédito</param>
+    /// <returns>CreditNoteDto</returns>
     public async Task<CreditNoteDto> GetCreditNoteDtoAsync(string id)
     {
         var creditNote = await GetByIdAsync(id);
@@ -226,5 +241,53 @@ public class CreditNoteService : CrudOperationService<CreditNote>
         }
 
         creditNote.Number = numComprobante.ToString("D8");
+    }
+
+    /// <summary>
+    /// Retorna datos de nota de crédito para Imprimir.
+    /// </summary>
+    /// <param name="creditNoteId">Identificador de la Nota de crédito</param>
+    /// <returns>PrintCreditNoteDto</returns>
+    public async Task<PrintCreditNoteDto> GetPrintCreditNoteDto(string creditNoteId)
+    {
+        // Cargar datos básicos.
+        var configuration = await _configurationService.GetAsync();
+        var creditNoteDto = await GetCreditNoteDtoAsync(creditNoteId);
+        var creditNote = creditNoteDto.CreditNote;
+        // configurar nombre de archivo XML.
+        // 20520485750-07-BC01-00000015
+        string nomArch = $"{configuration.Ruc}-07-{creditNote.Serie}-{creditNote.Number}.xml";
+        string pathXml = string.Empty;
+        var storagePath = _configuration.GetValue<string>("StoragePath");
+        // abrir en la ruta del facturador.
+        if (creditNote.DocumentPath == DocumentPathType.SFS)
+        {
+            string? sunatArchivos = _configuration.GetValue<string>("sunatArchivos");
+            if (sunatArchivos is null) sunatArchivos = string.Empty;
+            string carpetaArchivoSunat = Path.Combine(sunatArchivos, "sfs");
+            pathXml = Path.Combine(carpetaArchivoSunat, "FIRMA", nomArch);
+        }
+
+        // abrir en la ruta de la carpeta control.
+        if (creditNote.DocumentPath == DocumentPathType.CONTROL)
+        {
+            if (storagePath is null) storagePath = string.Empty;
+            string carpetaArchivoSunat = Path.Combine(storagePath, "sunat");
+            string carpetaRepo = Path.Combine(carpetaArchivoSunat, "FIRMA", creditNote.Year, creditNote.Month);
+            pathXml = Path.Combine(carpetaRepo, nomArch);
+        }
+
+        // establecer valores de retorno.
+        var printCreditNote = new PrintCreditNoteDto
+        {
+            Configuration = configuration,
+            CreditNote = creditNoteDto.CreditNote,
+            CreditNoteDetails = creditNoteDto.CreditNoteDetails,
+            TributosCreditNote = creditNoteDto.TributosCreditNote
+        };
+        LeerDigestValue digest = new LeerDigestValue();
+        printCreditNote.DigestValue = digest.GetValue(pathXml);
+        printCreditNote.TotalEnLetras = new NumberToLetters(creditNote.SumImpVenta).ToString();
+        return printCreditNote;
     }
 }
