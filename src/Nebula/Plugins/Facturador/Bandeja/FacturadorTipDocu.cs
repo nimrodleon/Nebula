@@ -1,4 +1,4 @@
-﻿namespace Nebula.Plugins.Facturador.Dto;
+﻿namespace Nebula.Plugins.Facturador.Bandeja;
 
 public class FacturadorTipDocu
 {

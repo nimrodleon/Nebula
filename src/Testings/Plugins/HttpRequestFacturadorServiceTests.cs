@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Nebula.Plugins.Facturador;
-using Nebula.Plugins.Facturador.Dto;
 using Moq;
+using Nebula.Plugins.Facturador.Bandeja;
 
 namespace Testings.Plugins;
 

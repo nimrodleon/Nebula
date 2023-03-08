@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Text;
 using System.Text.Json;
-using Nebula.Plugins.Facturador.Dto;
+using Nebula.Plugins.Facturador.Bandeja;
 
 namespace Nebula.Plugins.Facturador;
 
@@ -44,6 +44,7 @@ public class HttpRequestFacturadorService
     /// Elimina la Lista de comprobantes de la bandeja del facturador.
     /// </summary>
     /// <returns>BandejaFacturador|null</returns>
+    [Obsolete("Este método está obsoleto.")]
     public async Task<BandejaFacturador?> EliminarBandeja()
     {
         var data = JsonSerializer.Serialize(new { });
@@ -94,6 +95,7 @@ public class HttpRequestFacturadorService
     /// </summary>
     /// <param name="tipDocu">FacturadorTipDocu</param>
     /// <returns>True|False</returns>
+    [Obsolete("Este método está obsoleto.")]
     public async Task<bool> MostrarXml(FacturadorTipDocu tipDocu)
     {
         // formar la cadena: 20520485750-03-B002-00000122
