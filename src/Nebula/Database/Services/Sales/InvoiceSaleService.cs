@@ -5,6 +5,7 @@ using Nebula.Database.Dto.Common;
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Helpers;
 using Nebula.Database.Services.Common;
+using Nebula.Plugins.Facturador.XmlDigest;
 
 namespace Nebula.Database.Services.Sales;
 
@@ -167,7 +168,7 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>
                 ticket.InvoiceSaleDetails = responseInvoiceSale.InvoiceSaleDetails;
             if (responseInvoiceSale.TributoSales != null) ticket.TributoSales = responseInvoiceSale.TributoSales;
             LeerDigestValue digest = new LeerDigestValue();
-            if (invoice.DocType != "NOTA") ticket.DigestValue = digest.GetValue(pathXml);
+            if (invoice.DocType != "NOTA") ticket.DigestValue = digest.GetInvoiceXmlValue(pathXml);
             ticket.TotalEnLetras = new NumberToLetters(invoice.SumImpVenta).ToString();
         }
 

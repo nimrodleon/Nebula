@@ -6,6 +6,7 @@ using Nebula.Database.Helpers;
 using Nebula.Database.Models.Common;
 using Nebula.Database.Models.Sales;
 using Nebula.Database.Services.Common;
+using Nebula.Plugins.Facturador.XmlDigest;
 
 namespace Nebula.Database.Services.Sales;
 
@@ -286,7 +287,7 @@ public class CreditNoteService : CrudOperationService<CreditNote>
             TributosCreditNote = creditNoteDto.TributosCreditNote
         };
         LeerDigestValue digest = new LeerDigestValue();
-        printCreditNote.DigestValue = digest.GetValue(pathXml);
+        printCreditNote.DigestValue = digest.GetCreditNoteXmlValue(pathXml);
         printCreditNote.TotalEnLetras = new NumberToLetters(creditNote.SumImpVenta).ToString();
         return printCreditNote;
     }
