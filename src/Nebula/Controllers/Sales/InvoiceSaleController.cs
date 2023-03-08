@@ -158,6 +158,7 @@ public class InvoiceSaleController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet("GetPdf/{id}")]
+    [Obsolete("Este método está obsoleto.")]
     public async Task<IActionResult> GetPdf(string id)
     {
         var configuration = await _configurationService.GetAsync();
