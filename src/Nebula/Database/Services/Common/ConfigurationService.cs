@@ -46,9 +46,6 @@ public class ConfigurationService
         _configuration.ModoEnvioSunat = configuration.ModoEnvioSunat;
         _configuration.ContactId = configuration.ContactId;
         _configuration.DiasPlazo = configuration.DiasPlazo;
-        // Consulta de Validez de Comprobante de Pago - API SUNAT
-        _configuration.CdPClientId = configuration.CdPClientId.Trim();
-        _configuration.CdPClientSecret = configuration.CdPClientSecret.Trim();
         await _collection.ReplaceOneAsync(x => x.Id == "DEFAULT", _configuration);
         return _configuration;
     }
