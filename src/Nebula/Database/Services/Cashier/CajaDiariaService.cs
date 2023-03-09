@@ -7,14 +7,17 @@ namespace Nebula.Database.Services.Cashier;
 
 public class CajaDiariaService : CrudOperationService<CajaDiaria>
 {
-    public CajaDiariaService(IOptions<DatabaseSettings> options) : base(options) { }
+    public CajaDiariaService(IOptions<DatabaseSettings> options) : base(options)
+    {
+    }
 
     public async Task<List<CajaDiaria>> GetListAsync(DateQuery query)
     {
         var filter = Builders<CajaDiaria>.Filter.And(
             Builders<CajaDiaria>.Filter.Eq(x => x.Month, query.Month),
             Builders<CajaDiaria>.Filter.Eq(x => x.Year, query.Year));
-        return await _collection.Find(filter).SortByDescending(x => x.CreatedAt).ToListAsync();
+        return await _collection.Find(filter).Sort(new SortDefinitionBuilder<CajaDiaria>()
+            .Descending("$natural")).ToListAsync();
     }
 
     public async Task<List<CajaDiaria>> GetCajasAbiertasAsync()
