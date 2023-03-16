@@ -4,12 +4,12 @@ public static class FacturadorControl
 {
     public static void CrearDirectorioControl(string storagePath, string year, string month)
     {
-        string carpetaSunat = Path.Combine(storagePath, "sunat");
-        string carpetaData = Path.Combine(carpetaSunat, "DATA", year, month);
-        string carpetaEnvio = Path.Combine(carpetaSunat, "ENVIO", year, month);
-        string carpetaFirma = Path.Combine(carpetaSunat, "FIRMA", year, month);
-        string carpetaRpta = Path.Combine(carpetaSunat, "RPTA", year, month);
-        if (!Directory.Exists(carpetaSunat)) Directory.CreateDirectory(carpetaSunat);
+        string carpetaFacturador = Path.Combine(storagePath, "facturador");
+        string carpetaData = Path.Combine(carpetaFacturador, "DATA", year, month);
+        string carpetaEnvio = Path.Combine(carpetaFacturador, "ENVIO", year, month);
+        string carpetaFirma = Path.Combine(carpetaFacturador, "FIRMA", year, month);
+        string carpetaRpta = Path.Combine(carpetaFacturador, "RPTA", year, month);
+        if (!Directory.Exists(carpetaFacturador)) Directory.CreateDirectory(carpetaFacturador);
         if (!Directory.Exists(carpetaData)) Directory.CreateDirectory(carpetaData);
         if (!Directory.Exists(carpetaEnvio)) Directory.CreateDirectory(carpetaEnvio);
         if (!Directory.Exists(carpetaFirma)) Directory.CreateDirectory(carpetaFirma);
@@ -20,11 +20,11 @@ public static class FacturadorControl
         string month)
     {
         string carpetaSfs = Path.Combine(sunatArchivos, "sfs");
-        string carpetaSunat = Path.Combine(storagePath, "sunat");
-        string carpetaDestData = Path.Combine(carpetaSunat, "DATA", year, month);
-        string carpetaDestEnvio = Path.Combine(carpetaSunat, "ENVIO", year, month);
-        string carpetaDestFirma = Path.Combine(carpetaSunat, "FIRMA", year, month);
-        string carpetaDestRpta = Path.Combine(carpetaSunat, "RPTA", year, month);
+        string carpetaFacturador = Path.Combine(storagePath, "facturador");
+        string carpetaDestData = Path.Combine(carpetaFacturador, "DATA", year, month);
+        string carpetaDestEnvio = Path.Combine(carpetaFacturador, "ENVIO", year, month);
+        string carpetaDestFirma = Path.Combine(carpetaFacturador, "FIRMA", year, month);
+        string carpetaDestRpta = Path.Combine(carpetaFacturador, "RPTA", year, month);
         string archivoDataOrigen = Path.Combine(carpetaSfs, "DATA", $"{nomArch}.json");
         string archivoEnvioOrigen = Path.Combine(carpetaSfs, "ENVIO", $"{nomArch}.zip");
         string archivoFirmaOrigen = Path.Combine(carpetaSfs, "FIRMA", $"{nomArch}.xml");
