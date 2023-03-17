@@ -156,7 +156,7 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>
             if (invoice.DocumentPath == DocumentPathType.CONTROL)
             {
                 if (storagePath is null) storagePath = string.Empty;
-                string carpetaArchivoSunat = Path.Combine(storagePath, "sunat");
+                string carpetaArchivoSunat = Path.Combine(storagePath, "facturador");
                 string carpetaRepo = Path.Combine(carpetaArchivoSunat, "FIRMA", invoice.Year, invoice.Month);
                 pathXml = Path.Combine(carpetaRepo, nomArch);
             }

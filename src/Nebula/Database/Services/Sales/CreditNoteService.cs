@@ -273,7 +273,7 @@ public class CreditNoteService : CrudOperationService<CreditNote>
         if (creditNote.DocumentPath == DocumentPathType.CONTROL)
         {
             if (storagePath is null) storagePath = string.Empty;
-            string carpetaArchivoSunat = Path.Combine(storagePath, "sunat");
+            string carpetaArchivoSunat = Path.Combine(storagePath, "facturador");
             string carpetaRepo = Path.Combine(carpetaArchivoSunat, "FIRMA", creditNote.Year, creditNote.Month);
             pathXml = Path.Combine(carpetaRepo, nomArch);
         }
