@@ -44,10 +44,14 @@ public class ComprobanteDto
     public InvoiceSale GetInvoiceSale()
     {
         var importeVenta = CalcularImporteVenta();
+        string tipOperacion = String.Empty;
+        if (_configuration.CpeSunat == TypeSee.None) tipOperacion = "-";
+        if (_configuration.CpeSunat == TypeSee.Sfs) tipOperacion = "0101"; // Venta interna
+        if (_configuration.CpeSunat == TypeSee.Nrus) tipOperacion = "0113"; // Venta Interna - NRUS
         return new InvoiceSale
         {
             DocType = Cabecera.DocType,
-            TipOperacion = "0101",
+            TipOperacion = tipOperacion,
             FecEmision = DateTime.Now.ToString("yyyy-MM-dd"),
             HorEmision = DateTime.Now.ToString("HH:mm:ss"),
             FecVencimiento = Cabecera.FecVencimiento,
