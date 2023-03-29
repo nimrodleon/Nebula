@@ -1,9 +1,9 @@
 // creación del usuario admin
 db.User.insertOne({
-    userName: 'admin',
-    email: 'admin@local.pe',
-    passwordHash: 'AGIvkKeU4dv4D1SAoqgxmse5AicrGjmMAOqjRJe4xwuJ1UhS93ZMmiL6SjfUmVWvww==',
-    role: 'Admin'
+    UserName: 'admin',
+    Email: 'admin@local.pe',
+    PasswordHash: 'AGIvkKeU4dv4D1SAoqgxmse5AicrGjmMAOqjRJe4xwuJ1UhS93ZMmiL6SjfUmVWvww==',
+    Role: 'Admin'
 })
 
 // migraciones - v1.2.1
