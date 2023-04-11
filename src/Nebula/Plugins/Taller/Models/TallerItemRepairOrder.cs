@@ -12,4 +12,25 @@ public class TallerItemRepairOrder
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; } = string.Empty;
+
+    public string TallerRepairOrderId { get; set; } = string.Empty;
+
+    #region Datos Almacén
+
+    public string WarehouseId { get; set; } = string.Empty;
+    public string WarehouseName { get; set; } = string.Empty;
+
+    #endregion
+
+    public int Quantity { get; set; } = 0;
+    public decimal PrecioUnitario { get; set; } = 0;
+
+    #region Datos del Producto
+
+    public string ProductId { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
+
+    #endregion
+
+    public decimal Monto { get; set; } = 0;
 }
