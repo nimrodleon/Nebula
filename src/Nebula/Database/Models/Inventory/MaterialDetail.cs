@@ -4,7 +4,7 @@ using MongoDB.Bson;
 namespace Nebula.Database.Models.Inventory;
 
 [BsonIgnoreExtraElements]
-public class MaterialDetail : Generic
+public class MaterialDetail : IGeneric
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

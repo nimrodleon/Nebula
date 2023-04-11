@@ -5,7 +5,7 @@ using Nebula.Database.Models;
 
 namespace Nebula.Database.Services;
 
-public class CrudOperationService<T> where T : class, Generic
+public class CrudOperationService<T> where T : class, IGeneric
 {
     protected readonly MongoClient mongoClient;
     protected readonly IMongoCollection<T> _collection;

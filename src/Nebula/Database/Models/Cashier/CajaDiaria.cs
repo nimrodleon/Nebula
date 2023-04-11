@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace Nebula.Database.Models.Cashier;
 
 [BsonIgnoreExtraElements]
-public class CajaDiaria : Generic
+public class CajaDiaria : IGeneric
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

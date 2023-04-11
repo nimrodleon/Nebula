@@ -7,7 +7,7 @@ namespace Nebula.Database.Models.Sales;
 /// Detalles de la forma de pago al crédito.
 /// </summary>
 [BsonIgnoreExtraElements]
-public class DetallePagoSale : Generic
+public class DetallePagoSale : IGeneric
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

@@ -5,7 +5,7 @@ using Nebula.Database.Helpers;
 namespace Nebula.Database.Models.Common;
 
 [BsonIgnoreExtraElements]
-public class Product : Generic
+public class Product : IGeneric
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

@@ -1,17 +1,15 @@
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Nebula.Database.Models.Common;
+namespace Nebula.Plugins.Taller.Models;
 
 /// <summary>
-/// categoría de productos.
+/// Item de materiales usados en la orden de reparación.
 /// </summary>
 [BsonIgnoreExtraElements]
-public class Category : IGeneric
+public class TallerItemRepairOrder
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; } = string.Empty;
-
-    public string Name { get; set; } = string.Empty;
 }

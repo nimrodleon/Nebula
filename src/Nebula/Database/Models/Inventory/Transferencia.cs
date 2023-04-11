@@ -5,7 +5,7 @@ using Nebula.Database.Helpers;
 namespace Nebula.Database.Models.Inventory;
 
 [BsonIgnoreExtraElements]
-public class Transferencia : Generic
+public class Transferencia : IGeneric
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

@@ -7,7 +7,7 @@ namespace Nebula.Database.Models.Cashier;
 /// Detalle de caja diaria.
 /// </summary>
 [BsonIgnoreExtraElements]
-public class CashierDetail : Generic
+public class CashierDetail : IGeneric
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

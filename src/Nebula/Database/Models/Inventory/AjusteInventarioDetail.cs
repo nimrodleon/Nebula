@@ -4,7 +4,7 @@ using MongoDB.Bson;
 namespace Nebula.Database.Models.Inventory;
 
 [BsonIgnoreExtraElements]
-public class AjusteInventarioDetail : Generic
+public class AjusteInventarioDetail : IGeneric
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

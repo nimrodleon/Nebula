@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace Nebula.Database.Models.Common;
 
 [BsonIgnoreExtraElements]
-public class Contact : Generic
+public class Contact : IGeneric
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
