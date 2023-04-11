@@ -12,6 +12,7 @@ using Nebula.Database.Services.Facturador;
 using Nebula.Database.Services.Inventory;
 using Nebula.Database.Services.Sales;
 using Nebula.Plugins.Facturador;
+using Nebula.Plugins.Taller.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var secretKey = Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("SecretKey"));
@@ -82,6 +83,13 @@ builder.Services.AddSingleton<CreditNoteService>();
 builder.Services.AddSingleton<CreditNoteDetailService>();
 builder.Services.AddSingleton<TributoCreditNoteService>();
 builder.Services.AddSingleton<ConsultarValidezComprobanteService>();
+
+#region PluginTaller
+
+builder.Services.AddSingleton<TallerRepairOrderService>();
+builder.Services.AddSingleton<TallerItemRepairOrderService>();
+
+#endregion
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
