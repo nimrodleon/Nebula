@@ -18,6 +18,13 @@ public class RepairOrderController : ControllerBase
         _repairOrderService = repairOrderService;
     }
 
+    [HttpGet("Show/{id}")]
+    public async Task<IActionResult> Show(string id)
+    {
+        var repairOrder = await _repairOrderService.GetByIdAsync(id);
+        return Ok(repairOrder);
+    }
+
     [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] TallerRepairOrder model)
     {
