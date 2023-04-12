@@ -38,4 +38,13 @@ public class RepairOrderController : ControllerBase
         await _repairOrderService.CreateAsync(model);
         return Ok(model);
     }
+
+    [HttpPut("Update/{id}")]
+    public async Task<IActionResult> Update(string id, [FromBody] TallerRepairOrder model)
+    {
+        var repairOrder = await _repairOrderService.GetByIdAsync(id);
+        model.Id = repairOrder.Id;
+        repairOrder = await _repairOrderService.UpdateAsync(repairOrder.Id, model);
+        return Ok(repairOrder);
+    }
 }
