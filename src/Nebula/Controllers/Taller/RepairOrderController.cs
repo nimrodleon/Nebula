@@ -47,4 +47,12 @@ public class RepairOrderController : ControllerBase
         repairOrder = await _repairOrderService.UpdateAsync(repairOrder.Id, model);
         return Ok(repairOrder);
     }
+
+    [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
+    public async Task<IActionResult> Delete(string id)
+    {
+        var repairOrder = await _repairOrderService.GetByIdAsync(id);
+        await _repairOrderService.RemoveAsync(repairOrder.Id);
+        return Ok(repairOrder);
+    }
 }
