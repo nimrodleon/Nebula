@@ -18,6 +18,13 @@ public class RepairOrderController : ControllerBase
         _repairOrderService = repairOrderService;
     }
 
+    [HttpGet("Index")]
+    public async Task<IActionResult> Index([FromQuery] string? query)
+    {
+        var repairOrders = await _repairOrderService.GetAsync("NombreCliente", query);
+        return Ok(repairOrders);
+    }
+
     [HttpGet("Show/{id}")]
     public async Task<IActionResult> Show(string id)
     {
