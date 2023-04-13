@@ -21,7 +21,7 @@ public class RepairOrderController : ControllerBase
     [HttpGet("Index")]
     public async Task<IActionResult> Index([FromQuery] string? query)
     {
-        var repairOrders = await _repairOrderService.GetAsync("NombreCliente", query);
+        var repairOrders = await _repairOrderService.GetRepairOrders(query);
         return Ok(repairOrders);
     }
 
@@ -44,6 +44,12 @@ public class RepairOrderController : ControllerBase
     {
         var repairOrder = await _repairOrderService.GetByIdAsync(id);
         model.Id = repairOrder.Id;
+        model.CreatedAt = repairOrder.CreatedAt;
+        model.UpdatedAt = repairOrder.UpdatedAt;
+        model.Year = repairOrder.Year;
+        model.Month = repairOrder.Month;
+        if (repairOrder.Status != model.Status)
+            model.UpdatedAt = DateTime.Now.ToString("yyyy-MM-dd");
         repairOrder = await _repairOrderService.UpdateAsync(repairOrder.Id, model);
         return Ok(repairOrder);
     }

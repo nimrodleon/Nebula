@@ -41,4 +41,13 @@ public class TallerRepairOrder : IGeneric
     public string Status { get; set; } = TallerRepairOrderStatus.Pendiente;
     public string InvoiceSerieId { get; set; } = string.Empty;
     public decimal RepairAmount { get; set; } = 0;
+
+    #region FechasDeRegistros
+
+    public string CreatedAt { get; set; } = DateTime.Now.ToString("yyyy-MM-dd");
+    public string UpdatedAt { get; set; } = DateTime.Now.ToString("yyyy-MM-dd");
+    public string Year { get; set; } = DateTime.Now.ToString("yyyy");
+    public string Month { get; set; } = DateTime.Now.ToString("MM");
+
+    #endregion
 }
