@@ -70,4 +70,18 @@ public class TallerRepairOrderService : CrudOperationService<TallerRepairOrder>
             .Limit(limit).ToListAsync();
         return result;
     }
+
+    /// <summary>
+    /// Obtener datos para imprimir.
+    /// </summary>
+    /// <param name="id">Identificador de la Orden de servicio</param>
+    /// <returns>TallerRepairOrderTicket</returns>
+    public async Task<TallerRepairOrderTicket> GetTicket(string id)
+    {
+        var repairOrder = await GetByIdAsync(id);
+        return new TallerRepairOrderTicket()
+        {
+            RepairOrder = repairOrder
+        };
+    }
 }

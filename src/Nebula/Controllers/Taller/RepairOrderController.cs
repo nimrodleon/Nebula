@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.VisualBasic;
 using Nebula.Database.Dto.Common;
 using Nebula.Database.Helpers;
 using Nebula.Plugins.Taller.Models;
@@ -38,6 +39,13 @@ public class RepairOrderController : ControllerBase
     {
         var repairOrder = await _repairOrderService.GetByIdAsync(id);
         return Ok(repairOrder);
+    }
+
+    [HttpGet("GetTicket/{id}")]
+    public async Task<IActionResult> GetTicket(string id)
+    {
+        var ticket = await _repairOrderService.GetTicket(id);
+        return Ok(ticket);
     }
 
     [HttpPost("Create")]
