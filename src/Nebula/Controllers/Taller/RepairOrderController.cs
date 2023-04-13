@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Database.Dto.Common;
 using Nebula.Database.Helpers;
 using Nebula.Plugins.Taller.Models;
 using Nebula.Plugins.Taller.Services;
@@ -22,6 +23,13 @@ public class RepairOrderController : ControllerBase
     public async Task<IActionResult> Index([FromQuery] string? query)
     {
         var repairOrders = await _repairOrderService.GetRepairOrders(query);
+        return Ok(repairOrders);
+    }
+
+    [HttpGet("GetMonthlyReport")]
+    public async Task<IActionResult> GetMonthlyReport([FromQuery] DateQuery dto)
+    {
+        var repairOrders = await _repairOrderService.GetRepairOrdersMonthly(dto);
         return Ok(repairOrders);
     }
 

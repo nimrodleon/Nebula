@@ -6,12 +6,17 @@ namespace Nebula.Database.Dto.Common;
 public class DateQuery
 {
     /// <summary>
-    /// Año.
+    /// Año de registro.
     /// </summary>
     public string Year { get; set; } = string.Empty;
 
     /// <summary>
-    /// Mes.
+    /// Mes de registro.
     /// </summary>
     public string Month { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Texto de consulta.
+    /// </summary>
+    public string? Query { get; set; } = string.Empty;
 }
