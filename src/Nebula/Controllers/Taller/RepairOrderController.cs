@@ -51,7 +51,7 @@ public class RepairOrderController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] TallerRepairOrder model)
     {
-        await _repairOrderService.CreateAsync(model);
+        await _repairOrderService.CreateRepairOrderAsync(model);
         return Ok(model);
     }
 
@@ -60,6 +60,8 @@ public class RepairOrderController : ControllerBase
     {
         var repairOrder = await _repairOrderService.GetByIdAsync(id);
         model.Id = repairOrder.Id;
+        model.Serie = repairOrder.Serie;
+        model.Number = repairOrder.Number;
         model.CreatedAt = repairOrder.CreatedAt;
         model.UpdatedAt = repairOrder.UpdatedAt;
         model.Year = repairOrder.Year;

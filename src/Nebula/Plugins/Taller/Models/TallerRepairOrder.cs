@@ -14,6 +14,13 @@ public class TallerRepairOrder : IGeneric
     [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; } = string.Empty;
 
+    #region Serie y Número Correlativo
+
+    public string Serie { get; set; } = string.Empty;
+    public string Number { get; set; } = string.Empty;
+
+    #endregion
+
     #region Datos del Cliente
 
     public string IdCliente { get; set; } = string.Empty;

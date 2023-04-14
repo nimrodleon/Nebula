@@ -3,6 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Nebula.Database;
 using Nebula.Database.Dto.Common;
+using Nebula.Database.Models.Common;
 using Nebula.Database.Services;
 using Nebula.Plugins.Taller.Models;
 
@@ -13,12 +14,29 @@ namespace Nebula.Plugins.Taller.Services;
 /// </summary>
 public class TallerRepairOrderService : CrudOperationService<TallerRepairOrder>
 {
+    private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
     private readonly TallerItemRepairOrderService _itemRepairOrderService;
 
     public TallerRepairOrderService(IOptions<DatabaseSettings> options,
-        TallerItemRepairOrderService itemRepairOrderService) : base(options)
+        TallerItemRepairOrderService itemRepairOrderService,
+        CrudOperationService<InvoiceSerie> invoiceSerieService) : base(options)
     {
         _itemRepairOrderService = itemRepairOrderService;
+        _invoiceSerieService = invoiceSerieService;
+    }
+
+    public async Task<TallerRepairOrder> CreateRepairOrderAsync(TallerRepairOrder obj)
+    {
+        obj.Id = string.Empty;
+        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(obj.InvoiceSerieId);
+        obj.Serie = invoiceSerie.NotaDeVenta;
+        int numComprobante = invoiceSerie.CounterNotaDeVenta + 1;
+        obj.Number = numComprobante.ToString();
+        // actualizar serie de facturación.
+        invoiceSerie.CounterNotaDeVenta = numComprobante;
+        await _invoiceSerieService.UpdateAsync(invoiceSerie.Id, invoiceSerie);
+        await _collection.InsertOneAsync(obj);
+        return obj;
     }
 
     /// <summary>
