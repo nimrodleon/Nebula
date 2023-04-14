@@ -8,4 +8,5 @@ namespace Nebula.Plugins.Taller;
 public class TallerRepairOrderTicket
 {
     public TallerRepairOrder RepairOrder { get; set; } = new TallerRepairOrder();
+    public List<TallerItemRepairOrder> ItemsRepairOrder { get; set; } = new List<TallerItemRepairOrder>();
 }

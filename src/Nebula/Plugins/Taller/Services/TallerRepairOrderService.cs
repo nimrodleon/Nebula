@@ -13,8 +13,12 @@ namespace Nebula.Plugins.Taller.Services;
 /// </summary>
 public class TallerRepairOrderService : CrudOperationService<TallerRepairOrder>
 {
-    public TallerRepairOrderService(IOptions<DatabaseSettings> options) : base(options)
+    private readonly TallerItemRepairOrderService _itemRepairOrderService;
+
+    public TallerRepairOrderService(IOptions<DatabaseSettings> options,
+        TallerItemRepairOrderService itemRepairOrderService) : base(options)
     {
+        _itemRepairOrderService = itemRepairOrderService;
     }
 
     /// <summary>
@@ -79,9 +83,11 @@ public class TallerRepairOrderService : CrudOperationService<TallerRepairOrder>
     public async Task<TallerRepairOrderTicket> GetTicket(string id)
     {
         var repairOrder = await GetByIdAsync(id);
+        var itemsRepairOrder = await _itemRepairOrderService.GetItemsRepairOrder(repairOrder.Id);
         return new TallerRepairOrderTicket()
         {
-            RepairOrder = repairOrder
+            RepairOrder = repairOrder,
+            ItemsRepairOrder = itemsRepairOrder
         };
     }
 }
