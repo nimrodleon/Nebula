@@ -31,4 +31,21 @@ public class ItemRepairOrderController : ControllerBase
         await _itemRepairOrderService.CreateAsync(model);
         return Ok(model);
     }
+
+    [HttpPut("Update/{id}")]
+    public async Task<IActionResult> Update(string id, [FromBody] TallerItemRepairOrder model)
+    {
+        var itemRepairOrder = await _itemRepairOrderService.GetByIdAsync(id);
+        model.Id = itemRepairOrder.Id;
+        itemRepairOrder = await _itemRepairOrderService.UpdateAsync(itemRepairOrder.Id, model);
+        return Ok(itemRepairOrder);
+    }
+
+    [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
+    public async Task<IActionResult> Delete(string id)
+    {
+        var itemRepairOrder = await _itemRepairOrderService.GetByIdAsync(id);
+        await _itemRepairOrderService.RemoveAsync(itemRepairOrder.Id);
+        return Ok(itemRepairOrder);
+    }
 }

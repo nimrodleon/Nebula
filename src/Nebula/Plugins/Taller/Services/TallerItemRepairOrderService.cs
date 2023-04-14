@@ -22,7 +22,7 @@ public class TallerItemRepairOrderService : CrudOperationService<TallerItemRepai
     /// <returns>Lista de Items - Orden de Reparación</returns>
     public async Task<List<TallerItemRepairOrder>> GetItemsRepairOrder(string id)
     {
-        var filter = Builders<TallerItemRepairOrder>.Filter.Eq(x => x.TallerRepairOrderId, id);
+        var filter = Builders<TallerItemRepairOrder>.Filter.Eq(x => x.RepairOrderId, id);
         return await _collection.Find(filter).ToListAsync();
     }
 }

@@ -14,7 +14,7 @@ public class TallerItemRepairOrder : IGeneric
     [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; } = string.Empty;
 
-    public string TallerRepairOrderId { get; set; } = string.Empty;
+    public string RepairOrderId { get; set; } = string.Empty;
 
     #region Datos Almacén
 
