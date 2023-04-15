@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -123,6 +124,17 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+#region CrearMasterKeyHash
+
+string filePath = @"C:\storage\master.txt";
+using var sha256 = SHA256.Create();
+// Generar un hash único a partir del momento actual
+byte[] hash = sha256.ComputeHash(BitConverter.GetBytes(DateTime.Now.Ticks));
+string hashBase64 = Convert.ToBase64String(hash);
+File.WriteAllText(filePath, hashBase64);
+
+#endregion
 
 var app = builder.Build();
 var applicationPort = builder.Configuration.GetValue<string>("ApplicationPort");
