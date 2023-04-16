@@ -1,4 +1,3 @@
-using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -6,6 +5,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Nebula.Database;
+using Nebula.Database.Dto.Common;
 using Nebula.Database.Services;
 using Nebula.Database.Services.Cashier;
 using Nebula.Database.Services.Common;
@@ -125,16 +125,8 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-#region CrearMasterKeyHash
-
-string filePath = @"C:\storage\master.txt";
-using var sha256 = SHA256.Create();
-// Generar un hash único a partir del momento actual
-byte[] hash = sha256.ComputeHash(BitConverter.GetBytes(DateTime.Now.Ticks));
-string hashBase64 = Convert.ToBase64String(hash);
-File.WriteAllText(filePath, hashBase64);
-
-#endregion
+// Generar un hash único.
+MasterKeyDto.WriteHashFile();
 
 var app = builder.Build();
 var applicationPort = builder.Configuration.GetValue<string>("ApplicationPort");
