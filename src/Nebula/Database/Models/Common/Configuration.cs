@@ -82,4 +82,9 @@ public class Configuration
     /// Identificador para verificar la Suscripción.
     /// </summary>
     public string SubscriptionId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Habilita/Deshabilita el módulo de taller.
+    /// </summary>
+    public bool ModTaller { get; set; } = false;
 }
