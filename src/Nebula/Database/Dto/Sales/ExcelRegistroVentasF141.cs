@@ -1,4 +1,5 @@
-﻿using ClosedXML.Excel;
+﻿using System.Globalization;
+using ClosedXML.Excel;
 using Nebula.Database.Models.Common;
 using Nebula.Database.Models.Sales;
 
@@ -12,13 +13,15 @@ public class ExcelRegistroVentasF141
     private readonly List<InvoiceSerie> _invoiceSeries;
     private readonly List<InvoiceSale> _invoiceSales;
     private readonly List<CreditNote> _creditNotes;
+    private readonly List<TributoSale> _tributoSales;
 
     public ExcelRegistroVentasF141(List<InvoiceSerie> invoiceSeries,
-        List<InvoiceSale> invoiceSales, List<CreditNote> creditNotes)
+        List<InvoiceSale> invoiceSales, List<CreditNote> creditNotes, List<TributoSale> tributoSales)
     {
         _invoiceSeries = invoiceSeries;
         _invoiceSales = invoiceSales;
         _creditNotes = creditNotes;
+        _tributoSales = tributoSales;
     }
 
     public string CrearArchivo()
@@ -596,6 +599,74 @@ public class ExcelRegistroVentasF141
 
         #endregion
 
+        #region Contenido
+
+        int contador = 4;
+        var numberFormatInfo = new CultureInfo("en-US", false).NumberFormat;
+        numberFormatInfo.NumberGroupSeparator = string.Empty;
+        _invoiceSeries.ForEach(serieComprobante =>
+        {
+            // generar registro de facturas.
+            var facturas = GetFacturas(serieComprobante.Id);
+            foreach (var item in facturas)
+            {
+                // Fecha de emisión del Comprobante de Pago
+                DateTime fechaEmisión =
+                    DateTime.ParseExact(item.FecEmision, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                worksheet.Cell(contador, 4).Style.NumberFormat.Format = "@";
+                worksheet.Cell(contador, 4).Value = fechaEmisión.ToString("dd/MM/yyyy");
+                // Tipo de Comprobante de Pago o Documento
+                worksheet.Cell(contador, 6).Style.NumberFormat.Format = "@";
+                worksheet.Cell(contador, 6).Value = "01";
+                // Número serie del comprobante de pago o documento o número de serie de la maquina registradora
+                worksheet.Cell(contador, 7).Value = item.Serie;
+                // Número del comprobante de pago o documento.
+                worksheet.Cell(contador, 8).Style.NumberFormat.Format = "@";
+                worksheet.Cell(contador, 8).Value = item.Number;
+                // Tipo de Documento de Identidad del cliente
+                worksheet.Cell(contador, 10).Style.NumberFormat.Format = "@";
+                worksheet.Cell(contador, 10).Value = item.TipDocUsuario.Split(":")[0];
+                // Número de Documento de Identidad del cliente
+                worksheet.Cell(contador, 11).Style.NumberFormat.Format = "@";
+                worksheet.Cell(contador, 11).Value = item.NumDocUsuario;
+                // Apellidos y nombres, denominación o razón social  del cliente.
+                if (item.RznSocialUsuario.Length >= 100)
+                    worksheet.Cell(contador, 12).Value = item.RznSocialUsuario.Substring(0, 99);
+                else
+                    worksheet.Cell(contador, 12).Value = item.RznSocialUsuario;
+                // Base imponible de la operación gravada (4)
+                var tributos = GetTributos(item.Id);
+                var igvItem = tributos.Single(x => x.IdeTributo.Equals("1000"));
+                worksheet.Cell(contador, 14).Style.NumberFormat.Format = "############.##";
+                worksheet.Cell(contador, 14).Value = igvItem.MtoBaseImponible;
+                // Impuesto General a las Ventas y/o Impuesto de Promoción Municipal
+                worksheet.Cell(contador, 16).Style.NumberFormat.Format = "############.##";
+                worksheet.Cell(contador, 16).Value = igvItem.MtoTributo;
+                // Impuesto al Consumo de las Bolsas de Plástico.
+                var bolsaItem = tributos.SingleOrDefault(x => x.IdeTributo.Equals("7152"));
+                worksheet.Cell(contador, 23).Style.NumberFormat.Format = "###########0.00";
+                if (bolsaItem == null)
+                    worksheet.Cell(contador, 23).Value = 0;
+                else
+                    worksheet.Cell(contador, 23).Value = bolsaItem.MtoTributo;
+                // Importe total del comprobante de pago
+                worksheet.Cell(contador, 25).Style.NumberFormat.Format = "############.00";
+                worksheet.Cell(contador, 25).Value = item.SumImpVenta;
+                // Código  de la Moneda (Tabla 4)
+                worksheet.Cell(contador, 26).Value = item.TipMoneda;
+                // Tipo de cambio (5)
+                worksheet.Cell(contador, 27).Style.NumberFormat.Format = "#.000";
+                worksheet.Cell(contador, 27).Value = 1;
+                // Estado que identifica la oportunidad de la anotación o indicación si ésta corresponde a alguna de las situaciones previstas en el inciso e) del artículo 8° de la Resolución de Superintendencia N.° 286-2009/SUNAT
+                worksheet.Cell(contador, 35).Value = 1;
+                contador++;
+            }
+            // generar registro de boletas.
+
+        });
+
+        #endregion
+
         #region Ancho y Alto de filas y columnas
 
         worksheet.Row(3).Height = 50;
@@ -640,4 +711,13 @@ public class ExcelRegistroVentasF141
         workbook.SaveAs(filePath);
         return filePath;
     }
+
+    private List<InvoiceSale> GetFacturas(string invoiceSerieId)
+    {
+        return _invoiceSales.Where(x => x.DocType == "FACTURA" && x.InvoiceSerieId == invoiceSerieId)
+            .OrderBy(x => x.Number).ToList();
+    }
+
+    private List<TributoSale> GetTributos(string id) =>
+        _tributoSales.Where(x => x.InvoiceSale.Equals(id)).ToList();
 }
