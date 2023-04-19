@@ -795,12 +795,6 @@ public class ExcelRegistroVentasF141
                 worksheet.Cell(contador, 31).Value = item.NumDocAfectado.Split("-")[1].Trim();
                 // Estado que identifica la oportunidad de la anotación o indicación si ésta corresponde a alguna de las situaciones previstas en el inciso e) del artículo 8° de la Resolución de Superintendencia N.° 286-2009/SUNAT
                 worksheet.Cell(contador, 35).Value = 1;
-                if (comprobante != null)
-                {
-                    if (!comprobante.Month.Equals(item.Month))
-                        worksheet.Cell(contador, 35).Value = 9;
-                }
-
                 contador++;
             }
         });
@@ -878,12 +872,6 @@ public class ExcelRegistroVentasF141
                 worksheet.Cell(contador, 31).Value = item.NumDocAfectado.Split("-")[1].Trim();
                 // Estado que identifica la oportunidad de la anotación o indicación si ésta corresponde a alguna de las situaciones previstas en el inciso e) del artículo 8° de la Resolución de Superintendencia N.° 286-2009/SUNAT
                 worksheet.Cell(contador, 35).Value = 1;
-                if (comprobante != null)
-                {
-                    if (!comprobante.Month.Equals(item.Month))
-                        worksheet.Cell(contador, 35).Value = 9;
-                }
-
                 contador++;
             }
         });
