@@ -14,14 +14,17 @@ public class ExcelRegistroVentasF141
     private readonly List<InvoiceSale> _invoiceSales;
     private readonly List<CreditNote> _creditNotes;
     private readonly List<TributoSale> _tributoSales;
+    private readonly List<TributoCreditNote> _tributoCreditNotes;
 
     public ExcelRegistroVentasF141(List<InvoiceSerie> invoiceSeries,
-        List<InvoiceSale> invoiceSales, List<CreditNote> creditNotes, List<TributoSale> tributoSales)
+        List<InvoiceSale> invoiceSales, List<CreditNote> creditNotes,
+        List<TributoSale> tributoSales, List<TributoCreditNote> tributoCreditNotes)
     {
         _invoiceSeries = invoiceSeries;
         _invoiceSales = invoiceSales;
         _creditNotes = creditNotes;
         _tributoSales = tributoSales;
+        _tributoCreditNotes = tributoCreditNotes;
     }
 
     public string CrearArchivo()
@@ -662,9 +665,9 @@ public class ExcelRegistroVentasF141
         });
 
         // generar registro de boletas.
+        contador += 2;
         _invoiceSeries.ForEach(serieComprobante =>
         {
-            contador += 2;
             var boletas = GetBoletas(serieComprobante.Id);
             foreach (var item in boletas)
             {
@@ -715,6 +718,75 @@ public class ExcelRegistroVentasF141
                 // Tipo de cambio (5)
                 worksheet.Cell(contador, 27).Style.NumberFormat.Format = "#.000";
                 worksheet.Cell(contador, 27).Value = 1;
+                // Estado que identifica la oportunidad de la anotación o indicación si ésta corresponde a alguna de las situaciones previstas en el inciso e) del artículo 8° de la Resolución de Superintendencia N.° 286-2009/SUNAT
+                worksheet.Cell(contador, 35).Value = 1;
+                contador++;
+            }
+        });
+
+        // generar notas de crédito de facturas.
+        contador += 2;
+        _invoiceSeries.ForEach(serieComprobante =>
+        {
+            var creditNotes = GetCreditNotes(serieComprobante.Id, serieComprobante.CreditNoteFactura);
+            foreach (var item in creditNotes)
+            {
+                // Fecha de emisión del Comprobante de Pago
+                DateTime fechaEmisión =
+                    DateTime.ParseExact(item.FecEmision, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                worksheet.Cell(contador, 4).Style.NumberFormat.Format = "@";
+                worksheet.Cell(contador, 4).Value = fechaEmisión.ToString("dd/MM/yyyy");
+                // Tipo de Comprobante de Pago o Documento
+                worksheet.Cell(contador, 6).Style.NumberFormat.Format = "@";
+                worksheet.Cell(contador, 6).Value = "03";
+                // Número serie del comprobante de pago o documento o número de serie de la maquina registradora
+                worksheet.Cell(contador, 7).Value = item.Serie;
+                // Número del comprobante de pago o documento.
+                worksheet.Cell(contador, 8).Style.NumberFormat.Format = "@";
+                worksheet.Cell(contador, 8).Value = item.Number;
+                // Tipo de Documento de Identidad del cliente
+                worksheet.Cell(contador, 10).Style.NumberFormat.Format = "@";
+                worksheet.Cell(contador, 10).Value = item.TipDocUsuario.Split(":")[0];
+                // Número de Documento de Identidad del cliente
+                worksheet.Cell(contador, 11).Style.NumberFormat.Format = "@";
+                worksheet.Cell(contador, 11).Value = item.NumDocUsuario;
+                // Apellidos y nombres, denominación o razón social  del cliente.
+                if (item.RznSocialUsuario.Length >= 100)
+                    worksheet.Cell(contador, 12).Value = item.RznSocialUsuario.Substring(0, 99);
+                else
+                    worksheet.Cell(contador, 12).Value = item.RznSocialUsuario;
+                // Base imponible de la operación gravada (4)
+                var tributos = GetTributosCreditNotes(item.Id);
+                var igvItem = tributos.Single(x => x.IdeTributo.Equals("1000"));
+                worksheet.Cell(contador, 14).Style.NumberFormat.Format = "###########0.00";
+                worksheet.Cell(contador, 14).Value = igvItem.MtoBaseImponible * -1;
+                // Impuesto General a las Ventas y/o Impuesto de Promoción Municipal
+                worksheet.Cell(contador, 16).Style.NumberFormat.Format = "###########0.00";
+                worksheet.Cell(contador, 16).Value = igvItem.MtoTributo * -1;
+                // Impuesto al Consumo de las Bolsas de Plástico.
+                var bolsaItem = tributos.SingleOrDefault(x => x.IdeTributo.Equals("7152"));
+                worksheet.Cell(contador, 23).Style.NumberFormat.Format = "###########0.00";
+                if (bolsaItem == null)
+                    worksheet.Cell(contador, 23).Value = 0;
+                else
+                    worksheet.Cell(contador, 23).Value = bolsaItem.MtoTributo * -1;
+                // Importe total del comprobante de pago
+                worksheet.Cell(contador, 25).Style.NumberFormat.Format = "###########0.00";
+                worksheet.Cell(contador, 25).Value = item.SumImpVenta * -1;
+                // Código  de la Moneda (Tabla 4)
+                worksheet.Cell(contador, 26).Value = item.TipMoneda;
+                // Tipo de cambio (5)
+                worksheet.Cell(contador, 27).Style.NumberFormat.Format = "#.000";
+                worksheet.Cell(contador, 27).Value = 1;
+                // ...
+                // Tipo del comprobante de pago que se modifica (6)
+                worksheet.Cell(contador, 29).Style.NumberFormat.Format = "@";
+                worksheet.Cell(contador, 29).Value = item.TipDocAfectado;
+                // Número de serie del comprobante de pago que se modifica (6) o Código de la Dependencia Aduanera
+                worksheet.Cell(contador, 30).Value = item.NumDocAfectado.Split("-")[0].Trim();
+                // Número del comprobante de pago que se modifica (6) o Número de la DUA, de corresponder
+                worksheet.Cell(contador, 31).Style.NumberFormat.Format = "@";
+                worksheet.Cell(contador, 31).Value = item.NumDocAfectado.Split("-")[1].Trim();
                 // Estado que identifica la oportunidad de la anotación o indicación si ésta corresponde a alguna de las situaciones previstas en el inciso e) del artículo 8° de la Resolución de Superintendencia N.° 286-2009/SUNAT
                 worksheet.Cell(contador, 35).Value = 1;
                 contador++;
@@ -782,4 +854,13 @@ public class ExcelRegistroVentasF141
 
     private List<TributoSale> GetTributos(string id) =>
         _tributoSales.Where(x => x.InvoiceSale.Equals(id)).ToList();
+
+    private List<TributoCreditNote> GetTributosCreditNotes(string id) =>
+        _tributoCreditNotes.Where(x => x.CreditNoteId.Equals(id)).ToList();
+
+    private List<CreditNote> GetCreditNotes(string invoiceSerieId, string serie)
+    {
+        return _creditNotes.Where(x => x.InvoiceSerieId.Equals(invoiceSerieId) && x.Serie.Equals(serie))
+            .OrderBy(x => x.Number).ToList();
+    }
 }

@@ -23,6 +23,7 @@ public class InvoiceSaleController : ControllerBase
     private readonly InvoiceSaleService _invoiceSaleService;
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly TributoSaleService _tributoSaleService;
+    private readonly TributoCreditNoteService _tributoCreditNoteService;
     private readonly ComprobanteService _comprobanteService;
     private readonly FacturadorService _facturadorService;
     private readonly CreditNoteService _creditNoteService;
@@ -34,7 +35,8 @@ public class InvoiceSaleController : ControllerBase
         InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService,
         ComprobanteService comprobanteService, FacturadorService facturadorService, CreditNoteService creditNoteService,
         ValidateStockService validateStockService, IConfiguration configuration,
-        ConsultarValidezComprobanteService consultarValidezComprobanteService)
+        ConsultarValidezComprobanteService consultarValidezComprobanteService,
+        TributoCreditNoteService tributoCreditNoteService)
     {
         _configuration = configuration;
         _configurationService = configurationService;
@@ -47,6 +49,7 @@ public class InvoiceSaleController : ControllerBase
         _creditNoteService = creditNoteService;
         _validateStockService = validateStockService;
         _consultarValidezComprobanteService = consultarValidezComprobanteService;
+        _tributoCreditNoteService = tributoCreditNoteService;
     }
 
     [HttpGet("Index")]
@@ -77,8 +80,10 @@ public class InvoiceSaleController : ControllerBase
         var invoiceSales = await _invoiceSaleService.GetListAsync(dto);
         var creditNotes = await _creditNoteService.GetListAsync(dto);
         var tributoSales = await _tributoSaleService.GetTributosMensual(dto);
-        string filePath = new ExcelRegistroVentasF141(invoiceSeries, invoiceSales, creditNotes, tributoSales)
-            .CrearArchivo();
+        var tributoCreditNotes = await _tributoCreditNoteService.GetTributosMensual(dto);
+        string filePath =
+            new ExcelRegistroVentasF141(invoiceSeries, invoiceSales, creditNotes, tributoSales, tributoCreditNotes)
+                .CrearArchivo();
         FileStream stream = new FileStream(filePath, FileMode.Open);
         return new FileStreamResult(stream, ContentTypeFormat.Excel);
     }
