@@ -6,26 +6,26 @@ using Nebula.Database.Models.Sales;
 namespace Nebula.Database.Dto.Sales;
 
 /// <summary>
+/// Parámetros de registro de ventas.
+/// </summary>
+public class ParamExcelRegistroVentasF141
+{
+    public List<InvoiceSerie> InvoiceSeries { get; set; } = new List<InvoiceSerie>();
+    public List<InvoiceSale> InvoiceSales { get; set; } = new List<InvoiceSale>();
+    public List<CreditNote> CreditNotes { get; set; } = new List<CreditNote>();
+    public List<TributoSale> TributoSales { get; set; } = new List<TributoSale>();
+    public List<TributoCreditNote> TributoCreditNotes { get; set; } = new List<TributoCreditNote>();
+    public List<InvoiceSale> ComprobantesDeNotas { get; set; } = new List<InvoiceSale>();
+}
+
+/// <summary>
 /// Crear excel formato 14.1 - ventas.
 /// </summary>
 public class ExcelRegistroVentasF141
 {
-    private readonly List<InvoiceSerie> _invoiceSeries;
-    private readonly List<InvoiceSale> _invoiceSales;
-    private readonly List<CreditNote> _creditNotes;
-    private readonly List<TributoSale> _tributoSales;
-    private readonly List<TributoCreditNote> _tributoCreditNotes;
+    private readonly ParamExcelRegistroVentasF141 _param;
 
-    public ExcelRegistroVentasF141(List<InvoiceSerie> invoiceSeries,
-        List<InvoiceSale> invoiceSales, List<CreditNote> creditNotes,
-        List<TributoSale> tributoSales, List<TributoCreditNote> tributoCreditNotes)
-    {
-        _invoiceSeries = invoiceSeries;
-        _invoiceSales = invoiceSales;
-        _creditNotes = creditNotes;
-        _tributoSales = tributoSales;
-        _tributoCreditNotes = tributoCreditNotes;
-    }
+    public ExcelRegistroVentasF141(ParamExcelRegistroVentasF141 param) => _param = param;
 
     public string CrearArchivo()
     {
@@ -36,7 +36,6 @@ public class ExcelRegistroVentasF141
 
         worksheet.Style.Font.FontSize = 8;
         worksheet.Style.Font.FontName = "Arial Narrow";
-        // worksheet.Style.Fill.BackgroundColor = XLColor.White;
 
         #region Cabecera
 
@@ -606,7 +605,7 @@ public class ExcelRegistroVentasF141
 
         int contador = 4;
         // generar registro de facturas.
-        _invoiceSeries.ForEach(serieComprobante =>
+        _param.InvoiceSeries.ForEach(serieComprobante =>
         {
             var facturas = GetFacturas(serieComprobante.Id);
             foreach (var item in facturas)
@@ -665,8 +664,7 @@ public class ExcelRegistroVentasF141
         });
 
         // generar registro de boletas.
-        contador += 2;
-        _invoiceSeries.ForEach(serieComprobante =>
+        _param.InvoiceSeries.ForEach(serieComprobante =>
         {
             var boletas = GetBoletas(serieComprobante.Id);
             foreach (var item in boletas)
@@ -725,8 +723,7 @@ public class ExcelRegistroVentasF141
         });
 
         // generar notas de crédito de facturas.
-        contador += 2;
-        _invoiceSeries.ForEach(serieComprobante =>
+        _param.InvoiceSeries.ForEach(serieComprobante =>
         {
             var creditNotes = GetCreditNotes(serieComprobante.Id, serieComprobante.CreditNoteFactura);
             foreach (var item in creditNotes)
@@ -738,7 +735,7 @@ public class ExcelRegistroVentasF141
                 worksheet.Cell(contador, 4).Value = fechaEmisión.ToString("dd/MM/yyyy");
                 // Tipo de Comprobante de Pago o Documento
                 worksheet.Cell(contador, 6).Style.NumberFormat.Format = "@";
-                worksheet.Cell(contador, 6).Value = "03";
+                worksheet.Cell(contador, 6).Value = "07";
                 // Número serie del comprobante de pago o documento o número de serie de la maquina registradora
                 worksheet.Cell(contador, 7).Value = item.Serie;
                 // Número del comprobante de pago o documento.
@@ -778,7 +775,16 @@ public class ExcelRegistroVentasF141
                 // Tipo de cambio (5)
                 worksheet.Cell(contador, 27).Style.NumberFormat.Format = "#.000";
                 worksheet.Cell(contador, 27).Value = 1;
-                // ...
+                // Fecha de emisión del comprobante de pago o documento original que se modifica (6) o documento referencial al documento que sustenta el crédito fiscal
+                var comprobante = GetInvoiceByCreditNote(item.NumDocAfectado);
+                if (comprobante != null)
+                {
+                    DateTime date =
+                        DateTime.ParseExact(comprobante.FecEmision, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    worksheet.Cell(contador, 28).Style.NumberFormat.Format = "@";
+                    worksheet.Cell(contador, 28).Value = date.ToString("dd/MM/yyyy");
+                }
+
                 // Tipo del comprobante de pago que se modifica (6)
                 worksheet.Cell(contador, 29).Style.NumberFormat.Format = "@";
                 worksheet.Cell(contador, 29).Value = item.TipDocAfectado;
@@ -789,13 +795,18 @@ public class ExcelRegistroVentasF141
                 worksheet.Cell(contador, 31).Value = item.NumDocAfectado.Split("-")[1].Trim();
                 // Estado que identifica la oportunidad de la anotación o indicación si ésta corresponde a alguna de las situaciones previstas en el inciso e) del artículo 8° de la Resolución de Superintendencia N.° 286-2009/SUNAT
                 worksheet.Cell(contador, 35).Value = 1;
+                if (comprobante != null)
+                {
+                    if (!comprobante.Month.Equals(item.Month))
+                        worksheet.Cell(contador, 35).Value = 9;
+                }
+
                 contador++;
             }
         });
 
         // generar notas de crédito de boletas.
-        contador += 2;
-        _invoiceSeries.ForEach(serieComprobante =>
+        _param.InvoiceSeries.ForEach(serieComprobante =>
         {
             var creditNotes = GetCreditNotes(serieComprobante.Id, serieComprobante.CreditNoteBoleta);
             foreach (var item in creditNotes)
@@ -807,7 +818,7 @@ public class ExcelRegistroVentasF141
                 worksheet.Cell(contador, 4).Value = fechaEmisión.ToString("dd/MM/yyyy");
                 // Tipo de Comprobante de Pago o Documento
                 worksheet.Cell(contador, 6).Style.NumberFormat.Format = "@";
-                worksheet.Cell(contador, 6).Value = "03";
+                worksheet.Cell(contador, 6).Value = "07";
                 // Número serie del comprobante de pago o documento o número de serie de la maquina registradora
                 worksheet.Cell(contador, 7).Value = item.Serie;
                 // Número del comprobante de pago o documento.
@@ -847,7 +858,16 @@ public class ExcelRegistroVentasF141
                 // Tipo de cambio (5)
                 worksheet.Cell(contador, 27).Style.NumberFormat.Format = "#.000";
                 worksheet.Cell(contador, 27).Value = 1;
-                // ...
+                // Fecha de emisión del comprobante de pago o documento original que se modifica (6) o documento referencial al documento que sustenta el crédito fiscal
+                var comprobante = GetInvoiceByCreditNote(item.NumDocAfectado);
+                if (comprobante != null)
+                {
+                    DateTime date =
+                        DateTime.ParseExact(comprobante.FecEmision, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    worksheet.Cell(contador, 28).Style.NumberFormat.Format = "@";
+                    worksheet.Cell(contador, 28).Value = date.ToString("dd/MM/yyyy");
+                }
+
                 // Tipo del comprobante de pago que se modifica (6)
                 worksheet.Cell(contador, 29).Style.NumberFormat.Format = "@";
                 worksheet.Cell(contador, 29).Value = item.TipDocAfectado;
@@ -858,6 +878,12 @@ public class ExcelRegistroVentasF141
                 worksheet.Cell(contador, 31).Value = item.NumDocAfectado.Split("-")[1].Trim();
                 // Estado que identifica la oportunidad de la anotación o indicación si ésta corresponde a alguna de las situaciones previstas en el inciso e) del artículo 8° de la Resolución de Superintendencia N.° 286-2009/SUNAT
                 worksheet.Cell(contador, 35).Value = 1;
+                if (comprobante != null)
+                {
+                    if (!comprobante.Month.Equals(item.Month))
+                        worksheet.Cell(contador, 35).Value = 9;
+                }
+
                 contador++;
             }
         });
@@ -911,25 +937,38 @@ public class ExcelRegistroVentasF141
 
     private List<InvoiceSale> GetFacturas(string invoiceSerieId)
     {
-        return _invoiceSales.Where(x => x.DocType == "FACTURA" && x.InvoiceSerieId == invoiceSerieId)
+        return _param.InvoiceSales.Where(x => x.DocType == "FACTURA" && x.InvoiceSerieId == invoiceSerieId)
             .OrderBy(x => x.Number).ToList();
     }
 
     private List<InvoiceSale> GetBoletas(string invoiceSerieId)
     {
-        return _invoiceSales.Where(x => x.DocType == "BOLETA" && x.InvoiceSerieId == invoiceSerieId)
+        return _param.InvoiceSales.Where(x => x.DocType == "BOLETA" && x.InvoiceSerieId == invoiceSerieId)
             .OrderBy(x => x.Number).ToList();
     }
 
     private List<TributoSale> GetTributos(string id) =>
-        _tributoSales.Where(x => x.InvoiceSale.Equals(id)).ToList();
+        _param.TributoSales.Where(x => x.InvoiceSale.Equals(id)).ToList();
 
     private List<TributoCreditNote> GetTributosCreditNotes(string id) =>
-        _tributoCreditNotes.Where(x => x.CreditNoteId.Equals(id)).ToList();
+        _param.TributoCreditNotes.Where(x => x.CreditNoteId.Equals(id)).ToList();
 
     private List<CreditNote> GetCreditNotes(string invoiceSerieId, string serie)
     {
-        return _creditNotes.Where(x => x.InvoiceSerieId.Equals(invoiceSerieId) && x.Serie.Equals(serie))
+        return _param.CreditNotes.Where(x => x.InvoiceSerieId.Equals(invoiceSerieId) && x.Serie.Equals(serie))
             .OrderBy(x => x.Number).ToList();
+    }
+
+    /// <summary>
+    /// Obtener comprobante de la nota de crédito
+    /// </summary>
+    /// <param name="numDoc">número del documento afectado.</param>
+    /// <returns>Comprobante de venta</returns>
+    private InvoiceSale? GetInvoiceByCreditNote(string numDoc)
+    {
+        string serie = numDoc.Split("-")[0].Trim();
+        string number = numDoc.Split("-")[1].Trim();
+        return _param.ComprobantesDeNotas.SingleOrDefault(x =>
+            x.Serie.Equals(serie) && x.Number.Equals(number));
     }
 }

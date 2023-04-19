@@ -61,13 +61,13 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>
     /// <summary>
     /// Obtener comprobantes por serie y números.
     /// </summary>
-    /// <param name="serie">serie comprobante</param>
+    /// <param name="series">series de los comprobantes</param>
     /// <param name="numbers">Lista de números de comprobantes</param>
     /// <returns>Lista de Comprobantes</returns>
-    public async Task<List<InvoiceSale>> GetInvoicesByNumDoc(string serie, List<string> numbers)
+    public async Task<List<InvoiceSale>> GetInvoicesByNumDocs(List<string> series, List<string> numbers)
     {
         var builder = Builders<InvoiceSale>.Filter;
-        var filter = builder.And(builder.Eq(x => x.Serie, serie),
+        var filter = builder.And(builder.In(x => x.Serie, series),
             builder.In(x => x.Number, numbers));
         return await _collection.Find(filter).ToListAsync();
     }

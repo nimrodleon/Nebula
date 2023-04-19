@@ -76,14 +76,28 @@ public class InvoiceSaleController : ControllerBase
     [HttpGet("ExcelRegistroVentasF141")]
     public async Task<IActionResult> ExcelRegistroVentasF141([FromQuery] DateQuery dto)
     {
-        var invoiceSeries = await _invoiceSerieService.GetAsync("Name", string.Empty);
-        var invoiceSales = await _invoiceSaleService.GetListAsync(dto);
-        var creditNotes = await _creditNoteService.GetListAsync(dto);
-        var tributoSales = await _tributoSaleService.GetTributosMensual(dto);
-        var tributoCreditNotes = await _tributoCreditNoteService.GetTributosMensual(dto);
-        string filePath =
-            new ExcelRegistroVentasF141(invoiceSeries, invoiceSales, creditNotes, tributoSales, tributoCreditNotes)
-                .CrearArchivo();
+        ParamExcelRegistroVentasF141 param = new ParamExcelRegistroVentasF141
+        {
+            InvoiceSeries = await _invoiceSerieService.GetAsync("Name", string.Empty),
+            InvoiceSales = await _invoiceSaleService.GetListAsync(dto),
+            CreditNotes = await _creditNoteService.GetListAsync(dto),
+            TributoSales = await _tributoSaleService.GetTributosMensual(dto),
+            TributoCreditNotes = await _tributoCreditNoteService.GetTributosMensual(dto)
+        };
+        // Obtener lista de comprobantes de notas de crédito.
+        List<string> seriesComprobante = new List<string>();
+        List<string> númerosComprobante = new List<string>();
+        param.CreditNotes.ForEach(item =>
+        {
+            seriesComprobante.Add(item.NumDocAfectado.Split("-")[0].Trim());
+            númerosComprobante.Add(item.NumDocAfectado.Split("-")[1].Trim());
+        });
+        seriesComprobante = seriesComprobante.Distinct().ToList();
+        númerosComprobante = númerosComprobante.Distinct().ToList();
+        var comprobantesDeNotas = await _invoiceSaleService.GetInvoicesByNumDocs(seriesComprobante, númerosComprobante);
+        param.ComprobantesDeNotas = comprobantesDeNotas;
+        // generar archivo excel y enviar como respuesta de solicitud.
+        string filePath = new ExcelRegistroVentasF141(param).CrearArchivo();
         FileStream stream = new FileStream(filePath, FileMode.Open);
         return new FileStreamResult(stream, ContentTypeFormat.Excel);
     }
