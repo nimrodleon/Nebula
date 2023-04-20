@@ -73,7 +73,6 @@ public class ConfigurationService
         string deviceId = new DeviceIdBuilder()
             .AddMachineName().AddUserName()
             .AddMacAddress(excludeWireless: true)
-            .OnWindows(windows => windows.AddMachineGuid())
             .AddOsVersion().ToString();
         return deviceId;
     }
