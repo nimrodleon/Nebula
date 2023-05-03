@@ -60,19 +60,6 @@ public class InvoiceSaleController : ControllerBase
     }
 
     [AllowAnonymous]
-    [HttpGet("ReporteMensual")]
-    [Obsolete("Este método está obsoleto.")]
-    public async Task<IActionResult> ReporteMensual([FromQuery] DateQuery dto)
-    {
-        var invoiceSeries = await _invoiceSerieService.GetAsync("Name", string.Empty);
-        var invoiceSales = await _invoiceSaleService.GetListAsync(dto);
-        var creditNotes = await _creditNoteService.GetListAsync(dto);
-        string filePath = new ExportarReporteMensual(invoiceSeries, invoiceSales, creditNotes).GuardarCambios();
-        FileStream stream = new FileStream(filePath, FileMode.Open);
-        return new FileStreamResult(stream, ContentTypeFormat.Excel);
-    }
-
-    [AllowAnonymous]
     [HttpGet("ExcelRegistroVentasF141")]
     public async Task<IActionResult> ExcelRegistroVentasF141([FromQuery] DateQuery dto)
     {
