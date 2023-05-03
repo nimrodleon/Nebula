@@ -122,7 +122,7 @@ public class ComprobanteDto
             invoiceSaleDetails.Add(new InvoiceSaleDetail
             {
                 InvoiceSale = invoiceId,
-                CajaDiaria = "-",
+                CajaDiaria = Cabecera.CajaDiaria,
                 TipoItem = item.TipoItem,
                 CodUnidadMedida = item.CodUnidadMedida,
                 CtdUnidadItem = item.CtdUnidadItem,
