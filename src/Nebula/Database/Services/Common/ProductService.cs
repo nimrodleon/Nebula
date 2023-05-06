@@ -9,7 +9,7 @@ public class ProductService : CrudOperationService<Product>
 {
     public ProductService(IOptions<DatabaseSettings> options) : base(options) { }
 
-    public async Task<List<Product>> GetListAsync(string? query, int limit = 25)
+    public async Task<List<Product>> GetListAsync(string? query, int limit = 24)
     {
         var filter = Builders<Product>.Filter.Empty;
         if (!string.IsNullOrEmpty(query))
