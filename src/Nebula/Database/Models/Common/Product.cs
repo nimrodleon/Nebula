@@ -71,22 +71,8 @@ public class Product : IGeneric
     /// </summary>
     public string PathImage { get; set; } = string.Empty;
 
-    #region Lotes_de_Producción
-
     /// <summary>
-    /// Lote de Producción.
+    /// Establece si el producto tiene lotes de producción.
     /// </summary>
-    public string? LotNumber { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Fecha de Vencimiento.
-    /// </summary>
-    public string? ExpirationDate { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Fecha Recordatorio.
-    /// </summary>
-    public string? ReminderDate { get; set; } = string.Empty;
-
-    #endregion
+    public bool HasLotes { get; set; } = false;
 }

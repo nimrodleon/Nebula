@@ -108,9 +108,7 @@ public class ProductController : ControllerBase
             Category = model.Category,
             ControlStock = model.ControlStock,
             PathImage = model.PathImage,
-            LotNumber = model.LotNumber,
-            ExpirationDate = model.ExpirationDate,
-            ReminderDate = model.ReminderDate,
+            HasLotes = false
         };
         await _productService.CreateAsync(product);
 
@@ -161,9 +159,7 @@ public class ProductController : ControllerBase
         product.Category = model.Category;
         product.ControlStock = model.ControlStock;
         product.PathImage = model.PathImage;
-        product.LotNumber = model.LotNumber;
-        product.ExpirationDate = model.ExpirationDate;
-        product.ReminderDate = model.ReminderDate;
+        product.HasLotes = product.HasLotes;
         await _productService.UpdateAsync(id, product);
 
         return Ok(product);

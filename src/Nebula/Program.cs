@@ -54,9 +54,15 @@ builder.Services.AddSingleton<HttpRequestFacturadorService>();
 
 #endregion
 
+#region Productos
+
+builder.Services.AddSingleton<ProductService>();
+builder.Services.AddSingleton<ProductLoteService>();
+
+#endregion
+
 builder.Services.AddSingleton<ReceivableService>();
 builder.Services.AddSingleton<ConfigurationService>();
-builder.Services.AddSingleton<ProductService>();
 builder.Services.AddSingleton<ContactService>();
 builder.Services.AddSingleton<UserService>();
 builder.Services.AddSingleton<CajaDiariaService>();
