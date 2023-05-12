@@ -108,6 +108,7 @@ public class ProductController : ControllerBase
             Category = model.Category,
             ControlStock = model.ControlStock,
             PathImage = model.PathImage,
+            HasLotes = false
         };
         await _productService.CreateAsync(product);
 
@@ -158,6 +159,7 @@ public class ProductController : ControllerBase
         product.Category = model.Category;
         product.ControlStock = model.ControlStock;
         product.PathImage = model.PathImage;
+        product.HasLotes = product.HasLotes;
         await _productService.UpdateAsync(id, product);
 
         return Ok(product);

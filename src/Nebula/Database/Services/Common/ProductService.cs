@@ -17,4 +17,13 @@ public class ProductService : CrudOperationService<Product>
                 Builders<Product>.Filter.Regex("Description", new BsonRegularExpression(query.ToUpper(), "i")));
         return await _collection.Find(filter).Limit(limit).ToListAsync();
     }
+
+    public async Task<bool> UpdateHasLote(string productId, bool hasLote)
+    {
+        var filter = Builders<Product>.Filter.Eq(x => x.Id, productId);
+        var update = Builders<Product>.Update.Set(x => x.HasLotes, hasLote);
+        var result = await _collection.UpdateOneAsync(filter, update);
+        return result.ModifiedCount == 1;
+    }
+
 }

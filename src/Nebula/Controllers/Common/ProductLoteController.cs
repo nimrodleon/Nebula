@@ -31,6 +31,7 @@ public class ProductLoteController : ControllerBase
     {
         model.LotNumber = model.LotNumber.ToUpper();
         await _productLoteService.CreateAsync(model);
+        await _productLoteService.UpdateProductHasLote(model.ProductId);
         return Ok(model);
     }
 
@@ -49,6 +50,7 @@ public class ProductLoteController : ControllerBase
     {
         var lote = await _productLoteService.GetByIdAsync(id);
         await _productLoteService.RemoveAsync(id);
+        await _productLoteService.UpdateProductHasLote(lote.ProductId);
         return Ok(lote);
     }
 }

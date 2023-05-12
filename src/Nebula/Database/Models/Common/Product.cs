@@ -70,4 +70,9 @@ public class Product : IGeneric
     /// Path de la imagen del producto.
     /// </summary>
     public string PathImage { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Establece si el producto tiene lotes de producción.
+    /// </summary>
+    public bool HasLotes { get; set; } = false;
 }

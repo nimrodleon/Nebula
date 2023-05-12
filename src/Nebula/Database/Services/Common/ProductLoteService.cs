@@ -6,8 +6,11 @@ namespace Nebula.Database.Services.Common;
 
 public class ProductLoteService : CrudOperationService<ProductLote>
 {
-    public ProductLoteService(IOptions<DatabaseSettings> options) : base(options)
+    private readonly ProductService _productService;
+
+    public ProductLoteService(IOptions<DatabaseSettings> options, ProductService productService) : base(options)
     {
+        _productService = productService;
     }
 
     public async Task<List<ProductLote>> GetLotesByExpirationDate(string id, string expirationDate)
@@ -25,4 +28,11 @@ public class ProductLoteService : CrudOperationService<ProductLote>
         var count = await _collection.CountDocumentsAsync(filter);
         return count;
     }
+
+    public async Task UpdateProductHasLote(string productId)
+    {
+        long countLote = await GetLoteCountByProductId(productId);
+        await _productService.UpdateHasLote(productId, countLote > 0L);
+    }
+
 }
