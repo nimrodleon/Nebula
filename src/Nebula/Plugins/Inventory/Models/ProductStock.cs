@@ -23,6 +23,11 @@ public class ProductStock : IGeneric
     public string ProductId { get; set; } = string.Empty;
 
     /// <summary>
+    /// Identificador del Lote del producto.
+    /// </summary>
+    public string ProductLoteId { get; set; } = string.Empty;
+
+    /// <summary>
     /// Tipo de Registro.
     /// </summary>
     public string Type { get; set; } = InventoryType.ENTRADA;
