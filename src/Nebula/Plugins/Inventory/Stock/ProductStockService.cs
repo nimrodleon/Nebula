@@ -23,7 +23,7 @@ public class ProductStockService : CrudOperationService<ProductStock>
         _invoiceSerieService = invoiceSerieService;
     }
 
-    public async Task<List<ProductStock>> CreateAsync(List<ProductStock> obj)
+    public async Task<List<ProductStock>> CreateManyAsync(List<ProductStock> obj)
     {
         await _collection.InsertManyAsync(obj);
         return obj;
@@ -51,6 +51,8 @@ public class ProductStockService : CrudOperationService<ProductStock>
         productStock = await CreateAsync(productStock);
         return productStock;
     }
+
+    // ----------------------------------------------------------------------------------
 
     public async Task<long> GetStockItemCajaAsync(string invoiceSerieId, string productId)
     {
@@ -92,7 +94,8 @@ public class ProductStockService : CrudOperationService<ProductStock>
         return productStockReports;
     }
 
-    public async Task<List<TransferenciaDetail>> CalcularCantidadExistenteRestanteTransferenciaAsync(List<TransferenciaDetail> transferenciaDetails, string warehouseId)
+    public async Task<List<TransferenciaDetail>> CalcularCantidadExistenteRestanteTransferenciaAsync(
+        List<TransferenciaDetail> transferenciaDetails, string warehouseId)
     {
         var productArrId = new List<string>();
         transferenciaDetails.ForEach(item => productArrId.Add(item.ProductId));
@@ -109,7 +112,8 @@ public class ProductStockService : CrudOperationService<ProductStock>
         return transferenciaDetails;
     }
 
-    public async Task<List<AjusteInventarioDetail>> CalcularCantidadExistenteAjusteInventarioAsync(List<AjusteInventarioDetail> ajusteInventarioDetails, string warehouseId)
+    public async Task<List<AjusteInventarioDetail>> CalcularCantidadExistenteAjusteInventarioAsync(
+        List<AjusteInventarioDetail> ajusteInventarioDetails, string warehouseId)
     {
         var productArrId = new List<string>();
         ajusteInventarioDetails.ForEach(item => productArrId.Add(item.ProductId));
@@ -132,14 +136,16 @@ public class ProductStockService : CrudOperationService<ProductStock>
         return await _collection.DeleteManyAsync(filter);
     }
 
-    public async Task<List<ProductStock>> GetProductStockByWarehouseIdAndProductIdAsync(string warehouseId, string productId)
+    public async Task<List<ProductStock>> GetProductStockByWarehouseIdAndProductIdAsync(string warehouseId,
+        string productId)
     {
         var builder = Builders<ProductStock>.Filter;
         var filter = builder.And(builder.Eq(x => x.WarehouseId, warehouseId), builder.Eq(x => x.ProductId, productId));
         return await _collection.Find(filter).ToListAsync();
     }
 
-    public async Task<List<ProductStock>> GetProductStockByWarehouseIdAsync(string warehouseId, List<string> productArrId)
+    public async Task<List<ProductStock>> GetProductStockByWarehouseIdAsync(string warehouseId,
+        List<string> productArrId)
     {
         var builder = Builders<ProductStock>.Filter;
         var filter = builder.And(builder.Eq(x => x.WarehouseId, warehouseId), builder.In("ProductId", productArrId));

@@ -19,7 +19,16 @@ public class ValidateStockService
     private readonly MaterialDetailService _materialDetailService;
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
 
-    public ValidateStockService(ProductStockService productStockService, InventoryNotasService inventoryNotasService, InventoryNotasDetailService inventoryNotasDetailService, TransferenciaService transferenciaService, TransferenciaDetailService transferenciaDetailService, AjusteInventarioService ajusteInventarioService, AjusteInventarioDetailService ajusteInventarioDetailService, MaterialService materialService, MaterialDetailService materialDetailService, InvoiceSaleDetailService invoiceSaleDetailService)
+    public ValidateStockService(ProductStockService productStockService,
+        InventoryNotasService inventoryNotasService,
+        InventoryNotasDetailService inventoryNotasDetailService,
+        TransferenciaService transferenciaService,
+        TransferenciaDetailService transferenciaDetailService,
+        AjusteInventarioService ajusteInventarioService,
+        AjusteInventarioDetailService ajusteInventarioDetailService,
+        MaterialService materialService,
+        MaterialDetailService materialDetailService,
+        InvoiceSaleDetailService invoiceSaleDetailService)
     {
         _productStockService = productStockService;
         _inventoryNotasService = inventoryNotasService;
@@ -49,7 +58,7 @@ public class ValidateStockService
                 Quantity = item.Demanda
             });
         });
-        await _productStockService.CreateAsync(productStocks);
+        await _productStockService.CreateManyAsync(productStocks);
         inventoryNotas.Status = InventoryStatus.VALIDADO;
         await _inventoryNotasService.UpdateAsync(inventoryNotas.Id, inventoryNotas);
         return inventoryNotas;
@@ -81,8 +90,8 @@ public class ValidateStockService
             });
         });
         transferenciaDetails = await _productStockService.CalcularCantidadExistenteRestanteTransferenciaAsync(transferenciaDetails, transferencia.WarehouseOriginId);
-        await _productStockService.CreateAsync(productStockDestino);
-        await _productStockService.CreateAsync(productStockOrigen);
+        await _productStockService.CreateManyAsync(productStockDestino);
+        await _productStockService.CreateManyAsync(productStockOrigen);
         await _transferenciaDetailService.DeleteManyAsync(transferencia.Id);
         await _transferenciaDetailService.InsertManyAsync(transferenciaDetails);
         transferencia.Status = InventoryStatus.VALIDADO;
@@ -110,7 +119,7 @@ public class ValidateStockService
                 Quantity = item.CantContada,
             });
         });
-        await _productStockService.CreateAsync(productStocks);
+        await _productStockService.CreateManyAsync(productStocks);
         await _ajusteInventarioDetailService.DeleteManyAsync(ajusteInventario.Id);
         await _ajusteInventarioDetailService.InsertManyAsync(ajusteInventarioDetails);
         ajusteInventario.Status = InventoryStatus.VALIDADO;
@@ -134,7 +143,7 @@ public class ValidateStockService
                 Quantity = item.CantUsado,
             });
         });
-        await _productStockService.CreateAsync(productStocks);
+        await _productStockService.CreateManyAsync(productStocks);
         material.Status = InventoryStatus.VALIDADO;
         await _materialService.UpdateAsync(material.Id, material);
         return material;
@@ -159,6 +168,6 @@ public class ValidateStockService
             }
         });
         if (productStocks.Count > 0)
-            await _productStockService.CreateAsync(productStocks);
+            await _productStockService.CreateManyAsync(productStocks);
     }
 }

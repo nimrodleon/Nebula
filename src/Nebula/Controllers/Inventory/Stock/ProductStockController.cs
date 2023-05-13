@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Helpers;
 using Nebula.Plugins.Inventory.Stock;
 
-namespace Nebula.Controllers.Inventory;
+namespace Nebula.Controllers.Inventory.Stock;
 
 [Authorize(Roles = AuthRoles.User)]
-[Route("api/[controller]")]
+[Route("api/Inventory/Stock/[controller]")]
 [ApiController]
 public class ProductStockController : ControllerBase
 {
@@ -17,6 +17,7 @@ public class ProductStockController : ControllerBase
         _productStockService = productStockService;
     }
 
+    [Obsolete]
     [HttpGet("StockItemCaja/{invoiceSerieId}/{productId}")]
     public async Task<IActionResult> StockItemCaja(string invoiceSerieId, string productId)
     {
@@ -24,6 +25,7 @@ public class ProductStockController : ControllerBase
         return Ok(quantity);
     }
 
+    [Obsolete]
     [HttpGet("StockItemComprobante/{warehouseId}/{productId}")]
     public async Task<IActionResult> ItemComprobante(string warehouseId, string productId)
     {

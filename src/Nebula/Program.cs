@@ -47,60 +47,60 @@ builder.Services.AddCors(options =>
 // Add services to the container.
 // AddSingleton => crea una única instancia para toda la aplicación.
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
-builder.Services.AddSingleton(typeof(CrudOperationService<>));
+builder.Services.AddScoped(typeof(CrudOperationService<>));
 
 #region FacturadorSUNAT
 
-builder.Services.AddSingleton<HttpRequestFacturadorService>();
+builder.Services.AddScoped<HttpRequestFacturadorService>();
 
 #endregion
 
 #region Productos
 
-builder.Services.AddSingleton<ProductService>();
-builder.Services.AddSingleton<ProductLoteService>();
+builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<ProductLoteService>();
 
 #endregion
 
-builder.Services.AddSingleton<ReceivableService>();
-builder.Services.AddSingleton<ConfigurationService>();
-builder.Services.AddSingleton<ContactService>();
-builder.Services.AddSingleton<UserService>();
-builder.Services.AddSingleton<CajaDiariaService>();
-builder.Services.AddSingleton<CashierDetailService>();
-builder.Services.AddSingleton<InvoiceSaleDetailService>();
-builder.Services.AddSingleton<InvoiceSaleService>();
-builder.Services.AddSingleton<TributoSaleService>();
-builder.Services.AddSingleton<DetallePagoSaleService>();
-builder.Services.AddSingleton<CashierSaleService>();
-builder.Services.AddSingleton<LocationService>();
-builder.Services.AddSingleton<LocationDetailService>();
-builder.Services.AddSingleton<MaterialService>();
-builder.Services.AddSingleton<MaterialDetailService>();
-builder.Services.AddSingleton<InventoryNotasService>();
-builder.Services.AddSingleton<InventoryNotasDetailService>();
-builder.Services.AddSingleton<TransferenciaService>();
-builder.Services.AddSingleton<TransferenciaDetailService>();
-builder.Services.AddSingleton<AjusteInventarioService>();
-builder.Services.AddSingleton<AjusteInventarioDetailService>();
-builder.Services.AddSingleton<FacturadorService>();
-builder.Services.AddSingleton<ComprobanteService>();
-builder.Services.AddSingleton<CreditNoteService>();
-builder.Services.AddSingleton<CreditNoteDetailService>();
-builder.Services.AddSingleton<TributoCreditNoteService>();
-builder.Services.AddSingleton<ConsultarValidezComprobanteService>();
+builder.Services.AddScoped<ReceivableService>();
+builder.Services.AddScoped<ConfigurationService>();
+builder.Services.AddScoped<ContactService>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<CajaDiariaService>();
+builder.Services.AddScoped<CashierDetailService>();
+builder.Services.AddScoped<InvoiceSaleDetailService>();
+builder.Services.AddScoped<InvoiceSaleService>();
+builder.Services.AddScoped<TributoSaleService>();
+builder.Services.AddScoped<DetallePagoSaleService>();
+builder.Services.AddScoped<CashierSaleService>();
+builder.Services.AddScoped<LocationService>();
+builder.Services.AddScoped<LocationDetailService>();
+builder.Services.AddScoped<MaterialService>();
+builder.Services.AddScoped<MaterialDetailService>();
+builder.Services.AddScoped<InventoryNotasService>();
+builder.Services.AddScoped<InventoryNotasDetailService>();
+builder.Services.AddScoped<TransferenciaService>();
+builder.Services.AddScoped<TransferenciaDetailService>();
+builder.Services.AddScoped<AjusteInventarioService>();
+builder.Services.AddScoped<AjusteInventarioDetailService>();
+builder.Services.AddScoped<FacturadorService>();
+builder.Services.AddScoped<ComprobanteService>();
+builder.Services.AddScoped<CreditNoteService>();
+builder.Services.AddScoped<CreditNoteDetailService>();
+builder.Services.AddScoped<TributoCreditNoteService>();
+builder.Services.AddScoped<ConsultarValidezComprobanteService>();
 
 #region PluginInventory
 
-builder.Services.AddSingleton<ProductStockService>();
-builder.Services.AddSingleton<ValidateStockService>();
+builder.Services.AddScoped<ProductStockService>();
+builder.Services.AddScoped<ValidateStockService>();
 
 #endregion
 
 #region PluginTaller
 
-builder.Services.AddSingleton<TallerRepairOrderService>();
-builder.Services.AddSingleton<TallerItemRepairOrderService>();
+builder.Services.AddScoped<TallerRepairOrderService>();
+builder.Services.AddScoped<TallerItemRepairOrderService>();
 
 #endregion
 
