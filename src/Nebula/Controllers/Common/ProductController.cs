@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Helpers;
 using Nebula.Database.Models.Common;
 using Nebula.Database.Services.Common;
-using Nebula.Database.Services.Inventory;
 using Nebula.Database.Dto.Common;
 using Nebula.Database.Dto.Inventory;
+using Nebula.Plugins.Inventory.Stock;
 
 namespace Nebula.Controllers.Common;
 

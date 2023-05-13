@@ -1,8 +1,9 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Nebula.Database.Helpers;
+using Nebula.Database.Models;
 
-namespace Nebula.Database.Models.Inventory;
+namespace Nebula.Plugins.Inventory.Models;
 
 [BsonIgnoreExtraElements]
 public class ProductStock : IGeneric

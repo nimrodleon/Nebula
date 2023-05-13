@@ -5,6 +5,7 @@ using Nebula.Database.Models.Inventory;
 using Nebula.Database.Services.Inventory;
 using Nebula.Database.Dto.Common;
 using Nebula.Database.Services.Common;
+using Nebula.Plugins.Inventory.Stock;
 
 namespace Nebula.Controllers.Inventory;
 

@@ -4,10 +4,10 @@ using Nebula.Database.Helpers;
 using Nebula.Database.Models.Sales;
 using Nebula.Database.Services.Cashier;
 using Nebula.Database.Services.Facturador;
-using Nebula.Database.Services.Inventory;
 using Nebula.Database.Services.Sales;
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Services.Common;
+using Nebula.Plugins.Inventory.Stock;
 
 namespace Nebula.Controllers.Cashier;
 

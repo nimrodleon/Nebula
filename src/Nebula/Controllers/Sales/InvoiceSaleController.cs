@@ -8,7 +8,7 @@ using Nebula.Database.Dto.Common;
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Services;
 using Nebula.Database.Models.Common;
-using Nebula.Database.Services.Inventory;
+using Nebula.Plugins.Inventory.Stock;
 
 namespace Nebula.Controllers.Sales;
 

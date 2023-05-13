@@ -4,8 +4,11 @@ using Nebula.Database.Helpers;
 using Nebula.Database.Models.Common;
 using Nebula.Database.Models.Inventory;
 using Nebula.Database.Dto.Inventory;
+using Nebula.Database;
+using Nebula.Database.Services;
+using Nebula.Plugins.Inventory.Models;
 
-namespace Nebula.Database.Services.Inventory;
+namespace Nebula.Plugins.Inventory.Stock;
 
 public class ProductStockService : CrudOperationService<ProductStock>
 {

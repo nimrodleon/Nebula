@@ -13,6 +13,7 @@ using Nebula.Database.Services.Facturador;
 using Nebula.Database.Services.Inventory;
 using Nebula.Database.Services.Sales;
 using Nebula.Plugins.Facturador;
+using Nebula.Plugins.Inventory.Stock;
 using Nebula.Plugins.Taller.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -78,8 +79,6 @@ builder.Services.AddSingleton<MaterialService>();
 builder.Services.AddSingleton<MaterialDetailService>();
 builder.Services.AddSingleton<InventoryNotasService>();
 builder.Services.AddSingleton<InventoryNotasDetailService>();
-builder.Services.AddSingleton<ProductStockService>();
-builder.Services.AddSingleton<ValidateStockService>();
 builder.Services.AddSingleton<TransferenciaService>();
 builder.Services.AddSingleton<TransferenciaDetailService>();
 builder.Services.AddSingleton<AjusteInventarioService>();
@@ -90,6 +89,13 @@ builder.Services.AddSingleton<CreditNoteService>();
 builder.Services.AddSingleton<CreditNoteDetailService>();
 builder.Services.AddSingleton<TributoCreditNoteService>();
 builder.Services.AddSingleton<ConsultarValidezComprobanteService>();
+
+#region PluginInventory
+
+builder.Services.AddSingleton<ProductStockService>();
+builder.Services.AddSingleton<ValidateStockService>();
+
+#endregion
 
 #region PluginTaller
 

@@ -1,8 +1,10 @@
 using Nebula.Database.Helpers;
 using Nebula.Database.Models.Inventory;
+using Nebula.Database.Services.Inventory;
 using Nebula.Database.Services.Sales;
+using Nebula.Plugins.Inventory.Models;
 
-namespace Nebula.Database.Services.Inventory;
+namespace Nebula.Plugins.Inventory.Stock;
 
 public class ValidateStockService
 {
