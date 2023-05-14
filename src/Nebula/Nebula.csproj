@@ -25,7 +25,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers\Taller\" />
-    <Folder Include="Plugins\Inventory\Stock\Dto\" />
   </ItemGroup>
 
 </Project>

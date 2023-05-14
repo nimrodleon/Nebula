@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Helpers;
 using Nebula.Plugins.Inventory.Stock;
 
-namespace Nebula.Controllers.Inventory.Stock;
+namespace Nebula.Controllers.Inventory;
 
 [Authorize(Roles = AuthRoles.User)]
-[Route("api/Inventory/Stock/[controller]")]
+[Route("api/Inventory/[controller]")]
 [ApiController]
 public class ProductStockController : ControllerBase
 {

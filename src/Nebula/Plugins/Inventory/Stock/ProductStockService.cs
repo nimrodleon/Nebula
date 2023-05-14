@@ -7,16 +7,17 @@ using Nebula.Database.Dto.Inventory;
 using Nebula.Database;
 using Nebula.Database.Services;
 using Nebula.Plugins.Inventory.Models;
+using Nebula.Database.Services.Common;
 
 namespace Nebula.Plugins.Inventory.Stock;
 
 public class ProductStockService : CrudOperationService<ProductStock>
 {
     private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
-    private readonly CrudOperationService<Warehouse> _warehouseService;
+    private readonly WarehouseService _warehouseService;
 
     public ProductStockService(IOptions<DatabaseSettings> options,
-        CrudOperationService<Warehouse> warehouseService,
+        WarehouseService warehouseService,
         CrudOperationService<InvoiceSerie> invoiceSerieService) : base(options)
     {
         _warehouseService = warehouseService;

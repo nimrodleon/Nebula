@@ -45,13 +45,12 @@ builder.Services.AddCors(options =>
 });
 
 // Add services to the container.
-// AddSingleton => crea una única instancia para toda la aplicación.
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
+
+#region Common
+
 builder.Services.AddScoped(typeof(CrudOperationService<>));
-
-#region FacturadorSUNAT
-
-builder.Services.AddScoped<HttpRequestFacturadorService>();
+builder.Services.AddScoped<WarehouseService>();
 
 #endregion
 
@@ -89,6 +88,12 @@ builder.Services.AddScoped<CreditNoteService>();
 builder.Services.AddScoped<CreditNoteDetailService>();
 builder.Services.AddScoped<TributoCreditNoteService>();
 builder.Services.AddScoped<ConsultarValidezComprobanteService>();
+
+#region PluginFacturadorSUNAT
+
+builder.Services.AddScoped<HttpRequestFacturadorService>();
+
+#endregion
 
 #region PluginInventory
 
