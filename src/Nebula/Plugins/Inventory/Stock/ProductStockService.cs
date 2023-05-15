@@ -8,6 +8,7 @@ using Nebula.Database;
 using Nebula.Database.Services;
 using Nebula.Plugins.Inventory.Models;
 using Nebula.Database.Services.Common;
+using Nebula.Plugins.Inventory.Stock.Dto;
 
 namespace Nebula.Plugins.Inventory.Stock;
 
@@ -30,6 +31,12 @@ public class ProductStockService : CrudOperationService<ProductStock>
         return obj;
     }
 
+    /// <summary>
+    /// Elimina varios registros de productos de la base de datos basados en los identificadores de almacén y producto especificados.
+    /// </summary>
+    /// <param name="warehouseId">El identificador del almacén</param>
+    /// <param name="productId">El identificador del producto</param>
+    /// <returns>El resultado de la operación de eliminación</returns>
     public async Task<DeleteResult> RemoveManyAsync(string warehouseId, string productId)
     {
         var filter = Builders<ProductStock>.Filter;
@@ -38,16 +45,22 @@ public class ProductStockService : CrudOperationService<ProductStock>
         return await _collection.DeleteManyAsync(dbQuery);
     }
 
-    public async Task<ProductStock> ChangeQuantity(ChangeQuantityStock model)
+    /// <summary>
+    /// Cambia la cantidad de existencia de un producto en un almacén especificado.
+    /// </summary>
+    /// <param name="requestParams">Los parámetros de solicitud para el cambio de cantidad de stock</param>
+    /// <returns>El objeto ProductStock actualizado</returns>
+    public async Task<ProductStock> ChangeQuantity(ChangeQuantityStockRequestParams requestParams)
     {
-        await RemoveManyAsync(model.WarehouseId, model.ProductId);
+        await RemoveManyAsync(requestParams.WarehouseId, requestParams.ProductId);
         var productStock = new ProductStock()
         {
             Id = string.Empty,
-            WarehouseId = model.WarehouseId,
-            ProductId = model.ProductId,
+            WarehouseId = requestParams.WarehouseId,
+            ProductId = requestParams.ProductId,
+            ProductLoteId = requestParams.ProductLoteId,
             Type = InventoryType.ENTRADA,
-            Quantity = model.Quantity,
+            Quantity = requestParams.Quantity,
         };
         productStock = await CreateAsync(productStock);
         return productStock;

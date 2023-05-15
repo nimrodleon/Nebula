@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Helpers;
 using Nebula.Plugins.Inventory.Stock;
+using Nebula.Plugins.Inventory.Stock.Dto;
 
 namespace Nebula.Controllers.Inventory;
 
@@ -25,6 +26,13 @@ public class ProductStockController : ControllerBase
     {
         var responseData = await _helperCalculateProductStockService.GetProductStockInfos(productId);
         return Ok(responseData);
+    }
+
+    [HttpPost("ChangeQuantity"), Authorize(Roles = AuthRoles.Admin)]
+    public async Task<IActionResult> ChangeQuantity([FromBody] ChangeQuantityStockRequestParams requestParams)
+    {
+        var productStock = await _productStockService.ChangeQuantity(requestParams);
+        return Ok(productStock);
     }
 
     [Obsolete]
