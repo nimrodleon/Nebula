@@ -22,6 +22,13 @@ public class ProductLoteService : CrudOperationService<ProductLote>
         return result;
     }
 
+    public async Task<List<ProductLote>> GetLotesByProductId(string productId)
+    {
+        var filter = Builders<ProductLote>.Filter.Eq(x => x.ProductId, productId);
+        var result = await _collection.Find(filter).ToListAsync();
+        return result;
+    }
+
     public async Task<long> GetLoteCountByProductId(string productId)
     {
         var filter = Builders<ProductLote>.Filter.Eq(x => x.ProductId, productId);

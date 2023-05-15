@@ -99,6 +99,7 @@ builder.Services.AddScoped<HttpRequestFacturadorService>();
 
 builder.Services.AddScoped<ProductStockService>();
 builder.Services.AddScoped<ValidateStockService>();
+builder.Services.AddScoped<IHelperCalculateProductStockService, HelperCalculateProductStockService>();
 
 #endregion
 

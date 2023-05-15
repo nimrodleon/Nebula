@@ -72,6 +72,7 @@ public class ProductStockService : CrudOperationService<ProductStock>
         return totalEntrada - totalSalida;
     }
 
+    [Obsolete]
     public async Task<List<ProductStockReport>> GetProductStockReportAsync(string id)
     {
         var warehouses = await _warehouseService.GetAsync("Name", string.Empty);
@@ -153,6 +154,12 @@ public class ProductStockService : CrudOperationService<ProductStock>
         return await _collection.Find(filter).ToListAsync();
     }
 
+    /// <summary>
+    /// Devuelve la lista de stock de productos correspondiente a un ID de producto y a una lista de IDs de almacenes.
+    /// </summary>
+    /// <param name="productId">ID del producto a buscar.</param>
+    /// <param name="warehouseArrId">lista de IDs de almacenes en los que se busca el stock del producto.</param>
+    /// <returns>Retorna una lista de objetos ProductStock que contienen información del stock del producto en los almacenes especificados.</returns>
     public async Task<List<ProductStock>> GetProductStockByProductIdAsync(string productId, List<string> warehouseArrId)
     {
         var builder = Builders<ProductStock>.Filter;
