@@ -11,10 +11,20 @@ namespace Nebula.Controllers.Inventory;
 public class ProductStockController : ControllerBase
 {
     private readonly ProductStockService _productStockService;
+    private readonly IHelperCalculateProductStockService _helperCalculateProductStockService;
 
-    public ProductStockController(ProductStockService productStockService)
+    public ProductStockController(ProductStockService productStockService,
+        IHelperCalculateProductStockService helperCalculateProductStockService)
     {
         _productStockService = productStockService;
+        _helperCalculateProductStockService = helperCalculateProductStockService;
+    }
+
+    [HttpGet("GetStockInfos/{productId}")]
+    public async Task<IActionResult> GetStockInfos(string productId)
+    {
+        var responseData = await _helperCalculateProductStockService.GetProductStockInfos(productId);
+        return Ok(responseData);
     }
 
     [Obsolete]
