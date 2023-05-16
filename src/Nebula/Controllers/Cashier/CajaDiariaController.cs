@@ -5,8 +5,6 @@ using Nebula.Database.Models.Cashier;
 using Nebula.Database.Services.Cashier;
 using Nebula.Database.Dto.Cashier;
 using Nebula.Database.Dto.Common;
-using Nebula.Database.Services;
-using Nebula.Database.Models.Common;
 using Nebula.Database.Services.Common;
 
 namespace Nebula.Controllers.Cashier;
@@ -17,12 +15,13 @@ namespace Nebula.Controllers.Cashier;
 public class CajaDiariaController : ControllerBase
 {
     private readonly CajaDiariaService _cajaDiariaService;
-    private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
+    private readonly InvoiceSerieService _invoiceSerieService;
     private readonly CashierDetailService _cashierDetailService;
     private readonly ConfigurationService _configurationService;
 
-    public CajaDiariaController(CajaDiariaService cajaDiariaService, ConfigurationService configurationService,
-        CrudOperationService<InvoiceSerie> invoiceSerieService, CashierDetailService cashierDetailService)
+    public CajaDiariaController(CajaDiariaService cajaDiariaService,
+        ConfigurationService configurationService, InvoiceSerieService invoiceSerieService,
+        CashierDetailService cashierDetailService)
     {
         _cajaDiariaService = cajaDiariaService;
         _invoiceSerieService = invoiceSerieService;
@@ -41,6 +40,8 @@ public class CajaDiariaController : ControllerBase
     public async Task<IActionResult> Show(string id)
     {
         var cajaDiaria = await _cajaDiariaService.GetByIdAsync(id);
+        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(cajaDiaria.InvoiceSerie);
+        cajaDiaria.WarehouseId = invoiceSerie.WarehouseId;
         return Ok(cajaDiaria);
     }
 

@@ -51,6 +51,7 @@ builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("D
 
 builder.Services.AddScoped(typeof(CrudOperationService<>));
 builder.Services.AddScoped<WarehouseService>();
+builder.Services.AddScoped<InvoiceSerieService>();
 
 #endregion
 

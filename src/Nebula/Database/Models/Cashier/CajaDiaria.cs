@@ -59,4 +59,11 @@ public class CajaDiaria : IGeneric
     /// Mes de registro.
     /// </summary>
     public string Month { get; set; } = DateTime.Now.ToString("MM");
+
+    /// <summary>
+    /// Identificador del Almacén.
+    /// Esta propiedad se usa solo para mostrar datos.
+    /// </summary>
+    [BsonIgnore]
+    public string WarehouseId { get; set; } = string.Empty;
 }
