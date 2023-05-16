@@ -35,6 +35,20 @@ public class ProductStockController : ControllerBase
         return Ok(productStock);
     }
 
+    [HttpGet("StockQuantity/{warehouseId}/{productId}")]
+    public async Task<IActionResult> StockQuantity(string warehouseId, string productId)
+    {
+        var result = await _productStockService.GetStockQuantityByWarehouseAsync(warehouseId, productId);
+        return Ok(result);
+    }
+
+    [HttpGet("LoteStockQuantity/{warehouseId}/{productLoteId}/{productId}")]
+    public async Task<IActionResult> LoteStockQuantity(string warehouseId, string productLoteId, string productId)
+    {
+        var result = await _productStockService.GetLoteStockQuantityByWarehouseAsync(warehouseId, productLoteId, productId);
+        return Ok(result);
+    }
+
     [Obsolete]
     [HttpGet("StockItemCaja/{invoiceSerieId}/{productId}")]
     public async Task<IActionResult> StockItemCaja(string invoiceSerieId, string productId)

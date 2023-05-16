@@ -66,12 +66,92 @@ public class ProductStockService : CrudOperationService<ProductStock>
         return productStock;
     }
 
+    /// <summary>
+    /// Calcular la cantidad neta de existencias.
+    /// </summary>
+    /// <param name="productStocks">Lista de Stocks</param>
+    /// <returns>Valor Calculado</returns>
+    private long CalculateNetStockQuantity(List<ProductStock> productStocks)
+    {
+        var totalEntrada = productStocks.Where(x => x.Type == InventoryType.ENTRADA).Sum(x => x.Quantity);
+        var totalSalida = productStocks.Where(x => x.Type == InventoryType.SALIDA).Sum(x => x.Quantity);
+        return totalEntrada - totalSalida;
+    }
+
+    /// <summary>
+    /// Retorna la cantidad de existencias por almacén.
+    /// </summary>
+    /// <param name="warehouseId">Identificador del almacén</param>
+    /// <param name="productId">Identificador del producto</param>
+    /// <returns>Cantidad de Existencias</returns>
+    public async Task<long> GetStockQuantityByWarehouseAsync(string warehouseId, string productId)
+    {
+        var productStocks = await GetProductStockListByWarehouseAsync(warehouseId, productId);
+        return CalculateNetStockQuantity(productStocks);
+    }
+
+    /// <summary>
+    /// Retorna la cantidad de existencias de un lote por almacén.
+    /// </summary>
+    /// <param name="warehouseId">Identificador del almacén</param>
+    /// <param name="productLoteId">Identificador del lote del producto</param>
+    /// <param name="productId">Identificador del producto</param>
+    /// <returns>Cantidad de Existencias</returns>
+    public async Task<long> GetLoteStockQuantityByWarehouseAsync(string warehouseId, string productLoteId, string productId)
+    {
+        var productStocks = await GetProductStockListByWarehouseAndLoteAsync(warehouseId, productLoteId, productId);
+        return CalculateNetStockQuantity(productStocks);
+    }
+
+    /// <summary>
+    /// Obtiene la lista de existencias de productos por almacén y lote.
+    /// </summary>
+    /// <param name="warehouseId">Identificador del almacén</param>
+    /// <param name="productLoteId">Identificador del producto</param>
+    /// <param name="productId">Identificador del lote</param>
+    /// <returns>Lista de existencias de productos</returns>
+    public async Task<List<ProductStock>> GetProductStockListByWarehouseAndLoteAsync(string warehouseId, string productLoteId, string productId)
+    {
+        var builder = Builders<ProductStock>.Filter;
+        var filter = builder.And(builder.Eq(x => x.WarehouseId, warehouseId),
+            builder.Eq(x => x.ProductLoteId, productLoteId),
+            builder.Eq(x => x.ProductId, productId));
+        return await _collection.Find(filter).ToListAsync();
+    }
+
+    /// <summary>
+    /// Obtiene la lista de existencias de productos por almacén.
+    /// </summary>
+    /// <param name="warehouseId">Identificador del almacén</param>
+    /// <param name="productId">Identificador del producto</param>
+    /// <returns>Lista de existencias de productos</returns>
+    public async Task<List<ProductStock>> GetProductStockListByWarehouseAsync(string warehouseId, string productId)
+    {
+        var builder = Builders<ProductStock>.Filter;
+        var filter = builder.And(builder.Eq(x => x.WarehouseId, warehouseId),
+            builder.Eq(x => x.ProductId, productId));
+        return await _collection.Find(filter).ToListAsync();
+    }
+
+    /// <summary>
+    /// Devuelve la lista de stock de productos correspondiente a un ID de producto y a una lista de IDs de almacenes.
+    /// </summary>
+    /// <param name="productId">ID del producto a buscar.</param>
+    /// <param name="warehouseArrId">lista de IDs de almacenes en los que se busca el stock del producto.</param>
+    /// <returns>Retorna una lista de objetos ProductStock que contienen información del stock del producto en los almacenes especificados.</returns>
+    public async Task<List<ProductStock>> GetProductStockListByWarehousesIdsAsync(List<string> warehouseArrId, string productId)
+    {
+        var builder = Builders<ProductStock>.Filter;
+        var filter = builder.And(builder.Eq(x => x.ProductId, productId), builder.In("WarehouseId", warehouseArrId));
+        return await _collection.Find(filter).ToListAsync();
+    }
+
     // ----------------------------------------------------------------------------------
 
     public async Task<long> GetStockItemCajaAsync(string invoiceSerieId, string productId)
     {
         var invoiceSerie = await _invoiceSerieService.GetByIdAsync(invoiceSerieId);
-        var productStocks = await GetProductStockByWarehouseIdAndProductIdAsync(invoiceSerie.WarehouseId, productId);
+        var productStocks = await GetProductStockListByWarehouseAsync(invoiceSerie.WarehouseId, productId);
         var totalEntrada = productStocks.Where(x => x.Type == InventoryType.ENTRADA).Sum(x => x.Quantity);
         var totalSalida = productStocks.Where(x => x.Type == InventoryType.SALIDA).Sum(x => x.Quantity);
         return totalEntrada - totalSalida;
@@ -79,7 +159,7 @@ public class ProductStockService : CrudOperationService<ProductStock>
 
     public async Task<long> GetStockItemComprobanteAsync(string warehouseId, string productId)
     {
-        var productStocks = await GetProductStockByWarehouseIdAndProductIdAsync(warehouseId, productId);
+        var productStocks = await GetProductStockListByWarehouseAsync(warehouseId, productId);
         var totalEntrada = productStocks.Where(x => x.Type == InventoryType.ENTRADA).Sum(x => x.Quantity);
         var totalSalida = productStocks.Where(x => x.Type == InventoryType.SALIDA).Sum(x => x.Quantity);
         return totalEntrada - totalSalida;
@@ -92,7 +172,7 @@ public class ProductStockService : CrudOperationService<ProductStock>
         var filter = Builders<ProductStock>.Filter;
         var warehouseArrId = new List<string>();
         warehouses.ForEach(item => warehouseArrId.Add(item.Id));
-        var productStocks = await GetProductStockByProductIdAsync(id, warehouseArrId);
+        var productStocks = await GetProductStockListByWarehousesIdsAsync(warehouseArrId, id);
         var productStockReports = new List<ProductStockReport>();
         warehouses.ForEach(item =>
         {
@@ -151,14 +231,6 @@ public class ProductStockService : CrudOperationService<ProductStock>
         return await _collection.DeleteManyAsync(filter);
     }
 
-    public async Task<List<ProductStock>> GetProductStockByWarehouseIdAndProductIdAsync(string warehouseId,
-        string productId)
-    {
-        var builder = Builders<ProductStock>.Filter;
-        var filter = builder.And(builder.Eq(x => x.WarehouseId, warehouseId), builder.Eq(x => x.ProductId, productId));
-        return await _collection.Find(filter).ToListAsync();
-    }
-
     public async Task<List<ProductStock>> GetProductStockByWarehouseIdAsync(string warehouseId,
         List<string> productArrId)
     {
@@ -167,16 +239,4 @@ public class ProductStockService : CrudOperationService<ProductStock>
         return await _collection.Find(filter).ToListAsync();
     }
 
-    /// <summary>
-    /// Devuelve la lista de stock de productos correspondiente a un ID de producto y a una lista de IDs de almacenes.
-    /// </summary>
-    /// <param name="productId">ID del producto a buscar.</param>
-    /// <param name="warehouseArrId">lista de IDs de almacenes en los que se busca el stock del producto.</param>
-    /// <returns>Retorna una lista de objetos ProductStock que contienen información del stock del producto en los almacenes especificados.</returns>
-    public async Task<List<ProductStock>> GetProductStockByProductIdAsync(string productId, List<string> warehouseArrId)
-    {
-        var builder = Builders<ProductStock>.Filter;
-        var filter = builder.And(builder.Eq(x => x.ProductId, productId), builder.In("WarehouseId", warehouseArrId));
-        return await _collection.Find(filter).ToListAsync();
-    }
 }
