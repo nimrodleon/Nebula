@@ -8,7 +8,13 @@ namespace Nebula.Database.Services.Common;
 
 public class ProductService : CrudOperationService<Product>
 {
-    public ProductService(IOptions<DatabaseSettings> options) : base(options) { }
+    private readonly ConfigurationService _configurationService;
+
+    public ProductService(IOptions<DatabaseSettings> options,
+        ConfigurationService configurationService) : base(options)
+    {
+        _configurationService = configurationService;
+    }
 
     public async Task<List<Product>> GetListAsync(string? query, int limit = 24)
     {
@@ -16,7 +22,18 @@ public class ProductService : CrudOperationService<Product>
         if (!string.IsNullOrEmpty(query))
             filter = Builders<Product>.Filter.Or(Builders<Product>.Filter.Eq("Barcode", query),
                 Builders<Product>.Filter.Regex("Description", new BsonRegularExpression(query.ToUpper(), "i")));
-        return await _collection.Find(filter).Limit(limit).ToListAsync();
+        var products = await _collection.Find(filter).Limit(limit).ToListAsync();
+        var configuration = await _configurationService.GetAsync();
+        if (!configuration.ModLotes) products.ForEach(item => item.HasLotes = false);
+        return products;
+    }
+
+    public override async Task<Product> GetByIdAsync(string id)
+    {
+        var product = await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
+        var configuration = await _configurationService.GetAsync();
+        if (!configuration.ModLotes) product.HasLotes = false;
+        return product;
     }
 
     public async Task<bool> UpdateHasLote(string productId, bool hasLote)

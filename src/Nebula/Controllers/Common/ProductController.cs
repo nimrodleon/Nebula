@@ -183,6 +183,7 @@ public class ProductController : ControllerBase
         return Ok(product);
     }
 
+    [Obsolete]
     [HttpGet("Stock/{id}")]
     public async Task<IActionResult> Stock(string id)
     {
