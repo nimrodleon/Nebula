@@ -9,6 +9,7 @@ using Nebula.Database.Services;
 using Nebula.Plugins.Inventory.Models;
 using Nebula.Database.Services.Common;
 using Nebula.Plugins.Inventory.Stock.Dto;
+using MongoDB.Bson;
 
 namespace Nebula.Plugins.Inventory.Stock;
 
@@ -32,15 +33,31 @@ public class ProductStockService : CrudOperationService<ProductStock>
     }
 
     /// <summary>
-    /// Elimina varios registros de productos de la base de datos basados en los identificadores de almacén y producto especificados.
+    /// Elimina registros de stocks de la base de datos basados en los identificadores de almacén y producto.
     /// </summary>
-    /// <param name="warehouseId">El identificador del almacén</param>
-    /// <param name="productId">El identificador del producto</param>
+    /// <param name="warehouseId">Identificador del almacén</param>
+    /// <param name="productId">Identificador del producto</param>
     /// <returns>El resultado de la operación de eliminación</returns>
-    public async Task<DeleteResult> RemoveManyAsync(string warehouseId, string productId)
+    public async Task<DeleteResult> DeleteAllByWarehouseAsync(string warehouseId, string productId)
     {
         var filter = Builders<ProductStock>.Filter;
         var dbQuery = filter.And(filter.Eq(x => x.WarehouseId, warehouseId),
+            filter.Eq(x => x.ProductId, productId));
+        return await _collection.DeleteManyAsync(dbQuery);
+    }
+
+    /// <summary>
+    /// Elimina registros de stocks de la base de datos basados en los identificadores de almacén lote y producto.
+    /// </summary>
+    /// <param name="warehouseId">Identificador del almacén</param>
+    /// <param name="productLoteId">Identificador de lote de producción</param>
+    /// <param name="productId">Identificador del producto</param>
+    /// <returns>El resultado de la operación de eliminación</returns>
+    public async Task<DeleteResult> DeleteAllByWarehouseAndLoteAsync(string warehouseId, string productLoteId, string productId)
+    {
+        var filter = Builders<ProductStock>.Filter;
+        var dbQuery = filter.And(filter.Eq(x => x.WarehouseId, warehouseId),
+            filter.Eq(x => x.ProductLoteId, productLoteId),
             filter.Eq(x => x.ProductId, productId));
         return await _collection.DeleteManyAsync(dbQuery);
     }
@@ -52,7 +69,11 @@ public class ProductStockService : CrudOperationService<ProductStock>
     /// <returns>El objeto ProductStock actualizado</returns>
     public async Task<ProductStock> ChangeQuantity(ChangeQuantityStockRequestParams requestParams)
     {
-        await RemoveManyAsync(requestParams.WarehouseId, requestParams.ProductId);
+        // validar si identificador de lote es un objectId valido.
+        if (ObjectId.TryParse(requestParams.ProductLoteId, out _))
+            await DeleteAllByWarehouseAndLoteAsync(requestParams.WarehouseId, requestParams.ProductLoteId, requestParams.ProductId);
+        else
+            await DeleteAllByWarehouseAsync(requestParams.WarehouseId, requestParams.ProductId);
         var productStock = new ProductStock()
         {
             Id = string.Empty,
