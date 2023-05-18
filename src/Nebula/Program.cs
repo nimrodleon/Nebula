@@ -12,9 +12,9 @@ using Nebula.Database.Services.Common;
 using Nebula.Database.Services.Facturador;
 using Nebula.Database.Services.Inventory;
 using Nebula.Database.Services.Sales;
-using Nebula.Plugins.Facturador;
-using Nebula.Plugins.Inventory.Stock;
-using Nebula.Plugins.Taller.Services;
+using Nebula.Modules.Facturador;
+using Nebula.Modules.Inventory.Stock;
+using Nebula.Modules.Taller.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 var secretKey = Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("SecretKey"));

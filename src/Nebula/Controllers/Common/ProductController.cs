@@ -4,7 +4,7 @@ using Nebula.Database.Helpers;
 using Nebula.Database.Models.Common;
 using Nebula.Database.Services.Common;
 using Nebula.Database.Dto.Common;
-using Nebula.Plugins.Inventory.Stock;
+using Nebula.Modules.Inventory.Stock;
 
 namespace Nebula.Controllers.Common;
 

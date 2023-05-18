@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Helpers;
-using Nebula.Plugins.Taller.Models;
-using Nebula.Plugins.Taller.Services;
+using Nebula.Modules.Taller.Models;
+using Nebula.Modules.Taller.Services;
 
 namespace Nebula.Controllers.Taller;
 

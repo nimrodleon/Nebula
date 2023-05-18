@@ -7,7 +7,7 @@ using Nebula.Database.Services.Facturador;
 using Nebula.Database.Services.Sales;
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Services.Common;
-using Nebula.Plugins.Inventory.Stock;
+using Nebula.Modules.Inventory.Stock;
 
 namespace Nebula.Controllers.Cashier;
 
