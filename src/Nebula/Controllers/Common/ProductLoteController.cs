@@ -6,6 +6,7 @@ using Nebula.Database.Services.Common;
 
 namespace Nebula.Controllers.Common;
 
+[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class ProductLoteController : ControllerBase
@@ -23,6 +24,13 @@ public class ProductLoteController : ControllerBase
         if (string.IsNullOrEmpty(expirationDate))
             expirationDate = DateTime.Now.ToString("yyyy-MM-dd");
         var responseData = await _productLoteService.GetLotesByExpirationDate(id, expirationDate);
+        return Ok(responseData);
+    }
+
+    [HttpGet("LotesByProduct/{id}")]
+    public async Task<IActionResult> LotesByProduct(string id)
+    {
+        var responseData = await _productLoteService.GetLotesByProductId(id);
         return Ok(responseData);
     }
 
