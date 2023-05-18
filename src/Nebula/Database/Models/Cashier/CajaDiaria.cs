@@ -16,6 +16,13 @@ public class CajaDiaria : IGeneric
     public string InvoiceSerie { get; set; } = string.Empty;
 
     /// <summary>
+    /// Identificador del Almacén.
+    /// Esta propiedad se usa solo para mostrar datos.
+    /// </summary>
+    [BsonIgnore]
+    public string WarehouseId { get; set; } = string.Empty;
+
+    /// <summary>
     /// Series de facturación.
     /// </summary>
     public string Terminal { get; set; } = string.Empty;
@@ -59,11 +66,4 @@ public class CajaDiaria : IGeneric
     /// Mes de registro.
     /// </summary>
     public string Month { get; set; } = DateTime.Now.ToString("MM");
-
-    /// <summary>
-    /// Identificador del Almacén.
-    /// Esta propiedad se usa solo para mostrar datos.
-    /// </summary>
-    [BsonIgnore]
-    public string WarehouseId { get; set; } = string.Empty;
 }
