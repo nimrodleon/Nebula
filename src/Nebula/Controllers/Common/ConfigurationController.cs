@@ -29,7 +29,8 @@ public class ConfigurationController : ControllerBase
             await _configurationService.CreateAsync();
             return Ok(await _configurationService.GetAsync());
         }
-
+        configuration.FacturadorUrl = _configuration.GetValue<string>("facturadorUrl");
+        configuration.SearchPeUrl = _configuration.GetValue<string>("searchPeUrl");
         return Ok(configuration);
     }
 

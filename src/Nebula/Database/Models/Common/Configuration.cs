@@ -84,6 +84,18 @@ public class Configuration
     public string SubscriptionId { get; set; } = string.Empty;
 
     /// <summary>
+    /// URL aplicativo facturador SUNAT.
+    /// </summary>
+    [BsonIgnore]
+    public string? FacturadorUrl { get; set; } = string.Empty;
+
+    /// <summary>
+    /// URL SearchPe base de datos contribuyentes.
+    /// </summary>
+    [BsonIgnore]
+    public string? SearchPeUrl { get; set; } = string.Empty;
+
+    /// <summary>
     /// Habilita/Deshabilita el módulo de taller.
     /// </summary>
     public bool ModTaller { get; set; } = false;
