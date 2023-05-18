@@ -87,4 +87,9 @@ public class Configuration
     /// Habilita/Deshabilita el módulo de taller.
     /// </summary>
     public bool ModTaller { get; set; } = false;
+
+    /// <summary>
+    /// Habilita/Deshabilita la gestión de inventarios por lotes.
+    /// </summary>
+    public bool ModLotes { get; set; } = false;
 }

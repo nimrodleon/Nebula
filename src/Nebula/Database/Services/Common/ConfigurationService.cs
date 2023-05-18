@@ -47,6 +47,7 @@ public class ConfigurationService
         _configuration.ContactId = configuration.ContactId;
         _configuration.DiasPlazo = configuration.DiasPlazo;
         _configuration.ModTaller = configuration.ModTaller;
+        _configuration.ModLotes = configuration.ModLotes;
         await _collection.ReplaceOneAsync(x => x.Id == "DEFAULT", _configuration);
         return _configuration;
     }
