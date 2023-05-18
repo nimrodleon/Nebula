@@ -1,5 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Nebula.Common.Models;
 
 namespace Nebula.Database.Models;
 
@@ -7,7 +8,7 @@ namespace Nebula.Database.Models;
 /// Cuentas por Cobrar.
 /// </summary>
 [BsonIgnoreExtraElements]
-public class Receivable : IGeneric
+public class Receivable : IGenericModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

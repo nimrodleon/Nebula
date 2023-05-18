@@ -5,6 +5,7 @@ using Nebula.Database.Models;
 using Nebula.Database.Models.Cashier;
 using Nebula.Database.Helpers;
 using Nebula.Database.Services.Cashier;
+using Nebula.Common;
 
 namespace Nebula.Database.Services;
 

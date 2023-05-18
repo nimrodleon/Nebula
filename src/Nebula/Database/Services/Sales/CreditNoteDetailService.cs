@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using Nebula.Common;
 using Nebula.Database.Models.Sales;
 
 namespace Nebula.Database.Services.Sales;

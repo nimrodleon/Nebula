@@ -1,15 +1,16 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Nebula.Database.Models;
+using Nebula.Common.Models;
+using Nebula.Database;
 
-namespace Nebula.Database.Services;
+namespace Nebula.Common;
 
 /// <summary>
 /// Proporciona métodos genéricos para llevar a cabo operaciones CRUD (Create, Read, Update, Delete) en cualquier colección de la base de datos MongoDB.
 /// </summary>
 /// <typeparam name="T">Tipo de objeto que se va a manipular</typeparam>
-public class CrudOperationService<T> where T : class, IGeneric
+public class CrudOperationService<T> where T : class, IGenericModel
 {
     protected readonly MongoClient mongoClient;
     protected readonly IMongoCollection<T> _collection;

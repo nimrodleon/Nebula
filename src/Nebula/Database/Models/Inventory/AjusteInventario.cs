@@ -1,11 +1,12 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Nebula.Common.Models;
 using Nebula.Database.Helpers;
 
 namespace Nebula.Database.Models.Inventory;
 
 [BsonIgnoreExtraElements]
-public class AjusteInventario : IGeneric
+public class AjusteInventario : IGenericModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

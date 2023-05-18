@@ -1,5 +1,6 @@
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
+using Nebula.Common.Models;
 
 namespace Nebula.Database.Models.Sales;
 
@@ -7,7 +8,7 @@ namespace Nebula.Database.Models.Sales;
 /// Detalles de la forma de pago al crédito.
 /// </summary>
 [BsonIgnoreExtraElements]
-public class DetallePagoSale : IGeneric
+public class DetallePagoSale : IGenericModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

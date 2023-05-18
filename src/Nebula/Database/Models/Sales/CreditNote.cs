@@ -1,11 +1,12 @@
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 using Nebula.Database.Helpers;
+using Nebula.Common.Models;
 
 namespace Nebula.Database.Models.Sales;
 
 [BsonIgnoreExtraElements]
-public class CreditNote : IGeneric
+public class CreditNote : IGenericModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

@@ -1,10 +1,11 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Nebula.Common.Models;
 
 namespace Nebula.Database.Models.Cashier;
 
 [BsonIgnoreExtraElements]
-public class CajaDiaria : IGeneric
+public class CajaDiaria : IGenericModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
@@ -14,13 +15,6 @@ public class CajaDiaria : IGeneric
     /// ID Serie de facturación.
     /// </summary>
     public string InvoiceSerie { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Identificador del Almacén.
-    /// Esta propiedad se usa solo para mostrar datos.
-    /// </summary>
-    [BsonIgnore]
-    public string WarehouseId { get; set; } = string.Empty;
 
     /// <summary>
     /// Series de facturación.
@@ -66,4 +60,11 @@ public class CajaDiaria : IGeneric
     /// Mes de registro.
     /// </summary>
     public string Month { get; set; } = DateTime.Now.ToString("MM");
+
+    /// <summary>
+    /// Identificador del Almacén.
+    /// Esta propiedad se usa solo para mostrar datos.
+    /// </summary>
+    [BsonIgnore]
+    public string WarehouseId { get; set; } = string.Empty;
 }

@@ -4,6 +4,7 @@ using Nebula.Database.Services.Common;
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Helpers;
 using Nebula.Database.Models;
+using Nebula.Common;
 
 namespace Nebula.Database.Services.Sales;
 

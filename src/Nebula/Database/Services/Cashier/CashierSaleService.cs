@@ -6,6 +6,7 @@ using Nebula.Database.Services.Common;
 using Nebula.Database.Services.Sales;
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Models;
+using Nebula.Common;
 
 namespace Nebula.Database.Services.Cashier;
 

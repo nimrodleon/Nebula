@@ -1,9 +1,10 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Nebula.Common.Models;
 
 namespace Nebula.Database.Models.Common;
 
-public class ProductLote : IGeneric
+public class ProductLote : IGenericModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

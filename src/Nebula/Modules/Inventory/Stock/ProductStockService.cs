@@ -5,11 +5,11 @@ using Nebula.Database.Models.Common;
 using Nebula.Database.Models.Inventory;
 using Nebula.Database.Dto.Inventory;
 using Nebula.Database;
-using Nebula.Database.Services;
 using Nebula.Modules.Inventory.Models;
 using Nebula.Database.Services.Common;
 using Nebula.Modules.Inventory.Stock.Dto;
 using MongoDB.Bson;
+using Nebula.Common;
 
 namespace Nebula.Modules.Inventory.Stock;
 

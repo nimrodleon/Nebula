@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Nebula.Common;
 using Nebula.Database.Models.Common;
 
 namespace Nebula.Database.Services.Common;

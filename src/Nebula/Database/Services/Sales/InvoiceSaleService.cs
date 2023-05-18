@@ -6,6 +6,7 @@ using Nebula.Database.Dto.Sales;
 using Nebula.Database.Helpers;
 using Nebula.Database.Services.Common;
 using Nebula.Modules.Facturador.XmlDigest;
+using Nebula.Common;
 
 namespace Nebula.Database.Services.Sales;
 

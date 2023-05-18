@@ -1,12 +1,12 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Nebula.Common.Models;
 using Nebula.Database.Helpers;
-using Nebula.Database.Models;
 
 namespace Nebula.Modules.Inventory.Models;
 
 [BsonIgnoreExtraElements]
-public class ProductStock : IGeneric
+public class ProductStock : IGenericModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

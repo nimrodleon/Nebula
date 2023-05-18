@@ -1,6 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using Nebula.Database.Models;
+using Nebula.Common.Models;
 
 namespace Nebula.Modules.Taller.Models;
 
@@ -8,7 +8,7 @@ namespace Nebula.Modules.Taller.Models;
 /// Item de materiales usados en la orden de reparación.
 /// </summary>
 [BsonIgnoreExtraElements]
-public class TallerItemRepairOrder : IGeneric
+public class TallerItemRepairOrder : IGenericModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

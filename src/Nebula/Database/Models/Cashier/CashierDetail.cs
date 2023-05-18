@@ -1,5 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Nebula.Common.Models;
 
 namespace Nebula.Database.Models.Cashier;
 
@@ -7,7 +8,7 @@ namespace Nebula.Database.Models.Cashier;
 /// Detalle de caja diaria.
 /// </summary>
 [BsonIgnoreExtraElements]
-public class CashierDetail : IGeneric
+public class CashierDetail : IGenericModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

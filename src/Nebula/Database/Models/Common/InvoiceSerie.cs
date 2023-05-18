@@ -1,5 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Nebula.Common.Models;
 
 namespace Nebula.Database.Models.Common;
 
@@ -7,7 +8,7 @@ namespace Nebula.Database.Models.Common;
 /// Series de facturación.
 /// </summary>
 [BsonIgnoreExtraElements]
-public class InvoiceSerie : IGeneric
+public class InvoiceSerie : IGenericModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

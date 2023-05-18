@@ -1,4 +1,5 @@
-﻿using Nebula.Database.Dto.Sales;
+﻿using Nebula.Common;
+using Nebula.Database.Dto.Sales;
 using Nebula.Database.Models.Common;
 using Nebula.Database.Models.Sales;
 using Nebula.Database.Services.Common;

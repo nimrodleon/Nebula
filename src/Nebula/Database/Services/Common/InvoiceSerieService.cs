@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using Nebula.Common;
 using Nebula.Database.Models.Common;
 
 namespace Nebula.Database.Services.Common;

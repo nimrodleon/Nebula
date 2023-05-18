@@ -2,6 +2,7 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Database.Models.Cashier;
 using Nebula.Database.Dto.Common;
+using Nebula.Common;
 
 namespace Nebula.Database.Services.Cashier;
 
