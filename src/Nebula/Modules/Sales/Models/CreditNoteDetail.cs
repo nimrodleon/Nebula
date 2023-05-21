@@ -2,7 +2,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 using Nebula.Common.Models;
 
-namespace Nebula.Database.Models.Sales;
+namespace Nebula.Modules.Sales.Models;
 
 [BsonIgnoreExtraElements]
 public class CreditNoteDetail : IGenericModel

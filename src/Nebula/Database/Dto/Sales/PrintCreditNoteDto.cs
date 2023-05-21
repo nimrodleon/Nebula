@@ -1,5 +1,5 @@
 ﻿using Nebula.Database.Models.Common;
-using Nebula.Database.Models.Sales;
+using Nebula.Modules.Sales.Models;
 
 namespace Nebula.Database.Dto.Sales;
 

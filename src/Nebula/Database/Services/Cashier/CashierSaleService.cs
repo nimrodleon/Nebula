@@ -1,12 +1,12 @@
 using Nebula.Database.Helpers;
 using Nebula.Database.Models.Cashier;
 using Nebula.Database.Models.Common;
-using Nebula.Database.Models.Sales;
 using Nebula.Database.Services.Common;
-using Nebula.Database.Services.Sales;
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Models;
 using Nebula.Common;
+using Nebula.Modules.Sales.Models;
+using Nebula.Modules.Sales;
 
 namespace Nebula.Database.Services.Cashier;
 

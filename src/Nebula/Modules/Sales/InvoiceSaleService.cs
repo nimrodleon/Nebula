@@ -1,14 +1,15 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using Nebula.Database.Models.Sales;
 using Nebula.Database.Dto.Common;
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Helpers;
 using Nebula.Database.Services.Common;
 using Nebula.Modules.Facturador.XmlDigest;
 using Nebula.Common;
+using Nebula.Modules.Sales.Models;
+using Nebula.Database;
 
-namespace Nebula.Database.Services.Sales;
+namespace Nebula.Modules.Sales;
 
 public class InvoiceSaleService : CrudOperationService<InvoiceSale>
 {

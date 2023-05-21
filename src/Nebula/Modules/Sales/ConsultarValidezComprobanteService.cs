@@ -1,10 +1,10 @@
 ﻿using Nebula.Common;
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Models.Common;
-using Nebula.Database.Models.Sales;
 using Nebula.Database.Services.Common;
+using Nebula.Modules.Sales.Models;
 
-namespace Nebula.Database.Services.Sales;
+namespace Nebula.Modules.Sales;
 
 public class ConsultarValidezComprobanteService
 {

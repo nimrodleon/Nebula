@@ -1,8 +1,8 @@
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Helpers;
-using Nebula.Database.Models.Sales;
 using Nebula.Database.Services.Common;
-using Nebula.Database.Services.Sales;
+using Nebula.Modules.Sales;
+using Nebula.Modules.Sales.Models;
 
 namespace Nebula.Database.Services.Facturador;
 

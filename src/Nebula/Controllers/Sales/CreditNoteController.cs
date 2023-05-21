@@ -4,7 +4,7 @@ using Nebula.Database.Dto.Sales;
 using Nebula.Database.Helpers;
 using Nebula.Database.Services.Common;
 using Nebula.Database.Services.Facturador;
-using Nebula.Database.Services.Sales;
+using Nebula.Modules.Sales;
 
 namespace Nebula.Controllers.Sales;
 

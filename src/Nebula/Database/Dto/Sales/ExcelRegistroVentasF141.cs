@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using ClosedXML.Excel;
 using Nebula.Database.Models.Common;
-using Nebula.Database.Models.Sales;
+using Nebula.Modules.Sales.Models;
 
 namespace Nebula.Database.Dto.Sales;
 

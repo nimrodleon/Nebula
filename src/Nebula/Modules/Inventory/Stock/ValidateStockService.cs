@@ -1,8 +1,8 @@
 using Nebula.Database.Helpers;
 using Nebula.Database.Models.Inventory;
 using Nebula.Database.Services.Inventory;
-using Nebula.Database.Services.Sales;
 using Nebula.Modules.Inventory.Models;
+using Nebula.Modules.Sales;
 
 namespace Nebula.Modules.Inventory.Stock;
 

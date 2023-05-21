@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using Nebula.Common.Models;
 using Nebula.Database.Helpers;
 
-namespace Nebula.Database.Models.Sales;
+namespace Nebula.Modules.Sales.Models;
 
 [BsonIgnoreExtraElements]
 public class InvoiceSaleDetail : IGenericModel

@@ -1,11 +1,11 @@
-using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using Nebula.Common.Models;
 
-namespace Nebula.Database.Models.Sales;
+namespace Nebula.Modules.Sales.Models;
 
 [BsonIgnoreExtraElements]
-public class TributoCreditNote : IGenericModel
+public class TributoSale : IGenericModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
@@ -14,7 +14,7 @@ public class TributoCreditNote : IGenericModel
     /// <summary>
     /// foreignKey in db.
     /// </summary>
-    public string CreditNoteId { get; set; } = string.Empty;
+    public string InvoiceSale { get; set; } = string.Empty;
 
     /// <summary>
     /// Identificador de tributo.

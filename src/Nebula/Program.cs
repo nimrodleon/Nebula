@@ -12,9 +12,9 @@ using Nebula.Database.Services.Cashier;
 using Nebula.Database.Services.Common;
 using Nebula.Database.Services.Facturador;
 using Nebula.Database.Services.Inventory;
-using Nebula.Database.Services.Sales;
 using Nebula.Modules.Facturador;
 using Nebula.Modules.Inventory.Stock;
+using Nebula.Modules.Sales;
 using Nebula.Modules.Taller.Services;
 
 var builder = WebApplication.CreateBuilder(args);

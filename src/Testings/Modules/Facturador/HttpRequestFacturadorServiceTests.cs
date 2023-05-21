@@ -4,7 +4,7 @@ using Nebula.Modules.Facturador;
 using Nebula.Modules.Facturador.Bandeja;
 using Moq;
 
-namespace Testings.Modules;
+namespace Testings.Modules.Facturador;
 
 /// <summary>
 /// Para esta prueba debe existir al menos un archivo en la carpeta DATA del facturador.

@@ -1,10 +1,11 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
+using Nebula.Database;
 using Nebula.Database.Dto.Common;
-using Nebula.Database.Models.Sales;
+using Nebula.Modules.Sales.Models;
 
-namespace Nebula.Database.Services.Sales;
+namespace Nebula.Modules.Sales;
 
 public class TributoSaleService : CrudOperationService<TributoSale>
 {

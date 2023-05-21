@@ -2,7 +2,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 using Nebula.Common.Models;
 
-namespace Nebula.Database.Models.Sales;
+namespace Nebula.Modules.Sales.Models;
 
 /// <summary>
 /// Detalles de la forma de pago al crédito.
