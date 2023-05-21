@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Helpers;
 using Nebula.Database.Services.Common;
-using Nebula.Database.Services.Facturador;
+using Nebula.Modules.Facturador;
 using Nebula.Modules.Sales;
 
 namespace Nebula.Controllers.Sales;

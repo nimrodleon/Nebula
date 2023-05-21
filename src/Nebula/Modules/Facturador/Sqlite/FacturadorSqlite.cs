@@ -1,6 +1,6 @@
 using Microsoft.Data.Sqlite;
 
-namespace Nebula.Database.Services.Facturador;
+namespace Nebula.Modules.Facturador.Sqlite;
 
 public class FacturadorSqlite
 {

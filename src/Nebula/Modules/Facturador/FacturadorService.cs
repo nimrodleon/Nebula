@@ -1,10 +1,12 @@
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Helpers;
 using Nebula.Database.Services.Common;
+using Nebula.Modules.Facturador.JsonParser;
+using Nebula.Modules.Facturador.Sqlite;
 using Nebula.Modules.Sales;
 using Nebula.Modules.Sales.Models;
 
-namespace Nebula.Database.Services.Facturador;
+namespace Nebula.Modules.Facturador;
 
 public class FacturadorService
 {

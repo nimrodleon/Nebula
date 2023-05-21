@@ -1,9 +1,10 @@
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Helpers;
+using Nebula.Modules.Facturador.Models;
 using System.Globalization;
 using System.Text.Json;
 
-namespace Nebula.Database.Services.Facturador;
+namespace Nebula.Modules.Facturador.JsonParser;
 
 public class JsonFacturaParser
 {
@@ -117,7 +118,7 @@ public class JsonFacturaParser
     public List<InvoiceDetail> detalle { get; set; } = new List<InvoiceDetail>();
     public List<Tributo> tributos { get; set; } = new List<Tributo>();
     public List<Leyenda> leyendas { get; set; } = new List<Leyenda>();
-    public FormaPago datoPago { get; set; } = new FormaPago();
+    public Models.FormaPago datoPago { get; set; } = new Models.FormaPago();
     public List<ItemFormaPago> detallePago { get; set; } = new List<ItemFormaPago>();
 
     public void CreateJson(string path)

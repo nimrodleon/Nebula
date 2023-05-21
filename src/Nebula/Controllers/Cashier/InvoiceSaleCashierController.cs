@@ -2,12 +2,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Helpers;
 using Nebula.Database.Services.Cashier;
-using Nebula.Database.Services.Facturador;
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Services.Common;
 using Nebula.Modules.Inventory.Stock;
 using Nebula.Modules.Sales.Models;
 using Nebula.Modules.Sales;
+using Nebula.Modules.Facturador;
 
 namespace Nebula.Controllers.Cashier;
 

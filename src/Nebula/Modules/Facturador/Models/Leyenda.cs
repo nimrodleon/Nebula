@@ -1,4 +1,4 @@
-namespace Nebula.Database.Services.Facturador;
+namespace Nebula.Modules.Facturador.Models;
 
 public class Leyenda
 {

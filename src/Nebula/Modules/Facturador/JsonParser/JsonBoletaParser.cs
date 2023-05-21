@@ -1,46 +1,44 @@
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Helpers;
+using Nebula.Modules.Facturador.Models;
 using System.Globalization;
 using System.Text.Json;
 
-namespace Nebula.Database.Services.Facturador;
+namespace Nebula.Modules.Facturador.JsonParser;
 
-public class JsonCreditNoteParser
+public class JsonBoletaParser
 {
-    public JsonCreditNoteParser(CreditNoteDto dto)
+    public JsonBoletaParser(InvoiceSaleDto dto)
     {
         var numberFormatInfo = new CultureInfo("en-US", false).NumberFormat;
         numberFormatInfo.NumberGroupSeparator = string.Empty;
         // cabecera.
-        cabecera.tipOperacion = dto.CreditNote.TipOperacion;
-        cabecera.fecEmision = dto.CreditNote.FecEmision;
-        cabecera.horEmision = dto.CreditNote.HorEmision;
-        cabecera.codLocalEmisor = dto.CreditNote.CodLocalEmisor;
-        cabecera.tipDocUsuario = dto.CreditNote.TipDocUsuario.Split(":")[0];
-        cabecera.numDocUsuario = dto.CreditNote.NumDocUsuario.Trim();
-        cabecera.rznSocialUsuario = dto.CreditNote.RznSocialUsuario.Trim();
-        cabecera.tipMoneda = dto.CreditNote.TipMoneda;
-        cabecera.codMotivo = dto.CreditNote.CodMotivo;
-        cabecera.desMotivo = dto.CreditNote.DesMotivo;
-        cabecera.tipDocAfectado = dto.CreditNote.TipDocAfectado;
-        cabecera.numDocAfectado = dto.CreditNote.NumDocAfectado;
-        cabecera.sumTotTributos = dto.CreditNote.SumTotTributos.ToString("N2", numberFormatInfo);
-        cabecera.sumTotValVenta = dto.CreditNote.SumTotValVenta.ToString("N2", numberFormatInfo);
-        cabecera.sumPrecioVenta = dto.CreditNote.SumPrecioVenta.ToString("N2", numberFormatInfo);
-        cabecera.sumImpVenta = dto.CreditNote.SumImpVenta.ToString("N2", numberFormatInfo);
+        cabecera.tipOperacion = dto.InvoiceSale.TipOperacion;
+        cabecera.fecEmision = dto.InvoiceSale.FecEmision;
+        cabecera.horEmision = dto.InvoiceSale.HorEmision;
+        cabecera.fecVencimiento = dto.InvoiceSale.FecVencimiento;
+        cabecera.codLocalEmisor = dto.InvoiceSale.CodLocalEmisor;
+        cabecera.tipDocUsuario = dto.InvoiceSale.TipDocUsuario.Split(":")[0];
+        cabecera.numDocUsuario = dto.InvoiceSale.NumDocUsuario.Trim();
+        cabecera.rznSocialUsuario = dto.InvoiceSale.RznSocialUsuario.Trim();
+        cabecera.tipMoneda = dto.InvoiceSale.TipMoneda;
+        cabecera.sumTotTributos = dto.InvoiceSale.SumTotTributos.ToString("N2", numberFormatInfo);
+        cabecera.sumTotValVenta = dto.InvoiceSale.SumTotValVenta.ToString("N2", numberFormatInfo);
+        cabecera.sumPrecioVenta = dto.InvoiceSale.SumPrecioVenta.ToString("N2", numberFormatInfo);
+        cabecera.sumImpVenta = dto.InvoiceSale.SumImpVenta.ToString("N2", numberFormatInfo);
         // adicionales de cabecera.
-        if (dto.CreditNote.CodUbigeoCliente.Trim().Length == 6)
+        if (dto.InvoiceSale.CodUbigeoCliente.Length == 6)
         {
             cabecera.adicionalCabecera = new AdicionalCabecera()
             {
                 codPaisCliente = "PE",
-                codUbigeoCliente = dto.CreditNote.CodUbigeoCliente.Trim(),
-                desDireccionCliente = dto.CreditNote.DesDireccionCliente.Trim(),
+                codUbigeoCliente = dto.InvoiceSale.CodUbigeoCliente,
+                desDireccionCliente = dto.InvoiceSale.DesDireccionCliente,
             };
         }
 
         // detalle.
-        dto.CreditNoteDetails.ForEach(item =>
+        dto.InvoiceSaleDetails.ForEach(item =>
         {
             detalle.Add(new InvoiceDetail
             {
@@ -74,7 +72,7 @@ public class JsonCreditNoteParser
             });
         });
         // tributos.
-        dto.TributosCreditNote.ForEach(item =>
+        dto.TributoSales.ForEach(item =>
         {
             tributos.Add(new Tributo
             {
@@ -88,11 +86,11 @@ public class JsonCreditNoteParser
         leyendas.Add(new Leyenda
         {
             codLeyenda = "1000",
-            desLeyenda = new NumberToLetters(dto.CreditNote.SumImpVenta).ToString(),
+            desLeyenda = new NumberToLetters(dto.InvoiceSale.SumImpVenta).ToString(),
         });
     }
 
-    public CreditNoteFact cabecera { get; set; } = new CreditNoteFact();
+    public Invoice cabecera { get; set; } = new Invoice();
     public List<InvoiceDetail> detalle { get; set; } = new List<InvoiceDetail>();
     public List<Tributo> tributos { get; set; } = new List<Tributo>();
     public List<Leyenda> leyendas { get; set; } = new List<Leyenda>();
