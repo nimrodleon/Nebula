@@ -5,7 +5,6 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Nebula.Common;
-using Nebula.Database;
 using Nebula.Database.Dto.Common;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Cashier;

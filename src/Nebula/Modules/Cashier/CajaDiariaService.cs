@@ -3,7 +3,6 @@ using MongoDB.Driver;
 using Nebula.Database.Dto.Common;
 using Nebula.Common;
 using Nebula.Modules.Cashier.Models;
-using Nebula.Database;
 
 namespace Nebula.Modules.Cashier;
 

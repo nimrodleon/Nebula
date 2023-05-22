@@ -1,4 +1,4 @@
-namespace Nebula.Database;
+namespace Nebula.Common;
 
 public class DatabaseSettings
 {

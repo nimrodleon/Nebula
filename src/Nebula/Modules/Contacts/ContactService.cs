@@ -2,7 +2,6 @@ using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Nebula.Common;
-using Nebula.Database;
 using Nebula.Modules.Contacts.Models;
 
 namespace Nebula.Modules.Contacts;

@@ -1,7 +1,7 @@
 using DeviceId;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using Nebula.Database;
+using Nebula.Common;
 using Nebula.Database.Dto;
 using Nebula.Modules.Configurations.Models;
 using System.Security.Cryptography;
