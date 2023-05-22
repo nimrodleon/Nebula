@@ -10,6 +10,7 @@ using Nebula.Database.Dto.Common;
 using Nebula.Database.Services.Common;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Cashier;
+using Nebula.Modules.Contacts;
 using Nebula.Modules.Facturador;
 using Nebula.Modules.Finanzas;
 using Nebula.Modules.Inventory.Ajustes;

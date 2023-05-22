@@ -2,9 +2,10 @@ using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Nebula.Common;
-using Nebula.Database.Models.Common;
+using Nebula.Database;
+using Nebula.Modules.Contacts.Models;
 
-namespace Nebula.Database.Services.Common;
+namespace Nebula.Modules.Contacts;
 
 public class ContactService : CrudOperationService<Contact>
 {
