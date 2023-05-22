@@ -1,4 +1,4 @@
-namespace Nebula.Database.Helpers;
+namespace Nebula.Modules.Cashier.Helpers;
 
 public static class TypeOperationCaja
 {

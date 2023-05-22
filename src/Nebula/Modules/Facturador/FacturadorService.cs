@@ -1,6 +1,6 @@
 using Nebula.Database.Dto.Sales;
-using Nebula.Database.Helpers;
 using Nebula.Modules.Configurations;
+using Nebula.Modules.Facturador.Helpers;
 using Nebula.Modules.Facturador.JsonParser;
 using Nebula.Modules.Facturador.Sqlite;
 using Nebula.Modules.Sales;

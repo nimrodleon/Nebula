@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
-namespace Nebula.Database.Helpers;
+namespace Nebula.Modules.Auth.Helpers;
 
 /// <summary>
 /// Fuente: https://github.com/dotnet/AspNetCore/blob/main/src/Identity/Extensions.Core/src/PasswordHasher.cs

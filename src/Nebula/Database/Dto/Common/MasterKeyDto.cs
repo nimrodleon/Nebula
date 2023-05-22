@@ -1,5 +1,5 @@
 ﻿using System.Security.Cryptography;
-using Nebula.Database.Helpers;
+using Nebula.Modules.Auth.Helpers;
 
 namespace Nebula.Database.Dto.Common;
 

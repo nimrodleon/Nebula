@@ -1,5 +1,5 @@
-using Nebula.Database.Helpers;
 using Nebula.Modules.Configurations.Models;
+using Nebula.Modules.Inventory.Helpers;
 using Nebula.Modules.Inventory.Models;
 using Nebula.Modules.Inventory.Stock.Helpers;
 using Nebula.Modules.Products.Models;

@@ -3,10 +3,11 @@ using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Database.Dto.Common;
 using Nebula.Database.Dto.Sales;
-using Nebula.Database.Helpers;
 using Nebula.Modules.Configurations;
 using Nebula.Modules.Configurations.Models;
+using Nebula.Modules.Facturador.Helpers;
 using Nebula.Modules.Facturador.XmlDigest;
+using Nebula.Modules.Sales.Helpers;
 using Nebula.Modules.Sales.Models;
 
 namespace Nebula.Modules.Sales;

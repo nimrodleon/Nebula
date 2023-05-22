@@ -1,5 +1,5 @@
-using Nebula.Database.Helpers;
 using Nebula.Modules.Configurations.Models;
+using Nebula.Modules.Sales.Helpers;
 using Nebula.Modules.Sales.Models;
 
 namespace Nebula.Database.Dto.Sales;

@@ -1,4 +1,4 @@
-namespace Nebula.Database.Helpers;
+namespace Nebula.Modules.Auth.Helpers;
 
 /// <summary>
 /// Specifies the results for password verification.

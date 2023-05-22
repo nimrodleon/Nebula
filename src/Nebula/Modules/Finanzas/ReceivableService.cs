@@ -1,11 +1,11 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Database.Dto.Common;
-using Nebula.Database.Helpers;
 using Nebula.Common;
 using Nebula.Modules.Cashier.Models;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Finanzas.Models;
+using Nebula.Modules.Cashier.Helpers;
 
 namespace Nebula.Modules.Finanzas;
 

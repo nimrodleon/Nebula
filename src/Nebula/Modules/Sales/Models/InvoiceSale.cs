@@ -1,7 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Nebula.Common.Models;
-using Nebula.Database.Helpers;
+using Nebula.Modules.Facturador.Helpers;
 
 namespace Nebula.Modules.Sales.Models;
 

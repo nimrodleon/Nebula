@@ -1,4 +1,4 @@
-namespace Nebula.Database.Helpers;
+namespace Nebula.Modules.Products.Helpers;
 
 public static class TipoControlStock
 {

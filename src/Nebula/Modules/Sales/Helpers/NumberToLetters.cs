@@ -1,4 +1,4 @@
-namespace Nebula.Database.Helpers;
+namespace Nebula.Modules.Sales.Helpers;
 
 public class NumberToLetters
 {
@@ -50,7 +50,7 @@ public class NumberToLetters
             num2Text = ConvertNumber(Math.Truncate(value / 10) * 10) + " Y " + ConvertNumber(value % 10);
         else if (value == 100) num2Text = "CIEN";
         else if (value < 200) num2Text = "CIENTO " + ConvertNumber(value - 100);
-        else if ((value == 200) || (value == 300) || (value == 400) || (value == 600) || (value == 800))
+        else if (value == 200 || value == 300 || value == 400 || value == 600 || value == 800)
             num2Text = ConvertNumber(Math.Truncate(value / 100)) + "CIENTOS";
         else if (value == 500) num2Text = "QUINIENTOS";
         else if (value == 700) num2Text = "SETECIENTOS";
@@ -62,7 +62,7 @@ public class NumberToLetters
         else if (value < 1000000)
         {
             num2Text = ConvertNumber(Math.Truncate(value / 1000)) + " MIL";
-            if ((value % 1000) > 0)
+            if (value % 1000 > 0)
             {
                 num2Text = num2Text + " " + ConvertNumber(value % 1000);
             }
@@ -78,7 +78,7 @@ public class NumberToLetters
         else if (value < 1000000000000)
         {
             num2Text = ConvertNumber(Math.Truncate(value / 1000000)) + " MILLONES ";
-            if ((value - Math.Truncate(value / 1000000) * 1000000) > 0)
+            if (value - Math.Truncate(value / 1000000) * 1000000 > 0)
             {
                 num2Text = num2Text + " " + ConvertNumber(value - Math.Truncate(value / 1000000) * 1000000);
             }
@@ -89,7 +89,7 @@ public class NumberToLetters
         else
         {
             num2Text = ConvertNumber(Math.Truncate(value / 1000000000000)) + " BILLONES";
-            if ((value - Math.Truncate(value / 1000000000000) * 1000000000000) > 0)
+            if (value - Math.Truncate(value / 1000000000000) * 1000000000000 > 0)
             {
                 num2Text = num2Text + " " +
                            ConvertNumber(value - Math.Truncate(value / 1000000000000) * 1000000000000);

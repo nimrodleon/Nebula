@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Database.Helpers;
+using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Cashier;
+using Nebula.Modules.Cashier.Helpers;
 using Nebula.Modules.Cashier.Models;
 using Nebula.Modules.Configurations;
 

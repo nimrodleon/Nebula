@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Nebula.Database.Dto.Common;
 using Nebula.Database.Dto.Finance;
-using Nebula.Database.Helpers;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Finanzas.Models;
 using Nebula.Modules.Finanzas;
 using Nebula.Modules.Configurations;
+using Nebula.Modules.Auth.Helpers;
 
 namespace Nebula.Controllers
 {

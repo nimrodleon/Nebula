@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Dto.Sales;
-using Nebula.Database.Helpers;
+using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Configurations;
 using Nebula.Modules.Facturador;
+using Nebula.Modules.Facturador.Helpers;
 using Nebula.Modules.Sales;
 
 namespace Nebula.Controllers.Sales;

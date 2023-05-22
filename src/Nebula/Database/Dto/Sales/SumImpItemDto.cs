@@ -1,4 +1,4 @@
-using Nebula.Database.Helpers;
+using Nebula.Modules.Sales.Helpers;
 
 namespace Nebula.Database.Dto.Sales;
 

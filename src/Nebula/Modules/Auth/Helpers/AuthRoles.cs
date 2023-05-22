@@ -1,4 +1,4 @@
-namespace Nebula.Database.Helpers;
+namespace Nebula.Modules.Auth.Helpers;
 
 public static class AuthRoles
 {

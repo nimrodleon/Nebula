@@ -1,4 +1,4 @@
-namespace Nebula.Database.Helpers;
+namespace Nebula.Modules.Inventory.Helpers;
 
 public class InventoryType
 {

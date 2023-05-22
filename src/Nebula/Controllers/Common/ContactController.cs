@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Database.Helpers;
 using Nebula.Database.Dto.Common;
 using Nebula.Modules.Sales;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Contacts.Models;
 using Nebula.Modules.Contacts;
+using Nebula.Modules.Auth.Helpers;
 
 namespace Nebula.Controllers.Common;
 

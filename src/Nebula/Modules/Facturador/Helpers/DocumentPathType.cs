@@ -1,4 +1,4 @@
-namespace Nebula.Database.Helpers;
+namespace Nebula.Modules.Facturador.Helpers;
 
 public static class DocumentPathType
 {

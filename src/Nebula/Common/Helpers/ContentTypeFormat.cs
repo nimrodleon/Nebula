@@ -1,4 +1,4 @@
-﻿namespace Nebula.Database.Helpers;
+﻿namespace Nebula.Common.Helpers;
 
 /// <summary>
 /// Formatos de Tipos de Contenido.

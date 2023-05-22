@@ -1,4 +1,4 @@
-﻿namespace Nebula.Database.Helpers;
+﻿namespace Nebula.Modules.Sales.Helpers;
 
 /// <summary>
 /// Tipo de Emisión Electrónica.

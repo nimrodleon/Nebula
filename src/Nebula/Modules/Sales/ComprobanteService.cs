@@ -1,11 +1,11 @@
 using Nebula.Database.Dto.Sales;
-using Nebula.Database.Helpers;
 using Nebula.Common;
 using Nebula.Modules.Sales.Models;
 using Nebula.Modules.Finanzas.Models;
 using Nebula.Modules.Finanzas;
 using Nebula.Modules.Configurations.Models;
 using Nebula.Modules.Configurations;
+using Nebula.Modules.Cashier.Helpers;
 
 namespace Nebula.Modules.Sales;
 

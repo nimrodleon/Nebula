@@ -1,7 +1,7 @@
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
-using Nebula.Database.Helpers;
 using Nebula.Common.Models;
+using Nebula.Modules.Inventory.Helpers;
 
 namespace Nebula.Modules.Inventory.Models;
 
