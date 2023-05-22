@@ -2,7 +2,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 using Nebula.Common.Models;
 
-namespace Nebula.Database.Models.Inventory;
+namespace Nebula.Modules.Inventory.Models;
 
 [BsonIgnoreExtraElements]
 public class MaterialDetail : IGenericModel

@@ -3,17 +3,17 @@ using MongoDB.Bson.Serialization.Attributes;
 using Nebula.Common.Models;
 using Nebula.Database.Helpers;
 
-namespace Nebula.Database.Models.Inventory;
+namespace Nebula.Modules.Inventory.Models;
 
 [BsonIgnoreExtraElements]
-public class AjusteInventario : IGenericModel
+public class InventoryNotas : IGenericModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
-    /// Nombre del Usuario.
+    /// Nombre de Usuario.
     /// </summary>
     public string User { get; set; } = string.Empty;
 
@@ -28,17 +28,22 @@ public class AjusteInventario : IGenericModel
     public string WarehouseName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Identificador de la Ubicación.
+    /// Identificador de Contacto.
     /// </summary>
-    public string LocationId { get; set; } = string.Empty;
+    public string ContactId { get; set; } = string.Empty;
 
     /// <summary>
-    /// Nombre de la Ubicación.
+    /// Nombre de Contacto.
     /// </summary>
-    public string LocationName { get; set; } = string.Empty;
+    public string ContactName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Estado del Iventario.
+    /// Tipo de Inventario. ENTRADA | SALIDA
+    /// </summary>
+    public string Type { get; set; } = InventoryType.ENTRADA;
+
+    /// <summary>
+    /// Estado del Inventario.
     /// </summary>
     public string Status { get; set; } = InventoryStatus.BORRADOR;
 

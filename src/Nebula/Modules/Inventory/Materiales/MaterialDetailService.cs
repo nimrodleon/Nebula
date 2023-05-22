@@ -1,9 +1,10 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
-using Nebula.Database.Models.Inventory;
+using Nebula.Database;
+using Nebula.Modules.Inventory.Models;
 
-namespace Nebula.Database.Services.Inventory;
+namespace Nebula.Modules.Inventory.Materiales;
 
 public class MaterialDetailService : CrudOperationService<MaterialDetail>
 {

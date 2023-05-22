@@ -2,7 +2,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Nebula.Common.Models;
 
-namespace Nebula.Database.Models.Inventory;
+namespace Nebula.Modules.Inventory.Models;
 
 [BsonIgnoreExtraElements]
 public class Location : IGenericModel

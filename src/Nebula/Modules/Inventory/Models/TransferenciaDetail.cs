@@ -2,19 +2,19 @@ using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 using Nebula.Common.Models;
 
-namespace Nebula.Database.Models.Inventory;
+namespace Nebula.Modules.Inventory.Models;
 
 [BsonIgnoreExtraElements]
-public class InventoryNotasDetail : IGenericModel
+public class TransferenciaDetail : IGenericModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
-    /// Clave foranea NotaId.
+    /// Clave foranea TransferenciaId.
     /// </summary>
-    public string InventoryNotasId { get; set; } = string.Empty;
+    public string TransferenciaId { get; set; } = string.Empty;
 
     /// <summary>
     /// Identificador del Producto.
@@ -27,7 +27,17 @@ public class InventoryNotasDetail : IGenericModel
     public string ProductName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Cantidad Requerida.
+    /// Cantidad Existente.
     /// </summary>
-    public int Demanda { get; set; }
+    public long CantExistente { get; set; }
+
+    /// <summary>
+    /// Cantidad Transferido.
+    /// </summary>
+    public long CantTransferido { get; set; }
+
+    /// <summary>
+    /// Cantidad Restante.
+    /// </summary>
+    public long CantRestante { get; set; }
 }

@@ -1,11 +1,12 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
+using Nebula.Database;
 using Nebula.Database.Dto.Inventory;
-using Nebula.Database.Models.Inventory;
+using Nebula.Modules.Inventory.Models;
 using Nebula.Modules.Inventory.Stock;
 
-namespace Nebula.Database.Services.Inventory;
+namespace Nebula.Modules.Inventory.Locations;
 
 public class LocationService : CrudOperationService<Location>
 {

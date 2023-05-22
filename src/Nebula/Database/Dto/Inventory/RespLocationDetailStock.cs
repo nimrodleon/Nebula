@@ -1,4 +1,4 @@
-using Nebula.Database.Models.Inventory;
+using Nebula.Modules.Inventory.Models;
 
 namespace Nebula.Database.Dto.Inventory;
 

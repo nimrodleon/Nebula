@@ -1,49 +1,49 @@
-using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
-using Nebula.Database.Helpers;
+using MongoDB.Bson.Serialization.Attributes;
 using Nebula.Common.Models;
+using Nebula.Database.Helpers;
 
-namespace Nebula.Database.Models.Inventory;
+namespace Nebula.Modules.Inventory.Models;
 
 [BsonIgnoreExtraElements]
-public class Material : IGenericModel
+public class AjusteInventario : IGenericModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
-    /// Usuario Autentificado.
+    /// Nombre del Usuario.
     /// </summary>
     public string User { get; set; } = string.Empty;
 
     /// <summary>
-    /// Identificador de Contacto.
+    /// Identificador del Almacén.
     /// </summary>
-    public string ContactId { get; set; } = string.Empty;
+    public string WarehouseId { get; set; } = string.Empty;
 
     /// <summary>
-    /// Nombre de Contacto.
+    /// Nombre del Almacén.
     /// </summary>
-    public string ContactName { get; set; } = string.Empty;
+    public string WarehouseName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Identificador del Trabajador.
+    /// Identificador de la Ubicación.
     /// </summary>
-    public string EmployeeId { get; set; } = string.Empty;
+    public string LocationId { get; set; } = string.Empty;
 
     /// <summary>
-    /// Nombre del Trabajador.
+    /// Nombre de la Ubicación.
     /// </summary>
-    public string EmployeeName { get; set; } = string.Empty;
+    public string LocationName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Estado del Inventario.
+    /// Estado del Iventario.
     /// </summary>
     public string Status { get; set; } = InventoryStatus.BORRADOR;
 
     /// <summary>
-    /// Comentario del Inventario.
+    /// Observación.
     /// </summary>
     public string Remark { get; set; } = string.Empty;
 

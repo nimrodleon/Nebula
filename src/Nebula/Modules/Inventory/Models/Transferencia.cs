@@ -1,12 +1,12 @@
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using Nebula.Common.Models;
+using MongoDB.Bson;
 using Nebula.Database.Helpers;
+using Nebula.Common.Models;
 
-namespace Nebula.Database.Models.Inventory;
+namespace Nebula.Modules.Inventory.Models;
 
 [BsonIgnoreExtraElements]
-public class InventoryNotas : IGenericModel
+public class Transferencia : IGenericModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
@@ -18,32 +18,27 @@ public class InventoryNotas : IGenericModel
     public string User { get; set; } = string.Empty;
 
     /// <summary>
-    /// Identificador del Almacén.
+    /// Identificador Almacén Origen.
     /// </summary>
-    public string WarehouseId { get; set; } = string.Empty;
+    public string WarehouseOriginId { get; set; } = string.Empty;
 
     /// <summary>
-    /// Nombre del Almacén.
+    /// Nombre Almacén Origen.
     /// </summary>
-    public string WarehouseName { get; set; } = string.Empty;
+    public string WarehouseOriginName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Identificador de Contacto.
+    /// Identificador Almacén Destino.
     /// </summary>
-    public string ContactId { get; set; } = string.Empty;
+    public string WarehouseTargetId { get; set; } = string.Empty;
 
     /// <summary>
-    /// Nombre de Contacto.
+    /// Nombre Almacén Destino.
     /// </summary>
-    public string ContactName { get; set; } = string.Empty;
+    public string WarehouseTargetName { get; set; } = string.Empty;
 
     /// <summary>
-    /// Tipo de Inventario. ENTRADA | SALIDA
-    /// </summary>
-    public string Type { get; set; } = InventoryType.ENTRADA;
-
-    /// <summary>
-    /// Estado del Inventario.
+    /// Estado Inventario.
     /// </summary>
     public string Status { get; set; } = InventoryStatus.BORRADOR;
 

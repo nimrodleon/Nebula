@@ -9,10 +9,14 @@ using Nebula.Database;
 using Nebula.Database.Dto.Common;
 using Nebula.Database.Services;
 using Nebula.Database.Services.Common;
-using Nebula.Database.Services.Inventory;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Facturador;
+using Nebula.Modules.Inventory.Ajustes;
+using Nebula.Modules.Inventory.Locations;
+using Nebula.Modules.Inventory.Materiales;
+using Nebula.Modules.Inventory.Notas;
 using Nebula.Modules.Inventory.Stock;
+using Nebula.Modules.Inventory.Transferencias;
 using Nebula.Modules.Sales;
 using Nebula.Modules.Taller.Services;
 
