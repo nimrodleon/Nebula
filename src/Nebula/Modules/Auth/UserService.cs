@@ -2,9 +2,10 @@ using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Nebula.Common;
-using Nebula.Database.Models.Common;
+using Nebula.Database;
+using Nebula.Modules.Auth.Models;
 
-namespace Nebula.Database.Services.Common;
+namespace Nebula.Modules.Auth;
 
 public class UserService : CrudOperationService<User>
 {

@@ -2,7 +2,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Nebula.Common.Models;
 
-namespace Nebula.Database.Models.Common;
+namespace Nebula.Modules.Auth.Models;
 
 [BsonIgnoreExtraElements]
 public class User : IGenericModel
