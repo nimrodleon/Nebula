@@ -2,7 +2,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Nebula.Common.Models;
 
-namespace Nebula.Database.Models;
+namespace Nebula.Modules.Finanzas.Models;
 
 /// <summary>
 /// Cuentas por Cobrar.

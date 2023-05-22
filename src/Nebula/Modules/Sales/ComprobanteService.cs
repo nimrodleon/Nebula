@@ -2,10 +2,10 @@ using Nebula.Database.Models.Common;
 using Nebula.Database.Services.Common;
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Helpers;
-using Nebula.Database.Models;
 using Nebula.Common;
 using Nebula.Modules.Sales.Models;
-using Nebula.Database.Services;
+using Nebula.Modules.Finanzas.Models;
+using Nebula.Modules.Finanzas;
 
 namespace Nebula.Modules.Sales;
 

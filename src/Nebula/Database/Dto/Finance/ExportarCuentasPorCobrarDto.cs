@@ -1,5 +1,5 @@
 ﻿using ClosedXML.Excel;
-using Nebula.Database.Models;
+using Nebula.Modules.Finanzas.Models;
 
 namespace Nebula.Database.Dto.Finance;
 

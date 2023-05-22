@@ -1,13 +1,14 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Database.Dto.Common;
-using Nebula.Database.Models;
 using Nebula.Database.Helpers;
 using Nebula.Common;
 using Nebula.Modules.Cashier.Models;
 using Nebula.Modules.Cashier;
+using Nebula.Modules.Finanzas.Models;
+using Nebula.Database;
 
-namespace Nebula.Database.Services;
+namespace Nebula.Modules.Finanzas;
 
 public class ReceivableService : CrudOperationService<Receivable>
 {
@@ -59,7 +60,7 @@ public class ReceivableService : CrudOperationService<Receivable>
             model.Year = cargo.Year;
             var abonos = await GetAbonosAsync(model.ReceivableId);
             var totalAbonos = abonos.Sum(x => x.Abono) + model.Abono;
-            if ((cargo.Cargo - totalAbonos) > 0)
+            if (cargo.Cargo - totalAbonos > 0)
             {
                 await CreateAsync(model);
                 if (model.CajaDiaria != "-")
@@ -81,7 +82,7 @@ public class ReceivableService : CrudOperationService<Receivable>
         var cargo = await GetByIdAsync(abono.ReceivableId);
         var abonos = await GetAbonosAsync(cargo.Id);
         var totalAbonos = abonos.Sum(x => x.Abono) - abono.Abono;
-        if ((cargo.Cargo - totalAbonos) > 0)
+        if (cargo.Cargo - totalAbonos > 0)
         {
             await RemoveAsync(abono.Id);
             cargo.Status = "PENDIENTE";
