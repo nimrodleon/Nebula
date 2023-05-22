@@ -1,13 +1,14 @@
 using DeviceId;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using Nebula.Database;
 using Nebula.Database.Dto;
-using Nebula.Database.Models.Common;
+using Nebula.Modules.Configurations.Models;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 
-namespace Nebula.Database.Services.Common;
+namespace Nebula.Modules.Configurations;
 
 public class ConfigurationService
 {
@@ -83,7 +84,7 @@ public class ConfigurationService
         var machine = GetMachineUUID();
         HttpClient httpClient = new HttpClient();
         string URL = $"https://rd4lab.com/rbot/api/subscription/machine/{subscriptionId}";
-        using StringContent jsonContent = new(JsonSerializer.Serialize(new { machine = machine }), Encoding.UTF8,
+        using StringContent jsonContent = new(JsonSerializer.Serialize(new { machine }), Encoding.UTF8,
             "application/json");
         using HttpResponseMessage response = await httpClient.PostAsync(URL, jsonContent);
         string jsonResponse = await response.Content.ReadAsStringAsync();
@@ -95,7 +96,7 @@ public class ConfigurationService
         var machine = GetMachineUUID();
         HttpClient httpClient = new HttpClient();
         string URL = $"https://rd4lab.com/rbot/api/subscription/validation/{subscriptionId}";
-        using StringContent jsonContent = new(JsonSerializer.Serialize(new { machine = machine }), Encoding.UTF8,
+        using StringContent jsonContent = new(JsonSerializer.Serialize(new { machine }), Encoding.UTF8,
             "application/json");
         using HttpResponseMessage response = await httpClient.PostAsync(URL, jsonContent);
         string jsonResponse = await response.Content.ReadAsStringAsync();

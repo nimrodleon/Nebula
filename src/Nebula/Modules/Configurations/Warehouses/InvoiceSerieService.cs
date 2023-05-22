@@ -1,8 +1,9 @@
 using Microsoft.Extensions.Options;
 using Nebula.Common;
-using Nebula.Database.Models.Common;
+using Nebula.Database;
+using Nebula.Modules.Configurations.Models;
 
-namespace Nebula.Database.Services.Common;
+namespace Nebula.Modules.Configurations.Warehouses;
 
 public class InvoiceSerieService : CrudOperationService<InvoiceSerie>
 {

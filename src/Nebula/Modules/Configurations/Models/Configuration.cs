@@ -1,6 +1,6 @@
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Nebula.Database.Models.Common;
+namespace Nebula.Modules.Configurations.Models;
 
 [BsonIgnoreExtraElements]
 public class Configuration

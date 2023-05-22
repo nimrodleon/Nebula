@@ -1,4 +1,4 @@
-using Nebula.Database.Services.Common;
+using Nebula.Modules.Configurations.Warehouses;
 using Nebula.Modules.Inventory.Stock.Dto;
 using Nebula.Modules.Inventory.Stock.Helpers;
 using Nebula.Modules.Products;

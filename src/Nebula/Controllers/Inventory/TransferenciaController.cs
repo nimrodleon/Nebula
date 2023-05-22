@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Helpers;
 using Nebula.Database.Dto.Common;
-using Nebula.Database.Services.Common;
 using Nebula.Modules.Inventory.Stock;
 using Nebula.Modules.Inventory.Models;
 using Nebula.Modules.Inventory.Transferencias;
+using Nebula.Modules.Configurations;
 
 namespace Nebula.Controllers.Inventory;
 

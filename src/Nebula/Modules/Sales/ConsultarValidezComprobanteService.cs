@@ -1,7 +1,7 @@
 ﻿using Nebula.Common;
 using Nebula.Database.Dto.Sales;
-using Nebula.Database.Models.Common;
-using Nebula.Database.Services.Common;
+using Nebula.Modules.Configurations;
+using Nebula.Modules.Configurations.Models;
 using Nebula.Modules.Sales.Models;
 
 namespace Nebula.Modules.Sales;

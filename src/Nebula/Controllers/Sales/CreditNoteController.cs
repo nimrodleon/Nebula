@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Dto.Sales;
 using Nebula.Database.Helpers;
-using Nebula.Database.Services.Common;
+using Nebula.Modules.Configurations;
 using Nebula.Modules.Facturador;
 using Nebula.Modules.Sales;
 

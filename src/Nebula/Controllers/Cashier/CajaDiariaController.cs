@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Helpers;
 using Nebula.Database.Dto.Cashier;
 using Nebula.Database.Dto.Common;
-using Nebula.Database.Services.Common;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Cashier.Models;
+using Nebula.Modules.Configurations.Warehouses;
+using Nebula.Modules.Configurations;
 
 namespace Nebula.Controllers.Cashier;
 

@@ -3,7 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Database;
-using Nebula.Database.Services.Common;
+using Nebula.Modules.Configurations;
 using Nebula.Modules.Products.Models;
 
 namespace Nebula.Modules.Products;
