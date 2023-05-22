@@ -1,9 +1,10 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
-using Nebula.Database.Models.Common;
+using Nebula.Database;
+using Nebula.Modules.Products.Models;
 
-namespace Nebula.Database.Services.Common;
+namespace Nebula.Modules.Products;
 
 public class ProductLoteService : CrudOperationService<ProductLote>
 {

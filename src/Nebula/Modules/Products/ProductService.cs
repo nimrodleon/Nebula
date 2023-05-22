@@ -2,9 +2,11 @@ using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Nebula.Common;
-using Nebula.Database.Models.Common;
+using Nebula.Database;
+using Nebula.Database.Services.Common;
+using Nebula.Modules.Products.Models;
 
-namespace Nebula.Database.Services.Common;
+namespace Nebula.Modules.Products;
 
 public class ProductService : CrudOperationService<Product>
 {

@@ -18,6 +18,7 @@ using Nebula.Modules.Inventory.Materiales;
 using Nebula.Modules.Inventory.Notas;
 using Nebula.Modules.Inventory.Stock;
 using Nebula.Modules.Inventory.Transferencias;
+using Nebula.Modules.Products;
 using Nebula.Modules.Sales;
 using Nebula.Modules.Taller.Services;
 
