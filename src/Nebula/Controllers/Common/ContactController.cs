@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Database.Helpers;
 using Nebula.Database.Models.Common;
 using Nebula.Database.Dto.Common;
-using Nebula.Database.Services.Cashier;
 using Nebula.Database.Services.Common;
 using Nebula.Modules.Sales;
+using Nebula.Modules.Cashier;
 
 namespace Nebula.Controllers.Common;
 

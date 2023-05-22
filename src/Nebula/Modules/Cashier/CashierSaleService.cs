@@ -1,5 +1,4 @@
 using Nebula.Database.Helpers;
-using Nebula.Database.Models.Cashier;
 using Nebula.Database.Models.Common;
 using Nebula.Database.Services.Common;
 using Nebula.Database.Dto.Sales;
@@ -7,8 +6,10 @@ using Nebula.Database.Models;
 using Nebula.Common;
 using Nebula.Modules.Sales.Models;
 using Nebula.Modules.Sales;
+using Nebula.Modules.Cashier.Models;
+using Nebula.Database.Services;
 
-namespace Nebula.Database.Services.Cashier;
+namespace Nebula.Modules.Cashier;
 
 /// <summary>
 /// Servicio para gestionar ventas.

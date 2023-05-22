@@ -2,7 +2,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Nebula.Common.Models;
 
-namespace Nebula.Database.Models.Cashier;
+namespace Nebula.Modules.Cashier.Models;
 
 [BsonIgnoreExtraElements]
 public class CajaDiaria : IGenericModel

@@ -2,10 +2,10 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Database.Dto.Common;
 using Nebula.Database.Models;
-using Nebula.Database.Models.Cashier;
 using Nebula.Database.Helpers;
-using Nebula.Database.Services.Cashier;
 using Nebula.Common;
+using Nebula.Modules.Cashier.Models;
+using Nebula.Modules.Cashier;
 
 namespace Nebula.Database.Services;
 

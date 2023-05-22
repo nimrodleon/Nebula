@@ -2,11 +2,12 @@ using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Nebula.Common;
+using Nebula.Database;
 using Nebula.Database.Dto.Cashier;
 using Nebula.Database.Helpers;
-using Nebula.Database.Models.Cashier;
+using Nebula.Modules.Cashier.Models;
 
-namespace Nebula.Database.Services.Cashier;
+namespace Nebula.Modules.Cashier;
 
 public class CashierDetailService : CrudOperationService<CashierDetail>
 {

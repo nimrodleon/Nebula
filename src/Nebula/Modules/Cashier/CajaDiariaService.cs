@@ -1,10 +1,11 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using Nebula.Database.Models.Cashier;
 using Nebula.Database.Dto.Common;
 using Nebula.Common;
+using Nebula.Modules.Cashier.Models;
+using Nebula.Database;
 
-namespace Nebula.Database.Services.Cashier;
+namespace Nebula.Modules.Cashier;
 
 public class CajaDiariaService : CrudOperationService<CajaDiaria>
 {
