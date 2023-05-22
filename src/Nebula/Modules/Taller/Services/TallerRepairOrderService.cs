@@ -2,7 +2,7 @@ using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Nebula.Common;
-using Nebula.Database.Dto.Common;
+using Nebula.Common.Dto;
 using Nebula.Modules.Configurations.Models;
 using Nebula.Modules.Taller.Models;
 

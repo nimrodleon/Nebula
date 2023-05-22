@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
-using Nebula.Database.Dto.Inventory;
+using Nebula.Modules.Inventory.Dto;
 using Nebula.Modules.Inventory.Models;
 using Nebula.Modules.Inventory.Stock;
 

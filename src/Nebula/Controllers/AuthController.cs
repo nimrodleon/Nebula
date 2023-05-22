@@ -4,8 +4,8 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Nebula.Database.Dto;
 using Nebula.Modules.Auth;
+using Nebula.Modules.Auth.Dto;
 using Nebula.Modules.Auth.Helpers;
 
 namespace Nebula.Controllers;

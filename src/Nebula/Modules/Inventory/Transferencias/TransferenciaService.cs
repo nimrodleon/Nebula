@@ -1,8 +1,8 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using Nebula.Database.Dto.Common;
 using Nebula.Common;
 using Nebula.Modules.Inventory.Models;
+using Nebula.Common.Dto;
 
 namespace Nebula.Modules.Inventory.Transferencias;
 

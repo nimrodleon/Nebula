@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Database.Dto.Common;
+using Nebula.Common.Dto;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Taller.Models;
 using Nebula.Modules.Taller.Services;

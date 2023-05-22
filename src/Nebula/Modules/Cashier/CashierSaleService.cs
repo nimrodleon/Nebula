@@ -1,4 +1,3 @@
-using Nebula.Database.Dto.Sales;
 using Nebula.Common;
 using Nebula.Modules.Sales.Models;
 using Nebula.Modules.Sales;
@@ -8,6 +7,7 @@ using Nebula.Modules.Finanzas;
 using Nebula.Modules.Configurations.Models;
 using Nebula.Modules.Configurations;
 using Nebula.Modules.Cashier.Helpers;
+using Nebula.Modules.Sales.Dto;
 
 namespace Nebula.Modules.Cashier;
 

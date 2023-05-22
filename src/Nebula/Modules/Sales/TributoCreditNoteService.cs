@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
-using Nebula.Database.Dto.Common;
+using Nebula.Common.Dto;
 using Nebula.Modules.Sales.Models;
 
 namespace Nebula.Modules.Sales;

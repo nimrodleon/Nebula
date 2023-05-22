@@ -1,5 +1,5 @@
-using Nebula.Database.Dto.Sales;
 using Nebula.Modules.Facturador.Models;
+using Nebula.Modules.Sales.Dto;
 using Nebula.Modules.Sales.Helpers;
 using System.Globalization;
 using System.Text.Json;

@@ -1,13 +1,13 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using Nebula.Database.Dto.Common;
-using Nebula.Database.Dto.Sales;
 using Nebula.Modules.Facturador.XmlDigest;
 using Nebula.Common;
 using Nebula.Modules.Sales.Models;
 using Nebula.Modules.Configurations;
 using Nebula.Modules.Facturador.Helpers;
 using Nebula.Modules.Sales.Helpers;
+using Nebula.Modules.Sales.Dto;
+using Nebula.Common.Dto;
 
 namespace Nebula.Modules.Sales;
 
