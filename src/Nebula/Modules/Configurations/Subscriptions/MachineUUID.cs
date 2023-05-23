@@ -33,6 +33,20 @@ public class MachineUUID
             // Manejo de excepciones
         }
 
-        return processorId ;
+        return processorId.Trim();
+    }
+
+    public string GetHardDriveModel()
+    {
+        string model = string.Empty;
+        ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Model FROM Win32_DiskDrive");
+
+        foreach (ManagementObject obj in searcher.Get())
+        {
+            model = obj["Model"].ToString();
+            break; // Solo obtenemos el primer modelo encontrado
+        }
+
+        return model.Trim();
     }
 }

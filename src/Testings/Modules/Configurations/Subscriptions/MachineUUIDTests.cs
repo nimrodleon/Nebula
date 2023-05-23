@@ -13,4 +13,13 @@ public class MachineUUIDTests
         Assert.IsNotNull(processorId);
         Assert.AreNotEqual(string.Empty, processorId);
     }
+
+    [TestMethod]
+    public void GetHardDriveModel_ReturnsValidModel()
+    {
+        MachineUUID hardDriveModel = new MachineUUID();
+        string model = hardDriveModel.GetHardDriveModel();
+        Assert.IsNotNull(model);
+        Assert.AreNotEqual(string.Empty, model);
+    }
 }

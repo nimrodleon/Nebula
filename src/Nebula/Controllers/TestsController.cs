@@ -16,4 +16,11 @@ public class TestsController : ControllerBase
         var processorId = new MachineUUID().GetProcessorId();
         return Ok(processorId);
     }
+
+    [HttpGet("GetHardDriveModel")]
+    public IActionResult GetHardDriveModel()
+    {
+        var model = new MachineUUID().GetHardDriveModel();
+        return Ok(model);
+    }
 }
