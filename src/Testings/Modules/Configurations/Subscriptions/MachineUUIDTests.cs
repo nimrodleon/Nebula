@@ -22,4 +22,13 @@ public class MachineUUIDTests
         Assert.IsNotNull(model);
         Assert.AreNotEqual(string.Empty, model);
     }
+
+    [TestMethod]
+    public void GetHardDriveSerialNumber_ReturnsValidSerialNumber()
+    {
+        MachineUUID hardwareDriveSerialNumber = new MachineUUID();
+        string serialNumber = hardwareDriveSerialNumber.GetHardDriveSerialNumber();
+        Assert.IsNotNull(serialNumber);
+        Assert.AreNotEqual(string.Empty, serialNumber);
+    }
 }

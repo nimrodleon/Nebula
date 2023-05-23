@@ -23,4 +23,11 @@ public class TestsController : ControllerBase
         var model = new MachineUUID().GetHardDriveModel();
         return Ok(model);
     }
+
+    [HttpGet("GetHardDriveSerialNumber")]
+    public IActionResult GetHardDriveSerialNumber()
+    {
+        var serialNumber = new MachineUUID().GetHardDriveSerialNumber();
+        return Ok(serialNumber);
+    }
 }

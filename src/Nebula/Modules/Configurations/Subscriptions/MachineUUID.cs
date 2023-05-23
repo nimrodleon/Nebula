@@ -49,4 +49,18 @@ public class MachineUUID
 
         return model.Trim();
     }
+
+    public string GetHardDriveSerialNumber()
+    {
+        string serialNumber = string.Empty;
+        ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT SerialNumber FROM Win32_DiskDrive");
+
+        foreach (ManagementObject obj in searcher.Get())
+        {
+            serialNumber = obj["SerialNumber"].ToString();
+            break; // Solo obtenemos el primer número de serie encontrado
+        }
+
+        return serialNumber.Trim();
+    }
 }
