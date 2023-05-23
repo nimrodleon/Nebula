@@ -1,4 +1,4 @@
-namespace Nebula.Modules.Facturador;
+namespace Nebula.Modules.Facturador.Helpers;
 
 public static class FacturadorControl
 {

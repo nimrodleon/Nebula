@@ -1,4 +1,4 @@
-﻿namespace Nebula.Plugins.Facturador;
+namespace Nebula.Modules.Facturador;
 
 /// <summary>
 /// Envía Comprobantes a SUNAT, cada 2 minutos.
