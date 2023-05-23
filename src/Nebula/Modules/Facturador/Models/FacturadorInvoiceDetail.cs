@@ -1,6 +1,6 @@
 namespace Nebula.Modules.Facturador.Models;
 
-public class InvoiceDetail
+public class FacturadorInvoiceDetail
 {
     public string codUnidadMedida { get; set; } = string.Empty;
     public string ctdUnidadItem { get; set; } = string.Empty;

@@ -1,6 +1,6 @@
 namespace Nebula.Modules.Facturador.Models;
 
-public class FormaPago
+public class FacturadorFormaPago
 {
     public string formaPago { get; set; } = "-";
     public string mtoNetoPendientePago { get; set; } = "-";

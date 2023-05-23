@@ -1,6 +1,6 @@
 namespace Nebula.Modules.Facturador.Models;
 
-public class Tributo
+public class FacturadorTributo
 {
     public string ideTributo { get; set; } = string.Empty;
     public string nomTributo { get; set; } = string.Empty;

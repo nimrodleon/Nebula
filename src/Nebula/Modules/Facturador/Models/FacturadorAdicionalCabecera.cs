@@ -1,6 +1,6 @@
 namespace Nebula.Modules.Facturador.Models;
 
-public class AdicionalCabecera
+public class FacturadorAdicionalCabecera
 {
     #region DETRACCIONES!
     //public string ctaBancoNacionDetraccion { get; set; } = string.Empty;

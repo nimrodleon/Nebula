@@ -32,7 +32,7 @@ public class JsonCreditNoteParser
         // adicionales de cabecera.
         if (dto.CreditNote.CodUbigeoCliente.Trim().Length == 6)
         {
-            cabecera.adicionalCabecera = new AdicionalCabecera()
+            cabecera.adicionalCabecera = new FacturadorAdicionalCabecera()
             {
                 codPaisCliente = "PE",
                 codUbigeoCliente = dto.CreditNote.CodUbigeoCliente.Trim(),
@@ -43,7 +43,7 @@ public class JsonCreditNoteParser
         // detalle.
         dto.CreditNoteDetails.ForEach(item =>
         {
-            detalle.Add(new InvoiceDetail
+            detalle.Add(new FacturadorInvoiceDetail
             {
                 codUnidadMedida = item.CodUnidadMedida.Split(":")[0],
                 ctdUnidadItem = item.CtdUnidadItem.ToString("N1", numberFormatInfo),
@@ -77,7 +77,7 @@ public class JsonCreditNoteParser
         // tributos.
         dto.TributosCreditNote.ForEach(item =>
         {
-            tributos.Add(new Tributo
+            tributos.Add(new FacturadorTributo
             {
                 ideTributo = item.IdeTributo,
                 nomTributo = item.NomTributo,
@@ -86,17 +86,17 @@ public class JsonCreditNoteParser
                 mtoTributo = item.MtoTributo.ToString("N2", numberFormatInfo),
             });
         });
-        leyendas.Add(new Leyenda
+        leyendas.Add(new FacturadorLeyenda
         {
             codLeyenda = "1000",
             desLeyenda = new NumberToLetters(dto.CreditNote.SumImpVenta).ToString(),
         });
     }
 
-    public CreditNoteFact cabecera { get; set; } = new CreditNoteFact();
-    public List<InvoiceDetail> detalle { get; set; } = new List<InvoiceDetail>();
-    public List<Tributo> tributos { get; set; } = new List<Tributo>();
-    public List<Leyenda> leyendas { get; set; } = new List<Leyenda>();
+    public FacturadorCreditNoteFact cabecera { get; set; } = new FacturadorCreditNoteFact();
+    public List<FacturadorInvoiceDetail> detalle { get; set; } = new List<FacturadorInvoiceDetail>();
+    public List<FacturadorTributo> tributos { get; set; } = new List<FacturadorTributo>();
+    public List<FacturadorLeyenda> leyendas { get; set; } = new List<FacturadorLeyenda>();
 
     public void CreateJson(string path)
     {
