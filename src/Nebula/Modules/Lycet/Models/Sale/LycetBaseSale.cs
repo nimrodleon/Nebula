@@ -7,7 +7,7 @@ public class LycetBaseSale
     protected string UblVersion { get; set; } = "2.0";
     protected string TipoDoc { get; set; } = string.Empty;
     protected string Serie { get; set; } = string.Empty;
-    protected string Correlativo { get; set;} = string.Empty;
+    protected string Correlativo { get; set; } = string.Empty;
     protected DateTime FechaEmision { get; set; }
     protected LycetCompany Company { get; set; } = new LycetCompany();
     protected LycetClient Client { get; set; } = new LycetClient();
@@ -35,5 +35,18 @@ public class LycetBaseSale
     protected decimal MtoImpVenta { get; set; }
 
     protected List<LycetSaleDetail> Details { get; set; } = new List<LycetSaleDetail>();
+    protected List<LycetLegend> Legends { get; set; } = new List<LycetLegend>();
 
+    /// <summary>
+    /// Guias de Remision relacionado (caso de uso en venta itinerante).
+    /// </summary>
+    protected List<LycetDocument> Guias { get; set; } = new List<LycetDocument>();
+    protected List<LycetDocument> RelDocs { get; set; } = new List<LycetDocument>();
+
+    /// <summary>
+    /// Orden de Compra relacionado.
+    /// </summary>
+    protected string Compra { get; set; } = string.Empty;
+    protected LycetPaymentTerms? FormaPago { get; set; }
+    protected List<LycetCuota>? Cuotas { get; set; }
 }

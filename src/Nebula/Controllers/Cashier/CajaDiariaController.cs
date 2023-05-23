@@ -1,11 +1,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Database.Helpers;
-using Nebula.Database.Models.Cashier;
-using Nebula.Database.Services.Cashier;
-using Nebula.Database.Dto.Cashier;
-using Nebula.Database.Dto.Common;
-using Nebula.Database.Services.Common;
+using Nebula.Modules.Cashier;
+using Nebula.Modules.Cashier.Models;
+using Nebula.Modules.Configurations.Warehouses;
+using Nebula.Modules.Configurations;
+using Nebula.Modules.Auth.Helpers;
+using Nebula.Modules.Cashier.Helpers;
+using Nebula.Modules.Cashier.Dto;
+using Nebula.Common.Dto;
+using Nebula.Modules.Configurations.Subscriptions;
 
 namespace Nebula.Controllers.Cashier;
 
@@ -14,19 +17,19 @@ namespace Nebula.Controllers.Cashier;
 [ApiController]
 public class CajaDiariaController : ControllerBase
 {
+    private readonly ISubscriptionService _subscriptionService;
     private readonly CajaDiariaService _cajaDiariaService;
     private readonly InvoiceSerieService _invoiceSerieService;
     private readonly CashierDetailService _cashierDetailService;
-    private readonly ConfigurationService _configurationService;
 
-    public CajaDiariaController(CajaDiariaService cajaDiariaService,
-        ConfigurationService configurationService, InvoiceSerieService invoiceSerieService,
+    public CajaDiariaController(ISubscriptionService subscriptionService,
+        CajaDiariaService cajaDiariaService, InvoiceSerieService invoiceSerieService,
         CashierDetailService cashierDetailService)
     {
+        _subscriptionService = subscriptionService;
         _cajaDiariaService = cajaDiariaService;
         _invoiceSerieService = invoiceSerieService;
         _cashierDetailService = cashierDetailService;
-        _configurationService = configurationService;
     }
 
     [HttpGet("Index")]
@@ -83,7 +86,7 @@ public class CajaDiariaController : ControllerBase
     [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] CerrarCaja model)
     {
-        var license = await _configurationService.ValidarAcceso();
+        var license = await _subscriptionService.ValidarAcceso();
         if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         var cajaDiaria = await _cajaDiariaService.GetByIdAsync(id);
         cajaDiaria.TotalContabilizado = model.TotalContabilizado;
@@ -101,7 +104,7 @@ public class CajaDiariaController : ControllerBase
     [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
-        var license = await _configurationService.ValidarAcceso();
+        var license = await _subscriptionService.ValidarAcceso();
         if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         var cajaDiaria = await _cajaDiariaService.GetByIdAsync(id);
         await _cajaDiariaService.RemoveAsync(cajaDiaria.Id);

@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Database.Helpers;
-using Nebula.Database.Models.Inventory;
-using Nebula.Database.Services.Inventory;
-using Nebula.Database.Dto.Common;
-using Nebula.Database.Services.Common;
 using Nebula.Modules.Inventory.Stock;
+using Nebula.Modules.Inventory.Models;
+using Nebula.Modules.Inventory.Ajustes;
+using Nebula.Modules.Auth.Helpers;
+using Nebula.Common.Dto;
+using Nebula.Modules.Configurations.Subscriptions;
 
 namespace Nebula.Controllers.Inventory;
 
@@ -14,18 +14,19 @@ namespace Nebula.Controllers.Inventory;
 [ApiController]
 public class AjusteInventarioController : ControllerBase
 {
-    private readonly ConfigurationService _configurationService;
+    private readonly ISubscriptionService _subscriptionService;
     private readonly AjusteInventarioService _ajusteInventarioService;
     private readonly AjusteInventarioDetailService _ajusteInventarioDetailService;
     private readonly ValidateStockService _validateStockService;
 
-    public AjusteInventarioController(AjusteInventarioService ajusteInventarioService, ConfigurationService configurationService,
+    public AjusteInventarioController(ISubscriptionService subscriptionService,
+        AjusteInventarioService ajusteInventarioService,
         AjusteInventarioDetailService ajusteInventarioDetailService, ValidateStockService validateStockService)
     {
+        _subscriptionService = subscriptionService;
         _ajusteInventarioService = ajusteInventarioService;
         _ajusteInventarioDetailService = ajusteInventarioDetailService;
         _validateStockService = validateStockService;
-        _configurationService = configurationService;
     }
 
     [HttpGet("Index")]
@@ -45,7 +46,7 @@ public class AjusteInventarioController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] AjusteInventario model)
     {
-        var license = await _configurationService.ValidarAcceso();
+        var license = await _subscriptionService.ValidarAcceso();
         if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         var ajusteInventario = await _ajusteInventarioService.CreateAsync(model);
         await _ajusteInventarioDetailService.GenerateDetailAsync(ajusteInventario.LocationId, ajusteInventario.Id);
@@ -55,7 +56,7 @@ public class AjusteInventarioController : ControllerBase
     [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] AjusteInventario model)
     {
-        var license = await _configurationService.ValidarAcceso();
+        var license = await _subscriptionService.ValidarAcceso();
         if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         var ajusteInventario = await _ajusteInventarioService.GetByIdAsync(id);
         model.Id = ajusteInventario.Id;
@@ -74,7 +75,7 @@ public class AjusteInventarioController : ControllerBase
     [HttpGet("Validate/{id}")]
     public async Task<IActionResult> Validate(string id)
     {
-        var license = await _configurationService.ValidarAcceso();
+        var license = await _subscriptionService.ValidarAcceso();
         if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         var ajusteInventario = await _validateStockService.ValidarAjusteInventario(id);
         return Ok(ajusteInventario);

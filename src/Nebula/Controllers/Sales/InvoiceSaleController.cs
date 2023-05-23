@@ -1,14 +1,17 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Database.Helpers;
-using Nebula.Database.Services.Common;
-using Nebula.Database.Services.Facturador;
-using Nebula.Database.Services.Sales;
-using Nebula.Database.Dto.Common;
-using Nebula.Database.Dto.Sales;
-using Nebula.Database.Models.Common;
 using Nebula.Modules.Inventory.Stock;
 using Nebula.Common;
+using Nebula.Modules.Sales;
+using Nebula.Modules.Facturador;
+using Nebula.Modules.Configurations.Models;
+using Nebula.Modules.Configurations;
+using Nebula.Modules.Auth.Helpers;
+using Nebula.Common.Helpers;
+using Nebula.Modules.Facturador.Helpers;
+using Nebula.Modules.Sales.Dto;
+using Nebula.Common.Dto;
+using Nebula.Modules.Configurations.Subscriptions;
 
 namespace Nebula.Controllers.Sales;
 
@@ -18,6 +21,7 @@ namespace Nebula.Controllers.Sales;
 public class InvoiceSaleController : ControllerBase
 {
     private readonly IConfiguration _configuration;
+    private readonly ISubscriptionService _subscriptionService;
     private readonly ConfigurationService _configurationService;
     private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
     private readonly InvoiceSaleService _invoiceSaleService;
@@ -30,7 +34,7 @@ public class InvoiceSaleController : ControllerBase
     private readonly ValidateStockService _validateStockService;
     private readonly ConsultarValidezComprobanteService _consultarValidezComprobanteService;
 
-    public InvoiceSaleController(ConfigurationService configurationService,
+    public InvoiceSaleController(ISubscriptionService subscriptionService,        ConfigurationService configurationService,
         CrudOperationService<InvoiceSerie> invoiceSerieService, InvoiceSaleService invoiceSaleService,
         InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService,
         ComprobanteService comprobanteService, FacturadorService facturadorService, CreditNoteService creditNoteService,
@@ -38,6 +42,7 @@ public class InvoiceSaleController : ControllerBase
         ConsultarValidezComprobanteService consultarValidezComprobanteService,
         TributoCreditNoteService tributoCreditNoteService)
     {
+        _subscriptionService = subscriptionService;
         _configuration = configuration;
         _configurationService = configurationService;
         _invoiceSerieService = invoiceSerieService;
@@ -106,7 +111,7 @@ public class InvoiceSaleController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] ComprobanteDto dto)
     {
-        var license = await _configurationService.ValidarAcceso();
+        var license = await _subscriptionService.ValidarAcceso();
         if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         _comprobanteService.SetComprobanteDto(dto);
         var invoiceSale = await _comprobanteService.SaveChangesAsync();

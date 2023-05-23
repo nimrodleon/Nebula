@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Database.Helpers;
-using Nebula.Database.Models.Sales;
-using Nebula.Database.Services.Cashier;
-using Nebula.Database.Services.Facturador;
-using Nebula.Database.Services.Sales;
-using Nebula.Database.Dto.Sales;
-using Nebula.Database.Services.Common;
 using Nebula.Modules.Inventory.Stock;
+using Nebula.Modules.Sales.Models;
+using Nebula.Modules.Sales;
+using Nebula.Modules.Facturador;
+using Nebula.Modules.Cashier;
+using Nebula.Modules.Auth.Helpers;
+using Nebula.Modules.Sales.Dto;
+using Nebula.Modules.Configurations.Subscriptions;
 
 namespace Nebula.Controllers.Cashier;
 
@@ -16,21 +16,21 @@ namespace Nebula.Controllers.Cashier;
 [ApiController]
 public class InvoiceSaleCashierController : ControllerBase
 {
+    private readonly ISubscriptionService _subscriptionService;
     private readonly CashierSaleService _cashierSaleService;
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly ValidateStockService _validateStockService;
     private readonly FacturadorService _facturadorService;
-    private readonly ConfigurationService _configurationService;
 
-    public InvoiceSaleCashierController(CashierSaleService cashierSaleService,
-        InvoiceSaleDetailService invoiceSaleDetailService, ValidateStockService validateStockService,
-        FacturadorService facturadorService, ConfigurationService configurationService)
+    public InvoiceSaleCashierController(ISubscriptionService subscriptionService,
+        CashierSaleService cashierSaleService, InvoiceSaleDetailService invoiceSaleDetailService,
+        ValidateStockService validateStockService, FacturadorService facturadorService)
     {
+        _subscriptionService = subscriptionService;
         _cashierSaleService = cashierSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _validateStockService = validateStockService;
         _facturadorService = facturadorService;
-        _configurationService = configurationService;
     }
 
     /// <summary>
@@ -44,7 +44,7 @@ public class InvoiceSaleCashierController : ControllerBase
     {
         try
         {
-            var license = await _configurationService.ValidarAcceso();
+            var license = await _subscriptionService.ValidarAcceso();
             if (!license.Ok) throw new Exception("Error, Verificar suscripción!");
             _cashierSaleService.SetComprobanteDto(model);
             var invoiceSale = await _cashierSaleService.SaveChangesAsync(id);

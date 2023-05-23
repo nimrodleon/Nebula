@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Database.Helpers;
-using Nebula.Database.Models.Inventory;
-using Nebula.Database.Services.Inventory;
-using Nebula.Database.Dto.Common;
-using Nebula.Database.Services.Common;
 using Nebula.Modules.Inventory.Stock;
+using Nebula.Modules.Inventory.Models;
+using Nebula.Modules.Inventory.Notas;
+using Nebula.Modules.Auth.Helpers;
+using Nebula.Common.Dto;
+using Nebula.Modules.Configurations.Subscriptions;
 
 namespace Nebula.Controllers.Inventory;
 
@@ -14,16 +14,17 @@ namespace Nebula.Controllers.Inventory;
 [ApiController]
 public class InventoryNotasController : ControllerBase
 {
+    private readonly ISubscriptionService _subscriptionService;
     private readonly InventoryNotasService _inventoryNotasService;
     private readonly ValidateStockService _validateStockService;
-    private readonly ConfigurationService _configurationService;
 
-    public InventoryNotasController(InventoryNotasService inventoryNotasService,
-        ValidateStockService validateStockService, ConfigurationService configurationService)
+    public InventoryNotasController(ISubscriptionService subscriptionService,
+        InventoryNotasService inventoryNotasService,
+        ValidateStockService validateStockService)
     {
+        _subscriptionService = subscriptionService;
         _inventoryNotasService = inventoryNotasService;
         _validateStockService = validateStockService;
-        _configurationService = configurationService;
     }
 
     [HttpGet("Index")]
@@ -43,7 +44,7 @@ public class InventoryNotasController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] InventoryNotas model)
     {
-        var license = await _configurationService.ValidarAcceso();
+        var license = await _subscriptionService.ValidarAcceso();
         if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         var inventoryNotas = await _inventoryNotasService.CreateAsync(model);
         return Ok(inventoryNotas);
@@ -52,7 +53,7 @@ public class InventoryNotasController : ControllerBase
     [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] InventoryNotas model)
     {
-        var license = await _configurationService.ValidarAcceso();
+        var license = await _subscriptionService.ValidarAcceso();
         if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         var inventoryNotas = await _inventoryNotasService.GetByIdAsync(id);
         model.Id = inventoryNotas.Id;
@@ -71,7 +72,7 @@ public class InventoryNotasController : ControllerBase
     [HttpGet("Validate/{id}")]
     public async Task<IActionResult> Validate(string id)
     {
-        var license = await _configurationService.ValidarAcceso();
+        var license = await _subscriptionService.ValidarAcceso();
         if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         var inventoryNotas = await _validateStockService.ValidarNotas(id);
         return Ok(inventoryNotas);

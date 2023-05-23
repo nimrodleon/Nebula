@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Database.Helpers;
-using Nebula.Database.Models.Common;
-using Nebula.Database.Dto.Common;
 using Nebula.Common;
+using Nebula.Modules.Products.Models;
+using Nebula.Modules.Auth.Helpers;
+using Nebula.Common.Dto;
 
 namespace Nebula.Controllers.Common;
 

@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Database.Helpers;
-using Nebula.Database.Models.Inventory;
-using Nebula.Database.Services.Inventory;
-using Nebula.Database.Dto.Common;
-using Nebula.Database.Services.Common;
 using Nebula.Modules.Inventory.Stock;
+using Nebula.Modules.Inventory.Models;
+using Nebula.Modules.Inventory.Materiales;
+using Nebula.Modules.Auth.Helpers;
+using Nebula.Common.Dto;
+using Nebula.Modules.Configurations.Subscriptions;
 
 namespace Nebula.Controllers.Inventory;
 
@@ -14,16 +14,17 @@ namespace Nebula.Controllers.Inventory;
 [ApiController]
 public class MaterialController : ControllerBase
 {
+    private readonly ISubscriptionService _subscriptionService;
     private readonly MaterialService _materialService;
     private readonly ValidateStockService _validateStockService;
-    private readonly ConfigurationService _configurationService;
 
-    public MaterialController(MaterialService materialService,
-        ValidateStockService validateStockService, ConfigurationService configurationService)
+    public MaterialController(ISubscriptionService subscriptionService,
+        MaterialService materialService,
+        ValidateStockService validateStockService)
     {
+        _subscriptionService = subscriptionService;
         _materialService = materialService;
         _validateStockService = validateStockService;
-        _configurationService = configurationService;
     }
 
     [HttpGet("Index")]
@@ -50,7 +51,7 @@ public class MaterialController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] Material model)
     {
-        var license = await _configurationService.ValidarAcceso();
+        var license = await _subscriptionService.ValidarAcceso();
         if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         var location = await _materialService.CreateAsync(model);
         return Ok(location);
@@ -59,7 +60,7 @@ public class MaterialController : ControllerBase
     [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] Material model)
     {
-        var license = await _configurationService.ValidarAcceso();
+        var license = await _subscriptionService.ValidarAcceso();
         if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         var material = await _materialService.GetByIdAsync(id);
         model.Id = material.Id;
@@ -78,7 +79,7 @@ public class MaterialController : ControllerBase
     [HttpGet("Validate/{id}")]
     public async Task<IActionResult> Validate(string id)
     {
-        var license = await _configurationService.ValidarAcceso();
+        var license = await _subscriptionService.ValidarAcceso();
         if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         var material = await _validateStockService.ValidarMaterial(id);
         return Ok(material);
