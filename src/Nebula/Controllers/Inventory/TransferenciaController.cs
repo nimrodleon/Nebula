@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Inventory.Stock;
 using Nebula.Modules.Inventory.Models;
 using Nebula.Modules.Inventory.Transferencias;
-using Nebula.Modules.Configurations;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Common.Dto;
+using Nebula.Modules.Configurations.Subscriptions;
 
 namespace Nebula.Controllers.Inventory;
 
@@ -14,16 +14,17 @@ namespace Nebula.Controllers.Inventory;
 [ApiController]
 public class TransferenciaController : ControllerBase
 {
+    private readonly ISubscriptionService _subscriptionService;
     private readonly TransferenciaService _transferenciaService;
     private readonly ValidateStockService _validateStockService;
-    private readonly ConfigurationService _configurationService;
 
-    public TransferenciaController(TransferenciaService transferenciaService,
-        ValidateStockService validateStockService, ConfigurationService configurationService)
+    public TransferenciaController(SubscriptionService subscriptionService,
+        TransferenciaService transferenciaService,
+        ValidateStockService validateStockService)
     {
+        _subscriptionService = subscriptionService;
         _transferenciaService = transferenciaService;
         _validateStockService = validateStockService;
-        _configurationService = configurationService;
     }
 
     [HttpGet("Index")]
@@ -43,7 +44,7 @@ public class TransferenciaController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] Transferencia model)
     {
-        var license = await _configurationService.ValidarAcceso();
+        var license = await _subscriptionService.ValidarAcceso();
         if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         var transferencia = await _transferenciaService.CreateAsync(model);
         return Ok(transferencia);
@@ -52,7 +53,7 @@ public class TransferenciaController : ControllerBase
     [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] Transferencia model)
     {
-        var license = await _configurationService.ValidarAcceso();
+        var license = await _subscriptionService.ValidarAcceso();
         if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         var transferencia = await _transferenciaService.GetByIdAsync(id);
         model.Id = transferencia.Id;
@@ -71,7 +72,7 @@ public class TransferenciaController : ControllerBase
     [HttpGet("Validate/{id}")]
     public async Task<IActionResult> Validate(string id)
     {
-        var license = await _configurationService.ValidarAcceso();
+        var license = await _subscriptionService.ValidarAcceso();
         if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         var transferencia = await _validateStockService.ValidarTransferencia(id);
         return Ok(transferencia);

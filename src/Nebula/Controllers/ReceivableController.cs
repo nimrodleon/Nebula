@@ -6,6 +6,7 @@ using Nebula.Modules.Finanzas;
 using Nebula.Modules.Configurations;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Finanzas.Dto;
+using Nebula.Modules.Configurations.Subscriptions;
 
 namespace Nebula.Controllers
 {
@@ -14,13 +15,15 @@ namespace Nebula.Controllers
     [ApiController]
     public class ReceivableController : ControllerBase
     {
+        private readonly ISubscriptionService _subscriptionService;
         private readonly ReceivableService _receivableService;
         private readonly CashierDetailService _cashierDetailService;
         private readonly ConfigurationService _configurationService;
 
-        public ReceivableController(ReceivableService receivableService,
+        public ReceivableController(ISubscriptionService subscriptionService, ReceivableService receivableService,
             CashierDetailService cashierDetailService, ConfigurationService configurationService)
         {
+            _subscriptionService = subscriptionService;
             _receivableService = receivableService;
             _cashierDetailService = cashierDetailService;
             _configurationService = configurationService;
@@ -51,7 +54,7 @@ namespace Nebula.Controllers
         [HttpPost("Create")]
         public async Task<IActionResult> Create([FromBody] Receivable model)
         {
-            var license = await _configurationService.ValidarAcceso();
+            var license = await _subscriptionService.ValidarAcceso();
             if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
 
             await _receivableService.CreateAsync(_cashierDetailService, model);
@@ -67,7 +70,7 @@ namespace Nebula.Controllers
         [HttpPut("Update/{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] Receivable model)
         {
-            var license = await _configurationService.ValidarAcceso();
+            var license = await _subscriptionService.ValidarAcceso();
             if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
 
             var receivable = await _receivableService.GetByIdAsync(id);
@@ -86,7 +89,7 @@ namespace Nebula.Controllers
         [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
         public async Task<IActionResult> Delete(string id)
         {
-            var license = await _configurationService.ValidarAcceso();
+            var license = await _subscriptionService.ValidarAcceso();
             if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
             var receivable = await _receivableService.GetByIdAsync(id);
             if (receivable.Type == "CARGO")

@@ -9,6 +9,7 @@ using Nebula.Modules.Auth;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Configurations;
 using Nebula.Modules.Configurations.Dto;
+using Nebula.Modules.Configurations.Subscriptions;
 using Nebula.Modules.Configurations.Warehouses;
 using Nebula.Modules.Contacts;
 using Nebula.Modules.Facturador;
@@ -62,6 +63,13 @@ builder.Services.AddScoped<InvoiceSerieService>();
 
 #endregion
 
+#region Configuration
+
+builder.Services.AddScoped<IConfigurationService, ConfigurationService>();
+builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
+
+#endregion
+
 #region Productos
 
 builder.Services.AddScoped<ProductService>();
@@ -70,7 +78,6 @@ builder.Services.AddScoped<ProductLoteService>();
 #endregion
 
 builder.Services.AddScoped<ReceivableService>();
-builder.Services.AddScoped<ConfigurationService>();
 builder.Services.AddScoped<ContactService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CajaDiariaService>();
@@ -97,13 +104,13 @@ builder.Services.AddScoped<CreditNoteDetailService>();
 builder.Services.AddScoped<TributoCreditNoteService>();
 builder.Services.AddScoped<ConsultarValidezComprobanteService>();
 
-#region PluginFacturadorSUNAT
+#region ModuleFacturadorSUNAT
 
 builder.Services.AddScoped<HttpRequestFacturadorService>();
 
 #endregion
 
-#region PluginInventory
+#region ModuleInventory
 
 builder.Services.AddScoped<ProductStockService>();
 builder.Services.AddScoped<ValidateStockService>();
@@ -111,7 +118,7 @@ builder.Services.AddScoped<IHelperCalculateProductStockService, HelperCalculateP
 
 #endregion
 
-#region PluginTaller
+#region ModuleTaller
 
 builder.Services.AddScoped<TallerRepairOrderService>();
 builder.Services.AddScoped<TallerItemRepairOrderService>();

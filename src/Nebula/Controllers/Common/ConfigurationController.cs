@@ -12,9 +12,9 @@ namespace Nebula.Controllers.Common;
 public class ConfigurationController : ControllerBase
 {
     private readonly IConfiguration _configuration;
-    private readonly ConfigurationService _configurationService;
+    private readonly IConfigurationService _configurationService;
 
-    public ConfigurationController(IConfiguration configuration, ConfigurationService configurationService)
+    public ConfigurationController(IConfiguration configuration, IConfigurationService configurationService)
     {
         _configuration = configuration;
         _configurationService = configurationService;
@@ -29,8 +29,6 @@ public class ConfigurationController : ControllerBase
             await _configurationService.CreateAsync();
             return Ok(await _configurationService.GetAsync());
         }
-        configuration.FacturadorUrl = _configuration.GetValue<string>("facturadorUrl");
-        configuration.SearchPeUrl = _configuration.GetValue<string>("searchPeUrl");
         return Ok(configuration);
     }
 
@@ -39,12 +37,12 @@ public class ConfigurationController : ControllerBase
     {
         var configuration = await _configurationService.GetAsync();
         if (configuration is null) return NotFound();
-
         model.Id = configuration.Id;
         model = await _configurationService.UpdateAsync(model);
         return Ok(model);
     }
 
+    /*
     [HttpGet("SincronizarPago")]
     public async Task<IActionResult> SincronizarPago()
     {
@@ -65,8 +63,10 @@ public class ConfigurationController : ControllerBase
         var configuration = await _configurationService.UpdateKey(subscriptionId);
         return Ok(configuration);
     }
+    */
 
     [HttpGet("FacturadorUrl")]
+    [Obsolete]
     public Task<IActionResult> FacturadorUrl()
     {
         string? url = _configuration.GetValue<string>("facturadorUrl");
@@ -74,6 +74,7 @@ public class ConfigurationController : ControllerBase
     }
 
     [HttpGet("SearchPeUrl")]
+    [Obsolete]
     public Task<IActionResult> SearchPeUrl()
     {
         string? url = _configuration.GetValue<string>("searchPeUrl");

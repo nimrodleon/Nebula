@@ -4,7 +4,7 @@ using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Cashier.Helpers;
 using Nebula.Modules.Cashier.Models;
-using Nebula.Modules.Configurations;
+using Nebula.Modules.Configurations.Subscriptions;
 
 namespace Nebula.Controllers.Cashier;
 
@@ -13,12 +13,12 @@ namespace Nebula.Controllers.Cashier;
 [ApiController]
 public class CashierDetailController : ControllerBase
 {
-    private readonly ConfigurationService _configurationService;
+    private readonly ISubscriptionService _subscriptionService;
     private readonly CashierDetailService _cashierDetailService;
 
-    public CashierDetailController(ConfigurationService configurationService, CashierDetailService cashierDetailService)
+    public CashierDetailController(ISubscriptionService subscriptionService, CashierDetailService cashierDetailService)
     {
-        _configurationService = configurationService;
+        _subscriptionService = subscriptionService;
         _cashierDetailService = cashierDetailService;
     }
 
@@ -33,7 +33,7 @@ public class CashierDetailController : ControllerBase
     [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] CashierDetail model)
     {
-        var license = await _configurationService.ValidarAcceso();
+        var license = await _subscriptionService.ValidarAcceso();
         if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         if (model.TypeOperation == TypeOperationCaja.EntradaDeDinero)
             model.TypeOperation = TypeOperationCaja.EntradaDeDinero;
@@ -66,7 +66,7 @@ public class CashierDetailController : ControllerBase
     [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
-        var license = await _configurationService.ValidarAcceso();
+        var license = await _subscriptionService.ValidarAcceso();
         if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         var cashierDetail = await _cashierDetailService.GetByIdAsync(id);
         await _cashierDetailService.RemoveAsync(cashierDetail.Id);

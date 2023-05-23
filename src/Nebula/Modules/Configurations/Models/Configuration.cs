@@ -83,6 +83,8 @@ public class Configuration
     /// </summary>
     public string SubscriptionId { get; set; } = string.Empty;
 
+    #region ConfigurationAppsettings
+
     /// <summary>
     /// URL aplicativo facturador SUNAT.
     /// </summary>
@@ -94,6 +96,8 @@ public class Configuration
     /// </summary>
     [BsonIgnore]
     public string? SearchPeUrl { get; set; } = string.Empty;
+
+    #endregion
 
     /// <summary>
     /// Habilita/Deshabilita el módulo de taller.
