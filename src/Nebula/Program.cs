@@ -54,19 +54,14 @@ builder.Services.AddCors(options =>
 
 // Add services to the container.
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
-
-#region Common
-
 builder.Services.AddScoped(typeof(CrudOperationService<>));
-builder.Services.AddScoped<WarehouseService>();
-builder.Services.AddScoped<InvoiceSerieService>();
-
-#endregion
 
 #region Configuration
 
 builder.Services.AddScoped<IConfigurationService, ConfigurationService>();
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
+builder.Services.AddScoped<WarehouseService>();
+builder.Services.AddScoped<InvoiceSerieService>();
 
 #endregion
 

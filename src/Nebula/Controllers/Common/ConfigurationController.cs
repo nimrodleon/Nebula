@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Configurations;
 using Nebula.Modules.Configurations.Models;
+using Nebula.Modules.Configurations.Subscriptions;
 
 namespace Nebula.Controllers.Common;
 
@@ -13,11 +14,15 @@ public class ConfigurationController : ControllerBase
 {
     private readonly IConfiguration _configuration;
     private readonly IConfigurationService _configurationService;
+    private readonly ISubscriptionService _subscriptionService;
 
-    public ConfigurationController(IConfiguration configuration, IConfigurationService configurationService)
+    public ConfigurationController(IConfiguration configuration,
+        IConfigurationService configurationService,
+        ISubscriptionService subscriptionService)
     {
         _configuration = configuration;
         _configurationService = configurationService;
+        _subscriptionService = subscriptionService;
     }
 
     [HttpGet("Show")]
@@ -42,28 +47,26 @@ public class ConfigurationController : ControllerBase
         return Ok(model);
     }
 
-    /*
     [HttpGet("SincronizarPago")]
     public async Task<IActionResult> SincronizarPago()
     {
-        var response = await _configurationService.SincronizarPago();
+        var response = await _subscriptionService.SincronizarPago();
         return Ok(response);
     }
 
     [HttpGet("ValidarAcceso")]
     public async Task<IActionResult> ValidarAcceso()
     {
-        var licenseDto = await _configurationService.ValidarAcceso();
+        var licenseDto = await _subscriptionService.ValidarAcceso();
         return Ok(licenseDto);
     }
 
     [HttpPatch("UpdateKey/{subscriptionId}")]
     public async Task<IActionResult> UpdateKey(string subscriptionId)
     {
-        var configuration = await _configurationService.UpdateKey(subscriptionId);
+        var configuration = await _subscriptionService.UpdateKey(subscriptionId);
         return Ok(configuration);
     }
-    */
 
     [HttpGet("FacturadorUrl")]
     [Obsolete]
