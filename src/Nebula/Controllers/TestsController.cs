@@ -10,6 +10,13 @@ namespace Nebula.Controllers;
 [ApiController]
 public class TestsController : ControllerBase
 {
+    [HttpGet("GetUUID")]
+    public IActionResult GetUUID()
+    {
+        var uuid = new MachineUUID().GetUUID();
+        return Ok(uuid);
+    }
+
     [HttpGet("GetProcessorId")]
     public IActionResult GetProcessorId()
     {

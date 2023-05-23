@@ -6,12 +6,7 @@ public class MachineUUID
 {
     public string GetUUID()
     {
-        //string deviceId = new DeviceIdBuilder()
-        //    .AddMachineName().AddUserName()
-        //    .AddMacAddress(excludeWireless: true)
-        //    .AddOsVersion().ToString();
-        //return deviceId;
-        return $"{GetProcessorId()}:-";
+        return $"{GetProcessorId()}:{GetHardDriveModel()}:{GetHardDriveSerialNumber()}:{GetMotherboardProductInfo()}";
     }
 
     public string GetProcessorId()
