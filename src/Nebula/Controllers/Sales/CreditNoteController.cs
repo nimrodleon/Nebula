@@ -15,11 +15,11 @@ namespace Nebula.Controllers.Sales;
 public class CreditNoteController : ControllerBase
 {
     private readonly IConfiguration _configuration;
-    private readonly ConfigurationService _configurationService;
+    private readonly IConfigurationService _configurationService;
     private readonly CreditNoteService _creditNoteService;
     private readonly FacturadorService _facturadorService;
 
-    public CreditNoteController(IConfiguration configuration, ConfigurationService configurationService,
+    public CreditNoteController(IConfiguration configuration, IConfigurationService configurationService,
         CreditNoteService creditNoteService, FacturadorService facturadorService)
     {
         _configuration = configuration;

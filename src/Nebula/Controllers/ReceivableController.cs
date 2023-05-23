@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Finanzas.Models;
 using Nebula.Modules.Finanzas;
-using Nebula.Modules.Configurations;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Finanzas.Dto;
 using Nebula.Modules.Configurations.Subscriptions;
@@ -18,15 +17,13 @@ namespace Nebula.Controllers
         private readonly ISubscriptionService _subscriptionService;
         private readonly ReceivableService _receivableService;
         private readonly CashierDetailService _cashierDetailService;
-        private readonly ConfigurationService _configurationService;
 
         public ReceivableController(ISubscriptionService subscriptionService, ReceivableService receivableService,
-            CashierDetailService cashierDetailService, ConfigurationService configurationService)
+            CashierDetailService cashierDetailService)
         {
             _subscriptionService = subscriptionService;
             _receivableService = receivableService;
             _cashierDetailService = cashierDetailService;
-            _configurationService = configurationService;
         }
 
         [HttpGet("Index")]

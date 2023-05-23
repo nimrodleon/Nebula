@@ -11,7 +11,7 @@ namespace Nebula.Modules.Sales;
 
 public class ComprobanteService
 {
-    private readonly ConfigurationService _configurationService;
+    private readonly IConfigurationService _configurationService;
     private readonly InvoiceSaleService _invoiceSaleService;
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly TributoSaleService _tributoSaleService;
@@ -19,7 +19,7 @@ public class ComprobanteService
     private readonly DetallePagoSaleService _detallePagoSaleService;
     private readonly ReceivableService _receivableService;
 
-    public ComprobanteService(ConfigurationService configurationService,
+    public ComprobanteService(IConfigurationService configurationService,
         InvoiceSaleService invoiceSaleService, InvoiceSaleDetailService invoiceSaleDetailService,
         TributoSaleService tributoSaleService, CrudOperationService<InvoiceSerie> invoiceSerieService,
         DetallePagoSaleService detallePagoSaleService, ReceivableService receivableService)

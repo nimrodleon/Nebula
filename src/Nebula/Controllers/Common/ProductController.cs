@@ -18,11 +18,11 @@ public class ProductController : ControllerBase
     private readonly IConfiguration _configuration;
     private readonly ProductService _productService;
     private readonly ProductStockService _productStockService;
-    private readonly ConfigurationService _configurationService;
+    private readonly IConfigurationService _configurationService;
 
     public ProductController(IConfiguration configuration,
         ProductService productService, ProductStockService productStockService,
-        ConfigurationService configurationService)
+        IConfigurationService configurationService)
     {
         _configuration = configuration;
         _productService = productService;

@@ -13,7 +13,7 @@ public class FacturadorService
     private readonly IConfiguration _configuration;
 
     // ======================================================================
-    private readonly ConfigurationService _configurationService;
+    private readonly IConfigurationService _configurationService;
     private readonly InvoiceSaleService _invoiceSaleService;
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly TributoSaleService _tributoSaleService;
@@ -23,7 +23,7 @@ public class FacturadorService
     // ======================================================================
     private readonly CreditNoteService _creditNoteService;
 
-    public FacturadorService(IConfiguration configuration, ConfigurationService configurationService,
+    public FacturadorService(IConfiguration configuration, IConfigurationService configurationService,
         InvoiceSaleService invoiceSaleService, InvoiceSaleDetailService invoiceSaleDetailService,
         TributoSaleService tributoSaleService, CreditNoteService creditNoteService,
         DetallePagoSaleService detallePagoSaleService)

@@ -16,7 +16,7 @@ namespace Nebula.Modules.Cashier;
 /// </summary>
 public class CashierSaleService
 {
-    private readonly ConfigurationService _configurationService;
+    private readonly IConfigurationService _configurationService;
     private readonly InvoiceSaleService _invoiceSaleService;
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly TributoSaleService _tributoSaleService;
@@ -26,7 +26,7 @@ public class CashierSaleService
     private readonly CajaDiariaService _cajaDiariaService;
     private readonly DetallePagoSaleService _detallePagoSaleService;
 
-    public CashierSaleService(ConfigurationService configurationService,
+    public CashierSaleService(IConfigurationService configurationService,
         InvoiceSaleService invoiceSaleService, InvoiceSaleDetailService invoiceSaleDetailService,
         TributoSaleService tributoSaleService, CrudOperationService<InvoiceSerie> invoiceSerieService,
         CashierDetailService cashierDetailService, ReceivableService receivableService,

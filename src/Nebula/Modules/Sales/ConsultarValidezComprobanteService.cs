@@ -1,4 +1,4 @@
-﻿using Nebula.Common;
+using Nebula.Common;
 using Nebula.Modules.Configurations;
 using Nebula.Modules.Configurations.Models;
 using Nebula.Modules.Sales.Dto;
@@ -8,12 +8,12 @@ namespace Nebula.Modules.Sales;
 
 public class ConsultarValidezComprobanteService
 {
-    private readonly ConfigurationService _configurationService;
+    private readonly IConfigurationService _configurationService;
     private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
     private readonly InvoiceSaleService _invoiceSaleService;
     private readonly CreditNoteService _creditNoteService;
 
-    public ConsultarValidezComprobanteService(ConfigurationService configurationService,
+    public ConsultarValidezComprobanteService(IConfigurationService configurationService,
         CrudOperationService<InvoiceSerie> invoiceSerieService, InvoiceSaleService invoiceSaleService,
         CreditNoteService creditNoteService)
     {

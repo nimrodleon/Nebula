@@ -22,7 +22,7 @@ public class InvoiceSaleController : ControllerBase
 {
     private readonly IConfiguration _configuration;
     private readonly ISubscriptionService _subscriptionService;
-    private readonly ConfigurationService _configurationService;
+    private readonly IConfigurationService _configurationService;
     private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
     private readonly InvoiceSaleService _invoiceSaleService;
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
@@ -34,12 +34,19 @@ public class InvoiceSaleController : ControllerBase
     private readonly ValidateStockService _validateStockService;
     private readonly ConsultarValidezComprobanteService _consultarValidezComprobanteService;
 
-    public InvoiceSaleController(ISubscriptionService subscriptionService,        ConfigurationService configurationService,
-        CrudOperationService<InvoiceSerie> invoiceSerieService, InvoiceSaleService invoiceSaleService,
-        InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService,
-        ComprobanteService comprobanteService, FacturadorService facturadorService, CreditNoteService creditNoteService,
-        ValidateStockService validateStockService, IConfiguration configuration,
-        ConsultarValidezComprobanteService consultarValidezComprobanteService,
+    public InvoiceSaleController(ISubscriptionService subscriptionService,
+        IConfigurationService configurationService,
+        CrudOperationService<InvoiceSerie> invoiceSerieService,
+        InvoiceSaleService invoiceSaleService,
+        InvoiceSaleDetailService invoiceSaleDetailService,
+        TributoSaleService tributoSaleService,
+        ComprobanteService comprobanteService,
+        FacturadorService facturadorService,
+        CreditNoteService creditNoteService,
+        ValidateStockService validateStockService,
+        IConfiguration configuration,
+        ConsultarValidezComprobanteService
+        consultarValidezComprobanteService,
         TributoCreditNoteService tributoCreditNoteService)
     {
         _subscriptionService = subscriptionService;

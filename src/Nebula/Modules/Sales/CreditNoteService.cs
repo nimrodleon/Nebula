@@ -15,7 +15,7 @@ namespace Nebula.Modules.Sales;
 public class CreditNoteService : CrudOperationService<CreditNote>
 {
     private readonly IConfiguration _configuration;
-    private readonly ConfigurationService _configurationService;
+    private readonly IConfigurationService _configurationService;
     private readonly InvoiceSaleService _invoiceSaleService;
     private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly TributoSaleService _tributoSaleService;
@@ -28,7 +28,7 @@ public class CreditNoteService : CrudOperationService<CreditNote>
 
     public CreditNoteService(IOptions<DatabaseSettings> options,
         IConfiguration configuration,
-        ConfigurationService configurationService,
+        IConfigurationService configurationService,
         InvoiceSaleService invoiceSaleService,
         InvoiceSaleDetailService invoiceSaleDetailService,
         TributoSaleService tributoSaleService,

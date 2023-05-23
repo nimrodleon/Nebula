@@ -9,10 +9,10 @@ namespace Nebula.Modules.Products;
 
 public class ProductService : CrudOperationService<Product>
 {
-    private readonly ConfigurationService _configurationService;
+    private readonly IConfigurationService _configurationService;
 
     public ProductService(IOptions<DatabaseSettings> options,
-        ConfigurationService configurationService) : base(options)
+        IConfigurationService configurationService) : base(options)
     {
         _configurationService = configurationService;
     }
