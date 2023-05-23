@@ -30,4 +30,11 @@ public class TestsController : ControllerBase
         var serialNumber = new MachineUUID().GetHardDriveSerialNumber();
         return Ok(serialNumber);
     }
+
+    [HttpGet("GetMotherboardProductInfo")]
+    public IActionResult GetMotherboardProductInfo()
+    {
+        var productInfo = new MachineUUID().GetMotherboardProductInfo();
+        return Ok(productInfo);
+    }
 }

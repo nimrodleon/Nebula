@@ -63,4 +63,19 @@ public class MachineUUID
 
         return serialNumber.Trim();
     }
+
+    public string GetMotherboardProductInfo()
+    {
+        string productInfo = string.Empty;
+        ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Product FROM Win32_BaseBoard");
+
+        foreach (ManagementObject obj in searcher.Get())
+        {
+            productInfo = obj["Product"].ToString();
+            break; // Solo obtenemos la información del primer producto encontrado
+        }
+
+        return productInfo.Trim();
+    }
+
 }

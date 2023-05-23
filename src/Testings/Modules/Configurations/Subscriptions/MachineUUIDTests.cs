@@ -31,4 +31,13 @@ public class MachineUUIDTests
         Assert.IsNotNull(serialNumber);
         Assert.AreNotEqual(string.Empty, serialNumber);
     }
+
+    [TestMethod]
+    public void GetMotherboardProductInfo_ReturnsValidProductInfo()
+    {
+        MachineUUID motherboardInfo = new MachineUUID();
+        string productInfo = motherboardInfo.GetMotherboardProductInfo();
+        Assert.IsNotNull(productInfo);
+        Assert.AreNotEqual(string.Empty, productInfo);
+    }
 }
