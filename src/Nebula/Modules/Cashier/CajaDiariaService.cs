@@ -34,7 +34,7 @@ public class CajaDiariaService : CrudOperationService<CajaDiaria>, ICajaDiariaSe
 
     public override async Task<CajaDiaria> GetByIdAsync(string id)
     {
-        var cajaDiaria = await base.GetByIdAsync(id);
+        var cajaDiaria = await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
         var invoiceSerie = await _invoiceSerieService.GetByIdAsync(cajaDiaria.InvoiceSerie);
         cajaDiaria.WarehouseId = invoiceSerie.WarehouseId;
         return cajaDiaria;
