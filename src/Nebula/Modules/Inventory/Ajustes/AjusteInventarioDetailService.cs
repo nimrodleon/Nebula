@@ -16,10 +16,10 @@ public interface IAjusteInventarioDetailService : ICrudOperationService<AjusteIn
 
 public class AjusteInventarioDetailService : CrudOperationService<AjusteInventarioDetail>, IAjusteInventarioDetailService
 {
-    private readonly LocationDetailService _locationDetailService;
+    private readonly ILocationDetailService _locationDetailService;
 
     public AjusteInventarioDetailService(IOptions<DatabaseSettings> options,
-        LocationDetailService locationDetailService) : base(options)
+        ILocationDetailService locationDetailService) : base(options)
     {
         _locationDetailService = locationDetailService;
     }

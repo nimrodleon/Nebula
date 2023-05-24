@@ -6,6 +6,7 @@ using Nebula.Modules.Configurations.Models;
 using Nebula.Modules.Configurations;
 using Nebula.Modules.Cashier.Helpers;
 using Nebula.Modules.Sales.Dto;
+using Nebula.Modules.Configurations.Warehouses;
 
 namespace Nebula.Modules.Sales;
 
@@ -18,17 +19,20 @@ public interface IComprobanteService
 public class ComprobanteService : IComprobanteService
 {
     private readonly IConfigurationService _configurationService;
-    private readonly InvoiceSaleService _invoiceSaleService;
-    private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
-    private readonly TributoSaleService _tributoSaleService;
-    private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
-    private readonly DetallePagoSaleService _detallePagoSaleService;
-    private readonly ReceivableService _receivableService;
+    private readonly IInvoiceSaleService _invoiceSaleService;
+    private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
+    private readonly ITributoSaleService _tributoSaleService;
+    private readonly IInvoiceSerieService _invoiceSerieService;
+    private readonly IDetallePagoSaleService _detallePagoSaleService;
+    private readonly IReceivableService _receivableService;
 
     public ComprobanteService(IConfigurationService configurationService,
-        InvoiceSaleService invoiceSaleService, InvoiceSaleDetailService invoiceSaleDetailService,
-        TributoSaleService tributoSaleService, CrudOperationService<InvoiceSerie> invoiceSerieService,
-        DetallePagoSaleService detallePagoSaleService, ReceivableService receivableService)
+        IInvoiceSaleService invoiceSaleService,
+        IInvoiceSaleDetailService invoiceSaleDetailService,
+        ITributoSaleService tributoSaleService,
+        IInvoiceSerieService invoiceSerieService,
+        IDetallePagoSaleService detallePagoSaleService,
+        IReceivableService receivableService)
     {
         _configurationService = configurationService;
         _invoiceSaleService = invoiceSaleService;

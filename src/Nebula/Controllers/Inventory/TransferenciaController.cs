@@ -15,12 +15,12 @@ namespace Nebula.Controllers.Inventory;
 public class TransferenciaController : ControllerBase
 {
     private readonly ISubscriptionService _subscriptionService;
-    private readonly TransferenciaService _transferenciaService;
-    private readonly ValidateStockService _validateStockService;
+    private readonly ITransferenciaService _transferenciaService;
+    private readonly IValidateStockService _validateStockService;
 
-    public TransferenciaController(SubscriptionService subscriptionService,
-        TransferenciaService transferenciaService,
-        ValidateStockService validateStockService)
+    public TransferenciaController(ISubscriptionService subscriptionService,
+        ITransferenciaService transferenciaService,
+        IValidateStockService validateStockService)
     {
         _subscriptionService = subscriptionService;
         _transferenciaService = transferenciaService;

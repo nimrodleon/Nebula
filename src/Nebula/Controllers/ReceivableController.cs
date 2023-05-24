@@ -15,11 +15,12 @@ namespace Nebula.Controllers
     public class ReceivableController : ControllerBase
     {
         private readonly ISubscriptionService _subscriptionService;
-        private readonly ReceivableService _receivableService;
-        private readonly CashierDetailService _cashierDetailService;
+        private readonly IReceivableService _receivableService;
+        private readonly ICashierDetailService _cashierDetailService;
 
-        public ReceivableController(ISubscriptionService subscriptionService, ReceivableService receivableService,
-            CashierDetailService cashierDetailService)
+        public ReceivableController(ISubscriptionService subscriptionService,
+            IReceivableService receivableService,
+            ICashierDetailService cashierDetailService)
         {
             _subscriptionService = subscriptionService;
             _receivableService = receivableService;

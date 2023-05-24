@@ -11,9 +11,9 @@ namespace Nebula.Controllers.Inventory;
 [ApiController]
 public class TransferenciaDetailController : ControllerBase
 {
-    private readonly TransferenciaDetailService _transferenciaDetailService;
+    private readonly ITransferenciaDetailService _transferenciaDetailService;
 
-    public TransferenciaDetailController(TransferenciaDetailService transferenciaDetailService)
+    public TransferenciaDetailController(ITransferenciaDetailService transferenciaDetailService)
     {
         _transferenciaDetailService = transferenciaDetailService;
     }

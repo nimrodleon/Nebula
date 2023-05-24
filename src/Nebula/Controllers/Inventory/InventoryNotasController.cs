@@ -15,12 +15,12 @@ namespace Nebula.Controllers.Inventory;
 public class InventoryNotasController : ControllerBase
 {
     private readonly ISubscriptionService _subscriptionService;
-    private readonly InventoryNotasService _inventoryNotasService;
-    private readonly ValidateStockService _validateStockService;
+    private readonly IInventoryNotasService _inventoryNotasService;
+    private readonly IValidateStockService _validateStockService;
 
     public InventoryNotasController(ISubscriptionService subscriptionService,
-        InventoryNotasService inventoryNotasService,
-        ValidateStockService validateStockService)
+        IInventoryNotasService inventoryNotasService,
+        IValidateStockService validateStockService)
     {
         _subscriptionService = subscriptionService;
         _inventoryNotasService = inventoryNotasService;

@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Common;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Configurations.Models;
+using Nebula.Modules.Configurations.Warehouses;
 
 namespace Nebula.Controllers.Common;
 
@@ -11,9 +11,9 @@ namespace Nebula.Controllers.Common;
 [ApiController]
 public class WarehouseController : ControllerBase
 {
-    private readonly CrudOperationService<Warehouse> _warehouseService;
+    private readonly IWarehouseService _warehouseService;
 
-    public WarehouseController(CrudOperationService<Warehouse> warehouseService) =>
+    public WarehouseController(IWarehouseService warehouseService) =>
         _warehouseService = warehouseService;
 
     [HttpGet("Index")]

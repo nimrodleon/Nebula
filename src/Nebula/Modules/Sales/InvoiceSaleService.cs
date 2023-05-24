@@ -30,12 +30,14 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSal
 {
     private readonly IConfiguration _configuration;
     private readonly IConfigurationService _configurationService;
-    private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
-    private readonly TributoSaleService _tributoSaleService;
+    private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
+    private readonly ITributoSaleService _tributoSaleService;
 
     public InvoiceSaleService(IOptions<DatabaseSettings> options,
-        IConfiguration configuration, IConfigurationService configurationService,
-        InvoiceSaleDetailService invoiceSaleDetailService, TributoSaleService tributoSaleService) : base(options)
+        IConfiguration configuration,
+        IConfigurationService configurationService,
+        IInvoiceSaleDetailService invoiceSaleDetailService,
+        ITributoSaleService tributoSaleService) : base(options)
     {
         _configuration = configuration;
         _configurationService = configurationService;

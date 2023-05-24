@@ -12,9 +12,9 @@ namespace Nebula.Controllers.Inventory;
 [ApiController]
 public class LocationController : ControllerBase
 {
-    private readonly LocationService _locationService;
+    private readonly ILocationService _locationService;
 
-    public LocationController(LocationService locationService)
+    public LocationController(ILocationService locationService)
     {
         _locationService = locationService;
     }

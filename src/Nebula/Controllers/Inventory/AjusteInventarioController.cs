@@ -15,13 +15,14 @@ namespace Nebula.Controllers.Inventory;
 public class AjusteInventarioController : ControllerBase
 {
     private readonly ISubscriptionService _subscriptionService;
-    private readonly AjusteInventarioService _ajusteInventarioService;
-    private readonly AjusteInventarioDetailService _ajusteInventarioDetailService;
-    private readonly ValidateStockService _validateStockService;
+    private readonly IAjusteInventarioService _ajusteInventarioService;
+    private readonly IAjusteInventarioDetailService _ajusteInventarioDetailService;
+    private readonly IValidateStockService _validateStockService;
 
     public AjusteInventarioController(ISubscriptionService subscriptionService,
-        AjusteInventarioService ajusteInventarioService,
-        AjusteInventarioDetailService ajusteInventarioDetailService, ValidateStockService validateStockService)
+        IAjusteInventarioService ajusteInventarioService,
+        IAjusteInventarioDetailService ajusteInventarioDetailService,
+        IValidateStockService validateStockService)
     {
         _subscriptionService = subscriptionService;
         _ajusteInventarioService = ajusteInventarioService;

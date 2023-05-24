@@ -17,13 +17,14 @@ namespace Nebula.Controllers.Cashier;
 public class CajaDiariaController : ControllerBase
 {
     private readonly ISubscriptionService _subscriptionService;
-    private readonly CajaDiariaService _cajaDiariaService;
-    private readonly InvoiceSerieService _invoiceSerieService;
-    private readonly CashierDetailService _cashierDetailService;
+    private readonly ICajaDiariaService _cajaDiariaService;
+    private readonly IInvoiceSerieService _invoiceSerieService;
+    private readonly ICashierDetailService _cashierDetailService;
 
     public CajaDiariaController(ISubscriptionService subscriptionService,
-        CajaDiariaService cajaDiariaService, InvoiceSerieService invoiceSerieService,
-        CashierDetailService cashierDetailService)
+        ICajaDiariaService cajaDiariaService,
+        IInvoiceSerieService invoiceSerieService,
+        ICashierDetailService cashierDetailService)
     {
         _subscriptionService = subscriptionService;
         _cajaDiariaService = cajaDiariaService;

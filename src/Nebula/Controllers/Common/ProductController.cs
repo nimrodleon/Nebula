@@ -16,12 +16,13 @@ namespace Nebula.Controllers.Common;
 public class ProductController : ControllerBase
 {
     private readonly IConfiguration _configuration;
-    private readonly ProductService _productService;
-    private readonly ProductStockService _productStockService;
+    private readonly IProductService _productService;
+    private readonly IProductStockService _productStockService;
     private readonly IConfigurationService _configurationService;
 
     public ProductController(IConfiguration configuration,
-        ProductService productService, ProductStockService productStockService,
+        IProductService productService,
+        IProductStockService productStockService,
         IConfigurationService configurationService)
     {
         _configuration = configuration;

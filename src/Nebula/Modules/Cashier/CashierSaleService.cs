@@ -23,20 +23,20 @@ public interface ICashierSaleService
 public class CashierSaleService : ICashierSaleService
 {
     private readonly IConfigurationService _configurationService;
-    private readonly InvoiceSaleService _invoiceSaleService;
-    private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
-    private readonly TributoSaleService _tributoSaleService;
-    private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
-    private readonly CashierDetailService _cashierDetailService;
-    private readonly ReceivableService _receivableService;
-    private readonly CajaDiariaService _cajaDiariaService;
-    private readonly DetallePagoSaleService _detallePagoSaleService;
+    private readonly IInvoiceSaleService _invoiceSaleService;
+    private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
+    private readonly ITributoSaleService _tributoSaleService;
+    private readonly ICrudOperationService<InvoiceSerie> _invoiceSerieService;
+    private readonly ICashierDetailService _cashierDetailService;
+    private readonly IReceivableService _receivableService;
+    private readonly ICajaDiariaService _cajaDiariaService;
+    private readonly IDetallePagoSaleService _detallePagoSaleService;
 
     public CashierSaleService(IConfigurationService configurationService,
-        InvoiceSaleService invoiceSaleService, InvoiceSaleDetailService invoiceSaleDetailService,
-        TributoSaleService tributoSaleService, CrudOperationService<InvoiceSerie> invoiceSerieService,
-        CashierDetailService cashierDetailService, ReceivableService receivableService,
-        CajaDiariaService cajaDiariaService, DetallePagoSaleService detallePagoSaleService)
+        IInvoiceSaleService invoiceSaleService, IInvoiceSaleDetailService invoiceSaleDetailService,
+        ITributoSaleService tributoSaleService, ICrudOperationService<InvoiceSerie> invoiceSerieService,
+        ICashierDetailService cashierDetailService, IReceivableService receivableService,
+        ICajaDiariaService cajaDiariaService, IDetallePagoSaleService detallePagoSaleService)
     {
         _configurationService = configurationService;
         _invoiceSaleService = invoiceSaleService;

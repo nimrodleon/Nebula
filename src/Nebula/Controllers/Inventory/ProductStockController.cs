@@ -11,10 +11,10 @@ namespace Nebula.Controllers.Inventory;
 [ApiController]
 public class ProductStockController : ControllerBase
 {
-    private readonly ProductStockService _productStockService;
+    private readonly IProductStockService _productStockService;
     private readonly IHelperCalculateProductStockService _helperCalculateProductStockService;
 
-    public ProductStockController(ProductStockService productStockService,
+    public ProductStockController(IProductStockService productStockService,
         IHelperCalculateProductStockService helperCalculateProductStockService)
     {
         _productStockService = productStockService;

@@ -12,16 +12,16 @@ public interface IHelperCalculateProductStockService
 
 public class HelperCalculateProductStockService : IHelperCalculateProductStockService
 {
-    private readonly ProductService _productService;
-    private readonly ProductStockService _productStockService;
-    private readonly WarehouseService _warehouseService;
-    private readonly ProductLoteService _productLoteService;
+    private readonly IProductService _productService;
+    private readonly IProductStockService _productStockService;
+    private readonly IWarehouseService _warehouseService;
+    private readonly IProductLoteService _productLoteService;
 
     public HelperCalculateProductStockService(
-        ProductService productService,
-        ProductStockService productStockService,
-        WarehouseService warehouseService,
-        ProductLoteService productLoteService)
+        IProductService productService,
+        IProductStockService productStockService,
+        IWarehouseService warehouseService,
+        IProductLoteService productLoteService)
     {
         _productService = productService;
         _productStockService = productStockService;

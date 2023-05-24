@@ -3,7 +3,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Common.Dto;
-using Nebula.Modules.Configurations.Models;
+using Nebula.Modules.Configurations.Warehouses;
 using Nebula.Modules.Taller.Models;
 
 namespace Nebula.Modules.Taller.Services;
@@ -21,12 +21,12 @@ public interface ITallerRepairOrderService : ICrudOperationService<TallerRepairO
 /// </summary>
 public class TallerRepairOrderService : CrudOperationService<TallerRepairOrder>, ITallerRepairOrderService
 {
-    private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
-    private readonly TallerItemRepairOrderService _itemRepairOrderService;
+    private readonly IInvoiceSerieService _invoiceSerieService;
+    private readonly ITallerItemRepairOrderService _itemRepairOrderService;
 
     public TallerRepairOrderService(IOptions<DatabaseSettings> options,
-        TallerItemRepairOrderService itemRepairOrderService,
-        CrudOperationService<InvoiceSerie> invoiceSerieService) : base(options)
+        ITallerItemRepairOrderService itemRepairOrderService,
+        IInvoiceSerieService invoiceSerieService) : base(options)
     {
         _itemRepairOrderService = itemRepairOrderService;
         _invoiceSerieService = invoiceSerieService;

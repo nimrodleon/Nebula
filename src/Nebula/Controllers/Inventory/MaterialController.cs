@@ -15,12 +15,12 @@ namespace Nebula.Controllers.Inventory;
 public class MaterialController : ControllerBase
 {
     private readonly ISubscriptionService _subscriptionService;
-    private readonly MaterialService _materialService;
-    private readonly ValidateStockService _validateStockService;
+    private readonly IMaterialService _materialService;
+    private readonly IValidateStockService _validateStockService;
 
     public MaterialController(ISubscriptionService subscriptionService,
-        MaterialService materialService,
-        ValidateStockService validateStockService)
+        IMaterialService materialService,
+        IValidateStockService validateStockService)
     {
         _subscriptionService = subscriptionService;
         _materialService = materialService;

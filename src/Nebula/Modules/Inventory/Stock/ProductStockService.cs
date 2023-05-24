@@ -22,16 +22,30 @@ public interface IProductStockService : ICrudOperationService<ProductStock>
     Task<List<ProductStock>> GetProductStockListByWarehouseAndLoteAsync(string warehouseId, string productLoteId, string productId);
     Task<List<ProductStock>> GetProductStockListByWarehouseAsync(string warehouseId, string productId);
     Task<List<ProductStock>> GetProductStockListByWarehousesIdsAsync(List<string> warehouseArrId, string productId);
+    Task<List<ProductStock>> GetProductStockByWarehouseIdAsync(string warehouseId,
+        List<string> productArrId);
+
+    // ...
+    Task<List<TransferenciaDetail>> CalcularCantidadExistenteRestanteTransferenciaAsync(
+        List<TransferenciaDetail> transferenciaDetails, string warehouseId);
+    Task<List<AjusteInventarioDetail>> CalcularCantidadExistenteAjusteInventarioAsync(
+        List<AjusteInventarioDetail> ajusteInventarioDetails, string warehouseId);
+    Task<DeleteResult> DeleteProductStockByWarehouseIdAsync(string warehouseId, List<string> productArrId);
+    [Obsolete]
+    Task<List<ProductStockReport>> GetProductStockReportAsync(string id);
+    Task<long> GetStockItemComprobanteAsync(string warehouseId, string productId);
+    Task<long> GetStockItemCajaAsync(string invoiceSerieId, string productId);
+
 }
 
 public class ProductStockService : CrudOperationService<ProductStock>, IProductStockService
 {
-    private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
-    private readonly WarehouseService _warehouseService;
+    private readonly IInvoiceSerieService _invoiceSerieService;
+    private readonly IWarehouseService _warehouseService;
 
     public ProductStockService(IOptions<DatabaseSettings> options,
-        WarehouseService warehouseService,
-        CrudOperationService<InvoiceSerie> invoiceSerieService) : base(options)
+        IWarehouseService warehouseService,
+        IInvoiceSerieService invoiceSerieService) : base(options)
     {
         _warehouseService = warehouseService;
         _invoiceSerieService = invoiceSerieService;

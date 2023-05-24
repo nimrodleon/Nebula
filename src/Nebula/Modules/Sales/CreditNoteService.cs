@@ -4,6 +4,7 @@ using Nebula.Common;
 using Nebula.Common.Dto;
 using Nebula.Modules.Configurations;
 using Nebula.Modules.Configurations.Models;
+using Nebula.Modules.Configurations.Warehouses;
 using Nebula.Modules.Facturador.Helpers;
 using Nebula.Modules.Facturador.XmlDigest;
 using Nebula.Modules.Sales.Dto;
@@ -29,25 +30,25 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
 {
     private readonly IConfiguration _configuration;
     private readonly IConfigurationService _configurationService;
-    private readonly InvoiceSaleService _invoiceSaleService;
-    private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
-    private readonly TributoSaleService _tributoSaleService;
+    private readonly IInvoiceSaleService _invoiceSaleService;
+    private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
+    private readonly ITributoSaleService _tributoSaleService;
 
-    private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
+    private readonly IInvoiceSerieService _invoiceSerieService;
 
     // ======================================================================
-    private readonly CreditNoteDetailService _creditNoteDetailService;
-    private readonly TributoCreditNoteService _tributoCreditNoteService;
+    private readonly ICreditNoteDetailService _creditNoteDetailService;
+    private readonly ITributoCreditNoteService _tributoCreditNoteService;
 
     public CreditNoteService(IOptions<DatabaseSettings> options,
         IConfiguration configuration,
         IConfigurationService configurationService,
-        InvoiceSaleService invoiceSaleService,
-        InvoiceSaleDetailService invoiceSaleDetailService,
-        TributoSaleService tributoSaleService,
-        CrudOperationService<InvoiceSerie> invoiceSerieService,
-        CreditNoteDetailService creditNoteDetailService,
-        TributoCreditNoteService tributoCreditNoteService) : base(options)
+        IInvoiceSaleService invoiceSaleService,
+        IInvoiceSaleDetailService invoiceSaleDetailService,
+        ITributoSaleService tributoSaleService,
+        IInvoiceSerieService invoiceSerieService,
+        ICreditNoteDetailService creditNoteDetailService,
+        ITributoCreditNoteService tributoCreditNoteService) : base(options)
     {
         _configurationService = configurationService;
         _configuration = configuration;

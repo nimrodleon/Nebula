@@ -20,27 +20,27 @@ public interface IValidateStockService
 
 public class ValidateStockService : IValidateStockService
 {
-    private readonly ProductStockService _productStockService;
-    private readonly InventoryNotasService _inventoryNotasService;
-    private readonly InventoryNotasDetailService _inventoryNotasDetailService;
-    private readonly TransferenciaService _transferenciaService;
-    private readonly TransferenciaDetailService _transferenciaDetailService;
-    private readonly AjusteInventarioService _ajusteInventarioService;
-    private readonly AjusteInventarioDetailService _ajusteInventarioDetailService;
-    private readonly MaterialService _materialService;
-    private readonly MaterialDetailService _materialDetailService;
-    private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
+    private readonly IProductStockService _productStockService;
+    private readonly IInventoryNotasService _inventoryNotasService;
+    private readonly IInventoryNotasDetailService _inventoryNotasDetailService;
+    private readonly ITransferenciaService _transferenciaService;
+    private readonly ITransferenciaDetailService _transferenciaDetailService;
+    private readonly IAjusteInventarioService _ajusteInventarioService;
+    private readonly IAjusteInventarioDetailService _ajusteInventarioDetailService;
+    private readonly IMaterialService _materialService;
+    private readonly IMaterialDetailService _materialDetailService;
+    private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
 
-    public ValidateStockService(ProductStockService productStockService,
-        InventoryNotasService inventoryNotasService,
-        InventoryNotasDetailService inventoryNotasDetailService,
-        TransferenciaService transferenciaService,
-        TransferenciaDetailService transferenciaDetailService,
-        AjusteInventarioService ajusteInventarioService,
-        AjusteInventarioDetailService ajusteInventarioDetailService,
-        MaterialService materialService,
-        MaterialDetailService materialDetailService,
-        InvoiceSaleDetailService invoiceSaleDetailService)
+    public ValidateStockService(IProductStockService productStockService,
+        IInventoryNotasService inventoryNotasService,
+        IInventoryNotasDetailService inventoryNotasDetailService,
+        ITransferenciaService transferenciaService,
+        ITransferenciaDetailService transferenciaDetailService,
+        IAjusteInventarioService ajusteInventarioService,
+        IAjusteInventarioDetailService ajusteInventarioDetailService,
+        IMaterialService materialService,
+        IMaterialDetailService materialDetailService,
+        IInvoiceSaleDetailService invoiceSaleDetailService)
     {
         _productStockService = productStockService;
         _inventoryNotasService = inventoryNotasService;
