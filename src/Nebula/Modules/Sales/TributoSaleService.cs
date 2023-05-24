@@ -6,7 +6,15 @@ using Nebula.Modules.Sales.Models;
 
 namespace Nebula.Modules.Sales;
 
-public class TributoSaleService : CrudOperationService<TributoSale>
+public interface ITributoSaleService : ICrudOperationService<TributoSale>
+{
+    Task<List<TributoSale>> GetListAsync(string id);
+    Task<List<TributoSale>> GetTributosMensual(DateQuery date);
+    Task CreateManyAsync(List<TributoSale> tributoSales);
+    Task RemoveManyAsync(string id);
+}
+
+public class TributoSaleService : CrudOperationService<TributoSale>, ITributoSaleService
 {
     public TributoSaleService(IOptions<DatabaseSettings> options) : base(options)
     {

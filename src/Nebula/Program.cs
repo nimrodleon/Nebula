@@ -54,69 +54,69 @@ builder.Services.AddCors(options =>
 
 // Add services to the container.
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
-builder.Services.AddScoped(typeof(CrudOperationService<>));
+builder.Services.AddScoped(typeof(ICrudOperationService<>), typeof(CrudOperationService<>));
 
 #region Configuration
 
 builder.Services.AddScoped<IConfigurationService, ConfigurationService>();
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
-builder.Services.AddScoped<WarehouseService>();
-builder.Services.AddScoped<InvoiceSerieService>();
+builder.Services.AddScoped<IWarehouseService, WarehouseService>();
+builder.Services.AddScoped<IInvoiceSerieService, InvoiceSerieService>();
 
 #endregion
 
 #region Productos
 
-builder.Services.AddScoped<ProductService>();
-builder.Services.AddScoped<ProductLoteService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductLoteService, ProductLoteService>();
 
 #endregion
 
-builder.Services.AddScoped<ReceivableService>();
-builder.Services.AddScoped<ContactService>();
-builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<CajaDiariaService>();
-builder.Services.AddScoped<CashierDetailService>();
-builder.Services.AddScoped<InvoiceSaleDetailService>();
-builder.Services.AddScoped<InvoiceSaleService>();
-builder.Services.AddScoped<TributoSaleService>();
-builder.Services.AddScoped<DetallePagoSaleService>();
-builder.Services.AddScoped<CashierSaleService>();
-builder.Services.AddScoped<LocationService>();
-builder.Services.AddScoped<LocationDetailService>();
-builder.Services.AddScoped<MaterialService>();
-builder.Services.AddScoped<MaterialDetailService>();
-builder.Services.AddScoped<InventoryNotasService>();
-builder.Services.AddScoped<InventoryNotasDetailService>();
-builder.Services.AddScoped<TransferenciaService>();
-builder.Services.AddScoped<TransferenciaDetailService>();
-builder.Services.AddScoped<AjusteInventarioService>();
-builder.Services.AddScoped<AjusteInventarioDetailService>();
-builder.Services.AddScoped<FacturadorService>();
-builder.Services.AddScoped<ComprobanteService>();
-builder.Services.AddScoped<CreditNoteService>();
-builder.Services.AddScoped<CreditNoteDetailService>();
-builder.Services.AddScoped<TributoCreditNoteService>();
-builder.Services.AddScoped<ConsultarValidezComprobanteService>();
+builder.Services.AddScoped<IReceivableService, ReceivableService>();
+builder.Services.AddScoped<IContactService, ContactService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICajaDiariaService, CajaDiariaService>();
+builder.Services.AddScoped<ICashierDetailService, CashierDetailService>();
+builder.Services.AddScoped<IInvoiceSaleDetailService, InvoiceSaleDetailService>();
+builder.Services.AddScoped<IInvoiceSaleService, InvoiceSaleService>();
+builder.Services.AddScoped<ITributoSaleService, TributoSaleService>();
+builder.Services.AddScoped<IDetallePagoSaleService, DetallePagoSaleService>();
+builder.Services.AddScoped<ICashierSaleService, CashierSaleService>();
+builder.Services.AddScoped<ILocationService, LocationService>();
+builder.Services.AddScoped<ILocationDetailService, LocationDetailService>();
+builder.Services.AddScoped<IMaterialService, MaterialService>();
+builder.Services.AddScoped<IMaterialDetailService, MaterialDetailService>();
+builder.Services.AddScoped<IInventoryNotasService, InventoryNotasService>();
+builder.Services.AddScoped<IInventoryNotasDetailService, InventoryNotasDetailService>();
+builder.Services.AddScoped<ITransferenciaService, TransferenciaService>();
+builder.Services.AddScoped<ITransferenciaDetailService, TransferenciaDetailService>();
+builder.Services.AddScoped<IAjusteInventarioService, AjusteInventarioService>();
+builder.Services.AddScoped<IAjusteInventarioDetailService, AjusteInventarioDetailService>();
+builder.Services.AddScoped<IFacturadorService, FacturadorService>();
+builder.Services.AddScoped<IComprobanteService, ComprobanteService>();
+builder.Services.AddScoped<ICreditNoteService, CreditNoteService>();
+builder.Services.AddScoped<ICreditNoteDetailService, CreditNoteDetailService>();
+builder.Services.AddScoped<ITributoCreditNoteService, TributoCreditNoteService>();
+builder.Services.AddScoped<IConsultarValidezComprobanteService, ConsultarValidezComprobanteService>();
 
 #region ModuleFacturadorSUNAT
 
-builder.Services.AddScoped<HttpRequestFacturadorService>();
+builder.Services.AddScoped<IHttpRequestFacturadorService, HttpRequestFacturadorService>();
 
 #endregion
 
 #region ModuleInventory
 
-builder.Services.AddScoped<ProductStockService>();
-builder.Services.AddScoped<ValidateStockService>();
+builder.Services.AddScoped<IProductStockService, ProductStockService>();
+builder.Services.AddScoped<IValidateStockService, ValidateStockService>();
 builder.Services.AddScoped<IHelperCalculateProductStockService, HelperCalculateProductStockService>();
 
 #endregion
 
 #region ModuleTaller
 
-builder.Services.AddScoped<TallerRepairOrderService>();
-builder.Services.AddScoped<TallerItemRepairOrderService>();
+builder.Services.AddScoped<ITallerRepairOrderService, TallerRepairOrderService>();
+builder.Services.AddScoped<ITallerItemRepairOrderService, TallerItemRepairOrderService>();
 
 #endregion
 

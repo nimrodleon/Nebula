@@ -6,7 +6,13 @@ using Nebula.Common.Dto;
 
 namespace Nebula.Modules.Cashier;
 
-public class CajaDiariaService : CrudOperationService<CajaDiaria>
+public interface ICajaDiariaService : ICrudOperationService<CajaDiaria>
+{
+    Task<List<CajaDiaria>> GetListAsync(DateQuery query);
+    Task<List<CajaDiaria>> GetCajasAbiertasAsync();
+}
+
+public class CajaDiariaService : CrudOperationService<CajaDiaria>, ICajaDiariaService
 {
     public CajaDiariaService(IOptions<DatabaseSettings> options) : base(options)
     {

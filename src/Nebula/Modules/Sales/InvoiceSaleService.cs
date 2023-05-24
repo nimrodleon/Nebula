@@ -11,7 +11,22 @@ using Nebula.Common.Dto;
 
 namespace Nebula.Modules.Sales;
 
-public class InvoiceSaleService : CrudOperationService<InvoiceSale>
+public interface IInvoiceSaleService : ICrudOperationService<InvoiceSale>
+{
+    Task<List<InvoiceSale>> GetListAsync(DateQuery query);
+    Task<ResponseInvoiceSale> GetInvoiceSaleAsync(string invoiceId);
+    Task<List<InvoiceSale>> GetByContactIdAsync(string id, string month, string year);
+    Task<List<InvoiceSale>> GetInvoicesByNumDocs(List<string> series, List<string> numbers);
+    Task<List<InvoiceSale>> GetInvoiceSaleByMonthAndYear(string month, string year);
+    Task<List<InvoiceSale>> GetInvoiceSaleByDate(string date);
+    Task<InvoiceSale> SetSituacionFacturador(string id, SituacionFacturadorDto dto);
+    Task<InvoiceSale> AnularComprobante(string id);
+    Task<List<InvoiceSale>> GetInvoiceSalesPendingAsync();
+    Task<List<InvoiceSale>> BusquedaAvanzadaAsync(BuscarComprobanteFormDto dto);
+    Task<TicketDto> GetTicketDto(string invoiceId);
+}
+
+public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSaleService
 {
     private readonly IConfiguration _configuration;
     private readonly IConfigurationService _configurationService;

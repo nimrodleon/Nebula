@@ -5,7 +5,13 @@ using Nebula.Modules.Inventory.Models;
 
 namespace Nebula.Modules.Inventory.Materiales;
 
-public class MaterialDetailService : CrudOperationService<MaterialDetail>
+public interface IMaterialDetailService : ICrudOperationService<MaterialDetail>
+{
+    Task<List<MaterialDetail>> GetListAsync(string id);
+    Task<long> CountDocumentsAsync(string id);
+}
+
+public class MaterialDetailService : CrudOperationService<MaterialDetail>, IMaterialDetailService
 {
     public MaterialDetailService(IOptions<DatabaseSettings> options) : base(options) { }
 

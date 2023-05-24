@@ -5,7 +5,13 @@ using Nebula.Modules.Inventory.Models;
 
 namespace Nebula.Modules.Inventory.Notas;
 
-public class InventoryNotasDetailService : CrudOperationService<InventoryNotasDetail>
+public interface IInventoryNotasDetailService : ICrudOperationService<InventoryNotasDetail>
+{
+    Task<List<InventoryNotasDetail>> GetListAsync(string id);
+    Task<long> CountDocumentsAsync(string id);
+}
+
+public class InventoryNotasDetailService : CrudOperationService<InventoryNotasDetail>, IInventoryNotasDetailService
 {
     public InventoryNotasDetailService(IOptions<DatabaseSettings> options) : base(options) { }
 

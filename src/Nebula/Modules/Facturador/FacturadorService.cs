@@ -8,7 +8,17 @@ using Nebula.Modules.Sales.Models;
 
 namespace Nebula.Modules.Facturador;
 
-public class FacturadorService
+public interface IFacturadorService
+{
+    Task<InvoiceSale> SaveInvoiceInControlFolder(string invoiceSaleId);
+    Task<CreditNote> SaveCreditNoteInControlFolder(string creditNoteId);
+    Task<InvoiceSale> BorrarArchivosAntiguosInvoice(string invoiceSaleId);
+    Task<CreditNote> BorrarArchivosAntiguosCreditNote(string creditNoteId);
+    Task<bool> JsonInvoiceParser(string invoiceSaleId);
+    Task<bool> CreateCreditNoteJsonFile(string creditNoteId);
+}
+
+public class FacturadorService : IFacturadorService
 {
     private readonly IConfiguration _configuration;
 

@@ -11,10 +11,16 @@ using Nebula.Modules.Sales.Dto;
 
 namespace Nebula.Modules.Cashier;
 
+public interface ICashierSaleService
+{
+    void SetComprobanteDto(ComprobanteDto dto);
+    Task<InvoiceSale> SaveChangesAsync(string cajaDiariaId);
+}
+
 /// <summary>
 /// Servicio para gestionar ventas.
 /// </summary>
-public class CashierSaleService
+public class CashierSaleService : ICashierSaleService
 {
     private readonly IConfigurationService _configurationService;
     private readonly InvoiceSaleService _invoiceSaleService;

@@ -8,7 +8,15 @@ using Nebula.Modules.Cashier.Models;
 
 namespace Nebula.Modules.Cashier;
 
-public class CashierDetailService : CrudOperationService<CashierDetail>
+public interface ICashierDetailService : ICrudOperationService<CashierDetail>
+{
+    Task<List<CashierDetail>> GetListAsync(string id, string query);
+    Task<ResumenCajaDto> GetResumenCaja(string cajaDiariaId);
+    Task<long> CountDocumentsAsync(string id);
+    Task<List<CashierDetail>> GetEntradaSalidaAsync(string contactId, string month, string year);
+}
+
+public class CashierDetailService : CrudOperationService<CashierDetail>, ICashierDetailService
 {
     public CashierDetailService(IOptions<DatabaseSettings> options) : base(options)
     {

@@ -5,7 +5,15 @@ using Nebula.Modules.Products.Models;
 
 namespace Nebula.Modules.Products;
 
-public class ProductLoteService : CrudOperationService<ProductLote>
+public interface IProductLoteService : ICrudOperationService<ProductLote>
+{
+    Task<List<ProductLote>> GetLotesByExpirationDate(string id, string expirationDate);
+    Task<List<ProductLote>> GetLotesByProductId(string productId);
+    Task<long> GetLoteCountByProductId(string productId);
+    Task UpdateProductHasLote(string productId);
+}
+
+public class ProductLoteService : CrudOperationService<ProductLote>, IProductLoteService
 {
     private readonly ProductService _productService;
 

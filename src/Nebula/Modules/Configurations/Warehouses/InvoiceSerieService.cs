@@ -4,7 +4,12 @@ using Nebula.Modules.Configurations.Models;
 
 namespace Nebula.Modules.Configurations.Warehouses;
 
-public class InvoiceSerieService : CrudOperationService<InvoiceSerie>
+public interface IInvoiceSerieService : ICrudOperationService<InvoiceSerie>
+{
+
+}
+
+public class InvoiceSerieService : CrudOperationService<InvoiceSerie>, IInvoiceSerieService
 {
     public InvoiceSerieService(IOptions<DatabaseSettings> options) : base(options)
     {

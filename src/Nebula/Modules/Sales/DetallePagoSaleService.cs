@@ -5,7 +5,13 @@ using Nebula.Modules.Sales.Models;
 
 namespace Nebula.Modules.Sales;
 
-public class DetallePagoSaleService : CrudOperationService<DetallePagoSale>
+public interface IDetallePagoSaleService : ICrudOperationService<DetallePagoSale>
+{
+    Task<List<DetallePagoSale>> GetListAsync(string id);
+    Task CreateManyAsync(List<DetallePagoSale> detallePago);
+}
+
+public class DetallePagoSaleService : CrudOperationService<DetallePagoSale>, IDetallePagoSaleService
 {
     public DetallePagoSaleService(IOptions<DatabaseSettings> options) : base(options) { }
 

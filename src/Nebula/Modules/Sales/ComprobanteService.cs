@@ -9,7 +9,13 @@ using Nebula.Modules.Sales.Dto;
 
 namespace Nebula.Modules.Sales;
 
-public class ComprobanteService
+public interface IComprobanteService
+{
+    void SetComprobanteDto(ComprobanteDto dto);
+    Task<InvoiceSale> SaveChangesAsync();
+}
+
+public class ComprobanteService : IComprobanteService
 {
     private readonly IConfigurationService _configurationService;
     private readonly InvoiceSaleService _invoiceSaleService;

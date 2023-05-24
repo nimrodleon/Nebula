@@ -6,7 +6,13 @@ using Nebula.Modules.Sales.Models;
 
 namespace Nebula.Modules.Sales;
 
-public class TributoCreditNoteService : CrudOperationService<TributoCreditNote>
+public interface ITributoCreditNoteService : ICrudOperationService<TributoCreditNote>
+{
+    Task<List<TributoCreditNote>> GetListAsync(string creditNoteId);
+    Task<List<TributoCreditNote>> GetTributosMensual(DateQuery date);
+}
+
+public class TributoCreditNoteService : CrudOperationService<TributoCreditNote>, ITributoCreditNoteService
 {
     public TributoCreditNoteService(IOptions<DatabaseSettings> options) : base(options)
     {

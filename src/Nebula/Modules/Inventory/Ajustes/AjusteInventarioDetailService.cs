@@ -6,7 +6,15 @@ using Nebula.Modules.Inventory.Models;
 
 namespace Nebula.Modules.Inventory.Ajustes;
 
-public class AjusteInventarioDetailService : CrudOperationService<AjusteInventarioDetail>
+public interface IAjusteInventarioDetailService : ICrudOperationService<AjusteInventarioDetail>
+{
+    Task<List<AjusteInventarioDetail>> GetListAsync(string id);
+    Task<long> CountDocumentsAsync(string id);
+    Task GenerateDetailAsync(string locationId, string ajusteInventarioId);
+    Task<DeleteResult> DeleteManyAsync(string ajusteInventarioId);
+}
+
+public class AjusteInventarioDetailService : CrudOperationService<AjusteInventarioDetail>, IAjusteInventarioDetailService
 {
     private readonly LocationDetailService _locationDetailService;
 

@@ -6,7 +6,13 @@ using Nebula.Modules.Auth.Models;
 
 namespace Nebula.Modules.Auth;
 
-public class UserService : CrudOperationService<User>
+public interface IUserService : ICrudOperationService<User>
+{
+    Task<List<User>> GetListAsync(string? query, int limit = 25);
+    Task<User> GetByUserNameAsync(string userName);
+}
+
+public class UserService : CrudOperationService<User>, IUserService
 {
     public UserService(IOptions<DatabaseSettings> options) : base(options) { }
 

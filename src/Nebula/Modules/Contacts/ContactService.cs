@@ -6,7 +6,13 @@ using Nebula.Modules.Contacts.Models;
 
 namespace Nebula.Modules.Contacts;
 
-public class ContactService : CrudOperationService<Contact>
+public interface IContactService : ICrudOperationService<Contact>
+{
+    Task<Contact> GetContactByDocumentAsync(string document);
+    Task<List<Contact>> GetContactsAsync(string query = "", int limit = 25);
+}
+
+public class ContactService : CrudOperationService<Contact>, IContactService
 {
     public ContactService(IOptions<DatabaseSettings> options) : base(options) { }
 

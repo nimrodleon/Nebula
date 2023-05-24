@@ -5,10 +5,21 @@ using Nebula.Modules.Facturador.Bandeja;
 
 namespace Nebula.Modules.Facturador;
 
+public interface IHttpRequestFacturadorService
+{
+    Task<BandejaFacturador?> ActualizarPantalla();
+    [Obsolete]
+    Task<BandejaFacturador?> EliminarBandeja();
+    Task<BandejaFacturador?> GenerarComprobante(FacturadorTipDocu tipDocu);
+    Task<BandejaFacturador?> EnviarXml(FacturadorTipDocu tipDocu);
+    [Obsolete]
+    Task<bool> MostrarXml(FacturadorTipDocu tipDocu);
+}
+
 /// <summary>
 /// ApiREST para manejar el Facturador SUNAT.
 /// </summary>
-public class HttpRequestFacturadorService
+public class HttpRequestFacturadorService : IHttpRequestFacturadorService
 {
     private readonly string? _facturadorUrl;
     private readonly HttpClient _httpClient;

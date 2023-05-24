@@ -8,10 +8,18 @@ using Nebula.Modules.Taller.Models;
 
 namespace Nebula.Modules.Taller.Services;
 
+public interface ITallerRepairOrderService : ICrudOperationService<TallerRepairOrder>
+{
+    Task<TallerRepairOrder> CreateRepairOrderAsync(TallerRepairOrder obj);
+    Task<List<TallerRepairOrder>> GetRepairOrders(string? query = "", int limit = 25);
+    Task<List<TallerRepairOrder>> GetRepairOrdersMonthly(DateQuery dto, int limit = 25);
+    Task<TallerRepairOrderTicket> GetTicket(string id);
+}
+
 /// <summary>
 /// Servicio Orden de Reparación.
 /// </summary>
-public class TallerRepairOrderService : CrudOperationService<TallerRepairOrder>
+public class TallerRepairOrderService : CrudOperationService<TallerRepairOrder>, ITallerRepairOrderService
 {
     private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
     private readonly TallerItemRepairOrderService _itemRepairOrderService;

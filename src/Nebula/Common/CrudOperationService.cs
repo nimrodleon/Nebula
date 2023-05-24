@@ -5,11 +5,21 @@ using Nebula.Common.Models;
 
 namespace Nebula.Common;
 
+public interface ICrudOperationService<T> where T : class, IGenericModel
+{
+    Task<List<T>> GetAsync(string field, string? query, int limit = 25);
+    Task<T> GetByIdAsync(string id);
+    Task<T> CreateAsync(T obj);
+    Task InsertManyAsync(List<T> objList);
+    Task<T> UpdateAsync(string id, T obj);
+    Task RemoveAsync(string id);
+}
+
 /// <summary>
 /// Proporciona métodos genéricos para llevar a cabo operaciones CRUD (Create, Read, Update, Delete) en cualquier colección de la base de datos MongoDB.
 /// </summary>
 /// <typeparam name="T">Tipo de objeto que se va a manipular</typeparam>
-public class CrudOperationService<T> where T : class, IGenericModel
+public class CrudOperationService<T> : ICrudOperationService<T> where T : class, IGenericModel
 {
     protected readonly MongoClient mongoClient;
     protected readonly IMongoCollection<T> _collection;

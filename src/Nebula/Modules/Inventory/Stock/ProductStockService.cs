@@ -11,7 +11,20 @@ using Nebula.Modules.Inventory.Dto;
 
 namespace Nebula.Modules.Inventory.Stock;
 
-public class ProductStockService : CrudOperationService<ProductStock>
+public interface IProductStockService : ICrudOperationService<ProductStock>
+{
+    Task<List<ProductStock>> CreateManyAsync(List<ProductStock> obj);
+    Task<DeleteResult> DeleteAllByWarehouseAsync(string warehouseId, string productId);
+    Task<DeleteResult> DeleteAllByWarehouseAndLoteAsync(string warehouseId, string productLoteId, string productId);
+    Task<ProductStock> ChangeQuantity(ChangeQuantityStockRequestParams requestParams);
+    Task<long> GetStockQuantityByWarehouseAsync(string warehouseId, string productId);
+    Task<long> GetLoteStockQuantityByWarehouseAsync(string warehouseId, string productLoteId, string productId);
+    Task<List<ProductStock>> GetProductStockListByWarehouseAndLoteAsync(string warehouseId, string productLoteId, string productId);
+    Task<List<ProductStock>> GetProductStockListByWarehouseAsync(string warehouseId, string productId);
+    Task<List<ProductStock>> GetProductStockListByWarehousesIdsAsync(List<string> warehouseArrId, string productId);
+}
+
+public class ProductStockService : CrudOperationService<ProductStock>, IProductStockService
 {
     private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
     private readonly WarehouseService _warehouseService;

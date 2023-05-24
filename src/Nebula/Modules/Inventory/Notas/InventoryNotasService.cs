@@ -6,7 +6,12 @@ using Nebula.Common.Dto;
 
 namespace Nebula.Modules.Inventory.Notas;
 
-public class InventoryNotasService : CrudOperationService<InventoryNotas>
+public interface IInventoryNotasService : ICrudOperationService<InventoryNotas>
+{
+    Task<List<InventoryNotas>> GetListAsync(DateQuery query);
+}
+
+public class InventoryNotasService : CrudOperationService<InventoryNotas>, IInventoryNotasService
 {
     public InventoryNotasService(IOptions<DatabaseSettings> options) : base(options) { }
 

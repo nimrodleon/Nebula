@@ -12,7 +12,20 @@ using Nebula.Modules.Sales.Models;
 
 namespace Nebula.Modules.Sales;
 
-public class CreditNoteService : CrudOperationService<CreditNote>
+public interface ICreditNoteService : ICrudOperationService<CreditNote>
+{
+    Task<List<CreditNote>> GetListAsync(DateQuery query);
+    Task<CreditNote> GetCreditNoteByInvoiceSaleIdAsync(string invoiceSaleId);
+    Task<List<CreditNote>> GetCreditNotesByMonthAndYear(string month, string year);
+    Task<List<CreditNote>> GetCreditNotesByDate(string date);
+    Task<CreditNote> SetSituacionFacturador(string id, SituacionFacturadorDto dto);
+    Task<CreditNoteDto> GetCreditNoteDtoAsync(string id);
+    Task<CreditNote> AnulaciónDeLaOperación(string id);
+    void GenerarSerieComprobante(ref InvoiceSerie invoiceSerie, ref CreditNote creditNote);
+    Task<PrintCreditNoteDto> GetPrintCreditNoteDto(string creditNoteId);
+}
+
+public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteService
 {
     private readonly IConfiguration _configuration;
     private readonly IConfigurationService _configurationService;

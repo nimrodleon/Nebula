@@ -5,7 +5,13 @@ using Nebula.Modules.Configurations.Models;
 
 namespace Nebula.Modules.Configurations.Warehouses;
 
-public class WarehouseService : CrudOperationService<Warehouse>
+public interface IWarehouseService : ICrudOperationService<Warehouse>
+{
+    Task<List<Warehouse>> GetAllAsync();
+    Task<List<string>> GetWarehouseIds();
+}
+
+public class WarehouseService : CrudOperationService<Warehouse>, IWarehouseService
 {
     public WarehouseService(IOptions<DatabaseSettings> options) : base(options)
     {

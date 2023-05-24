@@ -5,7 +5,15 @@ using Nebula.Modules.Sales.Models;
 
 namespace Nebula.Modules.Sales;
 
-public class InvoiceSaleDetailService : CrudOperationService<InvoiceSaleDetail>
+public interface IInvoiceSaleDetailService : ICrudOperationService<InvoiceSaleDetail>
+{
+    Task<List<InvoiceSaleDetail>> GetListAsync(string id);
+    Task CreateManyAsync(List<InvoiceSaleDetail> invoiceSaleDetails);
+    Task<List<InvoiceSaleDetail>> GetItemsByCajaDiaria(string cajaDiaria);
+    Task RemoveManyAsync(string id);
+}
+
+public class InvoiceSaleDetailService : CrudOperationService<InvoiceSaleDetail>, IInvoiceSaleDetailService
 {
     public InvoiceSaleDetailService(IOptions<DatabaseSettings> options) : base(options) { }
 

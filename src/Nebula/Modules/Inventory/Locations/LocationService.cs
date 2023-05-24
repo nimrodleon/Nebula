@@ -7,7 +7,13 @@ using Nebula.Modules.Inventory.Stock;
 
 namespace Nebula.Modules.Inventory.Locations;
 
-public class LocationService : CrudOperationService<Location>
+public interface ILocationService : ICrudOperationService<Location>
+{
+    Task<List<Location>> GetByWarehouseIdAsync(string id);
+    Task<RespLocationDetailStock> GetLocationDetailStocksAsync(string id, bool reponer = false);
+}
+
+public class LocationService : CrudOperationService<Location>, ILocationService
 {
     private readonly ProductStockService _productStockService;
     private readonly LocationDetailService _locationDetailService;

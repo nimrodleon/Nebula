@@ -9,7 +9,16 @@ using Nebula.Modules.Sales;
 
 namespace Nebula.Modules.Inventory.Stock;
 
-public class ValidateStockService
+public interface IValidateStockService
+{
+    Task<InventoryNotas> ValidarNotas(string id);
+    Task<Transferencia> ValidarTransferencia(string id);
+    Task<AjusteInventario> ValidarAjusteInventario(string id);
+    Task<Material> ValidarMaterial(string id);
+    Task ValidarInvoiceSale(string id);
+}
+
+public class ValidateStockService : IValidateStockService
 {
     private readonly ProductStockService _productStockService;
     private readonly InventoryNotasService _inventoryNotasService;

@@ -6,7 +6,12 @@ using Nebula.Common.Dto;
 
 namespace Nebula.Modules.Inventory.Transferencias;
 
-public class TransferenciaService : CrudOperationService<Transferencia>
+public interface ITransferenciaService : ICrudOperationService<Transferencia>
+{
+    Task<List<Transferencia>> GetListAsync(DateQuery query);
+}
+
+public class TransferenciaService : CrudOperationService<Transferencia>, ITransferenciaService
 {
     public TransferenciaService(IOptions<DatabaseSettings> options) : base(options) { }
 

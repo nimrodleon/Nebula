@@ -6,7 +6,12 @@ using Nebula.Common.Dto;
 
 namespace Nebula.Modules.Inventory.Ajustes;
 
-public class AjusteInventarioService : CrudOperationService<AjusteInventario>
+public interface IAjusteInventarioService : ICrudOperationService<AjusteInventario>
+{
+    Task<List<AjusteInventario>> GetListAsync(DateQuery query);
+}
+
+public class AjusteInventarioService : CrudOperationService<AjusteInventario>, IAjusteInventarioService
 {
     public AjusteInventarioService(IOptions<DatabaseSettings> options) : base(options) { }
 

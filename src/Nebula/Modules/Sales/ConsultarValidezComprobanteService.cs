@@ -6,7 +6,12 @@ using Nebula.Modules.Sales.Models;
 
 namespace Nebula.Modules.Sales;
 
-public class ConsultarValidezComprobanteService
+public interface IConsultarValidezComprobanteService
+{
+    Task<string> CrearArchivosDeValidación(QueryConsultarValidezComprobante query);
+}
+
+public class ConsultarValidezComprobanteService : IConsultarValidezComprobanteService
 {
     private readonly IConfigurationService _configurationService;
     private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;

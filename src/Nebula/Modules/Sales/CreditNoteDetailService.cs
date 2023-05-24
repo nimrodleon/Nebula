@@ -5,7 +5,12 @@ using Nebula.Modules.Sales.Models;
 
 namespace Nebula.Modules.Sales;
 
-public class CreditNoteDetailService : CrudOperationService<CreditNoteDetail>
+public interface ICreditNoteDetailService : ICrudOperationService<CreditNoteDetail>
+{
+    Task<List<CreditNoteDetail>> GetListAsync(string creditNoteId);
+}
+
+public class CreditNoteDetailService : CrudOperationService<CreditNoteDetail>, ICreditNoteDetailService
 {
     public CreditNoteDetailService(IOptions<DatabaseSettings> options) : base(options) { }
 

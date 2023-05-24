@@ -7,7 +7,13 @@ using Nebula.Modules.Products.Models;
 
 namespace Nebula.Modules.Products;
 
-public class ProductService : CrudOperationService<Product>
+public interface IProductService : ICrudOperationService<Product>
+{
+    Task<List<Product>> GetListAsync(string? query, int limit = 24);
+    Task<bool> UpdateHasLote(string productId, bool hasLote);
+}
+
+public class ProductService : CrudOperationService<Product>, IProductService
 {
     private readonly IConfigurationService _configurationService;
 

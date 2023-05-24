@@ -9,7 +9,19 @@ using Nebula.Modules.Finanzas.Dto;
 
 namespace Nebula.Modules.Finanzas;
 
-public class ReceivableService : CrudOperationService<Receivable>
+public interface IReceivableService : ICrudOperationService<Receivable>
+{
+    Task<List<Receivable>> GetListAsync(ReceivableRequestParams param);
+    Task<List<Receivable>> GetAbonosAsync(string id);
+    Task<long> GetTotalAbonosAsync(string id);
+    Task CreateAsync(CashierDetailService cashierDetailService, Receivable model);
+    Task RemoveAbonoAsync(Receivable abono);
+    Task<List<Receivable>> GetReceivablesByContactId(string contactId,
+        ReceivableRequestParams requestParam);
+    Task<List<Receivable>> GetReceivablesByContactId(string contactId, string year);
+}
+
+public class ReceivableService : CrudOperationService<Receivable>, IReceivableService
 {
     public ReceivableService(IOptions<DatabaseSettings> options) : base(options)
     {

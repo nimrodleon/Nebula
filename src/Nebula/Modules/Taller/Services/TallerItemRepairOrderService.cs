@@ -5,10 +5,15 @@ using Nebula.Modules.Taller.Models;
 
 namespace Nebula.Modules.Taller.Services;
 
+public interface ITallerItemRepairOrderService : ICrudOperationService<TallerItemRepairOrder>
+{
+    Task<List<TallerItemRepairOrder>> GetItemsRepairOrder(string id);
+}
+
 /// <summary>
 /// Servicio Item de la Orden de Reparación.
 /// </summary>
-public class TallerItemRepairOrderService : CrudOperationService<TallerItemRepairOrder>
+public class TallerItemRepairOrderService : CrudOperationService<TallerItemRepairOrder>, ITallerItemRepairOrderService
 {
     public TallerItemRepairOrderService(IOptions<DatabaseSettings> options) : base(options)
     {

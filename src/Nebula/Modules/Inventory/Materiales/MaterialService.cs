@@ -6,7 +6,13 @@ using Nebula.Common.Dto;
 
 namespace Nebula.Modules.Inventory.Materiales;
 
-public class MaterialService : CrudOperationService<Material>
+public interface IMaterialService : ICrudOperationService<Material>
+{
+    Task<List<Material>> GetListAsync(DateQuery query);
+    Task<List<Material>> GetListByContactIdAsync(DateQuery query, string contactId);
+}
+
+public class MaterialService : CrudOperationService<Material>, IMaterialService
 {
     public MaterialService(IOptions<DatabaseSettings> options) : base(options) { }
 

@@ -5,7 +5,14 @@ using Nebula.Modules.Inventory.Models;
 
 namespace Nebula.Modules.Inventory.Locations;
 
-public class LocationDetailService : CrudOperationService<LocationDetail>
+public interface ILocationDetailService : ICrudOperationService<LocationDetail>
+{
+    Task<List<LocationDetail>> GetListAsync(string id);
+    Task<long> CountDocumentsAsync(string id);
+    Task<List<AjusteInventarioDetail>> GetAjusteInventarioDetailsAsync(string locationId, string ajusteInventarioId);
+}
+
+public class LocationDetailService : CrudOperationService<LocationDetail>, ILocationDetailService
 {
     public LocationDetailService(IOptions<DatabaseSettings> options) : base(options) { }
 
