@@ -43,8 +43,6 @@ public class CajaDiariaController : ControllerBase
     public async Task<IActionResult> Show(string id)
     {
         var cajaDiaria = await _cajaDiariaService.GetByIdAsync(id);
-        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(cajaDiaria.InvoiceSerie);
-        cajaDiaria.WarehouseId = invoiceSerie.WarehouseId;
         return Ok(cajaDiaria);
     }
 
