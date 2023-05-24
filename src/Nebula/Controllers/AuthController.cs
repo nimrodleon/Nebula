@@ -16,9 +16,9 @@ namespace Nebula.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IConfiguration _configuration;
-    private readonly UserService _userService;
+    private readonly IUserService _userService;
 
-    public AuthController(IConfiguration configuration, UserService userService)
+    public AuthController(IConfiguration configuration, IUserService userService)
     {
         _configuration = configuration;
         _userService = userService;

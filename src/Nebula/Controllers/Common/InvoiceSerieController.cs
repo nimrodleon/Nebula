@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Common;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Configurations.Models;
+using Nebula.Modules.Configurations.Warehouses;
 
 namespace Nebula.Controllers.Common;
 
@@ -11,9 +11,9 @@ namespace Nebula.Controllers.Common;
 [ApiController]
 public class InvoiceSerieController : ControllerBase
 {
-    private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
+    private readonly IInvoiceSerieService _invoiceSerieService;
 
-    public InvoiceSerieController(CrudOperationService<InvoiceSerie> invoiceSerieService) =>
+    public InvoiceSerieController(IInvoiceSerieService invoiceSerieService) =>
         _invoiceSerieService = invoiceSerieService;
 
     [HttpGet("Index")]

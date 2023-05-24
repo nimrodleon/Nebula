@@ -11,9 +11,9 @@ namespace Nebula.Controllers.Inventory;
 [ApiController]
 public class AjusteInventarioDetailController : ControllerBase
 {
-    private readonly AjusteInventarioDetailService _ajusteInventarioDetailService;
+    private readonly IAjusteInventarioDetailService _ajusteInventarioDetailService;
 
-    public AjusteInventarioDetailController(AjusteInventarioDetailService ajusteInventarioDetailService)
+    public AjusteInventarioDetailController(IAjusteInventarioDetailService ajusteInventarioDetailService)
     {
         _ajusteInventarioDetailService = ajusteInventarioDetailService;
     }

@@ -14,9 +14,9 @@ namespace Nebula.Controllers.Cashier;
 public class CashierDetailController : ControllerBase
 {
     private readonly ISubscriptionService _subscriptionService;
-    private readonly CashierDetailService _cashierDetailService;
+    private readonly ICashierDetailService _cashierDetailService;
 
-    public CashierDetailController(ISubscriptionService subscriptionService, CashierDetailService cashierDetailService)
+    public CashierDetailController(ISubscriptionService subscriptionService, ICashierDetailService cashierDetailService)
     {
         _subscriptionService = subscriptionService;
         _cashierDetailService = cashierDetailService;

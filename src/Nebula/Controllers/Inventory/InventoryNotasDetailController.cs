@@ -11,9 +11,9 @@ namespace Nebula.Controllers.Inventory;
 [ApiController]
 public class InventoryNotasDetailController : ControllerBase
 {
-    private readonly InventoryNotasDetailService _inventoryNotasDetailService;
+    private readonly IInventoryNotasDetailService _inventoryNotasDetailService;
 
-    public InventoryNotasDetailController(InventoryNotasDetailService inventoryNotasDetailService)
+    public InventoryNotasDetailController(IInventoryNotasDetailService inventoryNotasDetailService)
     {
         _inventoryNotasDetailService = inventoryNotasDetailService;
     }

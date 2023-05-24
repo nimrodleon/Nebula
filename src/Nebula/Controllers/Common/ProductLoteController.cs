@@ -11,9 +11,9 @@ namespace Nebula.Controllers.Common;
 [ApiController]
 public class ProductLoteController : ControllerBase
 {
-    private readonly ProductLoteService _productLoteService;
+    private readonly IProductLoteService _productLoteService;
 
-    public ProductLoteController(ProductLoteService productLoteService)
+    public ProductLoteController(IProductLoteService productLoteService)
     {
         _productLoteService = productLoteService;
     }

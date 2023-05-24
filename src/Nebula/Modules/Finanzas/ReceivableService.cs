@@ -14,7 +14,7 @@ public interface IReceivableService : ICrudOperationService<Receivable>
     Task<List<Receivable>> GetListAsync(ReceivableRequestParams param);
     Task<List<Receivable>> GetAbonosAsync(string id);
     Task<long> GetTotalAbonosAsync(string id);
-    Task CreateAsync(CashierDetailService cashierDetailService, Receivable model);
+    Task CreateAsync(ICashierDetailService cashierDetailService, Receivable model);
     Task RemoveAbonoAsync(Receivable abono);
     Task<List<Receivable>> GetReceivablesByContactId(string contactId,
         ReceivableRequestParams requestParam);
@@ -55,7 +55,7 @@ public class ReceivableService : CrudOperationService<Receivable>, IReceivableSe
         return await _collection.Find(query).CountDocumentsAsync();
     }
 
-    public async Task CreateAsync(CashierDetailService cashierDetailService, Receivable model)
+    public async Task CreateAsync(ICashierDetailService cashierDetailService, Receivable model)
     {
         if (model.Type.Equals("CARGO")) await CreateAsync(model);
 

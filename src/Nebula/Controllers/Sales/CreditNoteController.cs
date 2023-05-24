@@ -16,11 +16,13 @@ public class CreditNoteController : ControllerBase
 {
     private readonly IConfiguration _configuration;
     private readonly IConfigurationService _configurationService;
-    private readonly CreditNoteService _creditNoteService;
-    private readonly FacturadorService _facturadorService;
+    private readonly ICreditNoteService _creditNoteService;
+    private readonly IFacturadorService _facturadorService;
 
-    public CreditNoteController(IConfiguration configuration, IConfigurationService configurationService,
-        CreditNoteService creditNoteService, FacturadorService facturadorService)
+    public CreditNoteController(IConfiguration configuration,
+        IConfigurationService configurationService,
+        ICreditNoteService creditNoteService,
+        IFacturadorService facturadorService)
     {
         _configuration = configuration;
         _configurationService = configurationService;

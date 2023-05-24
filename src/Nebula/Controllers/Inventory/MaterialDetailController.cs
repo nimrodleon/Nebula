@@ -11,9 +11,9 @@ namespace Nebula.Controllers.Inventory;
 [ApiController]
 public class MaterialDetailController : ControllerBase
 {
-    private readonly MaterialDetailService _materialDetailService;
+    private readonly IMaterialDetailService _materialDetailService;
 
-    public MaterialDetailController(MaterialDetailService materialDetailService)
+    public MaterialDetailController(IMaterialDetailService materialDetailService)
     {
         _materialDetailService = materialDetailService;
     }

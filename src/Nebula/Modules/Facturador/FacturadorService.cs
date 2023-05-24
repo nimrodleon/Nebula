@@ -24,19 +24,19 @@ public class FacturadorService : IFacturadorService
 
     // ======================================================================
     private readonly IConfigurationService _configurationService;
-    private readonly InvoiceSaleService _invoiceSaleService;
-    private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
-    private readonly TributoSaleService _tributoSaleService;
+    private readonly IInvoiceSaleService _invoiceSaleService;
+    private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
+    private readonly ITributoSaleService _tributoSaleService;
 
-    private readonly DetallePagoSaleService _detallePagoSaleService;
+    private readonly IDetallePagoSaleService _detallePagoSaleService;
 
     // ======================================================================
-    private readonly CreditNoteService _creditNoteService;
+    private readonly ICreditNoteService _creditNoteService;
 
     public FacturadorService(IConfiguration configuration, IConfigurationService configurationService,
-        InvoiceSaleService invoiceSaleService, InvoiceSaleDetailService invoiceSaleDetailService,
-        TributoSaleService tributoSaleService, CreditNoteService creditNoteService,
-        DetallePagoSaleService detallePagoSaleService)
+        IInvoiceSaleService invoiceSaleService, IInvoiceSaleDetailService invoiceSaleDetailService,
+        ITributoSaleService tributoSaleService, ICreditNoteService creditNoteService,
+        IDetallePagoSaleService detallePagoSaleService)
     {
         _configuration = configuration;
         _configurationService = configurationService;

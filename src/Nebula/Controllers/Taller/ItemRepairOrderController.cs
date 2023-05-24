@@ -11,9 +11,9 @@ namespace Nebula.Controllers.Taller;
 [ApiController]
 public class ItemRepairOrderController : ControllerBase
 {
-    private readonly TallerItemRepairOrderService _itemRepairOrderService;
+    private readonly ITallerItemRepairOrderService _itemRepairOrderService;
 
-    public ItemRepairOrderController(TallerItemRepairOrderService itemRepairOrderService)
+    public ItemRepairOrderController(ITallerItemRepairOrderService itemRepairOrderService)
     {
         _itemRepairOrderService = itemRepairOrderService;
     }

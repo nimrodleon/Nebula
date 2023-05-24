@@ -17,14 +17,16 @@ namespace Nebula.Controllers.Cashier;
 public class InvoiceSaleCashierController : ControllerBase
 {
     private readonly ISubscriptionService _subscriptionService;
-    private readonly CashierSaleService _cashierSaleService;
-    private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
-    private readonly ValidateStockService _validateStockService;
-    private readonly FacturadorService _facturadorService;
+    private readonly ICashierSaleService _cashierSaleService;
+    private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
+    private readonly IValidateStockService _validateStockService;
+    private readonly IFacturadorService _facturadorService;
 
     public InvoiceSaleCashierController(ISubscriptionService subscriptionService,
-        CashierSaleService cashierSaleService, InvoiceSaleDetailService invoiceSaleDetailService,
-        ValidateStockService validateStockService, FacturadorService facturadorService)
+        ICashierSaleService cashierSaleService,
+        IInvoiceSaleDetailService invoiceSaleDetailService,
+        IValidateStockService validateStockService,
+        IFacturadorService facturadorService)
     {
         _subscriptionService = subscriptionService;
         _cashierSaleService = cashierSaleService;

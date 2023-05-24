@@ -14,12 +14,13 @@ namespace Nebula.Controllers.Common;
 [ApiController]
 public class ContactController : ControllerBase
 {
-    private readonly ContactService _contactService;
-    private readonly CashierDetailService _cashierDetailService;
-    private readonly InvoiceSaleService _invoiceSaleService;
+    private readonly IContactService _contactService;
+    private readonly ICashierDetailService _cashierDetailService;
+    private readonly IInvoiceSaleService _invoiceSaleService;
 
-    public ContactController(ContactService contactService,
-        CashierDetailService cashierDetailService, InvoiceSaleService invoiceSaleService)
+    public ContactController(IContactService contactService,
+        ICashierDetailService cashierDetailService,
+        IInvoiceSaleService invoiceSaleService)
     {
         _contactService = contactService;
         _cashierDetailService = cashierDetailService;

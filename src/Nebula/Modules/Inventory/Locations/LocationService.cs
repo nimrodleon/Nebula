@@ -15,12 +15,12 @@ public interface ILocationService : ICrudOperationService<Location>
 
 public class LocationService : CrudOperationService<Location>, ILocationService
 {
-    private readonly ProductStockService _productStockService;
-    private readonly LocationDetailService _locationDetailService;
+    private readonly IProductStockService _productStockService;
+    private readonly ILocationDetailService _locationDetailService;
 
     public LocationService(IOptions<DatabaseSettings> options,
-        ProductStockService productStockService,
-        LocationDetailService locationDetailService) : base(options)
+        IProductStockService productStockService,
+        ILocationDetailService locationDetailService) : base(options)
     {
         _productStockService = productStockService;
         _locationDetailService = locationDetailService;

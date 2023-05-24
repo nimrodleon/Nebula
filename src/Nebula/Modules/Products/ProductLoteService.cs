@@ -15,9 +15,9 @@ public interface IProductLoteService : ICrudOperationService<ProductLote>
 
 public class ProductLoteService : CrudOperationService<ProductLote>, IProductLoteService
 {
-    private readonly ProductService _productService;
+    private readonly IProductService _productService;
 
-    public ProductLoteService(IOptions<DatabaseSettings> options, ProductService productService) : base(options)
+    public ProductLoteService(IOptions<DatabaseSettings> options, IProductService productService) : base(options)
     {
         _productService = productService;
     }

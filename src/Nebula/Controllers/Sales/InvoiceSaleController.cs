@@ -1,10 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Inventory.Stock;
-using Nebula.Common;
 using Nebula.Modules.Sales;
 using Nebula.Modules.Facturador;
-using Nebula.Modules.Configurations.Models;
 using Nebula.Modules.Configurations;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Common.Helpers;
@@ -12,6 +10,7 @@ using Nebula.Modules.Facturador.Helpers;
 using Nebula.Modules.Sales.Dto;
 using Nebula.Common.Dto;
 using Nebula.Modules.Configurations.Subscriptions;
+using Nebula.Modules.Configurations.Warehouses;
 
 namespace Nebula.Controllers.Sales;
 
@@ -23,31 +22,30 @@ public class InvoiceSaleController : ControllerBase
     private readonly IConfiguration _configuration;
     private readonly ISubscriptionService _subscriptionService;
     private readonly IConfigurationService _configurationService;
-    private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
-    private readonly InvoiceSaleService _invoiceSaleService;
-    private readonly InvoiceSaleDetailService _invoiceSaleDetailService;
-    private readonly TributoSaleService _tributoSaleService;
-    private readonly TributoCreditNoteService _tributoCreditNoteService;
-    private readonly ComprobanteService _comprobanteService;
-    private readonly FacturadorService _facturadorService;
-    private readonly CreditNoteService _creditNoteService;
-    private readonly ValidateStockService _validateStockService;
-    private readonly ConsultarValidezComprobanteService _consultarValidezComprobanteService;
+    private readonly IInvoiceSerieService _invoiceSerieService;
+    private readonly IInvoiceSaleService _invoiceSaleService;
+    private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
+    private readonly ITributoSaleService _tributoSaleService;
+    private readonly ITributoCreditNoteService _tributoCreditNoteService;
+    private readonly IComprobanteService _comprobanteService;
+    private readonly IFacturadorService _facturadorService;
+    private readonly ICreditNoteService _creditNoteService;
+    private readonly IValidateStockService _validateStockService;
+    private readonly IConsultarValidezComprobanteService _consultarValidezComprobanteService;
 
     public InvoiceSaleController(ISubscriptionService subscriptionService,
         IConfigurationService configurationService,
-        CrudOperationService<InvoiceSerie> invoiceSerieService,
-        InvoiceSaleService invoiceSaleService,
-        InvoiceSaleDetailService invoiceSaleDetailService,
-        TributoSaleService tributoSaleService,
-        ComprobanteService comprobanteService,
-        FacturadorService facturadorService,
-        CreditNoteService creditNoteService,
-        ValidateStockService validateStockService,
+        IInvoiceSerieService invoiceSerieService,
+        IInvoiceSaleService invoiceSaleService,
+        IInvoiceSaleDetailService invoiceSaleDetailService,
+        ITributoSaleService tributoSaleService,
+        IComprobanteService comprobanteService,
+        IFacturadorService facturadorService,
+        ICreditNoteService creditNoteService,
+        IValidateStockService validateStockService,
         IConfiguration configuration,
-        ConsultarValidezComprobanteService
-        consultarValidezComprobanteService,
-        TributoCreditNoteService tributoCreditNoteService)
+        IConsultarValidezComprobanteService consultarValidezComprobanteService,
+        ITributoCreditNoteService tributoCreditNoteService)
     {
         _subscriptionService = subscriptionService;
         _configuration = configuration;

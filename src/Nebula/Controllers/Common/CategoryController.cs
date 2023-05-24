@@ -12,7 +12,7 @@ namespace Nebula.Controllers.Common;
 [ApiController]
 public class CategoryController : ControllerBase
 {
-    private readonly CrudOperationService<Category> _categoryService;
+    private readonly ICrudOperationService<Category> _categoryService;
 
     public CategoryController(CrudOperationService<Category> categoryService) =>
         _categoryService = categoryService;

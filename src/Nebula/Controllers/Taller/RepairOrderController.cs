@@ -12,9 +12,9 @@ namespace Nebula.Controllers.Taller;
 [ApiController]
 public class RepairOrderController : ControllerBase
 {
-    private readonly TallerRepairOrderService _repairOrderService;
+    private readonly ITallerRepairOrderService _repairOrderService;
 
-    public RepairOrderController(TallerRepairOrderService repairOrderService)
+    public RepairOrderController(ITallerRepairOrderService repairOrderService)
     {
         _repairOrderService = repairOrderService;
     }

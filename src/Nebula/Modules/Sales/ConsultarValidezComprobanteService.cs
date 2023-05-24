@@ -1,6 +1,6 @@
-using Nebula.Common;
 using Nebula.Modules.Configurations;
 using Nebula.Modules.Configurations.Models;
+using Nebula.Modules.Configurations.Warehouses;
 using Nebula.Modules.Sales.Dto;
 using Nebula.Modules.Sales.Models;
 
@@ -14,13 +14,14 @@ public interface IConsultarValidezComprobanteService
 public class ConsultarValidezComprobanteService : IConsultarValidezComprobanteService
 {
     private readonly IConfigurationService _configurationService;
-    private readonly CrudOperationService<InvoiceSerie> _invoiceSerieService;
-    private readonly InvoiceSaleService _invoiceSaleService;
-    private readonly CreditNoteService _creditNoteService;
+    private readonly IInvoiceSerieService _invoiceSerieService;
+    private readonly IInvoiceSaleService _invoiceSaleService;
+    private readonly ICreditNoteService _creditNoteService;
 
     public ConsultarValidezComprobanteService(IConfigurationService configurationService,
-        CrudOperationService<InvoiceSerie> invoiceSerieService, InvoiceSaleService invoiceSaleService,
-        CreditNoteService creditNoteService)
+        IInvoiceSerieService invoiceSerieService,
+        IInvoiceSaleService invoiceSaleService,
+        ICreditNoteService creditNoteService)
     {
         _configurationService = configurationService;
         _invoiceSerieService = invoiceSerieService;

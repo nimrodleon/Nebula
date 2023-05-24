@@ -11,9 +11,9 @@ namespace Nebula.Controllers.Inventory;
 [ApiController]
 public class LocationDetailController : ControllerBase
 {
-    private readonly LocationDetailService _locationDetailService;
+    private readonly ILocationDetailService _locationDetailService;
 
-    public LocationDetailController(LocationDetailService locationDetailService)
+    public LocationDetailController(ILocationDetailService locationDetailService)
     {
         _locationDetailService = locationDetailService;
     }
