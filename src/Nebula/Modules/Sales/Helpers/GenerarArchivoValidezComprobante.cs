@@ -1,9 +1,9 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.IO.Compression;
 using Nebula.Modules.Configurations.Models;
 using Nebula.Modules.Sales.Models;
 
-namespace Nebula.Modules.Sales.Dto;
+namespace Nebula.Modules.Sales.Helpers;
 
 public class GenerarArchivoValidezComprobante
 {

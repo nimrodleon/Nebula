@@ -3,7 +3,7 @@ using ClosedXML.Excel;
 using Nebula.Modules.Configurations.Models;
 using Nebula.Modules.Sales.Models;
 
-namespace Nebula.Modules.Sales.Dto;
+namespace Nebula.Modules.Sales.Helpers;
 
 /// <summary>
 /// Parámetros de registro de ventas.

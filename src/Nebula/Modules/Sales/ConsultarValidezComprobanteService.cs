@@ -2,6 +2,7 @@ using Nebula.Modules.Configurations;
 using Nebula.Modules.Configurations.Models;
 using Nebula.Modules.Configurations.Warehouses;
 using Nebula.Modules.Sales.Dto;
+using Nebula.Modules.Sales.Helpers;
 using Nebula.Modules.Sales.Models;
 
 namespace Nebula.Modules.Sales;
