@@ -125,7 +125,7 @@ public class ProductStockService : CrudOperationService<ProductStock>, IProductS
     }
 
     /// <summary>
-    /// Retorna la cantidad de existencias por almacén.
+    /// Obtener la cantidad de existencias por almacén.
     /// </summary>
     /// <param name="warehouseId">Identificador del almacén</param>
     /// <param name="productId">Identificador del producto</param>
@@ -137,7 +137,7 @@ public class ProductStockService : CrudOperationService<ProductStock>, IProductS
     }
 
     /// <summary>
-    /// Retorna la cantidad de existencias de un lote por almacén.
+    /// Obtener la cantidad de existencias de un lote por almacén.
     /// </summary>
     /// <param name="warehouseId">Identificador del almacén</param>
     /// <param name="productLoteId">Identificador del lote del producto</param>
@@ -180,7 +180,7 @@ public class ProductStockService : CrudOperationService<ProductStock>, IProductS
     }
 
     /// <summary>
-    /// Devuelve la lista de stock de productos correspondiente a un ID de producto y a una lista de IDs de almacenes.
+    /// Obtener la lista de stock de productos correspondiente a un ID de producto y a una lista de IDs de almacenes.
     /// </summary>
     /// <param name="productId">ID del producto a buscar.</param>
     /// <param name="warehouseArrId">lista de IDs de almacenes en los que se busca el stock del producto.</param>
