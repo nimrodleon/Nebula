@@ -3,10 +3,11 @@ using Nebula.Modules.Finanzas.Models;
 using Nebula.Modules.Finanzas;
 using Nebula.Modules.Configurations;
 using Nebula.Modules.Cashier.Helpers;
-using Nebula.Modules.Sales.Dto;
 using Nebula.Modules.Configurations.Warehouses;
+using Nebula.Modules.Sales.Comprobantes.Dto;
+using Nebula.Modules.Sales.Invoices;
 
-namespace Nebula.Modules.Sales;
+namespace Nebula.Modules.Sales.Comprobantes;
 
 public interface IComprobanteService
 {

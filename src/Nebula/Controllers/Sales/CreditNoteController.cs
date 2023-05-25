@@ -5,7 +5,7 @@ using Nebula.Modules.Configurations;
 using Nebula.Modules.Facturador;
 using Nebula.Modules.Facturador.Helpers;
 using Nebula.Modules.Sales;
-using Nebula.Modules.Sales.Dto;
+using Nebula.Modules.Sales.Notes;
 
 namespace Nebula.Controllers.Sales;
 

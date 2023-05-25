@@ -6,10 +6,10 @@ using Nebula.Modules.Sales.Models;
 using Nebula.Modules.Configurations;
 using Nebula.Modules.Facturador.Helpers;
 using Nebula.Modules.Sales.Helpers;
-using Nebula.Modules.Sales.Dto;
 using Nebula.Common.Dto;
+using Nebula.Modules.Sales.Invoices.Dto;
 
-namespace Nebula.Modules.Sales;
+namespace Nebula.Modules.Sales.Invoices;
 
 public interface IInvoiceSaleService : ICrudOperationService<InvoiceSale>
 {

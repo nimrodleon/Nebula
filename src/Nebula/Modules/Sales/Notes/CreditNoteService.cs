@@ -7,11 +7,12 @@ using Nebula.Modules.Configurations.Models;
 using Nebula.Modules.Configurations.Warehouses;
 using Nebula.Modules.Facturador.Helpers;
 using Nebula.Modules.Facturador.XmlDigest;
-using Nebula.Modules.Sales.Dto;
 using Nebula.Modules.Sales.Helpers;
+using Nebula.Modules.Sales.Invoices;
 using Nebula.Modules.Sales.Models;
+using Nebula.Modules.Sales.Notes.Dto;
 
-namespace Nebula.Modules.Sales;
+namespace Nebula.Modules.Sales.Notes;
 
 public interface ICreditNoteService : ICrudOperationService<CreditNote>
 {

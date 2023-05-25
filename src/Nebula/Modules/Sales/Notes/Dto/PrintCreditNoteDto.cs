@@ -1,7 +1,7 @@
 ﻿using Nebula.Modules.Configurations.Models;
 using Nebula.Modules.Sales.Models;
 
-namespace Nebula.Modules.Sales.Dto;
+namespace Nebula.Modules.Sales.Notes.Dto;
 
 /// <summary>
 /// Estructura de datos que se usa para imprimir una nota de crédito.

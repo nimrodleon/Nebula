@@ -2,7 +2,7 @@ using Nebula.Modules.Configurations.Models;
 using Nebula.Modules.Sales.Helpers;
 using Nebula.Modules.Sales.Models;
 
-namespace Nebula.Modules.Sales.Dto;
+namespace Nebula.Modules.Sales.Comprobantes.Dto;
 
 public class ComprobanteDto
 {

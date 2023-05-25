@@ -3,7 +3,7 @@ using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Modules.Sales.Models;
 
-namespace Nebula.Modules.Sales;
+namespace Nebula.Modules.Sales.Notes;
 
 public interface ICreditNoteDetailService : ICrudOperationService<CreditNoteDetail>
 {

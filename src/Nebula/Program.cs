@@ -22,6 +22,9 @@ using Nebula.Modules.Inventory.Stock;
 using Nebula.Modules.Inventory.Transferencias;
 using Nebula.Modules.Products;
 using Nebula.Modules.Sales;
+using Nebula.Modules.Sales.Comprobantes;
+using Nebula.Modules.Sales.Invoices;
+using Nebula.Modules.Sales.Notes;
 using Nebula.Modules.Taller.Services;
 
 var builder = WebApplication.CreateBuilder(args);

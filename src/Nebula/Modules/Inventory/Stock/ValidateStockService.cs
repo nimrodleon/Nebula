@@ -5,7 +5,7 @@ using Nebula.Modules.Inventory.Models;
 using Nebula.Modules.Inventory.Notas;
 using Nebula.Modules.Inventory.Transferencias;
 using Nebula.Modules.Products.Helpers;
-using Nebula.Modules.Sales;
+using Nebula.Modules.Sales.Invoices;
 
 namespace Nebula.Modules.Inventory.Stock;
 

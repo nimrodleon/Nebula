@@ -1,7 +1,7 @@
 using Nebula.Modules.Products.Helpers;
 using Nebula.Modules.Sales.Helpers;
 
-namespace Nebula.Modules.Sales.Dto;
+namespace Nebula.Modules.Sales.Comprobantes.Dto;
 
 public class ItemComprobanteDto
 {

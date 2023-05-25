@@ -1,6 +1,6 @@
 using Nebula.Modules.Configurations.Models;
 using Nebula.Modules.Products.Helpers;
-using Nebula.Modules.Sales.Dto;
+using Nebula.Modules.Sales.Comprobantes.Dto;
 using Nebula.Modules.Sales.Helpers;
 
 namespace Testings.Modules.Sales.Dto;

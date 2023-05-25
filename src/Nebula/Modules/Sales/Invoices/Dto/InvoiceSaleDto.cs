@@ -1,6 +1,6 @@
 using Nebula.Modules.Sales.Models;
 
-namespace Nebula.Modules.Sales.Dto;
+namespace Nebula.Modules.Sales.Invoices.Dto;
 
 public class InvoiceSaleDto
 {

@@ -1,6 +1,6 @@
 using Nebula.Modules.Facturador.Models;
-using Nebula.Modules.Sales.Dto;
 using Nebula.Modules.Sales.Helpers;
+using Nebula.Modules.Sales.Invoices.Dto;
 using System.Globalization;
 using System.Text.Json;
 

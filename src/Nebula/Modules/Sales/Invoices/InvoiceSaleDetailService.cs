@@ -3,7 +3,7 @@ using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Modules.Sales.Models;
 
-namespace Nebula.Modules.Sales;
+namespace Nebula.Modules.Sales.Invoices;
 
 public interface IInvoiceSaleDetailService : ICrudOperationService<InvoiceSaleDetail>
 {

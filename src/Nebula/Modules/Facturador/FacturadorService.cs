@@ -2,9 +2,10 @@ using Nebula.Modules.Configurations;
 using Nebula.Modules.Facturador.Helpers;
 using Nebula.Modules.Facturador.JsonParser;
 using Nebula.Modules.Facturador.Sqlite;
-using Nebula.Modules.Sales;
-using Nebula.Modules.Sales.Dto;
+using Nebula.Modules.Sales.Invoices;
+using Nebula.Modules.Sales.Invoices.Dto;
 using Nebula.Modules.Sales.Models;
+using Nebula.Modules.Sales.Notes;
 
 namespace Nebula.Modules.Facturador;
 

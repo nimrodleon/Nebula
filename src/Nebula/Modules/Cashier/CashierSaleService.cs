@@ -1,13 +1,13 @@
 using Nebula.Common;
 using Nebula.Modules.Sales.Models;
-using Nebula.Modules.Sales;
 using Nebula.Modules.Cashier.Models;
 using Nebula.Modules.Finanzas.Models;
 using Nebula.Modules.Finanzas;
 using Nebula.Modules.Configurations.Models;
 using Nebula.Modules.Configurations;
 using Nebula.Modules.Cashier.Helpers;
-using Nebula.Modules.Sales.Dto;
+using Nebula.Modules.Sales.Invoices;
+using Nebula.Modules.Sales.Comprobantes.Dto;
 
 namespace Nebula.Modules.Cashier;
 

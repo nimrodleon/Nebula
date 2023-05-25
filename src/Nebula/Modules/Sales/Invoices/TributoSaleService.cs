@@ -4,7 +4,7 @@ using Nebula.Common;
 using Nebula.Common.Dto;
 using Nebula.Modules.Sales.Models;
 
-namespace Nebula.Modules.Sales;
+namespace Nebula.Modules.Sales.Invoices;
 
 public interface ITributoSaleService : ICrudOperationService<TributoSale>
 {

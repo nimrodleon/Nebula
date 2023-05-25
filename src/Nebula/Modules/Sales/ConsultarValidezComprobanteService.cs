@@ -1,9 +1,10 @@
 using Nebula.Modules.Configurations;
 using Nebula.Modules.Configurations.Models;
 using Nebula.Modules.Configurations.Warehouses;
-using Nebula.Modules.Sales.Dto;
 using Nebula.Modules.Sales.Helpers;
+using Nebula.Modules.Sales.Invoices;
 using Nebula.Modules.Sales.Models;
+using Nebula.Modules.Sales.Notes;
 
 namespace Nebula.Modules.Sales;
 

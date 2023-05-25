@@ -1,4 +1,4 @@
-namespace Nebula.Modules.Sales.Dto;
+namespace Nebula.Modules.Sales;
 
 public class SituacionFacturadorDto
 {

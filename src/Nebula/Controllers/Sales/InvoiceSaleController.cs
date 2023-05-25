@@ -1,17 +1,21 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Inventory.Stock;
-using Nebula.Modules.Sales;
 using Nebula.Modules.Facturador;
 using Nebula.Modules.Configurations;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Common.Helpers;
 using Nebula.Modules.Facturador.Helpers;
-using Nebula.Modules.Sales.Dto;
 using Nebula.Common.Dto;
 using Nebula.Modules.Configurations.Subscriptions;
 using Nebula.Modules.Configurations.Warehouses;
 using Nebula.Modules.Sales.Helpers;
+using Nebula.Modules.Sales.Invoices;
+using Nebula.Modules.Sales.Notes;
+using Nebula.Modules.Sales.Comprobantes.Dto;
+using Nebula.Modules.Sales.Comprobantes;
+using Nebula.Modules.Sales;
+using Nebula.Modules.Sales.Invoices.Dto;
 
 namespace Nebula.Controllers.Sales;
 
