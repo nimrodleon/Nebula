@@ -60,7 +60,21 @@ builder.Services.AddCors(options =>
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
 builder.Services.AddScoped(typeof(ICrudOperationService<>), typeof(CrudOperationService<>));
 
-#region Configuration
+#region ModuleAuth
+
+builder.Services.AddScoped<IUserService, UserService>();
+
+#endregion
+
+#region ModuleCashier
+
+builder.Services.AddScoped<ICajaDiariaService, CajaDiariaService>();
+builder.Services.AddScoped<ICashierDetailService, CashierDetailService>();
+builder.Services.AddScoped<ICashierSaleService, CashierSaleService>();
+
+#endregion
+
+#region ModuleConfigurations
 
 builder.Services.AddScoped<IConfigurationService, ConfigurationService>();
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
@@ -69,23 +83,29 @@ builder.Services.AddScoped<IInvoiceSerieService, InvoiceSerieService>();
 
 #endregion
 
-#region Productos
+#region ModuleContacts
 
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<IProductLoteService, ProductLoteService>();
+builder.Services.AddScoped<IContactService, ContactService>();
 
 #endregion
 
+#region ModuleFacturadorSUNAT
+
+builder.Services.AddScoped<IFacturadorService, FacturadorService>();
+builder.Services.AddScoped<IHttpRequestFacturadorService, HttpRequestFacturadorService>();
+
+#endregion
+
+#region ModuleFinanzas
+
 builder.Services.AddScoped<IReceivableService, ReceivableService>();
-builder.Services.AddScoped<IContactService, ContactService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ICajaDiariaService, CajaDiariaService>();
-builder.Services.AddScoped<ICashierDetailService, CashierDetailService>();
-builder.Services.AddScoped<IInvoiceSaleDetailService, InvoiceSaleDetailService>();
-builder.Services.AddScoped<IInvoiceSaleService, InvoiceSaleService>();
-builder.Services.AddScoped<ITributoSaleService, TributoSaleService>();
-builder.Services.AddScoped<IDetallePagoSaleService, DetallePagoSaleService>();
-builder.Services.AddScoped<ICashierSaleService, CashierSaleService>();
+
+#endregion
+
+#region ModuleInventory
+
+builder.Services.AddScoped<IProductStockService, ProductStockService>();
+builder.Services.AddScoped<IHelperCalculateProductStockService, HelperCalculateProductStockService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
 builder.Services.AddScoped<ILocationDetailService, LocationDetailService>();
 builder.Services.AddScoped<IMaterialService, MaterialService>();
@@ -96,23 +116,6 @@ builder.Services.AddScoped<ITransferenciaService, TransferenciaService>();
 builder.Services.AddScoped<ITransferenciaDetailService, TransferenciaDetailService>();
 builder.Services.AddScoped<IAjusteInventarioService, AjusteInventarioService>();
 builder.Services.AddScoped<IAjusteInventarioDetailService, AjusteInventarioDetailService>();
-builder.Services.AddScoped<IFacturadorService, FacturadorService>();
-builder.Services.AddScoped<IComprobanteService, ComprobanteService>();
-builder.Services.AddScoped<ICreditNoteService, CreditNoteService>();
-builder.Services.AddScoped<ICreditNoteDetailService, CreditNoteDetailService>();
-builder.Services.AddScoped<ITributoCreditNoteService, TributoCreditNoteService>();
-builder.Services.AddScoped<IConsultarValidezComprobanteService, ConsultarValidezComprobanteService>();
-
-#region ModuleFacturadorSUNAT
-
-builder.Services.AddScoped<IHttpRequestFacturadorService, HttpRequestFacturadorService>();
-
-#endregion
-
-#region ModuleInventory
-
-builder.Services.AddScoped<IProductStockService, ProductStockService>();
-builder.Services.AddScoped<IHelperCalculateProductStockService, HelperCalculateProductStockService>();
 
 // Validación de Stocks.
 builder.Services.AddScoped<IInventoryNotasStockValidator, InventoryNotasStockValidator>();
@@ -121,6 +124,27 @@ builder.Services.AddScoped<IAjusteInventarioStockValidator, AjusteInventarioStoc
 builder.Services.AddScoped<IInventoryMaterialStockValidator, InventoryMaterialStockValidator>();
 builder.Services.AddScoped<IInvoiceSaleStockValidator, InvoiceSaleStockValidator>();
 builder.Services.AddScoped<IValidateStockService, ValidateStockService>();
+
+#endregion
+
+#region ModuleProductos
+
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductLoteService, ProductLoteService>();
+
+#endregion
+
+#region ModuleSales
+
+builder.Services.AddScoped<IInvoiceSaleService, InvoiceSaleService>();
+builder.Services.AddScoped<IInvoiceSaleDetailService, InvoiceSaleDetailService>();
+builder.Services.AddScoped<ITributoSaleService, TributoSaleService>();
+builder.Services.AddScoped<IDetallePagoSaleService, DetallePagoSaleService>();
+builder.Services.AddScoped<IComprobanteService, ComprobanteService>();
+builder.Services.AddScoped<ICreditNoteService, CreditNoteService>();
+builder.Services.AddScoped<ICreditNoteDetailService, CreditNoteDetailService>();
+builder.Services.AddScoped<ITributoCreditNoteService, TributoCreditNoteService>();
+builder.Services.AddScoped<IConsultarValidezComprobanteService, ConsultarValidezComprobanteService>();
 
 #endregion
 
