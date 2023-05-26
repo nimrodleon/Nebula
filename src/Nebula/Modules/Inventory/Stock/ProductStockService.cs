@@ -1,13 +1,10 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using Nebula.Modules.Inventory.Helpers;
 using Nebula.Modules.Inventory.Models;
 using Nebula.Modules.Inventory.Stock.Dto;
 using MongoDB.Bson;
 using Nebula.Common;
-using Nebula.Modules.Configurations.Models;
-using Nebula.Modules.Configurations.Warehouses;
-using Nebula.Modules.Inventory.Helpers;
-using Nebula.Modules.Inventory.Dto;
 
 namespace Nebula.Modules.Inventory.Stock;
 
@@ -24,32 +21,16 @@ public interface IProductStockService : ICrudOperationService<ProductStock>
     Task<List<ProductStock>> GetProductStockListByWarehousesIdsAsync(List<string> warehouseArrId, string productId);
     Task<List<ProductStock>> GetProductStockByWarehouseIdAsync(string warehouseId,
         List<string> productArrId);
-
-    // ...
     Task<List<TransferenciaDetail>> CalcularCantidadExistenteRestanteTransferenciaAsync(
         List<TransferenciaDetail> transferenciaDetails, string warehouseId);
     Task<List<AjusteInventarioDetail>> CalcularCantidadExistenteAjusteInventarioAsync(
         List<AjusteInventarioDetail> ajusteInventarioDetails, string warehouseId);
     Task<DeleteResult> DeleteProductStockByWarehouseIdAsync(string warehouseId, List<string> productArrId);
-    [Obsolete]
-    Task<List<ProductStockReport>> GetProductStockReportAsync(string id);
-    Task<long> GetStockItemComprobanteAsync(string warehouseId, string productId);
-    Task<long> GetStockItemCajaAsync(string invoiceSerieId, string productId);
-
 }
 
 public class ProductStockService : CrudOperationService<ProductStock>, IProductStockService
 {
-    private readonly IInvoiceSerieService _invoiceSerieService;
-    private readonly IWarehouseService _warehouseService;
-
-    public ProductStockService(IOptions<DatabaseSettings> options,
-        IWarehouseService warehouseService,
-        IInvoiceSerieService invoiceSerieService) : base(options)
-    {
-        _warehouseService = warehouseService;
-        _invoiceSerieService = invoiceSerieService;
-    }
+    public ProductStockService(IOptions<DatabaseSettings> options) : base(options) { }
 
     public async Task<List<ProductStock>> CreateManyAsync(List<ProductStock> obj)
     {
@@ -190,49 +171,6 @@ public class ProductStockService : CrudOperationService<ProductStock>, IProductS
         var builder = Builders<ProductStock>.Filter;
         var filter = builder.And(builder.Eq(x => x.ProductId, productId), builder.In("WarehouseId", warehouseArrId));
         return await _collection.Find(filter).ToListAsync();
-    }
-
-    // ----------------------------------------------------------------------------------
-
-    public async Task<long> GetStockItemCajaAsync(string invoiceSerieId, string productId)
-    {
-        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(invoiceSerieId);
-        var productStocks = await GetProductStockListByWarehouseAsync(invoiceSerie.WarehouseId, productId);
-        var totalEntrada = productStocks.Where(x => x.Type == InventoryType.ENTRADA).Sum(x => x.Quantity);
-        var totalSalida = productStocks.Where(x => x.Type == InventoryType.SALIDA).Sum(x => x.Quantity);
-        return totalEntrada - totalSalida;
-    }
-
-    public async Task<long> GetStockItemComprobanteAsync(string warehouseId, string productId)
-    {
-        var productStocks = await GetProductStockListByWarehouseAsync(warehouseId, productId);
-        var totalEntrada = productStocks.Where(x => x.Type == InventoryType.ENTRADA).Sum(x => x.Quantity);
-        var totalSalida = productStocks.Where(x => x.Type == InventoryType.SALIDA).Sum(x => x.Quantity);
-        return totalEntrada - totalSalida;
-    }
-
-    [Obsolete]
-    public async Task<List<ProductStockReport>> GetProductStockReportAsync(string id)
-    {
-        var warehouses = await _warehouseService.GetAsync("Name", string.Empty);
-        var filter = Builders<ProductStock>.Filter;
-        var warehouseArrId = new List<string>();
-        warehouses.ForEach(item => warehouseArrId.Add(item.Id));
-        var productStocks = await GetProductStockListByWarehousesIdsAsync(warehouseArrId, id);
-        var productStockReports = new List<ProductStockReport>();
-        warehouses.ForEach(item =>
-        {
-            var products = productStocks.Where(x => x.WarehouseId == item.Id).ToList();
-            var entrada = products.Where(x => x.Type == InventoryType.ENTRADA).Sum(x => x.Quantity);
-            var salida = products.Where(x => x.Type == InventoryType.SALIDA).Sum(x => x.Quantity);
-            productStockReports.Add(new ProductStockReport
-            {
-                WarehouseId = item.Id,
-                WarehouseName = item.Name,
-                Quantity = entrada - salida,
-            });
-        });
-        return productStockReports;
     }
 
     public async Task<List<TransferenciaDetail>> CalcularCantidadExistenteRestanteTransferenciaAsync(

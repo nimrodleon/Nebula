@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Modules.Inventory.Stock;
 using Nebula.Modules.Products.Models;
 using Nebula.Modules.Products;
 using Nebula.Modules.Configurations;
@@ -17,17 +16,14 @@ public class ProductController : ControllerBase
 {
     private readonly IConfiguration _configuration;
     private readonly IProductService _productService;
-    private readonly IProductStockService _productStockService;
     private readonly IConfigurationService _configurationService;
 
     public ProductController(IConfiguration configuration,
         IProductService productService,
-        IProductStockService productStockService,
         IConfigurationService configurationService)
     {
         _configuration = configuration;
         _productService = productService;
-        _productStockService = productStockService;
         _configurationService = configurationService;
     }
 
@@ -184,14 +180,6 @@ public class ProductController : ControllerBase
         // borrar registro.
         await _productService.RemoveAsync(id);
         return Ok(product);
-    }
-
-    [Obsolete]
-    [HttpGet("Stock/{id}")]
-    public async Task<IActionResult> Stock(string id)
-    {
-        var productStocks = await _productStockService.GetProductStockReportAsync(id);
-        return Ok(productStocks);
     }
 
 }
