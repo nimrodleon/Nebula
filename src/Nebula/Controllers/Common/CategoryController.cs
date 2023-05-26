@@ -4,6 +4,7 @@ using Nebula.Common;
 using Nebula.Modules.Products.Models;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Common.Dto;
+using Nebula.Modules.Products;
 
 namespace Nebula.Controllers.Common;
 
@@ -12,9 +13,9 @@ namespace Nebula.Controllers.Common;
 [ApiController]
 public class CategoryController : ControllerBase
 {
-    private readonly ICrudOperationService<Category> _categoryService;
+    private readonly ICategoryService _categoryService;
 
-    public CategoryController(CrudOperationService<Category> categoryService) =>
+    public CategoryController(ICategoryService categoryService) =>
         _categoryService = categoryService;
 
     [HttpGet("Index")]

@@ -130,6 +130,7 @@ builder.Services.AddScoped<IValidateStockService, ValidateStockService>();
 #region ModuleProductos
 
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductLoteService, ProductLoteService>();
 
 #endregion
