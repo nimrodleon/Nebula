@@ -56,6 +56,7 @@ public class ConfigurationService : IConfigurationService
         _configuration.ModoEnvioSunat = configuration.ModoEnvioSunat;
         _configuration.ContactId = configuration.ContactId;
         _configuration.DiasPlazo = configuration.DiasPlazo;
+        _configuration.ModInventories = configuration.ModInventories;
         _configuration.ModTaller = configuration.ModTaller;
         _configuration.ModLotes = configuration.ModLotes;
         await _collection.ReplaceOneAsync(x => x.Id == "DEFAULT", _configuration);
