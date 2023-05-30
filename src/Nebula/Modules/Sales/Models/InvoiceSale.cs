@@ -146,4 +146,9 @@ public class InvoiceSale : IGenericModel
     /// Ubicación de los documentos electrónicos.
     /// </summary>
     public string DocumentPath { get; set; } = DocumentPathType.NONE;
+
+    /// <summary>
+    /// Comentario/Observación de la factura.
+    /// </summary>
+    public string Remark { get; set; } = string.Empty;
 }

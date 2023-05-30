@@ -73,6 +73,8 @@ public class ComprobanteDto
             // DIRECCIÓN_DEL_CLIENTE!
             CodUbigeoCliente = Cabecera.CodUbigeoCliente,
             DesDireccionCliente = Cabecera.DesDireccionCliente,
+            // Comentario/Observación de la factura.
+            Remark = Cabecera.Remark.Trim(),
         };
     }
 
