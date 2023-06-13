@@ -100,6 +100,11 @@ public class Configuration
     #endregion
 
     /// <summary>
+    /// Habilita/Deshabilita el módulo de compras.
+    /// </summary>
+    public bool ModCompras { get; set; } = false;
+
+    /// <summary>
     /// Habilita/Deshabilita el módulo de inventarios.
     /// </summary>
     public bool ModInventories { get; set; } = false;
