@@ -32,6 +32,13 @@ public class AuthController : ControllerBase
         return Task.FromResult<IActionResult>(Ok(new { userName, role }));
     }
 
+    [HttpGet("CreateSupportUser"), AllowAnonymous]
+    public IActionResult CreateSupportUser()
+    {
+        var result = _configuration.GetValue<bool>("CreateSupportUser");
+        return Ok(result);
+    }
+
     [HttpPost("Login"), AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] AuthLogin model)
     {

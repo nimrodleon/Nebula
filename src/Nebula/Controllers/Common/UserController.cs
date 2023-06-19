@@ -14,10 +14,12 @@ namespace Nebula.Controllers.Common;
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
+    private readonly IConfiguration _configuration;
 
-    public UserController(IUserService userService)
+    public UserController(IUserService userService, IConfiguration configuration)
     {
         _userService = userService;
+        _configuration = configuration;
     }
 
     [HttpGet("Index")]
@@ -48,25 +50,22 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
-    /// <summary>
-    /// Crear usuario con clave maestra.
-    /// </summary>
-    /// <param name="masterKey">Hash clave maestra</param>
-    /// <param name="model">Datos del usuario</param>
-    /// <returns>User</returns>
     [AllowAnonymous]
-    [HttpPost("CreateUser/{masterKey}")]
-    public async Task<IActionResult> CreateUserAdmin(string masterKey, [FromBody] UserRegister model)
+    [HttpPost("CreateSupportUser")]
+    public async Task<IActionResult> CreateSupportUser()
     {
-        string hash = MasterKeyDto.ReadHashFile();
-        if (hash != masterKey) return NotFound();
+        var createUser = _configuration.GetValue<bool>("CreateSupportUser");
+        if (!createUser) return NotFound();
+
+        var existingUser = await _userService.GetByUserNameAsync("soporte");
+        if (existingUser != null) await _userService.RemoveAsync(existingUser.Id);
 
         var user = new User()
         {
-            UserName = model.UserName.Trim(),
-            Email = model.Email.Trim(),
-            PasswordHash = PasswordHasher.HashPassword(model.Password.Trim()),
-            Role = model.Role
+            UserName = "soporte",
+            Email = "soporte@local.pe",
+            PasswordHash = PasswordHasher.HashPassword("mangoloco"),
+            Role = AuthRoles.Admin
         };
         await _userService.CreateAsync(user);
         return Ok(user);
