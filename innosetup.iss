@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "nebula"
-#define MyAppVersion "1.2.5"
+#define MyAppVersion "1.2.6"
 #define MyAppPublisher "rd4Lab"
 #define MyAppURL "https://rd4lab.com/"
 #define MyAppExeName "abrirBandeja.bat"
