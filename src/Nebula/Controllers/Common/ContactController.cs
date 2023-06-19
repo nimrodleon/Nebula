@@ -17,14 +17,17 @@ public class ContactController : ControllerBase
     private readonly IContactService _contactService;
     private readonly ICashierDetailService _cashierDetailService;
     private readonly IInvoiceSaleService _invoiceSaleService;
+    private readonly IContribuyenteService _contribuyenteService;
 
     public ContactController(IContactService contactService,
         ICashierDetailService cashierDetailService,
-        IInvoiceSaleService invoiceSaleService)
+        IInvoiceSaleService invoiceSaleService,
+        IContribuyenteService contribuyenteService)
     {
         _contactService = contactService;
         _cashierDetailService = cashierDetailService;
         _invoiceSaleService = invoiceSaleService;
+        _contribuyenteService = contribuyenteService;
     }
 
     [HttpGet("Index")]
@@ -47,6 +50,18 @@ public class ContactController : ControllerBase
     {
         var contact = await _contactService.GetContactByDocumentAsync(document);
         return Ok(contact);
+    }
+
+    [HttpGet("Contribuyente/{doc}")]
+    public IActionResult Contribuyente(string doc)
+    {
+        ContribuyenteDto? result = null;
+        if (doc.Trim().Length == 11)
+            result = _contribuyenteService.GetByRuc(doc.Trim());
+        if (doc.Trim().Length == 8)
+            result = _contribuyenteService.GetByDni(doc.Trim());
+        if (result == null) return BadRequest();
+        return Ok(result);
     }
 
     [HttpGet("Select2")]
