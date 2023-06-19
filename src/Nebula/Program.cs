@@ -8,7 +8,6 @@ using Nebula.Common;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Configurations;
-using Nebula.Modules.Configurations.Dto;
 using Nebula.Modules.Configurations.Subscriptions;
 using Nebula.Modules.Configurations.Warehouses;
 using Nebula.Modules.Contacts;
@@ -189,9 +188,6 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
-
-// Generar un hash único.
-MasterKeyDto.WriteHashFile();
 
 var app = builder.Build();
 var applicationPort = builder.Configuration.GetValue<string>("ApplicationPort");
