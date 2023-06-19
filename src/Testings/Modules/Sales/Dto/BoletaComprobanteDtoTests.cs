@@ -84,7 +84,7 @@ public class BoletaComprobanteDtoTests
             AccessToken = "hw8H3F9/OS0IJbDa3YskdDYWCPgt1pJ0M56wtvgRziTUmD56fDfso3MBJlwDcFftKix7EGplQuEXBA7TZG9fkoYmm2Yp3scCXmLcl9hCNPtNoafGGYCLZeX6IqjelHQ6jv3mMHsgtw5pdZnsi0SPRH5OEkaWCiRZWWPsC6sscK8=",
             SubscriptionId = "94595260-8262-453e-876a-7c7429464e0f",
             FacturadorUrl = "http://localhost:1745",
-            SearchPeUrl = "http://localhost:1747",
+            PadronReducidoRuc = true,
             ModTaller = true,
             ModLotes = true,
         };

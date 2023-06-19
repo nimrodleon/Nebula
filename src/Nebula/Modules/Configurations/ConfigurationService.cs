@@ -29,8 +29,14 @@ public class ConfigurationService : IConfigurationService
     public async Task<Configuration> GetAsync()
     {
         var configuration = await _collection.Find(x => x.Id == "DEFAULT").FirstOrDefaultAsync();
+        if(configuration == null)
+        {
+            await CreateAsync();
+            configuration = await _collection.Find(x => x.Id == "DEFAULT").FirstOrDefaultAsync();
+        }
         configuration.FacturadorUrl = _configuration.GetValue<string>("facturadorUrl");
-        configuration.SearchPeUrl = _configuration.GetValue<string>("searchPeUrl");
+        var dataSourceContribuyentes = _configuration.GetValue<string>("BDContribuyentes");
+        configuration.PadronReducidoRuc = !string.IsNullOrWhiteSpace(dataSourceContribuyentes) && dataSourceContribuyentes != "-";
         return configuration;
     }
 

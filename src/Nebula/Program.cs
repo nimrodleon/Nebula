@@ -86,6 +86,7 @@ builder.Services.AddScoped<IInvoiceSerieService, InvoiceSerieService>();
 #region ModuleContacts
 
 builder.Services.AddScoped<IContactService, ContactService>();
+builder.Services.AddScoped<IContribuyenteService, ContribuyenteService>();
 
 #endregion
 

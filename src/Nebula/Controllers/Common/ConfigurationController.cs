@@ -29,11 +29,6 @@ public class ConfigurationController : ControllerBase
     public async Task<IActionResult> Show()
     {
         var configuration = await _configurationService.GetAsync();
-        if (configuration is null)
-        {
-            await _configurationService.CreateAsync();
-            return Ok(await _configurationService.GetAsync());
-        }
         return Ok(configuration);
     }
 
