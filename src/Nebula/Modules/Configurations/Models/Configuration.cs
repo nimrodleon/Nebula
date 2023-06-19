@@ -95,7 +95,7 @@ public class Configuration
     /// URL SearchPe base de datos contribuyentes.
     /// </summary>
     [BsonIgnore]
-    public string? SearchPeUrl { get; set; } = string.Empty;
+    public bool PadronReducidoRuc { get; set; } = false;
 
     #endregion
 
