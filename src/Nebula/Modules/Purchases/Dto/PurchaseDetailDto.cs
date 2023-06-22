@@ -13,7 +13,6 @@ public class PurchaseDetailDto
     #region INVENTORY_CONFIGURATION!
     public string ProductId { get; set; } = "-";
     public decimal MtoPrecioCompraUnitario { get; set; } = 0;
-    //public string ControlStock { get; set; } = TipoControlStock.NONE;
     #endregion
     //#region CONTROL_LOTE_PRODUCCIÓN
     //public bool hasLotes { get; set; } = false;

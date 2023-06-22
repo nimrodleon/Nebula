@@ -10,7 +10,7 @@ public class PurchaseHeaderDto
     public string FecEmision { get; set; } = string.Empty;
     public string NumComprobante { get; set; } = string.Empty;
     public decimal TipoDeCambio { get; set; } = 1M;
-    // public string FecVencimiento { get; set; } = "-";
+    public string? FecVencimiento { get; set; } = "-";
     #region DIRECCIÓN_DEL_PROVEEDOR!
     public string CodUbigeoProveedor { get; set; } = "-";
     public string DesDireccionProveedor { get; set; } = string.Empty;
