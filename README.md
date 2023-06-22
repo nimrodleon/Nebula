@@ -16,10 +16,18 @@ http://www2.sunat.gob.pe/facturador/AnexosIyII_Formato1.5.xlsx
 https://cpe.sunat.gob.pe/sites/default/files/inline-files/anexoIII.pdf
 ```
 
-- SFS_v1.6
+- facturador-2.0
 
 ```bash
-https://www.mediafire.com/file/79v5dwy5fy7oaqb/SFS_v1.6.exe/file
+https://www.mediafire.com/file/u3pvbt14e3hrqfi/facturador-2.0.exe/file
+```
+
+## Estructura de los Libros y Registros Electrónicos
+
+- Estructuras del PLE
+
+```bash
+https://emprender.sunat.gob.pe/estructurasple
 ```
 
 ## Funciones Premium
