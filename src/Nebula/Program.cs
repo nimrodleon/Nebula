@@ -139,6 +139,7 @@ builder.Services.AddScoped<IProductLoteService, ProductLoteService>();
 #region ModulePurchases
 
 builder.Services.AddScoped<IPurchaseInvoiceService, PurchaseInvoiceService>();
+builder.Services.AddScoped<IPurchaseInvoiceDetailService, PurchaseInvoiceDetailService>();
 
 #endregion
 

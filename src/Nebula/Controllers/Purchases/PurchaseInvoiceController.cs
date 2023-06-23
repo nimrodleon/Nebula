@@ -12,10 +12,24 @@ namespace Nebula.Controllers.Purchases;
 public class PurchaseInvoiceController : ControllerBase
 {
     private readonly IPurchaseInvoiceService _purchaseInvoiceService;
+    private readonly IPurchaseInvoiceDetailService _purchaseInvoiceDetailService;
 
-    public PurchaseInvoiceController(IPurchaseInvoiceService purchaseInvoiceService)
+    public PurchaseInvoiceController(IPurchaseInvoiceService purchaseInvoiceService,
+        IPurchaseInvoiceDetailService purchaseInvoiceDetailService)
     {
         _purchaseInvoiceService = purchaseInvoiceService;
+        _purchaseInvoiceDetailService = purchaseInvoiceDetailService;
+    }
+
+    [HttpGet("Show/{id}")]
+    public async Task<IActionResult> Show(string id)
+    {
+        var purchase = new PurchaseDto
+        {
+            PurchaseInvoice = await _purchaseInvoiceService.GetByIdAsync(id),
+            PurchaseInvoiceDetails = await _purchaseInvoiceDetailService.GetDetailsAsync(id),
+        };
+        return Ok(purchase);
     }
 
     [HttpPost("Create")]
