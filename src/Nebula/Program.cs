@@ -21,6 +21,7 @@ using Nebula.Modules.Inventory.Stock;
 using Nebula.Modules.Inventory.Stock.Validations;
 using Nebula.Modules.Inventory.Transferencias;
 using Nebula.Modules.Products;
+using Nebula.Modules.Purchases;
 using Nebula.Modules.Sales;
 using Nebula.Modules.Sales.Comprobantes;
 using Nebula.Modules.Sales.Invoices;
@@ -132,6 +133,12 @@ builder.Services.AddScoped<IValidateStockService, ValidateStockService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IProductLoteService, ProductLoteService>();
+
+#endregion
+
+#region ModulePurchases
+
+builder.Services.AddScoped<IPurchaseInvoiceService, PurchaseInvoiceService>();
 
 #endregion
 

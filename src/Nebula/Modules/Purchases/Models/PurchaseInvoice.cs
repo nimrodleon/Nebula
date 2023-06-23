@@ -50,19 +50,19 @@ public class PurchaseInvoice : IGenericModel
     public string ContactId { get; set; } = string.Empty;
 
     /// <summary>
-    /// Tipo de documento de identidad del adquirente o usuario. Catálogo: 6, an1
+    /// Tipo de documento de identidad del proveedor.
     /// </summary>
-    public string TipDocUsuario { get; set; } = string.Empty;
+    public string TipDocProveedor { get; set; } = string.Empty;
 
     /// <summary>
-    /// Número de documento de identidad del adquirente o usuario. an..15
+    /// Número de documento de identidad del proveedor.
     /// </summary>
-    public string NumDocUsuario { get; set; } = string.Empty;
+    public string NumDocProveedor { get; set; } = string.Empty;
 
     /// <summary>
-    /// Apellidos y nombres, denominación o razón social del adquirente o usuario. an..1500
+    /// Apellidos y nombres, denominación o razón social del proveedor.
     /// </summary>
-    public string RznSocialUsuario { get; set; } = string.Empty;
+    public string RznSocialProveedor { get; set; } = string.Empty;
 
     /// <summary>
     /// Tipo de moneda en la cual se emite la factura electrónica. Catálogo: 2, an3
@@ -80,19 +80,19 @@ public class PurchaseInvoice : IGenericModel
     public decimal SumTotTributos { get; set; }
 
     /// <summary>
-    /// Total valor de venta. an..15|n(12,2)
+    /// Total valor de compra. an..15|n(12,2)
     /// </summary>
-    public decimal SumTotValVenta { get; set; }
+    public decimal SumTotValCompra { get; set; }
 
     /// <summary>
-    /// Total Precio de Venta. an..15|n(12,2)
+    /// Total Precio de Compra. an..15|n(12,2)
     /// </summary>
-    public decimal SumPrecioVenta { get; set; }
+    public decimal SumPrecioCompra { get; set; }
 
     /// <summary>
-    /// Importe total de la venta, cesión en uso o del servicio prestado. an..15|n(12,2)
+    /// Importe total de la compra. an..15|n(12,2)
     /// </summary>
-    public decimal SumImpVenta { get; set; }
+    public decimal SumImpCompra { get; set; }
 
     /// <summary>
     /// Año de registro.

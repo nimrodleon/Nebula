@@ -8,7 +8,7 @@ public class PurchaseDataDto
 {
     private Configuration _configuration = new Configuration();
     #region ORIGIN_HTTP_REQUEST!
-    public PurchaseHeaderDto HeaderDto { get; set; } = new PurchaseHeaderDto();
+    public CabeceraCompraDto HeaderDto { get; set; } = new CabeceraCompraDto();
     public List<PurchaseDetailDto> DetailDtos { get; set; } = new List<PurchaseDetailDto>();
     #endregion
     public List<PurchaseImporteItemDto> ImporteItems { get; set; } = new List<PurchaseImporteItemDto>();
