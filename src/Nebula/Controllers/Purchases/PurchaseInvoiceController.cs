@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Common.Dto;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Purchases;
 using Nebula.Modules.Purchases.Dto;
@@ -19,6 +20,13 @@ public class PurchaseInvoiceController : ControllerBase
     {
         _purchaseInvoiceService = purchaseInvoiceService;
         _purchaseInvoiceDetailService = purchaseInvoiceDetailService;
+    }
+
+    [HttpGet("Index")]
+    public async Task<IActionResult> Index([FromQuery] DateQuery query)
+    {
+        var purchases = await _purchaseInvoiceService.GetAsync(query);
+        return Ok(purchases);
     }
 
     [HttpGet("Show/{id}")]
