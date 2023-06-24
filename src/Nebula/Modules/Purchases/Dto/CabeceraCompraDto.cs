@@ -14,11 +14,7 @@ public class CabeceraCompraDto
     public string NumComprobante { get; set; } = string.Empty;
     public string TipoMoneda { get; set; } = string.Empty;
     public decimal TipoDeCambio { get; set; } = 1M;
-    // public string? FecVencimiento { get; set; } = "-";
-    #region DIRECCIÓN_DEL_PROVEEDOR!
-    public string CodUbigeoProveedor { get; set; } = "-";
-    public string DesDireccionProveedor { get; set; } = string.Empty;
-    #endregion
+    public string? FecVencimiento { get; set; } = null;
 
     public PurchaseInvoice GetPurchaseInvoice()
     {
