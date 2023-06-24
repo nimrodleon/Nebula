@@ -38,4 +38,12 @@ public class PurchaseInvoiceController : ControllerBase
         var purchase = await _purchaseInvoiceService.CreateAsync(cabecera);
         return Ok(purchase);
     }
+
+    [HttpPut("Update/{id}")]
+    public async Task<IActionResult> Update(string id, [FromBody] CabeceraCompraDto cabecera)
+    {
+        var purchase = await _purchaseInvoiceService.UpdateAsync(id, cabecera);
+        return Ok(purchase);
+    }
+
 }

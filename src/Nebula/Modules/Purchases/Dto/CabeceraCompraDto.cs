@@ -41,4 +41,22 @@ public class CabeceraCompraDto
             Month = fecha.Month.ToString("D2"),
         };
     }
+
+    public PurchaseInvoice GetPurchaseInvoice(PurchaseInvoice purchase)
+    {
+        purchase.FecEmision = FecEmision;
+        purchase.DocType = DocType;
+        purchase.Serie = SerieComprobante.Trim();
+        purchase.Number = NumComprobante.Trim();
+        purchase.ContactId = ContactId;
+        purchase.TipDocProveedor = TipDocProveedor.Trim();
+        purchase.NumDocProveedor = NumDocProveedor.Trim();
+        purchase.RznSocialProveedor = RznSocialProveedor.Trim();
+        purchase.TipMoneda = TipoMoneda;
+        purchase.TipoCambio = TipoDeCambio;
+        var fecha = DateTime.Parse(FecEmision);
+        purchase.Year = fecha.Year.ToString();
+        purchase.Month = fecha.Month.ToString("D2");
+        return purchase;
+    }
 }
