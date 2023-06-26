@@ -54,4 +54,13 @@ public class PurchaseInvoiceController : ControllerBase
         return Ok(purchase);
     }
 
+    [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
+    public async Task<IActionResult> Delete(string id)
+    {
+        var purchase = await _purchaseInvoiceService.GetByIdAsync(id);
+        await _purchaseInvoiceService.RemoveAsync(purchase.Id);
+        // TODO: borrar detalles del comprobante.
+        return Ok(purchase);
+    }
+
 }
