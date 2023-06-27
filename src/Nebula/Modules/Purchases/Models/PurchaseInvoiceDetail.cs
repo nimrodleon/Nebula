@@ -120,14 +120,14 @@ public class PurchaseInvoiceDetail : IGenericModel
     public decimal MtoTriIcbperUnidad { get; set; }
 
     /// <summary>
-    /// Precio de venta unitario cac:InvoiceLine/cac:PricingReference/cac:AlternativeConditionPrice an..23|n(12,10)
+    /// Precio de compra unitario cac:InvoiceLine/cac:PricingReference/cac:AlternativeConditionPrice an..23|n(12,10)
     /// </summary>
-    public decimal MtoPrecioVentaUnitario { get; set; }
+    public decimal MtoPrecioCompraUnitario { get; set; }
 
     /// <summary>
-    /// Valor de venta por Item cac:InvoiceLine/cbc:LineExtensionAmount an..15|n(12,2)
+    /// Valor de compra por Item cac:InvoiceLine/cbc:LineExtensionAmount an..15|n(12,2)
     /// </summary>
-    public decimal MtoValorVentaItem { get; set; }
+    public decimal MtoValorCompraItem { get; set; }
 
     /// <summary>
     /// Valor REFERENCIAL unitario (gratuitos) cac:InvoiceLine/cac:PricingReference/cac:AlternativeConditionPrice

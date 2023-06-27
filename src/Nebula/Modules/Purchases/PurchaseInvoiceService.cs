@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Common.Dto;
 using Nebula.Modules.Purchases.Dto;
+using Nebula.Modules.Purchases.Helpers;
 using Nebula.Modules.Purchases.Models;
 
 namespace Nebula.Modules.Purchases;
@@ -12,6 +13,7 @@ public interface IPurchaseInvoiceService : ICrudOperationService<PurchaseInvoice
     Task<List<PurchaseInvoice>> GetAsync(DateQuery query);
     Task<PurchaseInvoice> CreateAsync(CabeceraCompraDto cabecera);
     Task<PurchaseInvoice> UpdateAsync(string id, CabeceraCompraDto cabecera);
+    Task<PurchaseInvoice> UpdateImporteAsync(string id, List<PurchaseInvoiceDetail> details);
 }
 
 public class PurchaseInvoiceService : CrudOperationService<PurchaseInvoice>, IPurchaseInvoiceService
@@ -40,6 +42,15 @@ public class PurchaseInvoiceService : CrudOperationService<PurchaseInvoice>, IPu
     {
         var purchase = await GetByIdAsync(id);
         purchase = cabecera.GetPurchaseInvoice(purchase);
+        await UpdateAsync(purchase.Id, purchase);
+        return purchase;
+    }
+
+    public async Task<PurchaseInvoice> UpdateImporteAsync(string id, List<PurchaseInvoiceDetail> details)
+    {
+        var purchase = await GetByIdAsync(id);
+        var calcularImporte = new CalcularImporteCompra(details);
+        purchase = calcularImporte.Calcular(purchase);
         await UpdateAsync(purchase.Id, purchase);
         return purchase;
     }

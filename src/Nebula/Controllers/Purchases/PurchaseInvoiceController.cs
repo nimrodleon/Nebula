@@ -59,7 +59,7 @@ public class PurchaseInvoiceController : ControllerBase
     {
         var purchase = await _purchaseInvoiceService.GetByIdAsync(id);
         await _purchaseInvoiceService.RemoveAsync(purchase.Id);
-        // TODO: borrar detalles del comprobante.
+        await _purchaseInvoiceDetailService.DeleteManyAsync(purchase.Id);
         return Ok(purchase);
     }
 
