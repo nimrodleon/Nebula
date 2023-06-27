@@ -53,18 +53,25 @@ public class ProductController : ControllerBase
         var data = new List<ProductSelect>();
         products.ForEach(item =>
         {
-            data.Add(new ProductSelect()
+            var itemSelect2 = new ProductSelect
             {
                 Id = item.Id,
-                Text = $"{item.Description} | {Convert.ToDecimal(item.PrecioVentaUnitario):N2}",
                 Description = item.Description,
-                Barcode = item.Barcode,
-                CodProductoSUNAT = item.CodProductoSUNAT,
-                PrecioVentaUnitario = item.PrecioVentaUnitario,
                 IgvSunat = item.IgvSunat,
                 Icbper = item.Icbper,
+                ValorUnitario = item.ValorUnitario,
+                PrecioVentaUnitario = item.PrecioVentaUnitario,
+                Barcode = item.Barcode,
+                CodProductoSUNAT = item.CodProductoSUNAT,
+                Type = item.Type,
+                UndMedida = item.UndMedida,
+                Category = item.Category,
                 ControlStock = item.ControlStock,
-            });
+                PathImage = item.PathImage,
+                HasLotes = item.HasLotes,
+                Text = $"{item.Description} | {Convert.ToDecimal(item.PrecioVentaUnitario):N2}"
+            };
+            data.Add(itemSelect2);
         });
         return Ok(new { Results = data });
     }
