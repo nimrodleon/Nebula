@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Purchases;
 using Nebula.Modules.Purchases.Dto;
+using Nebula.Modules.Purchases.Models;
 
 namespace Nebula.Controllers.Purchases;
 
@@ -39,4 +40,13 @@ public class PurchaseInvoiceDetailController : ControllerBase
         return Ok(purchaseInvoiceDetail);
     }
 
+    [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
+    public async Task<IActionResult> Delete(string id)
+    {
+        var itemCompra = await _purchaseInvoiceDetailService.GetByIdAsync(id);
+        await _purchaseInvoiceDetailService.RemoveAsync(itemCompra.Id);
+        var details = await _purchaseInvoiceDetailService.GetDetailsAsync(itemCompra.PurchaseInvoiceId);
+        await _purchaseInvoiceService.UpdateImporteAsync(itemCompra.PurchaseInvoiceId, details);
+        return Ok(itemCompra);
+    }
 }
