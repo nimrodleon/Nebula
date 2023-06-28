@@ -13,6 +13,10 @@ public class CalcularImporteCompra
 
     public PurchaseInvoice Calcular(PurchaseInvoice purchaseInvoice)
     {
+        purchaseInvoice.SumTotTributos = 0;
+        purchaseInvoice.SumTotValCompra = 0;
+        purchaseInvoice.SumPrecioCompra = 0;
+        purchaseInvoice.SumImpCompra = 0;
         _purchaseInvoiceDetailList.ForEach(item =>
         {
             decimal mtoTotalItem = item.CtdUnidadItem * item.MtoPrecioCompraUnitario;
