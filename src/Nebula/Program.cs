@@ -140,6 +140,7 @@ builder.Services.AddScoped<IProductLoteService, ProductLoteService>();
 
 builder.Services.AddScoped<IPurchaseInvoiceService, PurchaseInvoiceService>();
 builder.Services.AddScoped<IPurchaseInvoiceDetailService, PurchaseInvoiceDetailService>();
+builder.Services.AddScoped<IConsultarValidezCompraService, ConsultarValidezCompraService>();
 
 #endregion
 

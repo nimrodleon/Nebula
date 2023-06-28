@@ -4,6 +4,7 @@ using Nebula.Common.Dto;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Purchases;
 using Nebula.Modules.Purchases.Dto;
+using Nebula.Modules.Sales;
 
 namespace Nebula.Controllers.Purchases;
 
@@ -14,12 +15,15 @@ public class PurchaseInvoiceController : ControllerBase
 {
     private readonly IPurchaseInvoiceService _purchaseInvoiceService;
     private readonly IPurchaseInvoiceDetailService _purchaseInvoiceDetailService;
+    private readonly IConsultarValidezCompraService _validezCompraService;
 
     public PurchaseInvoiceController(IPurchaseInvoiceService purchaseInvoiceService,
-        IPurchaseInvoiceDetailService purchaseInvoiceDetailService)
+        IPurchaseInvoiceDetailService purchaseInvoiceDetailService,
+        IConsultarValidezCompraService validezCompraService)
     {
         _purchaseInvoiceService = purchaseInvoiceService;
         _purchaseInvoiceDetailService = purchaseInvoiceDetailService;
+        _validezCompraService = validezCompraService;
     }
 
     [HttpGet("Index")]
@@ -61,6 +65,15 @@ public class PurchaseInvoiceController : ControllerBase
         await _purchaseInvoiceService.RemoveAsync(purchase.Id);
         await _purchaseInvoiceDetailService.DeleteManyAsync(purchase.Id);
         return Ok(purchase);
+    }
+
+    [AllowAnonymous]
+    [HttpGet("ConsultarValidez")]
+    public async Task<IActionResult> ConsultarValidez([FromQuery] QueryConsultarValidezComprobante query)
+    {
+        string pathArchivoZip = await _validezCompraService.CrearArchivosDeValidacion(query);
+        FileStream stream = new FileStream(pathArchivoZip, FileMode.Open);
+        return new FileStreamResult(stream, "application/zip");
     }
 
 }
