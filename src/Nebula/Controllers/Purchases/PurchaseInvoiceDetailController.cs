@@ -39,7 +39,7 @@ public class PurchaseInvoiceDetailController : ControllerBase
         return Ok(purchaseInvoiceDetail);
     }
 
-    [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
+    [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(string id)
     {
         var itemCompra = await _purchaseInvoiceDetailService.GetByIdAsync(id);
