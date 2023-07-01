@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Common.Dto;
+using Nebula.Common.Helpers;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Purchases;
 using Nebula.Modules.Purchases.Dto;
+using Nebula.Modules.Purchases.Helpers;
 using Nebula.Modules.Sales;
+using Nebula.Modules.Sales.Helpers;
 
 namespace Nebula.Controllers.Purchases;
 
@@ -76,4 +79,14 @@ public class PurchaseInvoiceController : ControllerBase
         return new FileStreamResult(stream, "application/zip");
     }
 
+    [AllowAnonymous]
+    [HttpGet("ExcelRegistroComprasF81")]
+    public async Task<IActionResult> ExcelRegistroComprasF81([FromQuery] DateQuery query)
+    {
+        var purchases = await _purchaseInvoiceService.GetByMonthAndYearAsync(query.Month, query.Year);
+        // generar archivo excel y enviar como respuesta de solicitud.
+        string filePath = new ExcelRegistroComprasF81(purchases).CrearArchivo();
+        FileStream stream = new FileStream(filePath, FileMode.Open);
+        return new FileStreamResult(stream, ContentTypeFormat.Excel);
+    }
 }
