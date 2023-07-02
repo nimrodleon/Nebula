@@ -30,6 +30,9 @@ https://www.mediafire.com/file/u3pvbt14e3hrqfi/facturador-2.0.exe/file
 https://emprender.sunat.gob.pe/estructurasple
 ```
 
+- [Registro de Compras I](https://youtu.be/jxucTvSz4Hs)
+- [Registro de Compras II](https://youtu.be/W5usHJmaNbQ)
+
 ## Funciones Premium
 
 - CajaDiariaController => [Update]
