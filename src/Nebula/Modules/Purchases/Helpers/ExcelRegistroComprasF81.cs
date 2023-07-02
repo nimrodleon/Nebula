@@ -1,5 +1,6 @@
 using ClosedXML.Excel;
 using Nebula.Modules.Purchases.Models;
+using System.Globalization;
 
 namespace Nebula.Modules.Purchases.Helpers;
 
@@ -15,7 +16,7 @@ public class ExcelRegistroComprasF81
     public string CrearArchivo()
     {
         string fileName = Guid.NewGuid().ToString();
-        string filePath = Path.Combine(Path.GetTempPath(), $"{fileName}.xlsx");
+        string filePath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"{fileName}.xlsx");
         using var workbook = new XLWorkbook();
         var worksheet = workbook.Worksheets.Add("Registro de Compras - F8.1");
 
@@ -207,6 +208,106 @@ public class ExcelRegistroComprasF81
         // Estado que identifica la oportunidad de la anotación o indicación si ésta corresponde a un ajuste.
         var rangoEstado = worksheet.Range("AP2:AP3");
         ColumnTitleDarkRed(ref rangoEstado, "ESTADO", true);
+
+        int contador = 4;
+        // generar registro de facturas.
+        _purchases.ForEach(item =>
+        {
+            // 4.- Fecha de emisión del comprobante de pago o documento.
+            DateTime fechaEmision = DateTime.ParseExact(item.FecEmision, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            worksheet.Cell(contador, 4).Style.NumberFormat.Format = "@";
+            worksheet.Cell(contador, 4).Value = fechaEmision.ToString("dd/MM/yyyy");
+            // 6.- Tipo de Comprobante de Pago o Documento.
+            string tipoDocu = string.Empty;
+            if (item.DocType.Equals("FACTURA")) tipoDocu = "01";
+            if (item.DocType.Equals("BOLETA")) tipoDocu = "03";
+            worksheet.Cell(contador, 6).Style.NumberFormat.Format = "@";
+            worksheet.Cell(contador, 6).Value = tipoDocu;
+            // 7.- Serie del comprobante de pago o documento.
+            worksheet.Cell(contador, 7).Value = item.Serie;
+            // 9.- Número del comprobante de pago o documento.
+            worksheet.Cell(contador, 9).Style.NumberFormat.Format = "@";
+            worksheet.Cell(contador, 9).Value = item.Number;
+            // 11.- Tipo de Documento de Identidad del proveedor.
+            worksheet.Cell(contador, 11).Style.NumberFormat.Format = "@";
+            worksheet.Cell(contador, 11).Value = item.TipDocProveedor.Split(":")[0].Trim();
+            // 12.- Número de RUC del proveedor o número de documento de Identidad.
+            worksheet.Cell(contador, 12).Style.NumberFormat.Format = "@";
+            worksheet.Cell(contador, 12).Value = item.NumDocProveedor;
+            // 13.- Apellidos y nombres, denominación o razón social  del proveedor.
+            if (item.RznSocialProveedor.Length >= 100)
+                worksheet.Cell(contador, 13).Value = item.RznSocialProveedor.Substring(0, 99);
+            else
+                worksheet.Cell(contador, 13).Value = item.RznSocialProveedor;
+            // 14.- Base imponible de las adquisiciones gravadas que dan derecho a crédito fiscal.
+            // 15.- Monto del Impuesto General a las Ventas y/o Impuesto de Promoción Municipal.
+            // 22.- Impuesto al Consumo de las Bolsas de Plástico.
+
+            // 24.- Importe total de las adquisiciones registradas según comprobante de pago.
+            worksheet.Cell(contador, 24).Style.NumberFormat.Format = "###########0.00";
+            worksheet.Cell(contador, 24).Value = item.SumImpCompra;
+
+            // 25.- Código de la Moneda(Tabla 4).
+            worksheet.Cell(contador, 25).Value = item.TipMoneda;
+            // 26.- Tipo de cambio (3).
+            worksheet.Cell(contador, 26).Style.NumberFormat.Format = "#.000";
+            worksheet.Cell(contador, 26).Value = item.TipoCambio;
+            // 35.- Clasificación de los bienes y servicios adquiridos(Tabla 30).
+            worksheet.Cell(contador, 35).Style.NumberFormat.Format = "@";
+            worksheet.Cell(contador, 35).Value = "1";
+            // 42.- Estado que identifica la oportunidad de la anotación o indicación si ésta corresponde a un ajuste.
+            worksheet.Cell(contador, 42).Value = "1";
+
+            contador++;
+        });
+
+        #region Ancho y Alto de filas y columnas
+
+        worksheet.Row(3).Height = 50;
+        worksheet.Column("A").Width = 12;
+        worksheet.Column("B").Width = 12;
+        worksheet.Column("C").Width = 12;
+        worksheet.Column("D").Width = 12;
+        worksheet.Column("E").Width = 12;
+        worksheet.Column("F").Width = 12;
+        worksheet.Column("G").Width = 12;
+        worksheet.Column("H").Width = 12;
+        worksheet.Column("I").Width = 12;
+        worksheet.Column("J").Width = 12;
+        worksheet.Column("K").Width = 12;
+        worksheet.Column("L").Width = 12;
+        worksheet.Column("M").Width = 70;
+        worksheet.Column("N").Width = 12;
+        worksheet.Column("O").Width = 12;
+        worksheet.Column("P").Width = 12;
+        worksheet.Column("Q").Width = 12;
+        worksheet.Column("R").Width = 12;
+        worksheet.Column("S").Width = 12;
+        worksheet.Column("T").Width = 12;
+        worksheet.Column("U").Width = 12;
+        worksheet.Column("V").Width = 12;
+        worksheet.Column("W").Width = 12;
+        worksheet.Column("X").Width = 12;
+        worksheet.Column("Y").Width = 12;
+        worksheet.Column("Z").Width = 12;
+        worksheet.Column("AA").Width = 12;
+        worksheet.Column("AB").Width = 12;
+        worksheet.Column("AC").Width = 12;
+        worksheet.Column("AD").Width = 12;
+        worksheet.Column("AE").Width = 12;
+        worksheet.Column("AF").Width = 15;
+        worksheet.Column("AG").Width = 12;
+        worksheet.Column("AH").Width = 15;
+        worksheet.Column("AI").Width = 12;
+        worksheet.Column("AJ").Width = 12;
+        worksheet.Column("AK").Width = 12;
+        worksheet.Column("AL").Width = 12;
+        worksheet.Column("AM").Width = 12;
+        worksheet.Column("AN").Width = 12;
+        worksheet.Column("AO").Width = 12;
+        worksheet.Column("AP").Width = 12;
+
+        #endregion
 
         workbook.SaveAs(filePath);
         return filePath;
