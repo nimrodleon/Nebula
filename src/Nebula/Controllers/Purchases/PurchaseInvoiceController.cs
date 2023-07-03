@@ -83,7 +83,7 @@ public class PurchaseInvoiceController : ControllerBase
     [HttpGet("ExcelRegistroComprasF81")]
     public async Task<IActionResult> ExcelRegistroComprasF81([FromQuery] DateQuery query)
     {
-        var purchases = await _purchaseInvoiceService.GetByMonthAndYearAsync(query.Month, query.Year);
+        var purchases = await _purchaseInvoiceService.GetFacturasByMonthAndYearAsync(query.Month, query.Year);
         // generar archivo excel y enviar como respuesta de solicitud.
         string filePath = new ExcelRegistroComprasF81(purchases).CrearArchivo();
         FileStream stream = new FileStream(filePath, FileMode.Open);

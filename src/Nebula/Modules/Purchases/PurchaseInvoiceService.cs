@@ -13,6 +13,7 @@ public interface IPurchaseInvoiceService : ICrudOperationService<PurchaseInvoice
     Task<List<PurchaseInvoice>> GetAsync(DateQuery query);
     Task<List<PurchaseInvoice>> GetByFecEmisionAsync(string date);
     Task<List<PurchaseInvoice>> GetByMonthAndYearAsync(string month, string year);
+    Task<List<PurchaseInvoice>> GetFacturasByMonthAndYearAsync(string month, string year);
     Task<PurchaseInvoice> CreateAsync(CabeceraCompraDto cabecera);
     Task<PurchaseInvoice> UpdateAsync(string id, CabeceraCompraDto cabecera);
     Task<PurchaseInvoice> UpdateImporteAsync(string id, List<PurchaseInvoiceDetail> details);
@@ -44,6 +45,15 @@ public class PurchaseInvoiceService : CrudOperationService<PurchaseInvoice>, IPu
     {
         var builder = Builders<PurchaseInvoice>.Filter;
         var filter = builder.And(builder.Eq(x => x.Month, month),
+            builder.Eq(x => x.Year, year));
+        return await _collection.Find(filter).ToListAsync();
+    }
+
+    public async Task<List<PurchaseInvoice>> GetFacturasByMonthAndYearAsync(string month, string year)
+    {
+        var builder = Builders<PurchaseInvoice>.Filter;
+        var filter = builder.And(builder.Eq(x => x.DocType, "FACTURA"),
+            builder.Eq(x => x.Month, month),
             builder.Eq(x => x.Year, year));
         return await _collection.Find(filter).ToListAsync();
     }
