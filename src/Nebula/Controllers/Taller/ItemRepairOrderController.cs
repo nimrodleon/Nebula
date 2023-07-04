@@ -41,7 +41,7 @@ public class ItemRepairOrderController : ControllerBase
         return Ok(itemRepairOrder);
     }
 
-    [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
+    [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(string id)
     {
         var itemRepairOrder = await _itemRepairOrderService.GetByIdAsync(id);
