@@ -103,4 +103,18 @@ public class PurchaseInvoice : IGenericModel
     /// Mes de registro.
     /// </summary>
     public string Month { get; set; } = DateTime.Now.ToString("MM");
+
+    #region Impuestos
+
+    /// <summary>
+    /// Sumatoria total del tributo IGV.
+    /// </summary>
+    public decimal SumTotMtoIgv { get; set; } = 0;
+
+    /// <summary>
+    /// Sumatoria total del tributo ICBPER.
+    /// </summary>
+    public decimal SumTotMtoTriIcbper { get; set; } = 0;
+
+    #endregion
 }

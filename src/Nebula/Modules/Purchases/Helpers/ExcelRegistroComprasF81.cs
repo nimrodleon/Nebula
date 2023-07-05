@@ -240,13 +240,17 @@ public class ExcelRegistroComprasF81
             else
                 worksheet.Cell(contador, 13).Value = item.RznSocialProveedor;
             // 14.- Base imponible de las adquisiciones gravadas que dan derecho a crédito fiscal.
+            worksheet.Cell(contador, 14).Style.NumberFormat.Format = "###########0.00";
+            worksheet.Cell(contador, 14).Value = item.SumTotValCompra;
             // 15.- Monto del Impuesto General a las Ventas y/o Impuesto de Promoción Municipal.
+            worksheet.Cell(contador, 15).Style.NumberFormat.Format = "###########0.00";
+            worksheet.Cell(contador, 15).Value = item.SumTotMtoIgv;
             // 22.- Impuesto al Consumo de las Bolsas de Plástico.
-
+            worksheet.Cell(contador, 22).Style.NumberFormat.Format = "###########0.00";
+            worksheet.Cell(contador, 22).Value = item.SumTotMtoTriIcbper;
             // 24.- Importe total de las adquisiciones registradas según comprobante de pago.
             worksheet.Cell(contador, 24).Style.NumberFormat.Format = "###########0.00";
             worksheet.Cell(contador, 24).Value = item.SumImpCompra;
-
             // 25.- Código de la Moneda(Tabla 4).
             worksheet.Cell(contador, 25).Value = item.TipMoneda;
             // 26.- Tipo de cambio (3).
