@@ -68,6 +68,7 @@ public class ProductController : ControllerBase
                 Category = item.Category,
                 ControlStock = item.ControlStock,
                 PathImage = item.PathImage,
+                ProductType = item.ProductType,
                 HasLotes = item.HasLotes,
                 Text = $"{item.Description} | {Convert.ToDecimal(item.PrecioVentaUnitario):N2}"
             };
@@ -113,6 +114,7 @@ public class ProductController : ControllerBase
             Category = model.Category,
             ControlStock = model.ControlStock,
             PathImage = model.PathImage,
+            ProductType = model.ProductType,
             HasLotes = false
         };
         await _productService.CreateAsync(product);
@@ -164,6 +166,7 @@ public class ProductController : ControllerBase
         product.Category = model.Category;
         product.ControlStock = model.ControlStock;
         product.PathImage = model.PathImage;
+        product.ProductType = model.ProductType;
         product.HasLotes = product.HasLotes;
         await _productService.UpdateAsync(id, product);
 

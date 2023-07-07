@@ -74,6 +74,11 @@ public class Product : IGenericModel
     public string PathImage { get; set; } = string.Empty;
 
     /// <summary>
+    /// Establece la clasificación del producto como SIMPLE|VARIABLE|AGRUPADO.
+    /// </summary>
+    public string ProductType { get; set; } = "SIMPLE";
+
+    /// <summary>
     /// Establece si el producto tiene lotes de producción.
     /// </summary>
     public bool HasLotes { get; set; } = false;
