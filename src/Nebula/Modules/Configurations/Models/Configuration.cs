@@ -100,6 +100,16 @@ public class Configuration
     #endregion
 
     /// <summary>
+    /// Habilita/Deshabilita el módulo de punto de venta.
+    /// </summary>
+    public bool ModTerminal { get; set; } = false;
+
+    /// <summary>
+    /// Habilita/Deshabilita el módulo de cuentas por cobrar.
+    /// </summary>
+    public bool ModReceivable { get; set; } = false;
+
+    /// <summary>
     /// Habilita/Deshabilita el módulo de compras.
     /// </summary>
     public bool ModCompras { get; set; } = false;

@@ -29,7 +29,7 @@ public class ConfigurationService : IConfigurationService
     public async Task<Configuration> GetAsync()
     {
         var configuration = await _collection.Find(x => x.Id == "DEFAULT").FirstOrDefaultAsync();
-        if(configuration == null)
+        if (configuration == null)
         {
             await CreateAsync();
             configuration = await _collection.Find(x => x.Id == "DEFAULT").FirstOrDefaultAsync();
@@ -62,6 +62,8 @@ public class ConfigurationService : IConfigurationService
         _configuration.ModoEnvioSunat = configuration.ModoEnvioSunat;
         _configuration.ContactId = configuration.ContactId;
         _configuration.DiasPlazo = configuration.DiasPlazo;
+        _configuration.ModTerminal = configuration.ModTerminal;
+        _configuration.ModReceivable = configuration.ModReceivable;
         _configuration.ModCompras = configuration.ModCompras;
         _configuration.ModInventories = configuration.ModInventories;
         _configuration.ModTaller = configuration.ModTaller;
