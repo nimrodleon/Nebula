@@ -82,4 +82,9 @@ public class Product : IGenericModel
     /// Establece si el producto tiene lotes de producción.
     /// </summary>
     public bool HasLotes { get; set; } = false;
+
+    /// <summary>
+    /// Establece si el producto tienes multiples precios.
+    /// </summary>
+    public bool HasPrices { get; set; } = false;
 }

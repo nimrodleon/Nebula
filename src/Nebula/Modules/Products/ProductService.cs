@@ -11,6 +11,7 @@ public interface IProductService : ICrudOperationService<Product>
 {
     Task<List<Product>> GetListAsync(string? query, int limit = 24);
     Task<bool> UpdateHasLote(string productId, bool hasLote);
+    Task<bool> UpdateHasPrices(string productId, bool hasPrices);
 }
 
 public class ProductService : CrudOperationService<Product>, IProductService
@@ -47,6 +48,14 @@ public class ProductService : CrudOperationService<Product>, IProductService
     {
         var filter = Builders<Product>.Filter.Eq(x => x.Id, productId);
         var update = Builders<Product>.Update.Set(x => x.HasLotes, hasLote);
+        var result = await _collection.UpdateOneAsync(filter, update);
+        return result.ModifiedCount == 1;
+    }
+
+    public async Task<bool> UpdateHasPrices(string productId, bool hasPrices)
+    {
+        var filter = Builders<Product>.Filter.Eq(x => x.Id, productId);
+        var update = Builders<Product>.Update.Set(x => x.HasPrices, hasPrices);
         var result = await _collection.UpdateOneAsync(filter, update);
         return result.ModifiedCount == 1;
     }
