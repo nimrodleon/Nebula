@@ -63,19 +63,4 @@ public class ConfigurationController : ControllerBase
         return Ok(configuration);
     }
 
-    [HttpGet("FacturadorUrl")]
-    [Obsolete]
-    public Task<IActionResult> FacturadorUrl()
-    {
-        string? url = _configuration.GetValue<string>("facturadorUrl");
-        return Task.FromResult<IActionResult>(Ok(new { url }));
-    }
-
-    [HttpGet("SearchPeUrl")]
-    [Obsolete]
-    public Task<IActionResult> SearchPeUrl()
-    {
-        string? url = _configuration.GetValue<string>("searchPeUrl");
-        return Task.FromResult<IActionResult>(Ok(new { url }));
-    }
 }
