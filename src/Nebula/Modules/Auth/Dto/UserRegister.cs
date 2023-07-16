@@ -23,5 +23,5 @@ public class UserRegister
     /// <summary>
     /// Rol de usuario.
     /// </summary>
-    public string Role { get; set; } = string.Empty;
+    public string RolesId { get; set; } = string.Empty;
 }

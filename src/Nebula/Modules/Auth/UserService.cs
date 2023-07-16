@@ -14,7 +14,12 @@ public interface IUserService : ICrudOperationService<User>
 
 public class UserService : CrudOperationService<User>, IUserService
 {
-    public UserService(IOptions<DatabaseSettings> options) : base(options) { }
+    private readonly IRoleService _roleService;
+
+    public UserService(IOptions<DatabaseSettings> options, IRoleService roleService) : base(options)
+    {
+        _roleService = roleService;
+    }
 
     public async Task<List<User>> GetListAsync(string? query, int limit = 25)
     {
@@ -23,6 +28,14 @@ public class UserService : CrudOperationService<User>, IUserService
             filter = Builders<User>.Filter.Regex("UserName", new BsonRegularExpression(query.ToUpper(), "i"));
         return await _collection.Find(filter).Limit(limit).ToListAsync();
     }
+
+    //public override async Task<User> GetByIdAsync(string id)
+    //{
+    //    var user = await base.GetByIdAsync(id);
+    //    var role = await _roleService.GetByIdAsync(user.RolesId);
+    //    user.Role = role.Nombre;
+    //    return user;
+    //}
 
     public async Task<User> GetByUserNameAsync(string userName)
     {

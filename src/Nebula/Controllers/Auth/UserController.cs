@@ -43,7 +43,7 @@ public class UserController : ControllerBase
             UserName = model.UserName,
             Email = model.Email,
             PasswordHash = PasswordHasher.HashPassword(model.Password),
-            Role = model.Role
+            RolesId = model.RolesId
         };
         await _userService.CreateAsync(user);
         return Ok(user);
@@ -76,7 +76,7 @@ public class UserController : ControllerBase
         var user = await _userService.GetByIdAsync(id);
         user.UserName = model.UserName;
         user.Email = model.Email;
-        user.Role = model.Role;
+        user.RolesId = model.RolesId;
         await _userService.UpdateAsync(id, user);
         return Ok(user);
     }
