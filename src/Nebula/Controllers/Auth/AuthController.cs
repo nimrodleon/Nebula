@@ -10,7 +10,6 @@ using Nebula.Modules.Auth.Helpers;
 
 namespace Nebula.Controllers.Auth;
 
-[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class AuthController : ControllerBase
@@ -24,7 +23,7 @@ public class AuthController : ControllerBase
         _userService = userService;
     }
 
-    [HttpGet("GetMe")]
+    [HttpGet("GetMe"), UserAuthorize(RolesConstants.ConfigurationRead)]
     public Task<IActionResult> GetMe()
     {
         var userName = User.FindFirstValue(ClaimTypes.Name);
@@ -54,7 +53,7 @@ public class AuthController : ControllerBase
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Role, user.Role)
+                new Claim(ClaimTypes.Role, user.RolesId)
             };
 
             // Leemos el secretKey desde nuestro appSettings.json

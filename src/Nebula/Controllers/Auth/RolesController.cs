@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Models;
 
 namespace Nebula.Controllers.Auth;
 
+[AllowAnonymous]
 [Route("api/[controller]")]
 [ApiController]
 public class RolesController : ControllerBase
