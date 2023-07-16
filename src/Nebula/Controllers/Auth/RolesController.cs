@@ -1,11 +1,10 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Auth;
+using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth.Models;
 
 namespace Nebula.Controllers.Auth;
 
-[AllowAnonymous]
 [Route("api/[controller]")]
 [ApiController]
 public class RolesController : ControllerBase
@@ -17,21 +16,21 @@ public class RolesController : ControllerBase
         _roleService = roleService;
     }
 
-    [HttpGet("Index")]
+    [HttpGet("Index"), UserAuthorize(Permission.ConfigurationRead)]
     public async Task<IActionResult> Index([FromQuery] string? query)
     {
         var roles = await _roleService.GetAsync("Nombre", query);
         return Ok(roles);
     }
 
-    [HttpGet("Show/{id}")]
+    [HttpGet("Show/{id}"), UserAuthorize(Permission.ConfigurationRead)]
     public async Task<IActionResult> Show(string id)
     {
         var role = await _roleService.GetByIdAsync(id);
         return Ok(role);
     }
 
-    [HttpPost("Create")]
+    [HttpPost("Create"), UserAuthorize(Permission.ConfigurationCreate)]
     public async Task<IActionResult> Create([FromBody] Roles model)
     {
         model.Nombre = model.Nombre.ToUpper();
@@ -39,7 +38,7 @@ public class RolesController : ControllerBase
         return Ok(model);
     }
 
-    [HttpPut("Update/{id}")]
+    [HttpPut("Update/{id}"), UserAuthorize(Permission.ConfigurationEdit)]
     public async Task<IActionResult> Update(string id, [FromBody] Roles model)
     {
         var role = await _roleService.GetByIdAsync(id);
@@ -49,7 +48,7 @@ public class RolesController : ControllerBase
         return Ok(model);
     }
 
-    [HttpDelete("Delete/{id}")]
+    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.ConfigurationDelete)]
     public async Task<IActionResult> Delete(string id)
     {
         var role = await _roleService.GetByIdAsync(id);

@@ -35,7 +35,7 @@ public class UserAuthorizeFilter : IAsyncAuthorizationFilter
         // Verificar si el usuario tiene los permisos requeridos para acceder al recurso
         if (!await CheckPermissionsAsync(context.HttpContext, user))
         {
-            context.Result = new StatusCodeResult(StatusCodes.Status401Unauthorized);
+            context.Result = new StatusCodeResult(StatusCodes.Status403Forbidden);
             return;
         }
     }

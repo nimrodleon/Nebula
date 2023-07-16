@@ -23,7 +23,7 @@ public class AuthController : ControllerBase
         _userService = userService;
     }
 
-    [HttpGet("GetMe"), UserAuthorize(RolesConstants.ConfigurationRead)]
+    [HttpGet("GetMe"), UserAuthorize(Permission.ConfigurationRead)]
     public Task<IActionResult> GetMe()
     {
         var userName = User.FindFirstValue(ClaimTypes.Name);

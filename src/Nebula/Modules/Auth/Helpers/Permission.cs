@@ -1,6 +1,6 @@
 namespace Nebula.Modules.Auth.Helpers;
 
-public static class RolesConstants
+public static class Permission
 {
     public const string ProductRead = "Product.Read";
     public const string ProductCreate = "Product.Create";
