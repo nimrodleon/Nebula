@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Nebula.Modules.Auth.Models;
@@ -28,6 +29,13 @@ public class UserAuthorizeFilter : IAsyncAuthorizationFilter
 
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
+        var authResult = await context.HttpContext.AuthenticateAsync();
+        if (!authResult.Succeeded)
+        {
+            context.Result = new StatusCodeResult(StatusCodes.Status401Unauthorized);
+            return;
+        }
+
         // Obtener el usuario actual autenticado
         var userId = context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
         var user = await _userService.GetByIdAsync(userId);
