@@ -62,6 +62,7 @@ builder.Services.AddScoped(typeof(ICrudOperationService<>), typeof(CrudOperation
 
 #region ModuleAuth
 
+builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 #endregion

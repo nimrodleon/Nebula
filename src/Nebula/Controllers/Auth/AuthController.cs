@@ -8,7 +8,7 @@ using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Dto;
 using Nebula.Modules.Auth.Helpers;
 
-namespace Nebula.Controllers;
+namespace Nebula.Controllers.Auth;
 
 [Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]

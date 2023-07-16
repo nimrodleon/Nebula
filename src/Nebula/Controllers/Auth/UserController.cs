@@ -3,10 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Models;
 using Nebula.Modules.Auth.Helpers;
-using Nebula.Modules.Configurations.Dto;
 using Nebula.Modules.Auth.Dto;
 
-namespace Nebula.Controllers.Common;
+namespace Nebula.Controllers.Auth;
 
 [Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
