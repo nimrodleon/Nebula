@@ -1,3 +1,5 @@
+using System.Reflection;
+
 namespace Nebula.Modules.Auth.Helpers;
 
 public static class Permission
@@ -41,4 +43,20 @@ public static class Permission
     public const string ConfigurationCreate = "Configuration.Create";
     public const string ConfigurationEdit = "Configuration.Edit";
     public const string ConfigurationDelete = "Configuration.Delete";
+
+    public static string[] GetAllPermissions()
+    {
+        var type = typeof(Permission);
+        var fields = type.GetFields(BindingFlags.Public);
+
+        var permissions = new string[fields.Length];
+        for (int i = 0; i < fields.Length; i++)
+        {
+            var field = fields[i];
+            var value = field.GetValue(null);
+            permissions[i] = value.ToString();
+        }
+
+        return permissions;
+    }
 }
