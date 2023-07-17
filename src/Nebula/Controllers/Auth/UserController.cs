@@ -3,12 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Models;
 using Nebula.Modules.Auth.Helpers;
-using Nebula.Modules.Configurations.Dto;
 using Nebula.Modules.Auth.Dto;
 
-namespace Nebula.Controllers.Common;
+namespace Nebula.Controllers.Auth;
 
-[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class UserController : ControllerBase
@@ -22,21 +20,21 @@ public class UserController : ControllerBase
         _configuration = configuration;
     }
 
-    [HttpGet("Index")]
+    [HttpGet("Index"), UserAuthorize(Permission.ConfigurationRead)]
     public async Task<IActionResult> Index([FromQuery] string? query)
     {
         var responseData = await _userService.GetListAsync(query);
         return Ok(responseData);
     }
 
-    [HttpGet("Show/{id}")]
+    [HttpGet("Show/{id}"), UserAuthorize(Permission.ConfigurationRead)]
     public async Task<IActionResult> Show(string id)
     {
         var user = await _userService.GetByIdAsync(id);
         return Ok(user);
     }
 
-    [HttpPost("Create"), Authorize(Roles = AuthRoles.Admin)]
+    [HttpPost("Create"), UserAuthorize(Permission.ConfigurationCreate)]
     public async Task<IActionResult> Create([FromBody] UserRegister model)
     {
         var user = new User()
@@ -44,7 +42,7 @@ public class UserController : ControllerBase
             UserName = model.UserName,
             Email = model.Email,
             PasswordHash = PasswordHasher.HashPassword(model.Password),
-            Role = model.Role
+            RolesId = model.RolesId
         };
         await _userService.CreateAsync(user);
         return Ok(user);
@@ -71,18 +69,18 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
-    [HttpPut("Update/{id}"), Authorize(Roles = AuthRoles.Admin)]
+    [HttpPut("Update/{id}"), UserAuthorize(Permission.ConfigurationEdit)]
     public async Task<IActionResult> Update(string id, [FromBody] UserRegister model)
     {
         var user = await _userService.GetByIdAsync(id);
         user.UserName = model.UserName;
         user.Email = model.Email;
-        user.Role = model.Role;
+        user.RolesId = model.RolesId;
         await _userService.UpdateAsync(id, user);
         return Ok(user);
     }
 
-    [HttpPut("PasswordChange/{id}"), Authorize(Roles = AuthRoles.Admin)]
+    [HttpPut("PasswordChange/{id}"), UserAuthorize(Permission.ConfigurationEdit)]
     public async Task<IActionResult> PasswordChange(string id, [FromBody] UserRegister model)
     {
         var user = await _userService.GetByIdAsync(id);
@@ -91,7 +89,7 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
-    [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
+    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.ConfigurationDelete)]
     public async Task<IActionResult> Delete(string id)
     {
         var user = await _userService.GetByIdAsync(id);

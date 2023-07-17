@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Configurations;
 using Nebula.Modules.Configurations.Models;
@@ -7,32 +8,29 @@ using Nebula.Modules.Configurations.Subscriptions;
 
 namespace Nebula.Controllers.Common;
 
-[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class ConfigurationController : ControllerBase
 {
-    private readonly IConfiguration _configuration;
     private readonly IConfigurationService _configurationService;
     private readonly ISubscriptionService _subscriptionService;
 
-    public ConfigurationController(IConfiguration configuration,
+    public ConfigurationController(
         IConfigurationService configurationService,
         ISubscriptionService subscriptionService)
     {
-        _configuration = configuration;
         _configurationService = configurationService;
         _subscriptionService = subscriptionService;
     }
 
-    [HttpGet("Show")]
+    [HttpGet("Show"), UserAuthorize(Permission.ConfigurationRead)]
     public async Task<IActionResult> Show()
     {
         var configuration = await _configurationService.GetAsync();
         return Ok(configuration);
     }
 
-    [HttpPut("Update"), Authorize(Roles = AuthRoles.Admin)]
+    [HttpPut("Update"), UserAuthorize(Permission.ConfigurationEdit)]
     public async Task<IActionResult> Update([FromBody] Configuration model)
     {
         var configuration = await _configurationService.GetAsync();
@@ -42,21 +40,21 @@ public class ConfigurationController : ControllerBase
         return Ok(model);
     }
 
-    [HttpGet("SincronizarPago")]
+    [HttpGet("SincronizarPago"), AllowAnonymous]
     public async Task<IActionResult> SincronizarPago()
     {
         var response = await _subscriptionService.SincronizarPago();
         return Ok(response);
     }
 
-    [HttpGet("ValidarAcceso")]
+    [HttpGet("ValidarAcceso"), AllowAnonymous]
     public async Task<IActionResult> ValidarAcceso()
     {
         var licenseDto = await _subscriptionService.ValidarAcceso();
         return Ok(licenseDto);
     }
 
-    [HttpPatch("UpdateKey/{subscriptionId}")]
+    [HttpPatch("UpdateKey/{subscriptionId}"), UserAuthorize(Permission.ConfigurationEdit)]
     public async Task<IActionResult> UpdateKey(string subscriptionId)
     {
         var configuration = await _subscriptionService.UpdateKey(subscriptionId);

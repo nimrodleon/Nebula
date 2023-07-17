@@ -6,10 +6,10 @@ using Nebula.Modules.Configurations;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Sales.Helpers;
 using Nebula.Modules.Products.Dto;
+using Nebula.Modules.Auth;
 
 namespace Nebula.Controllers.Common;
 
-[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class ProductController : ControllerBase
@@ -32,21 +32,21 @@ public class ProductController : ControllerBase
         public IFormFile? File { get; set; }
     }
 
-    [HttpGet("Index")]
+    [HttpGet("Index"), UserAuthorize(Permission.ProductRead)]
     public async Task<IActionResult> Index([FromQuery] string? query)
     {
         var products = await _productService.GetListAsync(query);
         return Ok(products);
     }
 
-    [HttpGet("Show/{id}")]
+    [HttpGet("Show/{id}"), UserAuthorize(Permission.ProductRead)]
     public async Task<IActionResult> Show(string id)
     {
         var product = await _productService.GetByIdAsync(id);
         return Ok(product);
     }
 
-    [HttpGet("Select2")]
+    [HttpGet("Select2"), UserAuthorize(Permission.ProductRead)]
     public async Task<IActionResult> Select2([FromQuery] string? term)
     {
         var products = await _productService.GetListAsync(term, 10);
@@ -77,7 +77,7 @@ public class ProductController : ControllerBase
         return Ok(new { Results = data });
     }
 
-    [HttpPost("Create")]
+    [HttpPost("Create"), UserAuthorize(Permission.ProductCreate)]
     public async Task<IActionResult> Create([FromForm] FormData model)
     {
         if (model.File?.Length > 0)
@@ -122,7 +122,7 @@ public class ProductController : ControllerBase
         return Ok(product);
     }
 
-    [HttpPut("Update/{id}")]
+    [HttpPut("Update/{id}"), UserAuthorize(Permission.ProductEdit)]
     public async Task<IActionResult> Update(string id, [FromForm] FormData model)
     {
         if (id != model.Id) return BadRequest();
@@ -173,7 +173,7 @@ public class ProductController : ControllerBase
         return Ok(product);
     }
 
-    [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
+    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.ProductDelete)]
     public async Task<IActionResult> Delete(string id)
     {
         var product = await _productService.GetByIdAsync(id);

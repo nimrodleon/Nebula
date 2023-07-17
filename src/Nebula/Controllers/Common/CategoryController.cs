@@ -1,14 +1,12 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Common;
 using Nebula.Modules.Products.Models;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Common.Dto;
 using Nebula.Modules.Products;
+using Nebula.Modules.Auth;
 
 namespace Nebula.Controllers.Common;
 
-[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class CategoryController : ControllerBase
@@ -18,21 +16,21 @@ public class CategoryController : ControllerBase
     public CategoryController(ICategoryService categoryService) =>
         _categoryService = categoryService;
 
-    [HttpGet("Index")]
+    [HttpGet("Index"), UserAuthorize(Permission.ProductRead)]
     public async Task<IActionResult> Index([FromQuery] string? query)
     {
         var responseData = await _categoryService.GetAsync("Name", query);
         return Ok(responseData);
     }
 
-    [HttpGet("Show/{id}")]
+    [HttpGet("Show/{id}"), UserAuthorize(Permission.ProductRead)]
     public async Task<IActionResult> Show(string id)
     {
         var category = await _categoryService.GetByIdAsync(id);
         return Ok(category);
     }
 
-    [HttpGet("Select2")]
+    [HttpGet("Select2"), UserAuthorize(Permission.ProductRead)]
     public async Task<IActionResult> Select2([FromQuery] string? term)
     {
         if (string.IsNullOrWhiteSpace(term)) term = string.Empty;
@@ -49,7 +47,7 @@ public class CategoryController : ControllerBase
         return Ok(new { Results = data });
     }
 
-    [HttpPost("Create")]
+    [HttpPost("Create"), UserAuthorize(Permission.ProductCreate)]
     public async Task<IActionResult> Create([FromBody] Category model)
     {
         model.Name = model.Name.ToUpper();
@@ -57,7 +55,7 @@ public class CategoryController : ControllerBase
         return Ok(model);
     }
 
-    [HttpPut("Update/{id}")]
+    [HttpPut("Update/{id}"), UserAuthorize(Permission.ProductEdit)]
     public async Task<IActionResult> Update(string id, [FromBody] Category model)
     {
         var category = await _categoryService.GetByIdAsync(id);
@@ -68,7 +66,7 @@ public class CategoryController : ControllerBase
         return Ok(model);
     }
 
-    [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
+    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.ProductDelete)]
     public async Task<IActionResult> Delete(string id)
     {
         var category = await _categoryService.GetByIdAsync(id);
