@@ -1,12 +1,11 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Products;
 using Nebula.Modules.Products.Models;
 
 namespace Nebula.Controllers.Products;
 
-[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class ProductPricesController : ControllerBase
@@ -18,14 +17,14 @@ public class ProductPricesController : ControllerBase
         _productPriceService = productPriceService;
     }
 
-    [HttpGet("Index/{productId}")]
+    [HttpGet("Index/{productId}"), UserAuthorize(Permission.ProductRead)]
     public async Task<IActionResult> Index(string productId)
     {
         var productPrices = await _productPriceService.GetAsync(productId);
         return Ok(productPrices);
     }
 
-    [HttpPost("Create")]
+    [HttpPost("Create"), UserAuthorize(Permission.ProductCreate)]
     public async Task<IActionResult> Create([FromBody] ProductPrices model)
     {
         model.Nombre = model.Nombre.ToUpper();
@@ -34,7 +33,7 @@ public class ProductPricesController : ControllerBase
         return Ok(model);
     }
 
-    [HttpPut("Update/{id}")]
+    [HttpPut("Update/{id}"), UserAuthorize(Permission.ProductEdit)]
     public async Task<IActionResult> Update(string id, [FromBody] ProductPrices model)
     {
         var price = await _productPriceService.GetByIdAsync(id);
@@ -44,7 +43,7 @@ public class ProductPricesController : ControllerBase
         return Ok(model);
     }
 
-    [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
+    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.ProductDelete)]
     public async Task<IActionResult> Delete(string id)
     {
         var price = await _productPriceService.GetByIdAsync(id);

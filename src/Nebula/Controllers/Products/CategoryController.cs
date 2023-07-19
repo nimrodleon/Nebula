@@ -5,7 +5,7 @@ using Nebula.Common.Dto;
 using Nebula.Modules.Products;
 using Nebula.Modules.Auth;
 
-namespace Nebula.Controllers.Common;
+namespace Nebula.Controllers.Products;
 
 [Route("api/[controller]")]
 [ApiController]

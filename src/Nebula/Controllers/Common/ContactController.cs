@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Contacts.Models;
@@ -6,10 +5,10 @@ using Nebula.Modules.Contacts;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Contacts.Dto;
 using Nebula.Modules.Sales.Invoices;
+using Nebula.Modules.Auth;
 
 namespace Nebula.Controllers.Common;
 
-[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class ContactController : ControllerBase
@@ -30,7 +29,7 @@ public class ContactController : ControllerBase
         _contribuyenteService = contribuyenteService;
     }
 
-    [HttpGet("Index")]
+    [HttpGet("Index"), UserAuthorize(Permission.ContactRead)]
     public async Task<IActionResult> Index([FromQuery] string? query)
     {
         if (string.IsNullOrEmpty(query)) query = string.Empty;
@@ -38,21 +37,21 @@ public class ContactController : ControllerBase
         return Ok(contacts);
     }
 
-    [HttpGet("Show/{id}")]
+    [HttpGet("Show/{id}"), UserAuthorize(Permission.ContactRead)]
     public async Task<IActionResult> Show(string id)
     {
         var contact = await _contactService.GetByIdAsync(id);
         return Ok(contact);
     }
 
-    [HttpGet("Document/{document}")]
+    [HttpGet("Document/{document}"), UserAuthorize(Permission.ContactRead)]
     public async Task<IActionResult> Document(string document)
     {
         var contact = await _contactService.GetContactByDocumentAsync(document);
         return Ok(contact);
     }
 
-    [HttpGet("Contribuyente/{doc}")]
+    [HttpGet("Contribuyente/{doc}"), UserAuthorize(Permission.ContactRead)]
     public IActionResult Contribuyente(string doc)
     {
         ContribuyenteDto? result = null;
@@ -64,7 +63,7 @@ public class ContactController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("Select2")]
+    [HttpGet("Select2"), UserAuthorize(Permission.ContactRead)]
     public async Task<IActionResult> Select2([FromQuery] string? term)
     {
         var responseData = await _contactService.GetAsync("Name", term, 10);
@@ -85,7 +84,7 @@ public class ContactController : ControllerBase
         return Ok(new { Results = data });
     }
 
-    [HttpPost("Create")]
+    [HttpPost("Create"), UserAuthorize(Permission.ContactCreate)]
     public async Task<IActionResult> Create([FromBody] Contact model)
     {
         model.Document = model.Document.Trim();
@@ -96,7 +95,7 @@ public class ContactController : ControllerBase
         return Ok(model);
     }
 
-    [HttpPut("Update/{id}")]
+    [HttpPut("Update/{id}"), UserAuthorize(Permission.ContactEdit)]
     public async Task<IActionResult> Update(string id, [FromBody] Contact model)
     {
         var contact = await _contactService.GetByIdAsync(id);
@@ -109,7 +108,7 @@ public class ContactController : ControllerBase
         return Ok(contact);
     }
 
-    [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
+    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.ContactDelete)]
     public async Task<IActionResult> Delete(string id)
     {
         var contact = await _contactService.GetByIdAsync(id);
@@ -117,14 +116,14 @@ public class ContactController : ControllerBase
         return Ok(contact);
     }
 
-    [HttpGet("EntradaSalida/{id}")]
+    [HttpGet("EntradaSalida/{id}"), UserAuthorize(Permission.ContactRead)]
     public async Task<IActionResult> EntradaSalida(string id, [FromQuery] string month, [FromQuery] string year)
     {
         var responseData = await _cashierDetailService.GetEntradaSalidaAsync(id, month, year);
         return Ok(responseData);
     }
 
-    [HttpGet("InvoiceSale/{id}")]
+    [HttpGet("InvoiceSale/{id}"), UserAuthorize(Permission.ContactRead)]
     public async Task<IActionResult> InvoiceSale(string id, [FromQuery] string month, [FromQuery] string year)
     {
         var responseData = await _invoiceSaleService.GetByContactIdAsync(id, month, year);

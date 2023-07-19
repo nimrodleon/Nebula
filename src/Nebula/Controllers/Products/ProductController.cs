@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Products.Models;
 using Nebula.Modules.Products;
@@ -8,7 +7,7 @@ using Nebula.Modules.Sales.Helpers;
 using Nebula.Modules.Products.Dto;
 using Nebula.Modules.Auth;
 
-namespace Nebula.Controllers.Common;
+namespace Nebula.Controllers.Products;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -96,7 +95,7 @@ public class ProductController : ControllerBase
         }
 
         var configuration = await _configurationService.GetAsync();
-        decimal porcentajeIgv = (configuration.PorcentajeIgv / 100) + 1;
+        decimal porcentajeIgv = configuration.PorcentajeIgv / 100 + 1;
         decimal porcentajeTributo = model.IgvSunat == TipoIGV.Gravado ? porcentajeIgv : 1;
         model.ValorUnitario = model.PrecioVentaUnitario / porcentajeTributo;
 
@@ -150,7 +149,7 @@ public class ProductController : ControllerBase
         }
 
         var configuration = await _configurationService.GetAsync();
-        decimal porcentajeIgv = (configuration.PorcentajeIgv / 100) + 1;
+        decimal porcentajeIgv = configuration.PorcentajeIgv / 100 + 1;
         decimal porcentajeTributo = model.IgvSunat == TipoIGV.Gravado ? porcentajeIgv : 1;
         model.ValorUnitario = model.PrecioVentaUnitario / porcentajeTributo;
         // actualización de datos del modelo.

@@ -1,12 +1,11 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Products;
 using Nebula.Modules.Products.Models;
 
-namespace Nebula.Controllers.Common;
+namespace Nebula.Controllers.Products;
 
-[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class ProductLoteController : ControllerBase
@@ -18,7 +17,7 @@ public class ProductLoteController : ControllerBase
         _productLoteService = productLoteService;
     }
 
-    [HttpGet("Index/{id}")]
+    [HttpGet("Index/{id}"), UserAuthorize(Permission.ProductRead)]
     public async Task<IActionResult> Index(string id, [FromQuery] string? expirationDate)
     {
         if (string.IsNullOrEmpty(expirationDate))
@@ -27,14 +26,14 @@ public class ProductLoteController : ControllerBase
         return Ok(responseData);
     }
 
-    [HttpGet("LotesByProduct/{id}")]
+    [HttpGet("LotesByProduct/{id}"), UserAuthorize(Permission.ProductRead)]
     public async Task<IActionResult> LotesByProduct(string id)
     {
         var responseData = await _productLoteService.GetLotesByProductId(id);
         return Ok(responseData);
     }
 
-    [HttpPost("Create")]
+    [HttpPost("Create"), UserAuthorize(Permission.ProductCreate)]
     public async Task<IActionResult> Create([FromBody] ProductLote model)
     {
         model.LotNumber = model.LotNumber.ToUpper();
@@ -43,7 +42,7 @@ public class ProductLoteController : ControllerBase
         return Ok(model);
     }
 
-    [HttpPut("Update/{id}")]
+    [HttpPut("Update/{id}"), UserAuthorize(Permission.ProductEdit)]
     public async Task<IActionResult> Update(string id, [FromBody] ProductLote model)
     {
         var lote = await _productLoteService.GetByIdAsync(id);
@@ -53,7 +52,7 @@ public class ProductLoteController : ControllerBase
         return Ok(model);
     }
 
-    [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
+    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.ProductDelete)]
     public async Task<IActionResult> Delete(string id)
     {
         var lote = await _productLoteService.GetByIdAsync(id);
