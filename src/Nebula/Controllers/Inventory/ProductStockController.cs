@@ -1,12 +1,11 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Inventory.Stock;
 using Nebula.Modules.Inventory.Stock.Dto;
 
 namespace Nebula.Controllers.Inventory;
 
-[Authorize(Roles = AuthRoles.User)]
 [Route("api/Inventory/[controller]")]
 [ApiController]
 public class ProductStockController : ControllerBase
@@ -21,28 +20,28 @@ public class ProductStockController : ControllerBase
         _helperCalculateProductStockService = helperCalculateProductStockService;
     }
 
-    [HttpGet("GetStockInfos/{productId}")]
+    [HttpGet("GetStockInfos/{productId}"), UserAuthorize(Permission.ProductRead)]
     public async Task<IActionResult> GetStockInfos(string productId)
     {
         var responseData = await _helperCalculateProductStockService.GetProductStockInfos(productId);
         return Ok(responseData);
     }
 
-    [HttpPost("ChangeQuantity"), Authorize(Roles = AuthRoles.Admin)]
+    [HttpPost("ChangeQuantity"), UserAuthorize(Permission.InventoryEdit)]
     public async Task<IActionResult> ChangeQuantity([FromBody] ChangeQuantityStockRequestParams requestParams)
     {
         var productStock = await _productStockService.ChangeQuantity(requestParams);
         return Ok(productStock);
     }
 
-    [HttpGet("StockQuantity/{warehouseId}/{productId}")]
+    [HttpGet("StockQuantity/{warehouseId}/{productId}"), UserAuthorize(Permission.ProductRead)]
     public async Task<IActionResult> StockQuantity(string warehouseId, string productId)
     {
         var result = await _productStockService.GetStockQuantityByWarehouseAsync(warehouseId, productId);
         return Ok(result);
     }
 
-    [HttpGet("LoteStockQuantity/{warehouseId}/{productLoteId}/{productId}")]
+    [HttpGet("LoteStockQuantity/{warehouseId}/{productLoteId}/{productId}"), UserAuthorize(Permission.ProductRead)]
     public async Task<IActionResult> LoteStockQuantity(string warehouseId, string productLoteId, string productId)
     {
         var result = await _productStockService.GetLoteStockQuantityByWarehouseAsync(warehouseId, productLoteId, productId);
