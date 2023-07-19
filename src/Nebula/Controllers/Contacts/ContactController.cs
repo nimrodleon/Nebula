@@ -7,7 +7,7 @@ using Nebula.Modules.Contacts.Dto;
 using Nebula.Modules.Sales.Invoices;
 using Nebula.Modules.Auth;
 
-namespace Nebula.Controllers.Common;
+namespace Nebula.Controllers.Contacts;
 
 [Route("api/[controller]")]
 [ApiController]

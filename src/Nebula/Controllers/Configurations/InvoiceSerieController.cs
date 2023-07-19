@@ -1,12 +1,11 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Configurations.Models;
 using Nebula.Modules.Configurations.Warehouses;
 
-namespace Nebula.Controllers.Common;
+namespace Nebula.Controllers.Configurations;
 
-[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class InvoiceSerieController : ControllerBase
@@ -16,21 +15,21 @@ public class InvoiceSerieController : ControllerBase
     public InvoiceSerieController(IInvoiceSerieService invoiceSerieService) =>
         _invoiceSerieService = invoiceSerieService;
 
-    [HttpGet("Index")]
+    [HttpGet("Index"), UserAuthorize(Permission.ConfigurationRead)]
     public async Task<IActionResult> Index([FromQuery] string? query)
     {
         var responseData = await _invoiceSerieService.GetAsync("Name", query);
         return Ok(responseData);
     }
 
-    [HttpGet("Show/{id}")]
+    [HttpGet("Show/{id}"), UserAuthorize(Permission.ConfigurationRead)]
     public async Task<IActionResult> Show(string id)
     {
         var invoiceSerie = await _invoiceSerieService.GetByIdAsync(id);
         return Ok(invoiceSerie);
     }
 
-    [HttpPost("Create")]
+    [HttpPost("Create"), UserAuthorize(Permission.ConfigurationCreate)]
     public async Task<IActionResult> Create([FromBody] InvoiceSerie model)
     {
         model.Name = model.Name.ToUpper();
@@ -44,7 +43,7 @@ public class InvoiceSerieController : ControllerBase
         });
     }
 
-    [HttpPut("Update/{id}")]
+    [HttpPut("Update/{id}"), UserAuthorize(Permission.ConfigurationEdit)]
     public async Task<IActionResult> Update(string id, [FromBody] InvoiceSerie model)
     {
         var invoiceSerie = await _invoiceSerieService.GetByIdAsync(id);
@@ -61,7 +60,7 @@ public class InvoiceSerieController : ControllerBase
         });
     }
 
-    [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
+    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.ConfigurationDelete)]
     public async Task<IActionResult> Delete(string id)
     {
         var invoiceSerie = await _invoiceSerieService.GetByIdAsync(id);

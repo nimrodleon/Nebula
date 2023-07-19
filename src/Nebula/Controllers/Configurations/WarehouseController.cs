@@ -1,12 +1,11 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Configurations.Models;
 using Nebula.Modules.Configurations.Warehouses;
 
-namespace Nebula.Controllers.Common;
+namespace Nebula.Controllers.Configurations;
 
-[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class WarehouseController : ControllerBase
@@ -16,21 +15,21 @@ public class WarehouseController : ControllerBase
     public WarehouseController(IWarehouseService warehouseService) =>
         _warehouseService = warehouseService;
 
-    [HttpGet("Index")]
+    [HttpGet("Index"), UserAuthorize(Permission.ConfigurationRead)]
     public async Task<IActionResult> Index([FromQuery] string? query)
     {
         var responseData = await _warehouseService.GetAsync("Name", query);
         return Ok(responseData);
     }
 
-    [HttpGet("Show/{id}")]
+    [HttpGet("Show/{id}"), UserAuthorize(Permission.ConfigurationRead)]
     public async Task<IActionResult> Show(string id)
     {
         var warehouse = await _warehouseService.GetByIdAsync(id);
         return Ok(warehouse);
     }
 
-    [HttpPost("Create")]
+    [HttpPost("Create"), UserAuthorize(Permission.ConfigurationCreate)]
     public async Task<IActionResult> Create([FromBody] Warehouse model)
     {
         model.Name = model.Name.ToUpper();
@@ -38,7 +37,7 @@ public class WarehouseController : ControllerBase
         return Ok(model);
     }
 
-    [HttpPut("Update/{id}")]
+    [HttpPut("Update/{id}"), UserAuthorize(Permission.ConfigurationEdit)]
     public async Task<IActionResult> Update(string id, [FromBody] Warehouse model)
     {
         var warehouse = await _warehouseService.GetByIdAsync(id);
@@ -49,7 +48,7 @@ public class WarehouseController : ControllerBase
         return Ok(model);
     }
 
-    [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
+    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.ConfigurationDelete)]
     public async Task<IActionResult> Delete(string id)
     {
         var warehouse = await _warehouseService.GetByIdAsync(id);

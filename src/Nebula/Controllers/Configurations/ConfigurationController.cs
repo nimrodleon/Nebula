@@ -8,7 +8,7 @@ using Nebula.Modules.Configurations.Models;
 using Nebula.Modules.Configurations.Subscriptions;
 using System.Security.Claims;
 
-namespace Nebula.Controllers.Common;
+namespace Nebula.Controllers.Configurations;
 
 [Route("api/[controller]")]
 [ApiController]
