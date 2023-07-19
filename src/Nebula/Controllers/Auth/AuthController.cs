@@ -23,14 +23,6 @@ public class AuthController : ControllerBase
         _userService = userService;
     }
 
-    [HttpGet("GetMe"), UserAuthorize(Permission.ConfigurationRead)]
-    public Task<IActionResult> GetMe()
-    {
-        var userName = User.FindFirstValue(ClaimTypes.Name);
-        var role = User.FindFirstValue(ClaimTypes.Role);
-        return Task.FromResult<IActionResult>(Ok(new { userName, role }));
-    }
-
     [HttpGet("CreateSupportUser"), AllowAnonymous]
     public IActionResult CreateSupportUser()
     {
