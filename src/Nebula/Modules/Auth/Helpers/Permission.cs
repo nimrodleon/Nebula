@@ -4,6 +4,24 @@ namespace Nebula.Modules.Auth.Helpers;
 
 public static class Permission
 {
+    /// <summary>
+    /// Obtener todos los permisos de la clase.
+    /// </summary>
+    public static string[] GetAllPermissions()
+    {
+        var type = typeof(Permission);
+        var fields = type.GetFields(BindingFlags.Public | BindingFlags.Static);
+
+        var permissions = new List<string>();
+        foreach (var field in fields)
+        {
+            var value = field.GetValue(null);
+            if (value != null) permissions.Add(value.ToString());
+        }
+
+        return permissions.ToArray();
+    }
+
     public const string ProductRead = "Product.Read";
     public const string ProductCreate = "Product.Create";
     public const string ProductEdit = "Product.Edit";
@@ -43,20 +61,4 @@ public static class Permission
     public const string ConfigurationCreate = "Configuration.Create";
     public const string ConfigurationEdit = "Configuration.Edit";
     public const string ConfigurationDelete = "Configuration.Delete";
-
-    public static string[] GetAllPermissions()
-    {
-        var type = typeof(Permission);
-        var fields = type.GetFields(BindingFlags.Public);
-
-        var permissions = new string[fields.Length];
-        for (int i = 0; i < fields.Length; i++)
-        {
-            var field = fields[i];
-            var value = field.GetValue(null);
-            permissions[i] = value.ToString();
-        }
-
-        return permissions;
-    }
 }

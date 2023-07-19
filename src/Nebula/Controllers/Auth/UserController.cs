@@ -12,11 +12,14 @@ namespace Nebula.Controllers.Auth;
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
+    private readonly IRoleService _roleService;
     private readonly IConfiguration _configuration;
 
-    public UserController(IUserService userService, IConfiguration configuration)
+    public UserController(IUserService userService,
+        IRoleService roleService, IConfiguration configuration)
     {
         _userService = userService;
+        _roleService = roleService;
         _configuration = configuration;
     }
 
@@ -54,6 +57,17 @@ public class UserController : ControllerBase
     {
         var createUser = _configuration.GetValue<bool>("CreateSupportUser");
         if (!createUser) return NotFound();
+                
+        var existingRole = await _roleService.GetByNombreAsync("SYSTEM");
+        if (existingRole != null) await _roleService.RemoveAsync(existingRole.Id);
+
+        var role = new Roles()
+        {
+            Id = string.Empty,
+            Nombre = "SYSTEM",
+            Permisos = Permission.GetAllPermissions(),
+        };
+        await _roleService.CreateAsync(role);
 
         var existingUser = await _userService.GetByUserNameAsync("soporte");
         if (existingUser != null) await _userService.RemoveAsync(existingUser.Id);
@@ -63,9 +77,10 @@ public class UserController : ControllerBase
             UserName = "soporte",
             Email = "soporte@local.pe",
             PasswordHash = PasswordHasher.HashPassword("mangoloco"),
-            Role = AuthRoles.Admin
+            RolesId = role.Id,
         };
         await _userService.CreateAsync(user);
+
         return Ok(user);
     }
 
