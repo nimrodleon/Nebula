@@ -1,12 +1,11 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Inventory.Materiales;
 using Nebula.Modules.Inventory.Models;
 
 namespace Nebula.Controllers.Inventory;
 
-[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class MaterialDetailController : ControllerBase
@@ -18,28 +17,28 @@ public class MaterialDetailController : ControllerBase
         _materialDetailService = materialDetailService;
     }
 
-    [HttpGet("Index/{id}")]
+    [HttpGet("Index/{id}"), UserAuthorize(Permission.InventoryRead)]
     public async Task<IActionResult> Index(string id)
     {
         var responseData = await _materialDetailService.GetListAsync(id);
         return Ok(responseData);
     }
 
-    [HttpGet("Show/{id}")]
+    [HttpGet("Show/{id}"), UserAuthorize(Permission.InventoryRead)]
     public async Task<IActionResult> Show(string id)
     {
         var materialDetail = await _materialDetailService.GetByIdAsync(id);
         return Ok(materialDetail);
     }
 
-    [HttpPost("Create")]
+    [HttpPost("Create"), UserAuthorize(Permission.InventoryCreate)]
     public async Task<IActionResult> Create([FromBody] MaterialDetail model)
     {
         var materialDetail = await _materialDetailService.CreateAsync(model);
         return Ok(materialDetail);
     }
 
-    [HttpPut("Update/{id}")]
+    [HttpPut("Update/{id}"), UserAuthorize(Permission.InventoryEdit)]
     public async Task<IActionResult> Update(string id, [FromBody] MaterialDetail model)
     {
         var materialDetail = await _materialDetailService.GetByIdAsync(id);
@@ -48,7 +47,7 @@ public class MaterialDetailController : ControllerBase
         return Ok(responseData);
     }
 
-    [HttpDelete("Delete/{id}")]
+    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.InventoryDelete)]
     public async Task<IActionResult> Delete(string id)
     {
         var materialDetail = await _materialDetailService.GetByIdAsync(id);
@@ -56,7 +55,7 @@ public class MaterialDetailController : ControllerBase
         return Ok(materialDetail);
     }
 
-    [HttpGet("CountDocuments/{id}")]
+    [HttpGet("CountDocuments/{id}"), UserAuthorize(Permission.InventoryRead)]
     public async Task<IActionResult> CountDocuments(string id)
     {
         var countDocuments = await _materialDetailService.CountDocumentsAsync(id);

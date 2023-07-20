@@ -1,12 +1,11 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Inventory.Models;
 using Nebula.Modules.Inventory.Transferencias;
 
 namespace Nebula.Controllers.Inventory;
 
-[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class TransferenciaDetailController : ControllerBase
@@ -18,28 +17,28 @@ public class TransferenciaDetailController : ControllerBase
         _transferenciaDetailService = transferenciaDetailService;
     }
 
-    [HttpGet("Index/{id}")]
+    [HttpGet("Index/{id}"), UserAuthorize(Permission.InventoryRead)]
     public async Task<IActionResult> Index(string id)
     {
         var responseData = await _transferenciaDetailService.GetListAsync(id);
         return Ok(responseData);
     }
 
-    [HttpGet("Show/{id}")]
+    [HttpGet("Show/{id}"), UserAuthorize(Permission.InventoryRead)]
     public async Task<IActionResult> Show(string id)
     {
         var transferenciaDetail = await _transferenciaDetailService.GetByIdAsync(id);
         return Ok(transferenciaDetail);
     }
 
-    [HttpPost("Create")]
+    [HttpPost("Create"), UserAuthorize(Permission.InventoryCreate)]
     public async Task<IActionResult> Create([FromBody] TransferenciaDetail model)
     {
         var transferenciaDetail = await _transferenciaDetailService.CreateAsync(model);
         return Ok(transferenciaDetail);
     }
 
-    [HttpPut("Update/{id}")]
+    [HttpPut("Update/{id}"), UserAuthorize(Permission.InventoryEdit)]
     public async Task<IActionResult> Update(string id, [FromBody] TransferenciaDetail model)
     {
         var transferenciaDetail = await _transferenciaDetailService.GetByIdAsync(id);
@@ -48,7 +47,7 @@ public class TransferenciaDetailController : ControllerBase
         return Ok(responseData);
     }
 
-    [HttpDelete("Delete/{id}")]
+    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.InventoryDelete)]
     public async Task<IActionResult> Delete(string id)
     {
         var transferenciaDetail = await _transferenciaDetailService.GetByIdAsync(id);
@@ -56,7 +55,7 @@ public class TransferenciaDetailController : ControllerBase
         return Ok(transferenciaDetail);
     }
 
-    [HttpGet("CountDocuments/{id}")]
+    [HttpGet("CountDocuments/{id}"), UserAuthorize(Permission.InventoryRead)]
     public async Task<IActionResult> CountDocuments(string id)
     {
         var countDocuments = await _transferenciaDetailService.CountDocumentsAsync(id);
