@@ -1,12 +1,11 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Taller.Models;
 using Nebula.Modules.Taller.Services;
 
 namespace Nebula.Controllers.Taller;
 
-[Authorize(Roles = AuthRoles.User)]
 [Route("api/taller/[controller]")]
 [ApiController]
 public class ItemRepairOrderController : ControllerBase
@@ -18,21 +17,21 @@ public class ItemRepairOrderController : ControllerBase
         _itemRepairOrderService = itemRepairOrderService;
     }
 
-    [HttpGet("Index/{id}")]
+    [HttpGet("Index/{id}"), UserAuthorize(Permission.MaterialTallerRead)]
     public async Task<IActionResult> Index(string id)
     {
         var itemsRepairOrder = await _itemRepairOrderService.GetItemsRepairOrder(id);
         return Ok(itemsRepairOrder);
     }
 
-    [HttpPost("Create")]
+    [HttpPost("Create"), UserAuthorize(Permission.MaterialTallerCreate)]
     public async Task<IActionResult> Create([FromBody] TallerItemRepairOrder model)
     {
         await _itemRepairOrderService.CreateAsync(model);
         return Ok(model);
     }
 
-    [HttpPut("Update/{id}")]
+    [HttpPut("Update/{id}"), UserAuthorize(Permission.MaterialTallerEdit)]
     public async Task<IActionResult> Update(string id, [FromBody] TallerItemRepairOrder model)
     {
         var itemRepairOrder = await _itemRepairOrderService.GetByIdAsync(id);
@@ -41,7 +40,7 @@ public class ItemRepairOrderController : ControllerBase
         return Ok(itemRepairOrder);
     }
 
-    [HttpDelete("Delete/{id}")]
+    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.MaterialTallerDelete)]
     public async Task<IActionResult> Delete(string id)
     {
         var itemRepairOrder = await _itemRepairOrderService.GetByIdAsync(id);
