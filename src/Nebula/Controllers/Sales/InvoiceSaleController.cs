@@ -1,25 +1,25 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Modules.Inventory.Stock;
-using Nebula.Modules.Facturador;
-using Nebula.Modules.Configurations;
-using Nebula.Modules.Auth.Helpers;
-using Nebula.Common.Helpers;
-using Nebula.Modules.Facturador.Helpers;
 using Nebula.Common.Dto;
+using Nebula.Common.Helpers;
+using Nebula.Modules.Auth;
+using Nebula.Modules.Auth.Helpers;
+using Nebula.Modules.Configurations;
 using Nebula.Modules.Configurations.Subscriptions;
 using Nebula.Modules.Configurations.Warehouses;
+using Nebula.Modules.Facturador;
+using Nebula.Modules.Facturador.Helpers;
+using Nebula.Modules.Inventory.Stock;
+using Nebula.Modules.Sales;
+using Nebula.Modules.Sales.Comprobantes;
+using Nebula.Modules.Sales.Comprobantes.Dto;
 using Nebula.Modules.Sales.Helpers;
 using Nebula.Modules.Sales.Invoices;
-using Nebula.Modules.Sales.Notes;
-using Nebula.Modules.Sales.Comprobantes.Dto;
-using Nebula.Modules.Sales.Comprobantes;
-using Nebula.Modules.Sales;
 using Nebula.Modules.Sales.Invoices.Dto;
+using Nebula.Modules.Sales.Notes;
 
 namespace Nebula.Controllers.Sales;
 
-[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class InvoiceSaleController : ControllerBase
@@ -67,7 +67,7 @@ public class InvoiceSaleController : ControllerBase
         _tributoCreditNoteService = tributoCreditNoteService;
     }
 
-    [HttpGet("Index")]
+    [HttpGet("Index"), UserAuthorize(Permission.SalesRead)]
     public async Task<IActionResult> Index([FromQuery] DateQuery model)
     {
         var invoiceSales = await _invoiceSaleService.GetListAsync(model);
@@ -104,21 +104,21 @@ public class InvoiceSaleController : ControllerBase
         return new FileStreamResult(stream, ContentTypeFormat.Excel);
     }
 
-    [HttpGet("Pendientes")]
+    [HttpGet("Pendientes"), UserAuthorize(Permission.SalesRead)]
     public async Task<IActionResult> Pendientes()
     {
         var invoiceSales = await _invoiceSaleService.GetInvoiceSalesPendingAsync();
         return Ok(invoiceSales);
     }
 
-    [HttpPost("BusquedaAvanzada")]
+    [HttpPost("BusquedaAvanzada"), UserAuthorize(Permission.SalesRead)]
     public async Task<IActionResult> BusquedaAvanzada([FromBody] BuscarComprobanteFormDto dto)
     {
         var invoiceSales = await _invoiceSaleService.BusquedaAvanzadaAsync(dto);
         return Ok(invoiceSales);
     }
 
-    [HttpPost("Create")]
+    [HttpPost("Create"), UserAuthorize(Permission.SalesCreate)]
     public async Task<IActionResult> Create([FromBody] ComprobanteDto dto)
     {
         var license = await _subscriptionService.ValidarAcceso();
@@ -130,14 +130,14 @@ public class InvoiceSaleController : ControllerBase
         return Ok(invoiceSale);
     }
 
-    [HttpGet("Show/{id}")]
+    [HttpGet("Show/{id}"), UserAuthorize(Permission.SalesRead)]
     public async Task<IActionResult> Show(string id)
     {
         var responseInvoiceSale = await _invoiceSaleService.GetInvoiceSaleAsync(id);
         return Ok(responseInvoiceSale);
     }
 
-    [HttpPatch("AnularComprobante/{id}")]
+    [HttpPatch("AnularComprobante/{id}"), UserAuthorize(Permission.SalesEdit)]
     public async Task<IActionResult> AnularComprobante(string id)
     {
         var responseAnularComprobante = new ResponseAnularComprobante();
@@ -153,14 +153,14 @@ public class InvoiceSaleController : ControllerBase
         return Ok(responseAnularComprobante);
     }
 
-    [HttpPatch("SituacionFacturador/{id}")]
+    [HttpPatch("SituacionFacturador/{id}"), UserAuthorize(Permission.SalesEdit)]
     public async Task<IActionResult> SituacionFacturador(string id, [FromBody] SituacionFacturadorDto dto)
     {
         var response = await _invoiceSaleService.SetSituacionFacturador(id, dto);
         return Ok(response);
     }
 
-    [HttpPatch("SaveInControlFolder/{invoiceSaleId}")]
+    [HttpPatch("SaveInControlFolder/{invoiceSaleId}"), UserAuthorize(Permission.SalesEdit)]
     public async Task<IActionResult> SituacionFacturador(string invoiceSaleId)
     {
         try
@@ -174,7 +174,7 @@ public class InvoiceSaleController : ControllerBase
         }
     }
 
-    [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
+    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.SalesDelete)]
     public async Task<IActionResult> Delete(string id)
     {
         var invoiceSale = await _invoiceSaleService.GetByIdAsync(id);
@@ -184,7 +184,7 @@ public class InvoiceSaleController : ControllerBase
         return Ok(new { Ok = true, Data = invoiceSale, Msg = "El comprobante de venta ha sido borrado!" });
     }
 
-    [HttpDelete("BorrarArchivosAntiguos/{invoiceSaleId}")]
+    [HttpDelete("BorrarArchivosAntiguos/{invoiceSaleId}"), UserAuthorize(Permission.SalesDelete)]
     public async Task<IActionResult> BorrarArchivos(string invoiceSaleId)
     {
         var invoiceSale = await _facturadorService.BorrarArchivosAntiguosInvoice(invoiceSaleId);
@@ -226,7 +226,7 @@ public class InvoiceSaleController : ControllerBase
         return new FileStreamResult(stream, "application/pdf");
     }
 
-    [HttpGet("Ticket/{id}")]
+    [HttpGet("Ticket/{id}"), UserAuthorize(Permission.SalesRead)]
     public async Task<IActionResult> Ticket(string id)
     {
         var ticket = await _invoiceSaleService.GetTicketDto(id);

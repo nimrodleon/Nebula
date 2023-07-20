@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Configurations;
 using Nebula.Modules.Facturador;
@@ -9,7 +10,6 @@ using Nebula.Modules.Sales.Notes;
 
 namespace Nebula.Controllers.Sales;
 
-[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class CreditNoteController : ControllerBase
@@ -30,21 +30,21 @@ public class CreditNoteController : ControllerBase
         _facturadorService = facturadorService;
     }
 
-    [HttpGet("Show/{id}")]
+    [HttpGet("Show/{id}"), UserAuthorize(Permission.SalesRead)]
     public async Task<IActionResult> Show(string id)
     {
         var creditNote = await _creditNoteService.GetCreditNoteByInvoiceSaleIdAsync(id);
         return Ok(creditNote);
     }
 
-    [HttpPatch("SituacionFacturador/{id}")]
+    [HttpPatch("SituacionFacturador/{id}"), UserAuthorize(Permission.SalesRead)]
     public async Task<IActionResult> SituacionFacturador(string id, [FromBody] SituacionFacturadorDto dto)
     {
         var creditNote = await _creditNoteService.SetSituacionFacturador(id, dto);
         return Ok(creditNote);
     }
 
-    [HttpPatch("SaveInControlFolder/{creditNoteId}")]
+    [HttpPatch("SaveInControlFolder/{creditNoteId}"), UserAuthorize(Permission.SalesEdit)]
     public async Task<IActionResult> SituacionFacturador(string creditNoteId)
     {
         try
@@ -58,7 +58,7 @@ public class CreditNoteController : ControllerBase
         }
     }
 
-    [HttpDelete("BorrarArchivosAntiguos/{creditNoteId}")]
+    [HttpDelete("BorrarArchivosAntiguos/{creditNoteId}"), UserAuthorize(Permission.SalesEdit)]
     public async Task<IActionResult> BorrarArchivos(string creditNoteId)
     {
         var creditNote = await _facturadorService.BorrarArchivosAntiguosCreditNote(creditNoteId);
@@ -71,7 +71,7 @@ public class CreditNoteController : ControllerBase
     /// </summary>
     /// <param name="creditNoteId">Identificador de la Nota de crédito</param>
     /// <returns>JSON[PrintCreditNoteDto]</returns>
-    [HttpGet("Print/{creditNoteId}")]
+    [HttpGet("Print/{creditNoteId}"), UserAuthorize(Permission.SalesRead)]
     public async Task<IActionResult> Print(string creditNoteId)
     {
         var printCreditNoteDto = await _creditNoteService.GetPrintCreditNoteDto(creditNoteId);

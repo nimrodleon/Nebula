@@ -45,6 +45,7 @@ public static class Permission
     public const string SalesRead = "Sales.Read";
     public const string SalesCreate = "Sales.Create";
     public const string SalesEdit = "Sales.Edit";
+    public const string SalesDelete = "Sales.Delete";
     public const string ReceivableRead = "Receivable.Read";
     public const string ReceivableCreate = "Receivable.Create";
     public const string ReceivableEdit = "Receivable.Edit";
