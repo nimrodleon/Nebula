@@ -1,12 +1,11 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Purchases;
 using Nebula.Modules.Purchases.Dto;
 
 namespace Nebula.Controllers.Purchases;
 
-[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class PurchaseInvoiceDetailController : ControllerBase
@@ -21,7 +20,7 @@ public class PurchaseInvoiceDetailController : ControllerBase
         _purchaseInvoiceDetailService = purchaseInvoiceDetailService;
     }
 
-    [HttpPost("Create/{purchaseInvoiceId}")]
+    [HttpPost("Create/{purchaseInvoiceId}"), UserAuthorize(Permission.PurchasesCreate)]
     public async Task<IActionResult> Create(string purchaseInvoiceId, [FromBody] ItemCompraDto itemCompra)
     {
         var purchaseInvoiceDetail = await _purchaseInvoiceDetailService.CreateAsync(purchaseInvoiceId, itemCompra);
@@ -30,7 +29,7 @@ public class PurchaseInvoiceDetailController : ControllerBase
         return Ok(purchaseInvoiceDetail);
     }
 
-    [HttpPut("Update/{id}")]
+    [HttpPut("Update/{id}"), UserAuthorize(Permission.PurchasesEdit)]
     public async Task<IActionResult> Update(string id, [FromBody] ItemCompraDto itemCompra)
     {
         var purchaseInvoiceDetail = await _purchaseInvoiceDetailService.UpdateAsync(id, itemCompra);
@@ -39,7 +38,7 @@ public class PurchaseInvoiceDetailController : ControllerBase
         return Ok(purchaseInvoiceDetail);
     }
 
-    [HttpDelete("Delete/{id}")]
+    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.PurchasesDelete)]
     public async Task<IActionResult> Delete(string id)
     {
         var itemCompra = await _purchaseInvoiceDetailService.GetByIdAsync(id);
