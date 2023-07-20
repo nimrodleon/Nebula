@@ -2,16 +2,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Common.Dto;
 using Nebula.Common.Helpers;
+using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Purchases;
 using Nebula.Modules.Purchases.Dto;
 using Nebula.Modules.Purchases.Helpers;
 using Nebula.Modules.Sales;
-using Nebula.Modules.Sales.Helpers;
 
 namespace Nebula.Controllers.Purchases;
 
-[Authorize(Roles = AuthRoles.User)]
 [Route("api/[controller]")]
 [ApiController]
 public class PurchaseInvoiceController : ControllerBase
@@ -29,14 +28,14 @@ public class PurchaseInvoiceController : ControllerBase
         _validezCompraService = validezCompraService;
     }
 
-    [HttpGet("Index")]
+    [HttpGet("Index"), UserAuthorize(Permission.PurchasesRead)]
     public async Task<IActionResult> Index([FromQuery] DateQuery query)
     {
         var purchases = await _purchaseInvoiceService.GetAsync(query);
         return Ok(purchases);
     }
 
-    [HttpGet("Show/{id}")]
+    [HttpGet("Show/{id}"), UserAuthorize(Permission.PurchasesRead)]
     public async Task<IActionResult> Show(string id)
     {
         var purchase = new PurchaseDto
@@ -47,21 +46,21 @@ public class PurchaseInvoiceController : ControllerBase
         return Ok(purchase);
     }
 
-    [HttpPost("Create")]
+    [HttpPost("Create"), UserAuthorize(Permission.PurchasesCreate)]
     public async Task<IActionResult> Create([FromBody] CabeceraCompraDto cabecera)
     {
         var purchase = await _purchaseInvoiceService.CreateAsync(cabecera);
         return Ok(purchase);
     }
 
-    [HttpPut("Update/{id}")]
+    [HttpPut("Update/{id}"), UserAuthorize(Permission.PurchasesEdit)]
     public async Task<IActionResult> Update(string id, [FromBody] CabeceraCompraDto cabecera)
     {
         var purchase = await _purchaseInvoiceService.UpdateAsync(id, cabecera);
         return Ok(purchase);
     }
 
-    [HttpDelete("Delete/{id}"), Authorize(Roles = AuthRoles.Admin)]
+    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.PurchasesDelete)]
     public async Task<IActionResult> Delete(string id)
     {
         var purchase = await _purchaseInvoiceService.GetByIdAsync(id);
