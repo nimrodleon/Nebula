@@ -100,6 +100,11 @@ public class Configuration
     #endregion
 
     /// <summary>
+    /// Habilitar/Deshabilitar el módulo de ventas.
+    /// </summary>
+    public bool ModVentas { get; set; } = false;
+
+    /// <summary>
     /// Habilita/Deshabilita el módulo de punto de venta.
     /// </summary>
     public bool ModTerminal { get; set; } = false;

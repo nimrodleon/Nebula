@@ -62,6 +62,7 @@ public class ConfigurationService : IConfigurationService
         _configuration.ModoEnvioSunat = configuration.ModoEnvioSunat;
         _configuration.ContactId = configuration.ContactId;
         _configuration.DiasPlazo = configuration.DiasPlazo;
+        _configuration.ModVentas = configuration.ModVentas;
         _configuration.ModTerminal = configuration.ModTerminal;
         _configuration.ModReceivable = configuration.ModReceivable;
         _configuration.ModCompras = configuration.ModCompras;
