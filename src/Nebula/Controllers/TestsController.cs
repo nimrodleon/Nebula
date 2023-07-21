@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Configurations.Subscriptions;
 
 namespace Nebula.Controllers;
 
-[Authorize(Roles = AuthRoles.User)]
+[UserAuthorize(Permission.ConfigurationRead)]
 [Route("api/[controller]")]
 [ApiController]
 public class TestsController : ControllerBase
