@@ -43,6 +43,7 @@ public class MaterialDetailController : ControllerBase
     {
         var materialDetail = await _materialDetailService.GetByIdAsync(id);
         model.Id = materialDetail.Id;
+        model.CreatedAt = materialDetail.CreatedAt;
         var responseData = await _materialDetailService.UpdateAsync(id, model);
         return Ok(responseData);
     }

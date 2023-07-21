@@ -50,4 +50,9 @@ public class MaterialDetail : IGenericModel
     /// Cantidad Usado.
     /// </summary>
     public int CantUsado { get; set; }
+
+    /// <summary>
+    /// Fecha de Creación.
+    /// </summary>
+    public string CreatedAt { get; set; } = DateTime.Now.ToString("yyyy-MM-dd");
 }
