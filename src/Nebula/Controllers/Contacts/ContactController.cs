@@ -66,7 +66,8 @@ public class ContactController : ControllerBase
     [HttpGet("Select2"), UserAuthorize(Permission.ContactRead)]
     public async Task<IActionResult> Select2([FromQuery] string? term)
     {
-        var responseData = await _contactService.GetAsync("Name", term, 10);
+        if (term == null) term = string.Empty;
+        var responseData = await _contactService.GetContactsAsync(term, 10);
         var data = new List<ContactSelect>();
         responseData.ForEach(item =>
         {
