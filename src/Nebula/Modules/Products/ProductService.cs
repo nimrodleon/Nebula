@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Nebula.Common;
@@ -18,8 +17,8 @@ public class ProductService : CrudOperationService<Product>, IProductService
 {
     private readonly IConfigurationService _configurationService;
 
-    public ProductService(IOptions<DatabaseSettings> options,
-        IConfigurationService configurationService) : base(options)
+    public ProductService(MongoDatabaseService mongoDatabase,
+        IConfigurationService configurationService) : base(mongoDatabase)
     {
         _configurationService = configurationService;
     }

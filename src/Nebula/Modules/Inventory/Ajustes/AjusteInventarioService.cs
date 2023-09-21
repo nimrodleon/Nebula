@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Modules.Inventory.Models;
@@ -13,7 +12,7 @@ public interface IAjusteInventarioService : ICrudOperationService<AjusteInventar
 
 public class AjusteInventarioService : CrudOperationService<AjusteInventario>, IAjusteInventarioService
 {
-    public AjusteInventarioService(IOptions<DatabaseSettings> options) : base(options) { }
+    public AjusteInventarioService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
 
     public async Task<List<AjusteInventario>> GetListAsync(DateQuery query)
     {

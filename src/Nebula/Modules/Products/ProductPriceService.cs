@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Modules.Products.Models;
@@ -16,8 +15,8 @@ public class ProductPriceService : CrudOperationService<ProductPrices>, IProduct
 {
     private readonly IProductService _productService;
 
-    public ProductPriceService(IOptions<DatabaseSettings> options,
-        IProductService productService) : base(options)
+    public ProductPriceService(MongoDatabaseService mongoDatabase,
+        IProductService productService) : base(mongoDatabase)
     {
         _productService = productService;
     }

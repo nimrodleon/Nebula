@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Modules.Inventory.Models;
@@ -13,7 +12,7 @@ public interface IInventoryNotasDetailService : ICrudOperationService<InventoryN
 
 public class InventoryNotasDetailService : CrudOperationService<InventoryNotasDetail>, IInventoryNotasDetailService
 {
-    public InventoryNotasDetailService(IOptions<DatabaseSettings> options) : base(options) { }
+    public InventoryNotasDetailService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
 
     public async Task<List<InventoryNotasDetail>> GetListAsync(string id)
     {

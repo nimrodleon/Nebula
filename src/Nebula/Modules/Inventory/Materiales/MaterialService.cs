@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Modules.Inventory.Models;
@@ -14,7 +13,7 @@ public interface IMaterialService : ICrudOperationService<Material>
 
 public class MaterialService : CrudOperationService<Material>, IMaterialService
 {
-    public MaterialService(IOptions<DatabaseSettings> options) : base(options) { }
+    public MaterialService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
 
     public async Task<List<Material>> GetListAsync(DateQuery query)
     {

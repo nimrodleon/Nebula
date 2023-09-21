@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Nebula.Common;
@@ -24,9 +23,9 @@ public class TallerRepairOrderService : CrudOperationService<TallerRepairOrder>,
     private readonly IInvoiceSerieService _invoiceSerieService;
     private readonly ITallerItemRepairOrderService _itemRepairOrderService;
 
-    public TallerRepairOrderService(IOptions<DatabaseSettings> options,
+    public TallerRepairOrderService(MongoDatabaseService mongoDatabase,
         ITallerItemRepairOrderService itemRepairOrderService,
-        IInvoiceSerieService invoiceSerieService) : base(options)
+        IInvoiceSerieService invoiceSerieService) : base(mongoDatabase)
     {
         _itemRepairOrderService = itemRepairOrderService;
         _invoiceSerieService = invoiceSerieService;

@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Modules.Cashier.Models;
@@ -17,8 +16,8 @@ public class CajaDiariaService : CrudOperationService<CajaDiaria>, ICajaDiariaSe
 {
     private readonly IInvoiceSerieService _invoiceSerieService;
 
-    public CajaDiariaService(IOptions<DatabaseSettings> options,
-        IInvoiceSerieService invoiceSerieService) : base(options)
+    public CajaDiariaService(MongoDatabaseService mongoDatabase,
+        IInvoiceSerieService invoiceSerieService) : base(mongoDatabase)
     {
         _invoiceSerieService = invoiceSerieService;
     }

@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Modules.Configurations.Models;
@@ -13,7 +12,7 @@ public interface IWarehouseService : ICrudOperationService<Warehouse>
 
 public class WarehouseService : CrudOperationService<Warehouse>, IWarehouseService
 {
-    public WarehouseService(IOptions<DatabaseSettings> options) : base(options)
+    public WarehouseService(MongoDatabaseService mongoDatabase) : base(mongoDatabase)
     {
     }
 

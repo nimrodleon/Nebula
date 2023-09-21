@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Modules.Cashier.Models;
@@ -23,7 +22,7 @@ public interface IReceivableService : ICrudOperationService<Receivable>
 
 public class ReceivableService : CrudOperationService<Receivable>, IReceivableService
 {
-    public ReceivableService(IOptions<DatabaseSettings> options) : base(options)
+    public ReceivableService(MongoDatabaseService mongoDatabase) : base(mongoDatabase)
     {
     }
 

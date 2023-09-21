@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Common.Dto;
@@ -41,7 +40,7 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
     private readonly ICreditNoteDetailService _creditNoteDetailService;
     private readonly ITributoCreditNoteService _tributoCreditNoteService;
 
-    public CreditNoteService(IOptions<DatabaseSettings> options,
+    public CreditNoteService(MongoDatabaseService mongoDatabase,
         IConfiguration configuration,
         IConfigurationService configurationService,
         IInvoiceSaleService invoiceSaleService,
@@ -49,7 +48,7 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
         ITributoSaleService tributoSaleService,
         IInvoiceSerieService invoiceSerieService,
         ICreditNoteDetailService creditNoteDetailService,
-        ITributoCreditNoteService tributoCreditNoteService) : base(options)
+        ITributoCreditNoteService tributoCreditNoteService) : base(mongoDatabase)
     {
         _configurationService = configurationService;
         _configuration = configuration;

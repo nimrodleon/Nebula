@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Modules.Inventory.Dto;
@@ -18,9 +17,9 @@ public class LocationService : CrudOperationService<Location>, ILocationService
     private readonly IProductStockService _productStockService;
     private readonly ILocationDetailService _locationDetailService;
 
-    public LocationService(IOptions<DatabaseSettings> options,
+    public LocationService(MongoDatabaseService mongoDatabase,
         IProductStockService productStockService,
-        ILocationDetailService locationDetailService) : base(options)
+        ILocationDetailService locationDetailService) : base(mongoDatabase)
     {
         _productStockService = productStockService;
         _locationDetailService = locationDetailService;

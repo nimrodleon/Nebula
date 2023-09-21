@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Modules.Products.Models;
@@ -17,7 +16,7 @@ public class ProductLoteService : CrudOperationService<ProductLote>, IProductLot
 {
     private readonly IProductService _productService;
 
-    public ProductLoteService(IOptions<DatabaseSettings> options, IProductService productService) : base(options)
+    public ProductLoteService(MongoDatabaseService mongoDatabase, IProductService productService) : base(mongoDatabase)
     {
         _productService = productService;
     }

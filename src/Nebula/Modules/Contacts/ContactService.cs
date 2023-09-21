@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Nebula.Common;
@@ -14,7 +13,7 @@ public interface IContactService : ICrudOperationService<Contact>
 
 public class ContactService : CrudOperationService<Contact>, IContactService
 {
-    public ContactService(IOptions<DatabaseSettings> options) : base(options) { }
+    public ContactService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
 
     public async Task<Contact> GetContactByDocumentAsync(string document) =>
         await _collection.Find(x => x.Document == document).FirstOrDefaultAsync();

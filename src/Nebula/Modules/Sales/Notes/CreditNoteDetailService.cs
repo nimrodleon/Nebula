@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Modules.Sales.Models;
@@ -12,7 +11,7 @@ public interface ICreditNoteDetailService : ICrudOperationService<CreditNoteDeta
 
 public class CreditNoteDetailService : CrudOperationService<CreditNoteDetail>, ICreditNoteDetailService
 {
-    public CreditNoteDetailService(IOptions<DatabaseSettings> options) : base(options) { }
+    public CreditNoteDetailService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
 
     public async Task<List<CreditNoteDetail>> GetListAsync(string creditNoteId) =>
        await _collection.Find(x => x.CreditNoteId == creditNoteId).ToListAsync();

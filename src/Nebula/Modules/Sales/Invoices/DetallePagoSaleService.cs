@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Modules.Sales.Models;
@@ -13,7 +12,7 @@ public interface IDetallePagoSaleService : ICrudOperationService<DetallePagoSale
 
 public class DetallePagoSaleService : CrudOperationService<DetallePagoSale>, IDetallePagoSaleService
 {
-    public DetallePagoSaleService(IOptions<DatabaseSettings> options) : base(options) { }
+    public DetallePagoSaleService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
 
     public async Task<List<DetallePagoSale>> GetListAsync(string id) =>
         await _collection.Find(x => x.InvoiceSale == id).ToListAsync();

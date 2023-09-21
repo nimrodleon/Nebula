@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Modules.Inventory.Models;
@@ -14,7 +13,7 @@ public interface ITransferenciaDetailService : ICrudOperationService<Transferenc
 
 public class TransferenciaDetailService : CrudOperationService<TransferenciaDetail>, ITransferenciaDetailService
 {
-    public TransferenciaDetailService(IOptions<DatabaseSettings> options) : base(options) { }
+    public TransferenciaDetailService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
 
     public async Task<List<TransferenciaDetail>> GetListAsync(string id)
     {

@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Common.Dto;
@@ -16,7 +15,7 @@ public interface ITributoSaleService : ICrudOperationService<TributoSale>
 
 public class TributoSaleService : CrudOperationService<TributoSale>, ITributoSaleService
 {
-    public TributoSaleService(IOptions<DatabaseSettings> options) : base(options)
+    public TributoSaleService(MongoDatabaseService mongoDatabase) : base(mongoDatabase)
     {
     }
 

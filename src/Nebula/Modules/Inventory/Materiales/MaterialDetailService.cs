@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Modules.Inventory.Models;
@@ -13,7 +12,7 @@ public interface IMaterialDetailService : ICrudOperationService<MaterialDetail>
 
 public class MaterialDetailService : CrudOperationService<MaterialDetail>, IMaterialDetailService
 {
-    public MaterialDetailService(IOptions<DatabaseSettings> options) : base(options) { }
+    public MaterialDetailService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
 
     public async Task<List<MaterialDetail>> GetListAsync(string id)
     {

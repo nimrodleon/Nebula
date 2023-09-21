@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Modules.Inventory.Models;
@@ -14,7 +13,7 @@ public interface ILocationDetailService : ICrudOperationService<LocationDetail>
 
 public class LocationDetailService : CrudOperationService<LocationDetail>, ILocationDetailService
 {
-    public LocationDetailService(IOptions<DatabaseSettings> options) : base(options) { }
+    public LocationDetailService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
 
     public async Task<List<LocationDetail>> GetListAsync(string id)
     {

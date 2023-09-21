@@ -14,7 +14,7 @@ public interface ITributoCreditNoteService : ICrudOperationService<TributoCredit
 
 public class TributoCreditNoteService : CrudOperationService<TributoCreditNote>, ITributoCreditNoteService
 {
-    public TributoCreditNoteService(IOptions<DatabaseSettings> options) : base(options)
+    public TributoCreditNoteService(MongoDatabaseService mongoDatabase) : base(mongoDatabase)
     {
     }
 

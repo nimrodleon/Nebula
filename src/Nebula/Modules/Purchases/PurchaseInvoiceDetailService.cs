@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Modules.Configurations;
@@ -19,8 +18,8 @@ public class PurchaseInvoiceDetailService : CrudOperationService<PurchaseInvoice
 {
     private readonly IConfigurationService _configurationService;
 
-    public PurchaseInvoiceDetailService(IOptions<DatabaseSettings> options,
-        IConfigurationService configurationService) : base(options)
+    public PurchaseInvoiceDetailService(MongoDatabaseService mongoDatabase,
+        IConfigurationService configurationService) : base(mongoDatabase)
     {
         _configurationService = configurationService;
     }

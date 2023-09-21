@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Modules.Facturador.XmlDigest;
 using Nebula.Common;
@@ -33,11 +32,11 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSal
     private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly ITributoSaleService _tributoSaleService;
 
-    public InvoiceSaleService(IOptions<DatabaseSettings> options,
+    public InvoiceSaleService(MongoDatabaseService mongoDatabase,
         IConfiguration configuration,
         IConfigurationService configurationService,
         IInvoiceSaleDetailService invoiceSaleDetailService,
-        ITributoSaleService tributoSaleService) : base(options)
+        ITributoSaleService tributoSaleService) : base(mongoDatabase)
     {
         _configuration = configuration;
         _configurationService = configurationService;

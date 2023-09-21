@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Nebula.Common;
@@ -14,7 +13,9 @@ public interface IUserService : ICrudOperationService<User>
 
 public class UserService : CrudOperationService<User>, IUserService
 {
-    public UserService(IOptions<DatabaseSettings> options) : base(options) { }
+    public UserService(MongoDatabaseService mongoDatabase) : base(mongoDatabase)
+    {
+    }
 
     public async Task<List<User>> GetListAsync(string? query, int limit = 25)
     {

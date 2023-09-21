@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Nebula.Common;
@@ -18,7 +17,7 @@ public interface ICashierDetailService : ICrudOperationService<CashierDetail>
 
 public class CashierDetailService : CrudOperationService<CashierDetail>, ICashierDetailService
 {
-    public CashierDetailService(IOptions<DatabaseSettings> options) : base(options)
+    public CashierDetailService(MongoDatabaseService mongoDatabase) : base(mongoDatabase)
     {
     }
 

@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Modules.Sales.Models;
@@ -15,7 +14,7 @@ public interface IInvoiceSaleDetailService : ICrudOperationService<InvoiceSaleDe
 
 public class InvoiceSaleDetailService : CrudOperationService<InvoiceSaleDetail>, IInvoiceSaleDetailService
 {
-    public InvoiceSaleDetailService(IOptions<DatabaseSettings> options) : base(options) { }
+    public InvoiceSaleDetailService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
 
     public async Task<List<InvoiceSaleDetail>> GetListAsync(string id) =>
         await _collection.Find(x => x.InvoiceSale == id).ToListAsync();

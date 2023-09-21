@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using Nebula.Common;
 using Nebula.Modules.Configurations.Models;
 
@@ -11,7 +10,7 @@ public interface IInvoiceSerieService : ICrudOperationService<InvoiceSerie>
 
 public class InvoiceSerieService : CrudOperationService<InvoiceSerie>, IInvoiceSerieService
 {
-    public InvoiceSerieService(IOptions<DatabaseSettings> options) : base(options)
+    public InvoiceSerieService(MongoDatabaseService mongoDatabase) : base(mongoDatabase)
     {
     }
 }

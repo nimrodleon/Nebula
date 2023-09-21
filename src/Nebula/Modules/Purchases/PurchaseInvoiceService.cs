@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Common.Dto;
@@ -21,7 +20,7 @@ public interface IPurchaseInvoiceService : ICrudOperationService<PurchaseInvoice
 
 public class PurchaseInvoiceService : CrudOperationService<PurchaseInvoice>, IPurchaseInvoiceService
 {
-    public PurchaseInvoiceService(IOptions<DatabaseSettings> options) : base(options)
+    public PurchaseInvoiceService(MongoDatabaseService mongoDatabase) : base(mongoDatabase)
     {
     }
 

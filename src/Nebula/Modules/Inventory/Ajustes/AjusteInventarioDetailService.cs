@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Modules.Inventory.Locations;
@@ -18,8 +17,8 @@ public class AjusteInventarioDetailService : CrudOperationService<AjusteInventar
 {
     private readonly ILocationDetailService _locationDetailService;
 
-    public AjusteInventarioDetailService(IOptions<DatabaseSettings> options,
-        ILocationDetailService locationDetailService) : base(options)
+    public AjusteInventarioDetailService(MongoDatabaseService mongoDatabase,
+        ILocationDetailService locationDetailService) : base(mongoDatabase)
     {
         _locationDetailService = locationDetailService;
     }

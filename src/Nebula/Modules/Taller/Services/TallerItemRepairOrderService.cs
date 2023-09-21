@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Modules.Taller.Models;
@@ -15,7 +14,7 @@ public interface ITallerItemRepairOrderService : ICrudOperationService<TallerIte
 /// </summary>
 public class TallerItemRepairOrderService : CrudOperationService<TallerItemRepairOrder>, ITallerItemRepairOrderService
 {
-    public TallerItemRepairOrderService(IOptions<DatabaseSettings> options) : base(options)
+    public TallerItemRepairOrderService(MongoDatabaseService mongoDatabase) : base(mongoDatabase)
     {
     }
 

@@ -5,6 +5,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Nebula.Common;
+using Nebula.Modules.Account;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Configurations;
@@ -58,12 +59,19 @@ builder.Services.AddCors(options =>
 
 // Add services to the container.
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
+builder.Services.AddScoped<MongoDatabaseService>();
 builder.Services.AddScoped(typeof(ICrudOperationService<>), typeof(CrudOperationService<>));
 
 #region ModuleAuth
 
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IUserService, UserService>();
+
+#endregion
+
+#region Account
+
+builder.Services.AddScoped<ICompanyService, CompanyService>();
 
 #endregion
 

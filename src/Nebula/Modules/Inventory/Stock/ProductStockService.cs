@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Modules.Inventory.Helpers;
 using Nebula.Modules.Inventory.Models;
@@ -30,7 +29,7 @@ public interface IProductStockService : ICrudOperationService<ProductStock>
 
 public class ProductStockService : CrudOperationService<ProductStock>, IProductStockService
 {
-    public ProductStockService(IOptions<DatabaseSettings> options) : base(options) { }
+    public ProductStockService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
 
     public async Task<List<ProductStock>> CreateManyAsync(List<ProductStock> obj)
     {
