@@ -6,10 +6,12 @@ using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Contacts.Dto;
 using Nebula.Modules.Sales.Invoices;
 using Nebula.Modules.Auth;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Nebula.Controllers.Contacts;
 
-[Route("api/[controller]")]
+[Authorize]
+[Route("api/{companyId}/[controller]")]
 [ApiController]
 public class ContactController : ControllerBase
 {
@@ -29,18 +31,17 @@ public class ContactController : ControllerBase
         _contribuyenteService = contribuyenteService;
     }
 
-    [HttpGet("Index"), UserAuthorize(Permission.ContactRead)]
-    public async Task<IActionResult> Index([FromQuery] string? query)
+    [HttpGet]
+    public async Task<IActionResult> Index(string companyId, [FromQuery] string query = "")
     {
-        if (string.IsNullOrEmpty(query)) query = string.Empty;
-        var contacts = await _contactService.GetContactsAsync(query);
+        var contacts = await _contactService.GetContactsAsync(companyId, query);
         return Ok(contacts);
     }
 
-    [HttpGet("Show/{id}"), UserAuthorize(Permission.ContactRead)]
-    public async Task<IActionResult> Show(string id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Show(string companyId, string id)
     {
-        var contact = await _contactService.GetByIdAsync(id);
+        var contact = await _contactService.GetByIdAsync(companyId, id);
         return Ok(contact);
     }
 
@@ -67,7 +68,7 @@ public class ContactController : ControllerBase
     public async Task<IActionResult> Select2([FromQuery] string? term)
     {
         if (term == null) term = string.Empty;
-        var responseData = await _contactService.GetContactsAsync(term, 10);
+        var responseData = await _contactService.GetContactsAsync("" ,term, 10);
         var data = new List<ContactSelect>();
         responseData.ForEach(item =>
         {

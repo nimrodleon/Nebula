@@ -8,6 +8,7 @@ public interface ICrudOperationService<T> where T : class, IGenericModel
 {
     Task<List<T>> GetAsync(string field, string? query, int limit = 25);
     Task<T> GetByIdAsync(string id);
+    Task<T> GetByIdAsync(string companyId, string id);
     Task<T> CreateAsync(T obj);
     Task InsertManyAsync(List<T> objList);
     Task<T> UpdateAsync(string id, T obj);
@@ -33,6 +34,14 @@ public class CrudOperationService<T> : ICrudOperationService<T> where T : class,
 
     public virtual async Task<T> GetByIdAsync(string id) =>
         await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
+
+    public virtual async Task<T> GetByIdAsync(string companyId, string id)
+    {
+        var filter = Builders<T>.Filter.And(
+            Builders<T>.Filter.Eq("CompanyId", companyId),
+            Builders<T>.Filter.Eq(x => x.Id, id));
+        return await _collection.Find(filter).FirstOrDefaultAsync();
+    }
 
     public virtual async Task<T> CreateAsync(T obj)
     {
