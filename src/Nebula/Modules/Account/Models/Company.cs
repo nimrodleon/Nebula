@@ -12,6 +12,11 @@ public class Company : IGenericModel
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
+    /// Identificador del dueño de la empresa.
+    /// </summary>
+    public string UserId { get; set; } = string.Empty;
+
+    /// <summary>
     /// R.U.C. Empresa.
     /// </summary>
     public string Ruc { get; set; } = string.Empty;

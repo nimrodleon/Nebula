@@ -57,6 +57,8 @@ builder.Services.AddCors(options =>
         c => { c.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); });
 });
 
+builder.Services.AddHttpContextAccessor();
+
 // Add services to the container.
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
 builder.Services.AddScoped<MongoDatabaseService>();
@@ -66,6 +68,7 @@ builder.Services.AddScoped(typeof(ICrudOperationService<>), typeof(CrudOperation
 
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();
 
 #endregion
 
