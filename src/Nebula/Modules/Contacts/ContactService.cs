@@ -7,7 +7,7 @@ namespace Nebula.Modules.Contacts;
 
 public interface IContactService : ICrudOperationService<Contact>
 {
-    Task<Contact> GetContactByDocumentAsync(string document);
+    Task<Contact> GetContactByDocumentAsync(string companyId, string document);
     Task<List<Contact>> GetContactsAsync(string companyId, string query = "", int limit = 25);
 }
 
@@ -15,8 +15,13 @@ public class ContactService : CrudOperationService<Contact>, IContactService
 {
     public ContactService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
 
-    public async Task<Contact> GetContactByDocumentAsync(string document) =>
-        await _collection.Find(x => x.Document == document).FirstOrDefaultAsync();
+    public async Task<Contact> GetContactByDocumentAsync(string companyId, string document)
+    {
+        var builder = Builders<Contact>.Filter;
+        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId),
+            builder.Eq(x => x.Document, document));
+        return await _collection.Find(filter).FirstOrDefaultAsync();
+    }
 
     public async Task<List<Contact>> GetContactsAsync(string companyId, string query = "", int limit = 25)
     {

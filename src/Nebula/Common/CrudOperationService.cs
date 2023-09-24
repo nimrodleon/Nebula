@@ -13,6 +13,7 @@ public interface ICrudOperationService<T> where T : class, IGenericModel
     Task InsertManyAsync(List<T> objList);
     Task<T> UpdateAsync(string id, T obj);
     Task RemoveAsync(string id);
+    Task RemoveAsync(string companyId, string id);
 }
 
 public class CrudOperationService<T> : ICrudOperationService<T> where T : class, IGenericModel
@@ -32,6 +33,7 @@ public class CrudOperationService<T> : ICrudOperationService<T> where T : class,
         return await _collection.Find(filter).Limit(limit).ToListAsync();
     }
 
+    [Obsolete]
     public virtual async Task<T> GetByIdAsync(string id) =>
         await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
@@ -59,6 +61,16 @@ public class CrudOperationService<T> : ICrudOperationService<T> where T : class,
         return obj;
     }
 
+    [Obsolete]
     public virtual async Task RemoveAsync(string id) =>
         await _collection.DeleteOneAsync(x => x.Id == id);
+
+    public virtual async Task RemoveAsync(string companyId, string id)
+    {
+        var filter = Builders<T>.Filter.And(
+                Builders<T>.Filter.Eq(x => x.Id, id),
+                Builders<T>.Filter.Eq("CompanyId", companyId)
+            );
+        await _collection.DeleteOneAsync(filter);
+    }
 }

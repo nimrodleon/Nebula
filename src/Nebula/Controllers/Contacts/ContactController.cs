@@ -45,14 +45,14 @@ public class ContactController : ControllerBase
         return Ok(contact);
     }
 
-    [HttpGet("Document/{document}"), UserAuthorize(Permission.ContactRead)]
-    public async Task<IActionResult> Document(string document)
+    [HttpGet("Document/{document}")]
+    public async Task<IActionResult> Document(string companyId, string document)
     {
-        var contact = await _contactService.GetContactByDocumentAsync(document);
+        var contact = await _contactService.GetContactByDocumentAsync(companyId, document);
         return Ok(contact);
     }
 
-    [HttpGet("Contribuyente/{doc}"), UserAuthorize(Permission.ContactRead)]
+    [HttpGet("Contribuyente/{doc}")]
     public IActionResult Contribuyente(string doc)
     {
         ContribuyenteDto? result = null;
@@ -64,11 +64,11 @@ public class ContactController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("Select2"), UserAuthorize(Permission.ContactRead)]
-    public async Task<IActionResult> Select2([FromQuery] string? term)
+    [HttpGet("Select2")]
+    public async Task<IActionResult> Select2(string companyId, [FromQuery] string? term)
     {
         if (term == null) term = string.Empty;
-        var responseData = await _contactService.GetContactsAsync("", term, 10);
+        var responseData = await _contactService.GetContactsAsync(companyId, term, 10);
         var data = new List<ContactSelect>();
         responseData.ForEach(item =>
         {
@@ -98,11 +98,12 @@ public class ContactController : ControllerBase
         return Ok(model);
     }
 
-    [HttpPut("Update/{id}"), UserAuthorize(Permission.ContactEdit)]
-    public async Task<IActionResult> Update(string id, [FromBody] Contact model)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(string companyId, string id, [FromBody] Contact model)
     {
-        var contact = await _contactService.GetByIdAsync(id);
+        var contact = await _contactService.GetByIdAsync(companyId, id);
         model.Id = contact.Id;
+        model.CompanyId = companyId.Trim();
         model.Document = model.Document.Trim();
         model.Name = model.Name.Trim().ToUpper();
         model.Address = model.Address.Trim().ToUpper();
@@ -111,11 +112,11 @@ public class ContactController : ControllerBase
         return Ok(contact);
     }
 
-    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.ContactDelete)]
-    public async Task<IActionResult> Delete(string id)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var contact = await _contactService.GetByIdAsync(id);
-        await _contactService.RemoveAsync(id);
+        var contact = await _contactService.GetByIdAsync(companyId, id);
+        await _contactService.RemoveAsync(companyId, id);
         return Ok(contact);
     }
 
