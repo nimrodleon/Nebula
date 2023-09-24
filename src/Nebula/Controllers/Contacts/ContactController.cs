@@ -68,7 +68,7 @@ public class ContactController : ControllerBase
     public async Task<IActionResult> Select2([FromQuery] string? term)
     {
         if (term == null) term = string.Empty;
-        var responseData = await _contactService.GetContactsAsync("" ,term, 10);
+        var responseData = await _contactService.GetContactsAsync("", term, 10);
         var data = new List<ContactSelect>();
         responseData.ForEach(item =>
         {
@@ -86,9 +86,10 @@ public class ContactController : ControllerBase
         return Ok(new { Results = data });
     }
 
-    [HttpPost("Create"), UserAuthorize(Permission.ContactCreate)]
-    public async Task<IActionResult> Create([FromBody] Contact model)
+    [HttpPost]
+    public async Task<IActionResult> Create(string companyId, [FromBody] Contact model)
     {
+        model.CompanyId = companyId.Trim();
         model.Document = model.Document.Trim();
         model.Name = model.Name.Trim().ToUpper();
         model.Address = model.Address.Trim().ToUpper();
