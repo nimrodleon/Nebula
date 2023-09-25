@@ -31,6 +31,19 @@ namespace Nebula.Controllers.Account
             return Ok(company);
         }
 
+        [HttpGet("Info/{id}")]
+        public async Task<IActionResult> GetCompanyInfo(string id)
+        {
+            var company = await _companyService.GetByIdAsync(id);
+            if (company == null) return NotFound();
+            return Ok(new
+            {
+                company.Id,
+                company.Ruc,
+                company.RznSocial,
+            });
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Company model)
         {

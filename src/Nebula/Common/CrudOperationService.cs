@@ -6,6 +6,7 @@ namespace Nebula.Common;
 
 public interface ICrudOperationService<T> where T : class, IGenericModel
 {
+    [Obsolete]
     Task<List<T>> GetAsync(string field, string? query, int limit = 25);
     Task<List<T>> GetFilteredAsync(string companyId, string[] fieldNames, string query = "", int limit = 15);
     Task<T> GetByIdAsync(string id);
@@ -57,7 +58,6 @@ public class CrudOperationService<T> : ICrudOperationService<T> where T : class,
         return await _collection.Find(filter).Limit(limit).ToListAsync();
     }
 
-    [Obsolete]
     public virtual async Task<T> GetByIdAsync(string id) =>
         await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
 
@@ -85,7 +85,6 @@ public class CrudOperationService<T> : ICrudOperationService<T> where T : class,
         return obj;
     }
 
-    [Obsolete]
     public virtual async Task RemoveAsync(string id) =>
         await _collection.DeleteOneAsync(x => x.Id == id);
 
