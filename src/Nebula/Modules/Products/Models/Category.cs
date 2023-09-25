@@ -14,5 +14,10 @@ public class Category : IGenericModel
     [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Identificador de la empresa al que pertenece.
+    /// </summary>
+    public string CompanyId { get; set; } = string.Empty;
+
     public string Name { get; set; } = string.Empty;
 }

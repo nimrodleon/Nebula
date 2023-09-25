@@ -1,13 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Products.Models;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Common.Dto;
 using Nebula.Modules.Products;
-using Nebula.Modules.Auth;
 
 namespace Nebula.Controllers.Products;
 
-[Route("api/[controller]")]
+[Route("api/products/{companyId}/[controller]")]
 [ApiController]
 public class CategoryController : ControllerBase
 {
@@ -16,25 +14,27 @@ public class CategoryController : ControllerBase
     public CategoryController(ICategoryService categoryService) =>
         _categoryService = categoryService;
 
-    [HttpGet("Index"), UserAuthorize(Permission.ProductRead)]
-    public async Task<IActionResult> Index([FromQuery] string? query)
+    [HttpGet]
+    public async Task<IActionResult> Index(string companyId, [FromQuery] string query = "")
     {
-        var responseData = await _categoryService.GetAsync("Name", query);
-        return Ok(responseData);
+        string[] fieldNames = new string[] { "Name" };
+        var categories = await _categoryService.GetFilteredAsync(companyId, fieldNames, query);
+        return Ok(categories);
     }
 
-    [HttpGet("Show/{id}"), UserAuthorize(Permission.ProductRead)]
-    public async Task<IActionResult> Show(string id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Show(string companyId, string id)
     {
-        var category = await _categoryService.GetByIdAsync(id);
+        var category = await _categoryService.GetByIdAsync(companyId, id);
         return Ok(category);
     }
 
-    [HttpGet("Select2"), UserAuthorize(Permission.ProductRead)]
-    public async Task<IActionResult> Select2([FromQuery] string? term)
+    [HttpGet("Select2")]
+    public async Task<IActionResult> Select2(string companyId, [FromQuery] string? term)
     {
         if (string.IsNullOrWhiteSpace(term)) term = string.Empty;
-        var responseData = await _categoryService.GetAsync("Name", term, 10);
+        string[] fieldNames = new string[] { "Name" };
+        var responseData = await _categoryService.GetFilteredAsync(companyId, fieldNames, term, 10);
         var data = new List<InputSelect2>();
         responseData.ForEach(item =>
         {
@@ -47,30 +47,32 @@ public class CategoryController : ControllerBase
         return Ok(new { Results = data });
     }
 
-    [HttpPost("Create"), UserAuthorize(Permission.ProductCreate)]
-    public async Task<IActionResult> Create([FromBody] Category model)
+    [HttpPost]
+    public async Task<IActionResult> Create(string companyId, [FromBody] Category model)
     {
+        model.CompanyId = companyId.Trim();
         model.Name = model.Name.ToUpper();
         await _categoryService.CreateAsync(model);
         return Ok(model);
     }
 
-    [HttpPut("Update/{id}"), UserAuthorize(Permission.ProductEdit)]
-    public async Task<IActionResult> Update(string id, [FromBody] Category model)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(string companyId, string id, [FromBody] Category model)
     {
         var category = await _categoryService.GetByIdAsync(id);
 
         model.Id = category.Id;
+        model.CompanyId = companyId.Trim();
         model.Name = model.Name.ToUpper();
         model = await _categoryService.UpdateAsync(id, model);
         return Ok(model);
     }
 
-    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.ProductDelete)]
-    public async Task<IActionResult> Delete(string id)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var category = await _categoryService.GetByIdAsync(id);
-        await _categoryService.RemoveAsync(id);
+        var category = await _categoryService.GetByIdAsync(companyId, id);
+        await _categoryService.RemoveAsync(companyId, category.Id);
         return Ok(category);
     }
 }
