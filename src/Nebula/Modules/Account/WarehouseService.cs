@@ -1,8 +1,8 @@
 using MongoDB.Driver;
 using Nebula.Common;
-using Nebula.Modules.Configurations.Models;
+using Nebula.Modules.Account.Models;
 
-namespace Nebula.Modules.Configurations.Warehouses;
+namespace Nebula.Modules.Account;
 
 public interface IWarehouseService : ICrudOperationService<Warehouse>
 {

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Cashier;
-using Nebula.Modules.Configurations.Subscriptions;
 using Nebula.Modules.Finanzas;
 using Nebula.Modules.Finanzas.Dto;
 using Nebula.Modules.Finanzas.Models;
@@ -14,15 +13,13 @@ namespace Nebula.Controllers.Finanzas;
 [ApiController]
 public class ReceivableController : ControllerBase
 {
-    private readonly ISubscriptionService _subscriptionService;
     private readonly IReceivableService _receivableService;
     private readonly ICashierDetailService _cashierDetailService;
 
-    public ReceivableController(ISubscriptionService subscriptionService,
+    public ReceivableController(
         IReceivableService receivableService,
         ICashierDetailService cashierDetailService)
     {
-        _subscriptionService = subscriptionService;
         _receivableService = receivableService;
         _cashierDetailService = cashierDetailService;
     }
@@ -52,9 +49,6 @@ public class ReceivableController : ControllerBase
     [HttpPost("Create"), UserAuthorize(Permission.ReceivableCreate)]
     public async Task<IActionResult> Create([FromBody] Receivable model)
     {
-        var license = await _subscriptionService.ValidarAcceso();
-        if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
-
         await _receivableService.CreateAsync(_cashierDetailService, model);
 
         return Ok(new
@@ -68,9 +62,6 @@ public class ReceivableController : ControllerBase
     [HttpPut("Update/{id}"), UserAuthorize(Permission.ReceivableEdit)]
     public async Task<IActionResult> Update(string id, [FromBody] Receivable model)
     {
-        var license = await _subscriptionService.ValidarAcceso();
-        if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
-
         var receivable = await _receivableService.GetByIdAsync(id);
 
         model.Id = receivable.Id;
@@ -87,8 +78,6 @@ public class ReceivableController : ControllerBase
     [HttpDelete("Delete/{id}"), UserAuthorize(Permission.ReceivableDelete)]
     public async Task<IActionResult> Delete(string id)
     {
-        var license = await _subscriptionService.ValidarAcceso();
-        if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         var receivable = await _receivableService.GetByIdAsync(id);
         if (receivable.Type == "CARGO")
             await _receivableService.RemoveAsync(receivable.Id);

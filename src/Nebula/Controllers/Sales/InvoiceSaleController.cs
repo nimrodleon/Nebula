@@ -5,7 +5,6 @@ using Nebula.Common.Helpers;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Configurations;
-using Nebula.Modules.Configurations.Subscriptions;
 using Nebula.Modules.Configurations.Warehouses;
 using Nebula.Modules.Facturador;
 using Nebula.Modules.Facturador.Helpers;
@@ -25,7 +24,6 @@ namespace Nebula.Controllers.Sales;
 public class InvoiceSaleController : ControllerBase
 {
     private readonly IConfiguration _configuration;
-    private readonly ISubscriptionService _subscriptionService;
     private readonly IConfigurationService _configurationService;
     private readonly IInvoiceSerieService _invoiceSerieService;
     private readonly IInvoiceSaleService _invoiceSaleService;
@@ -38,7 +36,7 @@ public class InvoiceSaleController : ControllerBase
     private readonly IValidateStockService _validateStockService;
     private readonly IConsultarValidezComprobanteService _consultarValidezComprobanteService;
 
-    public InvoiceSaleController(ISubscriptionService subscriptionService,
+    public InvoiceSaleController(
         IConfigurationService configurationService,
         IInvoiceSerieService invoiceSerieService,
         IInvoiceSaleService invoiceSaleService,
@@ -52,7 +50,6 @@ public class InvoiceSaleController : ControllerBase
         IConsultarValidezComprobanteService consultarValidezComprobanteService,
         ITributoCreditNoteService tributoCreditNoteService)
     {
-        _subscriptionService = subscriptionService;
         _configuration = configuration;
         _configurationService = configurationService;
         _invoiceSerieService = invoiceSerieService;
@@ -121,8 +118,6 @@ public class InvoiceSaleController : ControllerBase
     [HttpPost("Create"), UserAuthorize(Permission.SalesCreate)]
     public async Task<IActionResult> Create([FromBody] ComprobanteDto dto)
     {
-        var license = await _subscriptionService.ValidarAcceso();
-        if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         _comprobanteService.SetComprobanteDto(dto);
         var invoiceSale = await _comprobanteService.SaveChangesAsync();
         await _facturadorService.JsonInvoiceParser(invoiceSale.Id);

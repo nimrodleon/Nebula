@@ -4,7 +4,6 @@ using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Cashier.Helpers;
 using Nebula.Modules.Cashier.Models;
-using Nebula.Modules.Configurations.Subscriptions;
 
 namespace Nebula.Controllers.Cashier;
 
@@ -12,12 +11,10 @@ namespace Nebula.Controllers.Cashier;
 [ApiController]
 public class CashierDetailController : ControllerBase
 {
-    private readonly ISubscriptionService _subscriptionService;
     private readonly ICashierDetailService _cashierDetailService;
 
-    public CashierDetailController(ISubscriptionService subscriptionService, ICashierDetailService cashierDetailService)
+    public CashierDetailController(ICashierDetailService cashierDetailService)
     {
-        _subscriptionService = subscriptionService;
         _cashierDetailService = cashierDetailService;
     }
 
@@ -32,8 +29,6 @@ public class CashierDetailController : ControllerBase
     [HttpPost("Create"), UserAuthorize(Permission.PosCreate)]
     public async Task<IActionResult> Create([FromBody] CashierDetail model)
     {
-        var license = await _subscriptionService.ValidarAcceso();
-        if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         if (model.TypeOperation == TypeOperationCaja.EntradaDeDinero)
             model.TypeOperation = TypeOperationCaja.EntradaDeDinero;
         if (model.TypeOperation == TypeOperationCaja.SalidaDeDinero)
@@ -65,8 +60,6 @@ public class CashierDetailController : ControllerBase
     [HttpDelete("Delete/{id}"), UserAuthorize(Permission.PosDelete)]
     public async Task<IActionResult> Delete(string id)
     {
-        var license = await _subscriptionService.ValidarAcceso();
-        if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         var cashierDetail = await _cashierDetailService.GetByIdAsync(id);
         await _cashierDetailService.RemoveAsync(cashierDetail.Id);
         return Ok(new { Ok = true, Data = cashierDetail, Msg = "El detalle de caja ha sido borrado!" });

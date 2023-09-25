@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Cashier;
-using Nebula.Modules.Configurations.Subscriptions;
 using Nebula.Modules.Facturador;
 using Nebula.Modules.Inventory.Stock;
 using Nebula.Modules.Sales.Comprobantes.Dto;
@@ -15,19 +14,17 @@ namespace Nebula.Controllers.Cashier;
 [ApiController]
 public class InvoiceSaleCashierController : ControllerBase
 {
-    private readonly ISubscriptionService _subscriptionService;
     private readonly ICashierSaleService _cashierSaleService;
     private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly IValidateStockService _validateStockService;
     private readonly IFacturadorService _facturadorService;
 
-    public InvoiceSaleCashierController(ISubscriptionService subscriptionService,
+    public InvoiceSaleCashierController(
         ICashierSaleService cashierSaleService,
         IInvoiceSaleDetailService invoiceSaleDetailService,
         IValidateStockService validateStockService,
         IFacturadorService facturadorService)
     {
-        _subscriptionService = subscriptionService;
         _cashierSaleService = cashierSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _validateStockService = validateStockService;
@@ -45,8 +42,6 @@ public class InvoiceSaleCashierController : ControllerBase
     {
         try
         {
-            var license = await _subscriptionService.ValidarAcceso();
-            if (!license.Ok) throw new Exception("Error, Verificar suscripción!");
             _cashierSaleService.SetComprobanteDto(model);
             var invoiceSale = await _cashierSaleService.SaveChangesAsync(id);
             if (invoiceSale.DocType != "NOTA")

@@ -1,4 +1,4 @@
-using Nebula.Modules.Configurations.Models;
+using Nebula.Modules.Account.Models;
 using Nebula.Modules.Inventory.Helpers;
 using Nebula.Modules.Inventory.Models;
 using Nebula.Modules.Inventory.Stock.Dto;

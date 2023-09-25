@@ -6,7 +6,6 @@ using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Cashier.Helpers;
 using Nebula.Modules.Cashier.Dto;
 using Nebula.Common.Dto;
-using Nebula.Modules.Configurations.Subscriptions;
 using Nebula.Modules.Auth;
 
 namespace Nebula.Controllers.Cashier;
@@ -15,17 +14,15 @@ namespace Nebula.Controllers.Cashier;
 [ApiController]
 public class CajaDiariaController : ControllerBase
 {
-    private readonly ISubscriptionService _subscriptionService;
     private readonly ICajaDiariaService _cajaDiariaService;
     private readonly IInvoiceSerieService _invoiceSerieService;
     private readonly ICashierDetailService _cashierDetailService;
 
-    public CajaDiariaController(ISubscriptionService subscriptionService,
+    public CajaDiariaController(
         ICajaDiariaService cajaDiariaService,
         IInvoiceSerieService invoiceSerieService,
         ICashierDetailService cashierDetailService)
     {
-        _subscriptionService = subscriptionService;
         _cajaDiariaService = cajaDiariaService;
         _invoiceSerieService = invoiceSerieService;
         _cashierDetailService = cashierDetailService;
@@ -83,8 +80,6 @@ public class CajaDiariaController : ControllerBase
     [HttpPut("Update/{id}"), UserAuthorize(Permission.PosEdit)]
     public async Task<IActionResult> Update(string id, [FromBody] CerrarCaja model)
     {
-        var license = await _subscriptionService.ValidarAcceso();
-        if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         var cajaDiaria = await _cajaDiariaService.GetByIdAsync(id);
         cajaDiaria.TotalContabilizado = model.TotalContabilizado;
         cajaDiaria.TotalCierre = model.TotalCierre;
@@ -101,8 +96,6 @@ public class CajaDiariaController : ControllerBase
     [HttpDelete("Delete/{id}"), UserAuthorize(Permission.PosDelete)]
     public async Task<IActionResult> Delete(string id)
     {
-        var license = await _subscriptionService.ValidarAcceso();
-        if (!license.Ok) return BadRequest(new { Ok = false, Msg = "Error, Verificar suscripción!" });
         var cajaDiaria = await _cajaDiariaService.GetByIdAsync(id);
         await _cajaDiariaService.RemoveAsync(cajaDiaria.Id);
         return Ok(new { Ok = true, Data = cajaDiaria, Msg = "La caja diaria ha sido borrado!" });
