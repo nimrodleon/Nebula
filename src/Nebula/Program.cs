@@ -9,7 +9,6 @@ using Nebula.Modules.Account;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Configurations;
-using Nebula.Modules.Configurations.Warehouses;
 using Nebula.Modules.Contacts;
 using Nebula.Modules.Facturador;
 using Nebula.Modules.Finanzas;
@@ -71,9 +70,11 @@ builder.Services.AddScoped<IUserAuthenticationService, UserAuthenticationService
 
 #endregion
 
-#region Account
+#region ModuleAccount
 
 builder.Services.AddScoped<ICompanyService, CompanyService>();
+builder.Services.AddScoped<IWarehouseService, WarehouseService>();
+builder.Services.AddScoped<IInvoiceSerieService, InvoiceSerieService>();
 
 #endregion
 
@@ -88,8 +89,6 @@ builder.Services.AddScoped<ICashierSaleService, CashierSaleService>();
 #region ModuleConfigurations
 
 builder.Services.AddScoped<IConfigurationService, ConfigurationService>();
-builder.Services.AddScoped<IWarehouseService, WarehouseService>();
-builder.Services.AddScoped<IInvoiceSerieService, InvoiceSerieService>();
 
 #endregion
 

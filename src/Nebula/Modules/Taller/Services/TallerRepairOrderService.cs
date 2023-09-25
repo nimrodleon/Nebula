@@ -2,7 +2,7 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Common.Dto;
-using Nebula.Modules.Configurations.Warehouses;
+using Nebula.Modules.Account;
 using Nebula.Modules.Taller.Models;
 
 namespace Nebula.Modules.Taller.Services;

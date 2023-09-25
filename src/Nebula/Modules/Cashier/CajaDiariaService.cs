@@ -2,7 +2,7 @@ using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Modules.Cashier.Models;
 using Nebula.Common.Dto;
-using Nebula.Modules.Configurations.Warehouses;
+using Nebula.Modules.Account;
 
 namespace Nebula.Modules.Cashier;
 

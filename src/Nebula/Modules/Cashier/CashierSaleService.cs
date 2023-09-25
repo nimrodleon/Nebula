@@ -3,11 +3,11 @@ using Nebula.Modules.Sales.Models;
 using Nebula.Modules.Cashier.Models;
 using Nebula.Modules.Finanzas.Models;
 using Nebula.Modules.Finanzas;
-using Nebula.Modules.Configurations.Models;
 using Nebula.Modules.Configurations;
 using Nebula.Modules.Cashier.Helpers;
 using Nebula.Modules.Sales.Invoices;
 using Nebula.Modules.Sales.Comprobantes.Dto;
+using Nebula.Modules.Account.Models;
 
 namespace Nebula.Modules.Cashier;
 

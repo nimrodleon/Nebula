@@ -1,6 +1,6 @@
+using Nebula.Modules.Account;
+using Nebula.Modules.Account.Models;
 using Nebula.Modules.Configurations;
-using Nebula.Modules.Configurations.Models;
-using Nebula.Modules.Configurations.Warehouses;
 using Nebula.Modules.Sales.Helpers;
 using Nebula.Modules.Sales.Invoices;
 using Nebula.Modules.Sales.Models;

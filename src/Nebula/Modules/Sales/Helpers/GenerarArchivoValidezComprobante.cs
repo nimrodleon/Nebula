@@ -1,6 +1,6 @@
 using System.Globalization;
 using System.IO.Compression;
-using Nebula.Modules.Configurations.Models;
+using Nebula.Modules.Account.Models;
 using Nebula.Modules.Sales.Models;
 
 namespace Nebula.Modules.Sales.Helpers;

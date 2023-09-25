@@ -1,9 +1,9 @@
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Common.Dto;
+using Nebula.Modules.Account;
+using Nebula.Modules.Account.Models;
 using Nebula.Modules.Configurations;
-using Nebula.Modules.Configurations.Models;
-using Nebula.Modules.Configurations.Warehouses;
 using Nebula.Modules.Facturador.Helpers;
 using Nebula.Modules.Facturador.XmlDigest;
 using Nebula.Modules.Sales.Helpers;

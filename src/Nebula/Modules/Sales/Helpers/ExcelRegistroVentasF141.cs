@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using ClosedXML.Excel;
-using Nebula.Modules.Configurations.Models;
+using Nebula.Modules.Account.Models;
 using Nebula.Modules.Sales.Models;
 
 namespace Nebula.Modules.Sales.Helpers;

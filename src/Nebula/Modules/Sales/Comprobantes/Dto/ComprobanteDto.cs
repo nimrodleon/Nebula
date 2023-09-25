@@ -1,3 +1,4 @@
+using Nebula.Modules.Account.Models;
 using Nebula.Modules.Configurations.Models;
 using Nebula.Modules.Sales.Helpers;
 using Nebula.Modules.Sales.Models;

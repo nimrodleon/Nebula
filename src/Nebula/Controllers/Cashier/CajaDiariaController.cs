@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Cashier.Models;
-using Nebula.Modules.Configurations.Warehouses;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Cashier.Helpers;
 using Nebula.Modules.Cashier.Dto;
 using Nebula.Common.Dto;
 using Nebula.Modules.Auth;
+using Nebula.Modules.Account;
 
 namespace Nebula.Controllers.Cashier;
 

@@ -3,9 +3,9 @@ using Nebula.Modules.Finanzas.Models;
 using Nebula.Modules.Finanzas;
 using Nebula.Modules.Configurations;
 using Nebula.Modules.Cashier.Helpers;
-using Nebula.Modules.Configurations.Warehouses;
 using Nebula.Modules.Sales.Comprobantes.Dto;
 using Nebula.Modules.Sales.Invoices;
+using Nebula.Modules.Account;
 
 namespace Nebula.Modules.Sales.Comprobantes;
 
