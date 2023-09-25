@@ -8,7 +8,7 @@ public interface ICrudOperationService<T> where T : class, IGenericModel
 {
     [Obsolete]
     Task<List<T>> GetAsync(string field, string? query, int limit = 25);
-    Task<List<T>> GetFilteredAsync(string companyId, string[] fieldNames, string query = "", int limit = 15);
+    Task<List<T>> GetFilteredAsync(string companyId, string[] fieldNames, string query = "", int limit = 25);
     Task<T> GetByIdAsync(string id);
     Task<T> GetByIdAsync(string companyId, string id);
     Task<T> CreateAsync(T obj);
@@ -36,7 +36,7 @@ public class CrudOperationService<T> : ICrudOperationService<T> where T : class,
         return await _collection.Find(filter).Limit(limit).ToListAsync();
     }
 
-    public virtual async Task<List<T>> GetFilteredAsync(string companyId, string[] fieldNames, string query = "", int limit = 15)
+    public virtual async Task<List<T>> GetFilteredAsync(string companyId, string[] fieldNames, string query = "", int limit = 25)
     {
         var builder = Builders<T>.Filter;
         var filter = builder.Eq("CompanyId", companyId);

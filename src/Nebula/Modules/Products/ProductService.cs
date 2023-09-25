@@ -23,7 +23,7 @@ public class ProductService : CrudOperationService<Product>, IProductService
         _configurationService = configurationService;
     }
 
-    public async Task<List<Product>> GetListAsync(string? query, int limit = 24)
+    public async Task<List<Product>> GetListAsync(string? query, int limit = 25)
     {
         var filter = Builders<Product>.Filter.Empty;
         if (!string.IsNullOrEmpty(query))
