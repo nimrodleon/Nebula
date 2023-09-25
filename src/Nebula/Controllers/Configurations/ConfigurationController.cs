@@ -1,11 +1,9 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Configurations;
 using Nebula.Modules.Configurations.Dto;
 using Nebula.Modules.Configurations.Models;
-using Nebula.Modules.Configurations.Subscriptions;
 using System.Security.Claims;
 
 namespace Nebula.Controllers.Configurations;
@@ -15,17 +13,14 @@ namespace Nebula.Controllers.Configurations;
 public class ConfigurationController : ControllerBase
 {
     private readonly IConfigurationService _configurationService;
-    private readonly ISubscriptionService _subscriptionService;
     private readonly IUserService _userService;
     private readonly IRoleService _roleService;
 
     public ConfigurationController(
         IConfigurationService configurationService,
-        ISubscriptionService subscriptionService,
         IUserService userService, IRoleService roleService)
     {
         _configurationService = configurationService;
-        _subscriptionService = subscriptionService;
         _userService = userService;
         _roleService = roleService;
     }
@@ -51,27 +46,6 @@ public class ConfigurationController : ControllerBase
         model.Id = configuration.Id;
         model = await _configurationService.UpdateAsync(model);
         return Ok(model);
-    }
-
-    [HttpGet("SincronizarPago"), AllowAnonymous]
-    public async Task<IActionResult> SincronizarPago()
-    {
-        var response = await _subscriptionService.SincronizarPago();
-        return Ok(response);
-    }
-
-    [HttpGet("ValidarAcceso"), AllowAnonymous]
-    public async Task<IActionResult> ValidarAcceso()
-    {
-        var licenseDto = await _subscriptionService.ValidarAcceso();
-        return Ok(licenseDto);
-    }
-
-    [HttpPatch("UpdateKey/{subscriptionId}"), UserAuthorize(Permission.ConfigurationEdit)]
-    public async Task<IActionResult> UpdateKey(string subscriptionId)
-    {
-        var configuration = await _subscriptionService.UpdateKey(subscriptionId);
-        return Ok(configuration);
     }
 
 }

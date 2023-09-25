@@ -6,7 +6,7 @@ using Nebula.Modules.Account.Models;
 namespace Nebula.Controllers.Account;
 
 [Authorize]
-[Route("api/{companyId}/[controller]")]
+[Route("api/account/{companyId}/[controller]")]
 [ApiController]
 public class WarehouseController : ControllerBase
 {
