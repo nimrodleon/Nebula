@@ -6,7 +6,7 @@ namespace Nebula.Modules.Inventory.Stock.Validations;
 
 public interface IInventoryNotasStockValidator
 {
-    Task<InventoryNotas> ValidarNotas(string id);
+    Task<InventoryNotas> ValidarNotas(string companyId, string id);
 }
 
 public class InventoryNotasStockValidator : IInventoryNotasStockValidator
@@ -24,9 +24,9 @@ public class InventoryNotasStockValidator : IInventoryNotasStockValidator
         _inventoryNotasDetailService = inventoryNotasDetailService;
     }
 
-    public async Task<InventoryNotas> ValidarNotas(string id)
+    public async Task<InventoryNotas> ValidarNotas(string companyId, string id)
     {
-        var inventoryNotas = await _inventoryNotasService.GetByIdAsync(id);
+        var inventoryNotas = await _inventoryNotasService.GetByIdAsync(companyId, id);
         var inventoryNotasDetails = await _inventoryNotasDetailService.GetListAsync(inventoryNotas.Id);
         var productStocks = new List<ProductStock>();
         inventoryNotasDetails.ForEach(item =>
