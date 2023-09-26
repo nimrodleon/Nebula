@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Modules.Auth;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Finanzas;
 using Nebula.Modules.Finanzas.Dto;
@@ -9,7 +7,8 @@ using Nebula.Modules.Finanzas.Models;
 
 namespace Nebula.Controllers.Finanzas;
 
-[Route("api/[controller]")]
+[Authorize]
+[Route("api/finanzas/{companyId}/[controller]")]
 [ApiController]
 public class ReceivableController : ControllerBase
 {
@@ -24,87 +23,77 @@ public class ReceivableController : ControllerBase
         _cashierDetailService = cashierDetailService;
     }
 
-    [HttpGet("Index"), UserAuthorize(Permission.ReceivableRead)]
-    public async Task<IActionResult> Index([FromQuery] ReceivableRequestParams requestParam)
+    [HttpGet]
+    public async Task<IActionResult> Index(string companyId, [FromQuery] ReceivableRequestParams requestParam)
     {
-        var responseData = await _receivableService.GetListAsync(requestParam);
+        var responseData = await _receivableService.GetListAsync(companyId, requestParam);
         return Ok(responseData);
     }
 
-    [HttpGet("Show/{id}"), UserAuthorize(Permission.ReceivableRead)]
-    public async Task<IActionResult> Show(string id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Show(string companyId, string id)
     {
-        var receivable = await _receivableService.GetByIdAsync(id);
+        var receivable = await _receivableService.GetByIdAsync(companyId, id);
         return Ok(receivable);
     }
 
-    [HttpGet("GetReceivablesByContactId/{contactId}"), UserAuthorize(Permission.ReceivableRead)]
-    public async Task<IActionResult> GetReceivablesByContactId(string contactId,
+    [HttpGet("GetReceivablesByContactId/{contactId}")]
+    public async Task<IActionResult> GetReceivablesByContactId(
+        string companyId, string contactId,
         [FromQuery] ReceivableRequestParams requestParam)
     {
-        var receivable = await _receivableService.GetReceivablesByContactId(contactId, requestParam);
+        var receivable = await _receivableService.GetReceivablesByContactId(companyId, contactId, requestParam);
         return Ok(receivable);
     }
 
-    [HttpPost("Create"), UserAuthorize(Permission.ReceivableCreate)]
-    public async Task<IActionResult> Create([FromBody] Receivable model)
+    [HttpPost]
+    public async Task<IActionResult> Create(string companyId, [FromBody] Receivable model)
     {
+        model.CompanyId = companyId.Trim();
         await _receivableService.CreateAsync(_cashierDetailService, model);
-
-        return Ok(new
-        {
-            Ok = true,
-            Data = model,
-            Msg = $"El {model.Type.ToLower()} ha sido registrado!"
-        });
+        return Ok(model);
     }
 
-    [HttpPut("Update/{id}"), UserAuthorize(Permission.ReceivableEdit)]
-    public async Task<IActionResult> Update(string id, [FromBody] Receivable model)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(string companyId, string id, [FromBody] Receivable model)
     {
-        var receivable = await _receivableService.GetByIdAsync(id);
-
+        var receivable = await _receivableService.GetByIdAsync(companyId, id);
         model.Id = receivable.Id;
-        await _receivableService.UpdateAsync(id, model);
-
-        return Ok(new
-        {
-            Ok = true,
-            Data = model,
-            Msg = $"El {model.Type.ToLower()} ha sido actualizado!"
-        });
+        model.CompanyId = companyId.Trim();
+        receivable = await _receivableService.UpdateAsync(receivable.Id, model);
+        return Ok(receivable);
     }
 
-    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.ReceivableDelete)]
-    public async Task<IActionResult> Delete(string id)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var receivable = await _receivableService.GetByIdAsync(id);
+        var receivable = await _receivableService.GetByIdAsync(companyId, id);
         if (receivable.Type == "CARGO")
-            await _receivableService.RemoveAsync(receivable.Id);
+            await _receivableService.RemoveAsync(companyId, receivable.Id);
         if (receivable.Type == "ABONO")
-            await _receivableService.RemoveAbonoAsync(receivable);
-        return Ok(new { Ok = true, Data = receivable, Msg = $"El {receivable.Type.ToLower()} ha sido borrado!" });
+            await _receivableService.RemoveAbonoAsync(companyId, receivable);
+        return Ok(receivable);
     }
 
-    [HttpGet("Abonos/{id}"), UserAuthorize(Permission.ReceivableRead)]
-    public async Task<IActionResult> Abonos(string id)
+    [HttpGet("Abonos/{id}")]
+    public async Task<IActionResult> Abonos(string companyId, string id)
     {
-        var receivables = await _receivableService.GetAbonosAsync(id);
+        var receivables = await _receivableService.GetAbonosAsync(companyId, id);
         return Ok(receivables);
     }
 
-    [HttpGet("TotalAbonos/{id}"), UserAuthorize(Permission.ReceivableRead)]
-    public async Task<IActionResult> TotalAbonos(string id)
+    [HttpGet("TotalAbonos/{id}")]
+    public async Task<IActionResult> TotalAbonos(string companyId, string id)
     {
-        var total = await _receivableService.GetTotalAbonosAsync(id);
+        var total = await _receivableService.GetTotalAbonosAsync(companyId, id);
         return Ok(total);
     }
 
     [AllowAnonymous]
     [HttpGet("ExportDeudaExcel/{contactId}")]
-    public async Task<IActionResult> ExportDeudaExcel(string contactId, [FromQuery] string year)
+    public async Task<IActionResult> ExportDeudaExcel(string companyId, string contactId, [FromQuery] string year)
     {
-        List<Receivable> cuentasPorCobrar = await _receivableService.GetReceivablesByContactId(contactId, year);
+        List<Receivable> cuentasPorCobrar = await _receivableService.GetReceivablesByContactId(companyId, contactId, year);
         ExportarCuentasPorCobrarDto exportar = new ExportarCuentasPorCobrarDto(cuentasPorCobrar);
         string pathExcel = exportar.GenerarArchivoExcel();
         FileStream stream = new FileStream(pathExcel, FileMode.Open);
