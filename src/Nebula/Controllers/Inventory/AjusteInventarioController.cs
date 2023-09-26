@@ -2,13 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Inventory.Stock;
 using Nebula.Modules.Inventory.Models;
 using Nebula.Modules.Inventory.Ajustes;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Common.Dto;
-using Nebula.Modules.Auth;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Nebula.Controllers.Inventory;
 
-[Route("api/[controller]")]
+[Authorize]
+[Route("api/inventory/{companyId}/[controller]")]
 [ApiController]
 public class AjusteInventarioController : ControllerBase
 {
@@ -26,49 +26,51 @@ public class AjusteInventarioController : ControllerBase
         _validateStockService = validateStockService;
     }
 
-    [HttpGet("Index"), UserAuthorize(Permission.InventoryRead)]
-    public async Task<IActionResult> Index([FromQuery] DateQuery model)
+    [HttpGet]
+    public async Task<IActionResult> Index(string companyId, [FromQuery] DateQuery model)
     {
-        var responseData = await _ajusteInventarioService.GetListAsync(model);
+        var responseData = await _ajusteInventarioService.GetListAsync(companyId ,model);
         return Ok(responseData);
     }
 
-    [HttpGet("Show/{id}"), UserAuthorize(Permission.InventoryRead)]
-    public async Task<IActionResult> Show(string id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Show(string companyId, string id)
     {
-        var ajusteInventario = await _ajusteInventarioService.GetByIdAsync(id);
+        var ajusteInventario = await _ajusteInventarioService.GetByIdAsync(companyId, id);
         return Ok(ajusteInventario);
     }
 
-    [HttpPost("Create"), UserAuthorize(Permission.InventoryCreate)]
-    public async Task<IActionResult> Create([FromBody] AjusteInventario model)
+    [HttpPost]
+    public async Task<IActionResult> Create(string companyId, [FromBody] AjusteInventario model)
     {
+        model.CompanyId = companyId.Trim();
         var ajusteInventario = await _ajusteInventarioService.CreateAsync(model);
         await _ajusteInventarioDetailService.GenerateDetailAsync(ajusteInventario.LocationId, ajusteInventario.Id);
         return Ok(ajusteInventario);
     }
 
-    [HttpPut("Update/{id}"), UserAuthorize(Permission.InventoryEdit)]
-    public async Task<IActionResult> Update(string id, [FromBody] AjusteInventario model)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(string companyId, string id, [FromBody] AjusteInventario model)
     {
-        var ajusteInventario = await _ajusteInventarioService.GetByIdAsync(id);
+        var ajusteInventario = await _ajusteInventarioService.GetByIdAsync(companyId, id);
         model.Id = ajusteInventario.Id;
+        model.CompanyId = companyId.Trim();
         var responseData = await _ajusteInventarioService.UpdateAsync(id, model);
         return Ok(responseData);
     }
 
-    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.InventoryDelete)]
-    public async Task<IActionResult> Delete(string id)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var ajusteInventario = await _ajusteInventarioService.GetByIdAsync(id);
-        await _ajusteInventarioService.RemoveAsync(ajusteInventario.Id);
+        var ajusteInventario = await _ajusteInventarioService.GetByIdAsync(companyId, id);
+        await _ajusteInventarioService.RemoveAsync(companyId, ajusteInventario.Id);
         return Ok(ajusteInventario);
     }
 
-    [HttpGet("Validate/{id}"), UserAuthorize(Permission.InventoryEdit)]
-    public async Task<IActionResult> Validate(string id)
+    [HttpGet("Validate/{id}")]
+    public async Task<IActionResult> Validate(string companyId, string id)
     {
-        var ajusteInventario = await _validateStockService.ValidarAjusteInventario(id);
+        var ajusteInventario = await _validateStockService.ValidarAjusteInventario(companyId, id);
         return Ok(ajusteInventario);
     }
 }
