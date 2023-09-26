@@ -6,7 +6,7 @@ namespace Nebula.Modules.Inventory.Stock.Validations;
 
 public interface IInventoryTransferenciaStockValidator
 {
-    Task<Transferencia> ValidarTransferencia(string id);
+    Task<Transferencia> ValidarTransferencia(string companyId, string id);
 }
 
 public class InventoryTransferenciaStockValidator : IInventoryTransferenciaStockValidator
@@ -24,9 +24,9 @@ public class InventoryTransferenciaStockValidator : IInventoryTransferenciaStock
         _transferenciaDetailService = transferenciaDetailService;
     }
 
-    public async Task<Transferencia> ValidarTransferencia(string id)
+    public async Task<Transferencia> ValidarTransferencia(string companyId, string id)
     {
-        var transferencia = await _transferenciaService.GetByIdAsync(id);
+        var transferencia = await _transferenciaService.GetByIdAsync(companyId, id);
         var transferenciaDetails = await _transferenciaDetailService.GetListAsync(transferencia.Id);
         var productStockDestino = new List<ProductStock>();
         var productStockOrigen = new List<ProductStock>();

@@ -6,7 +6,7 @@ namespace Nebula.Modules.Inventory.Stock.Validations;
 
 public interface IAjusteInventarioStockValidator
 {
-    Task<AjusteInventario> ValidarAjusteInventario(string id);
+    Task<AjusteInventario> ValidarAjusteInventario(string companyId, string id);
 }
 
 public class AjusteInventarioStockValidator : IAjusteInventarioStockValidator
@@ -24,9 +24,9 @@ public class AjusteInventarioStockValidator : IAjusteInventarioStockValidator
         _ajusteInventarioDetailService = ajusteInventarioDetailService;
     }
 
-    public async Task<AjusteInventario> ValidarAjusteInventario(string id)
+    public async Task<AjusteInventario> ValidarAjusteInventario(string companyId, string id)
     {
-        var ajusteInventario = await _ajusteInventarioService.GetByIdAsync(id);
+        var ajusteInventario = await _ajusteInventarioService.GetByIdAsync(companyId, id);
         var ajusteInventarioDetails = await _ajusteInventarioDetailService.GetListAsync(ajusteInventario.Id);
         ajusteInventarioDetails = await _productStockService.CalcularCantidadExistenteAjusteInventarioAsync(ajusteInventarioDetails, ajusteInventario.WarehouseId);
         var productArrId = new List<string>();

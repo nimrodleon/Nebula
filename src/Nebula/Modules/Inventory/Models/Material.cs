@@ -13,6 +13,11 @@ public class Material : IGenericModel
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
+    /// Identificador de la empresa al que pertenece.
+    /// </summary>
+    public string CompanyId { get; set; } = string.Empty;
+
+    /// <summary>
     /// Usuario Autentificado.
     /// </summary>
     public string User { get; set; } = string.Empty;

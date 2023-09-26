@@ -2,13 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Inventory.Stock;
 using Nebula.Modules.Inventory.Models;
 using Nebula.Modules.Inventory.Transferencias;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Common.Dto;
-using Nebula.Modules.Auth;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Nebula.Controllers.Inventory;
 
-[Route("api/[controller]")]
+[Authorize]
+[Route("api/inventory/{companyId}/[controller]")]
 [ApiController]
 public class TransferenciaController : ControllerBase
 {
@@ -23,48 +23,50 @@ public class TransferenciaController : ControllerBase
         _validateStockService = validateStockService;
     }
 
-    [HttpGet("Index"), UserAuthorize(Permission.InventoryRead)]
-    public async Task<IActionResult> Index([FromQuery] DateQuery model)
+    [HttpGet]
+    public async Task<IActionResult> Index(string companyId, [FromQuery] DateQuery model)
     {
-        var responseData = await _transferenciaService.GetListAsync(model);
+        var responseData = await _transferenciaService.GetListAsync(companyId, model);
         return Ok(responseData);
     }
 
-    [HttpGet("Show/{id}"), UserAuthorize(Permission.InventoryRead)]
-    public async Task<IActionResult> Show(string id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Show(string companyId, string id)
     {
-        var transferencia = await _transferenciaService.GetByIdAsync(id);
+        var transferencia = await _transferenciaService.GetByIdAsync(companyId, id);
         return Ok(transferencia);
     }
 
-    [HttpPost("Create"), UserAuthorize(Permission.InventoryCreate)]
-    public async Task<IActionResult> Create([FromBody] Transferencia model)
+    [HttpPost]
+    public async Task<IActionResult> Create(string companyId, [FromBody] Transferencia model)
     {
+        model.CompanyId = companyId.Trim();
         var transferencia = await _transferenciaService.CreateAsync(model);
         return Ok(transferencia);
     }
 
-    [HttpPut("Update/{id}"), UserAuthorize(Permission.InventoryEdit)]
-    public async Task<IActionResult> Update(string id, [FromBody] Transferencia model)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(string companyId, string id, [FromBody] Transferencia model)
     {
-        var transferencia = await _transferenciaService.GetByIdAsync(id);
+        var transferencia = await _transferenciaService.GetByIdAsync(companyId, id);
         model.Id = transferencia.Id;
+        model.CompanyId = companyId.Trim();
         var responseData = await _transferenciaService.UpdateAsync(id, model);
         return Ok(responseData);
     }
 
-    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.InventoryDelete)]
-    public async Task<IActionResult> Delete(string id)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var transferencia = await _transferenciaService.GetByIdAsync(id);
-        await _transferenciaService.RemoveAsync(transferencia.Id);
+        var transferencia = await _transferenciaService.GetByIdAsync(companyId, id);
+        await _transferenciaService.RemoveAsync(companyId, transferencia.Id);
         return Ok(transferencia);
     }
 
-    [HttpGet("Validate/{id}"), UserAuthorize(Permission.InventoryEdit)]
-    public async Task<IActionResult> Validate(string id)
+    [HttpGet("Validate/{id}")]
+    public async Task<IActionResult> Validate(string companyId, string id)
     {
-        var transferencia = await _validateStockService.ValidarTransferencia(id);
+        var transferencia = await _validateStockService.ValidarTransferencia(companyId, id);
         return Ok(transferencia);
     }
 }

@@ -2,13 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Inventory.Stock;
 using Nebula.Modules.Inventory.Models;
 using Nebula.Modules.Inventory.Notas;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Common.Dto;
-using Nebula.Modules.Auth;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Nebula.Controllers.Inventory;
 
-[Route("api/[controller]")]
+[Authorize]
+[Route("api/inventory/{companyId}/[controller]")]
 [ApiController]
 public class InventoryNotasController : ControllerBase
 {
@@ -23,48 +23,50 @@ public class InventoryNotasController : ControllerBase
         _validateStockService = validateStockService;
     }
 
-    [HttpGet("Index"), UserAuthorize(Permission.InventoryRead)]
-    public async Task<IActionResult> Index([FromQuery] DateQuery model)
+    [HttpGet]
+    public async Task<IActionResult> Index(string companyId, [FromQuery] DateQuery model)
     {
-        var responseData = await _inventoryNotasService.GetListAsync(model);
+        var responseData = await _inventoryNotasService.GetListAsync(companyId, model);
         return Ok(responseData);
     }
 
-    [HttpGet("Show/{id}"), UserAuthorize(Permission.InventoryRead)]
-    public async Task<IActionResult> Show(string id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Show(string companyId, string id)
     {
-        var inventoryNotas = await _inventoryNotasService.GetByIdAsync(id);
+        var inventoryNotas = await _inventoryNotasService.GetByIdAsync(companyId, id);
         return Ok(inventoryNotas);
     }
 
-    [HttpPost("Create"), UserAuthorize(Permission.InventoryCreate)]
-    public async Task<IActionResult> Create([FromBody] InventoryNotas model)
+    [HttpPost]
+    public async Task<IActionResult> Create(string companyId, [FromBody] InventoryNotas model)
     {
+        model.CompanyId = companyId.Trim();
         var inventoryNotas = await _inventoryNotasService.CreateAsync(model);
         return Ok(inventoryNotas);
     }
 
-    [HttpPut("Update/{id}"), UserAuthorize(Permission.InventoryEdit)]
-    public async Task<IActionResult> Update(string id, [FromBody] InventoryNotas model)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(string companyId, string id, [FromBody] InventoryNotas model)
     {
-        var inventoryNotas = await _inventoryNotasService.GetByIdAsync(id);
+        var inventoryNotas = await _inventoryNotasService.GetByIdAsync(companyId, id);
         model.Id = inventoryNotas.Id;
+        model.CompanyId = companyId.Trim();
         var responseData = await _inventoryNotasService.UpdateAsync(id, model);
         return Ok(responseData);
     }
 
-    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.InventoryDelete)]
-    public async Task<IActionResult> Delete(string id)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var inventoryNotas = await _inventoryNotasService.GetByIdAsync(id);
-        await _inventoryNotasService.RemoveAsync(inventoryNotas.Id);
+        var inventoryNotas = await _inventoryNotasService.GetByIdAsync(companyId, id);
+        await _inventoryNotasService.RemoveAsync(companyId, inventoryNotas.Id);
         return Ok(inventoryNotas);
     }
 
-    [HttpGet("Validate/{id}"), UserAuthorize(Permission.InventoryEdit)]
-    public async Task<IActionResult> Validate(string id)
+    [HttpGet("Validate/{id}")]
+    public async Task<IActionResult> Validate(string companyId, string id)
     {
-        var inventoryNotas = await _validateStockService.ValidarNotas(id);
+        var inventoryNotas = await _validateStockService.ValidarNotas(companyId, id);
         return Ok(inventoryNotas);
     }
 }

@@ -2,13 +2,13 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Inventory.Stock;
 using Nebula.Modules.Inventory.Models;
 using Nebula.Modules.Inventory.Materiales;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Common.Dto;
-using Nebula.Modules.Auth;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Nebula.Controllers.Inventory;
 
-[Route("api/[controller]")]
+[Authorize]
+[Route("api/inventory/{companyId}/[controller]")]
 [ApiController]
 public class MaterialController : ControllerBase
 {
@@ -23,55 +23,57 @@ public class MaterialController : ControllerBase
         _validateStockService = validateStockService;
     }
 
-    [HttpGet("Index"), UserAuthorize(Permission.InventoryRead)]
-    public async Task<IActionResult> Index([FromQuery] DateQuery model)
+    [HttpGet]
+    public async Task<IActionResult> Index(string companyId, [FromQuery] DateQuery model)
     {
-        var responseData = await _materialService.GetListAsync(model);
+        var responseData = await _materialService.GetListAsync(companyId, model);
         return Ok(responseData);
     }
 
-    [HttpGet("Contact/{id}"), UserAuthorize(Permission.InventoryRead)]
-    public async Task<IActionResult> Index([FromQuery] DateQuery model, string id)
+    [HttpGet("Contact/{id}")]
+    public async Task<IActionResult> Index(string companyId, [FromQuery] DateQuery model, string id)
     {
-        var responseData = await _materialService.GetListByContactIdAsync(model, id);
+        var responseData = await _materialService.GetListByContactIdAsync(companyId, model, id);
         return Ok(responseData);
     }
 
-    [HttpGet("Show/{id}"), UserAuthorize(Permission.InventoryRead)]
-    public async Task<IActionResult> Show(string id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Show(string companyId, string id)
     {
-        var location = await _materialService.GetByIdAsync(id);
+        var location = await _materialService.GetByIdAsync(companyId, id);
         return Ok(location);
     }
 
-    [HttpPost("Create"), UserAuthorize(Permission.InventoryCreate)]
-    public async Task<IActionResult> Create([FromBody] Material model)
+    [HttpPost]
+    public async Task<IActionResult> Create(string companyId, [FromBody] Material model)
     {
+        model.CompanyId = companyId.Trim();
         var location = await _materialService.CreateAsync(model);
         return Ok(location);
     }
 
-    [HttpPut("Update/{id}"), UserAuthorize(Permission.InventoryEdit)]
-    public async Task<IActionResult> Update(string id, [FromBody] Material model)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(string companyId, string id, [FromBody] Material model)
     {
         var material = await _materialService.GetByIdAsync(id);
         model.Id = material.Id;
+        model.CompanyId = companyId.Trim();
         var responseData = await _materialService.UpdateAsync(id, model);
         return Ok(responseData);
     }
 
-    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.InventoryDelete)]
-    public async Task<IActionResult> Delete(string id)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var material = await _materialService.GetByIdAsync(id);
-        await _materialService.RemoveAsync(material.Id);
+        var material = await _materialService.GetByIdAsync(companyId, id);
+        await _materialService.RemoveAsync(companyId, material.Id);
         return Ok(material);
     }
 
-    [HttpGet("Validate/{id}"), UserAuthorize(Permission.InventoryEdit)]
-    public async Task<IActionResult> Validate(string id)
+    [HttpGet("Validate/{id}")]
+    public async Task<IActionResult> Validate(string companyId, string id)
     {
-        var material = await _validateStockService.ValidarMaterial(id);
+        var material = await _validateStockService.ValidarMaterial(companyId, id);
         return Ok(material);
     }
 }
