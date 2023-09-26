@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Products.Models;
 using Nebula.Common.Dto;
 using Nebula.Modules.Products;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Nebula.Controllers.Products;
 
+[Authorize]
 [Route("api/products/{companyId}/[controller]")]
 [ApiController]
 public class CategoryController : ControllerBase

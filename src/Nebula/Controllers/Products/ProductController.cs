@@ -2,14 +2,14 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Products.Models;
 using Nebula.Modules.Products;
 using Nebula.Modules.Configurations;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Sales.Helpers;
 using Nebula.Modules.Products.Dto;
-using Nebula.Modules.Auth;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Nebula.Controllers.Products;
 
-[Route("api/[controller]")]
+[Authorize]
+[Route("api/products/{companyId}/[controller]")]
 [ApiController]
 public class ProductController : ControllerBase
 {
@@ -31,24 +31,26 @@ public class ProductController : ControllerBase
         public IFormFile? File { get; set; }
     }
 
-    [HttpGet("Index"), UserAuthorize(Permission.ProductRead)]
-    public async Task<IActionResult> Index([FromQuery] string? query)
+    [HttpGet]
+    public async Task<IActionResult> Index(string companyId, [FromQuery] string query = "")
     {
-        var products = await _productService.GetListAsync(query);
+        string[] fieldNames = new string[] { "Barcode", "Description" };
+        var products = await _productService.GetFilteredAsync(companyId, fieldNames, query);
         return Ok(products);
     }
 
-    [HttpGet("Show/{id}"), UserAuthorize(Permission.ProductRead)]
-    public async Task<IActionResult> Show(string id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Show(string companyId, string id)
     {
-        var product = await _productService.GetByIdAsync(id);
+        var product = await _productService.GetByIdAsync(companyId, id);
         return Ok(product);
     }
 
-    [HttpGet("Select2"), UserAuthorize(Permission.ProductRead)]
-    public async Task<IActionResult> Select2([FromQuery] string? term)
+    [HttpGet("Select2")]
+    public async Task<IActionResult> Select2(string companyId, [FromQuery] string term = "")
     {
-        var products = await _productService.GetListAsync(term, 10);
+        string[] fieldNames = new string[] { "Barcode", "Description" };
+        var products = await _productService.GetFilteredAsync(companyId, fieldNames, term, 10);
         var data = new List<ProductSelect>();
         products.ForEach(item =>
         {
@@ -76,8 +78,8 @@ public class ProductController : ControllerBase
         return Ok(new { Results = data });
     }
 
-    [HttpPost("Create"), UserAuthorize(Permission.ProductCreate)]
-    public async Task<IActionResult> Create([FromForm] FormData model)
+    [HttpPost]
+    public async Task<IActionResult> Create(string companyId, [FromForm] FormData model)
     {
         if (model.File?.Length > 0)
         {
@@ -101,6 +103,7 @@ public class ProductController : ControllerBase
 
         Product product = new Product()
         {
+            CompanyId = companyId.Trim(),
             Description = model.Description.ToUpper(),
             IgvSunat = model.IgvSunat,
             Icbper = model.Icbper,
@@ -121,8 +124,8 @@ public class ProductController : ControllerBase
         return Ok(product);
     }
 
-    [HttpPut("Update/{id}"), UserAuthorize(Permission.ProductEdit)]
-    public async Task<IActionResult> Update(string id, [FromForm] FormData model)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(string companyId, string id, [FromForm] FormData model)
     {
         if (id != model.Id) return BadRequest();
         var product = await _productService.GetByIdAsync(id);
@@ -153,6 +156,7 @@ public class ProductController : ControllerBase
         decimal porcentajeTributo = model.IgvSunat == TipoIGV.Gravado ? porcentajeIgv : 1;
         model.ValorUnitario = model.PrecioVentaUnitario / porcentajeTributo;
         // actualización de datos del modelo.
+        product.CompanyId = companyId.Trim();
         product.Description = model.Description.ToUpper();
         product.IgvSunat = model.IgvSunat;
         product.Icbper = model.Icbper;
@@ -172,10 +176,10 @@ public class ProductController : ControllerBase
         return Ok(product);
     }
 
-    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.ProductDelete)]
-    public async Task<IActionResult> Delete(string id)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var product = await _productService.GetByIdAsync(id);
+        var product = await _productService.GetByIdAsync(companyId, id);
         // directorio principal.
         var storagePath = _configuration.GetValue<string>("StoragePath");
         var dirPath = Path.Combine(storagePath, "uploads");
@@ -187,7 +191,7 @@ public class ProductController : ControllerBase
         }
 
         // borrar registro.
-        await _productService.RemoveAsync(id);
+        await _productService.RemoveAsync(companyId, product.Id);
         return Ok(product);
     }
 

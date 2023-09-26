@@ -14,6 +14,11 @@ public class Product : IGenericModel
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
+    /// Identificador de la empresa al que pertenece.
+    /// </summary>
+    public string CompanyId { get; set; } = string.Empty;
+
+    /// <summary>
     /// Descripción del producto.
     /// </summary>
     public string Description { get; set; } = string.Empty;
