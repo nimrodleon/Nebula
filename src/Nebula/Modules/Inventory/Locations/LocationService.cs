@@ -8,8 +8,8 @@ namespace Nebula.Modules.Inventory.Locations;
 
 public interface ILocationService : ICrudOperationService<Location>
 {
-    Task<List<Location>> GetByWarehouseIdAsync(string id);
-    Task<RespLocationDetailStock> GetLocationDetailStocksAsync(string id, bool reponer = false);
+    Task<List<Location>> GetByWarehouseIdAsync(string companyId, string id);
+    Task<RespLocationDetailStock> GetLocationDetailStocksAsync(string companyId, string id, bool reponer = false);
 }
 
 public class LocationService : CrudOperationService<Location>, ILocationService
@@ -25,16 +25,17 @@ public class LocationService : CrudOperationService<Location>, ILocationService
         _locationDetailService = locationDetailService;
     }
 
-    public async Task<List<Location>> GetByWarehouseIdAsync(string id)
+    public async Task<List<Location>> GetByWarehouseIdAsync(string companyId, string id)
     {
         var builder = Builders<Location>.Filter;
-        var filter = builder.Eq(x => x.WarehouseId, id);
+        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId),
+            builder.Eq(x => x.WarehouseId, id));
         return await _collection.Find(filter).ToListAsync();
     }
 
-    public async Task<RespLocationDetailStock> GetLocationDetailStocksAsync(string id, bool reponer = false)
+    public async Task<RespLocationDetailStock> GetLocationDetailStocksAsync(string companyId, string id, bool reponer = false)
     {
-        var location = await GetByIdAsync(id);
+        var location = await GetByIdAsync(companyId, id);
         var locationDetails = await _locationDetailService.GetListAsync(location.Id);
         var productArrId = new List<string>();
         // obtener lista de identificadores.

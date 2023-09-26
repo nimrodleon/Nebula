@@ -1,13 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Modules.Auth;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Inventory.Dto;
 using Nebula.Modules.Inventory.Locations;
 using Nebula.Modules.Inventory.Models;
 
 namespace Nebula.Controllers.Inventory;
 
-[Route("api/[controller]")]
+[Authorize]
+[Route("api/inventory/{companyId}/[controller]")]
 [ApiController]
 public class LocationController : ControllerBase
 {
@@ -18,69 +18,72 @@ public class LocationController : ControllerBase
         _locationService = locationService;
     }
 
-    [HttpGet("Index"), UserAuthorize(Permission.InventoryRead)]
-    public async Task<IActionResult> Index([FromQuery] string? query)
+    [HttpGet]
+    public async Task<IActionResult> Index(string companyId, [FromQuery] string query = "")
     {
-        var responseData = await _locationService.GetAsync("Description", query);
-        return Ok(responseData);
+        string[] fieldNames = new string[] { "Description" };
+        var locations = await _locationService.GetFilteredAsync(companyId, fieldNames, query);
+        return Ok(locations);
     }
 
-    [HttpGet("Show/{id}"), UserAuthorize(Permission.InventoryRead)]
-    public async Task<IActionResult> Show(string id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Show(string companyId, string id)
     {
-        var location = await _locationService.GetByIdAsync(id);
+        var location = await _locationService.GetByIdAsync(companyId, id);
         return Ok(location);
     }
 
-    [HttpGet("Stock/{id}"), UserAuthorize(Permission.InventoryRead)]
-    public async Task<IActionResult> Stock(string id)
+    [HttpGet("Stock/{id}")]
+    public async Task<IActionResult> Stock(string companyId, string id)
     {
-        var respLocationDetailStock = await _locationService.GetLocationDetailStocksAsync(id);
+        var respLocationDetailStock = await _locationService.GetLocationDetailStocksAsync(companyId, id);
         return Ok(respLocationDetailStock.LocationDetailStocks);
     }
 
-    [HttpGet("Reponer/{ids}"), UserAuthorize(Permission.InventoryRead)]
-    public async Task<IActionResult> Reponer(string ids)
+    [HttpGet("Reponer/{ids}")]
+    public async Task<IActionResult> Reponer(string companyId, string ids)
     {
         var respLocationDetailStocks = new List<RespLocationDetailStock>();
         foreach (string id in ids.Split(","))
         {
-            var respItem = await _locationService.GetLocationDetailStocksAsync(id, true);
+            var respItem = await _locationService.GetLocationDetailStocksAsync(companyId, id, true);
             respLocationDetailStocks.Add(respItem);
         }
         return Ok(respLocationDetailStocks);
     }
 
-    [HttpPost("Create"), UserAuthorize(Permission.InventoryCreate)]
-    public async Task<IActionResult> Create([FromBody] Location model)
+    [HttpPost]
+    public async Task<IActionResult> Create(string companyId, [FromBody] Location model)
     {
+        model.CompanyId = companyId.Trim();
         model.Description = model.Description.ToUpper();
         var location = await _locationService.CreateAsync(model);
         return Ok(location);
     }
 
-    [HttpPut("Update/{id}"), UserAuthorize(Permission.InventoryEdit)]
-    public async Task<IActionResult> Update(string id, [FromBody] Location model)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(string companyId, string id, [FromBody] Location model)
     {
-        var location = await _locationService.GetByIdAsync(id);
+        var location = await _locationService.GetByIdAsync(companyId, id);
         model.Id = location.Id;
+        model.CompanyId = companyId.Trim();
         model.Description = model.Description.ToUpper();
         var responseData = await _locationService.UpdateAsync(id, model);
         return Ok(responseData);
     }
 
-    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.InventoryDelete)]
-    public async Task<IActionResult> Delete(string id)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var location = await _locationService.GetByIdAsync(id);
-        await _locationService.RemoveAsync(location.Id);
+        var location = await _locationService.GetByIdAsync(companyId, id);
+        await _locationService.RemoveAsync(companyId, location.Id);
         return Ok(location);
     }
 
-    [HttpGet("Warehouse/{id}"), UserAuthorize(Permission.InventoryRead)]
-    public async Task<IActionResult> Warehouse(string id)
+    [HttpGet("Warehouse/{id}")]
+    public async Task<IActionResult> Warehouse(string companyId, string id)
     {
-        var locations = await _locationService.GetByWarehouseIdAsync(id);
+        var locations = await _locationService.GetByWarehouseIdAsync(companyId, id);
         return Ok(locations);
     }
 }
