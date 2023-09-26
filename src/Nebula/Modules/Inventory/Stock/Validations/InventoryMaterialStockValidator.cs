@@ -6,7 +6,7 @@ namespace Nebula.Modules.Inventory.Stock.Validations;
 
 public interface IInventoryMaterialStockValidator
 {
-    Task<Material> ValidarMaterial(string id);
+    Task<Material> ValidarMaterial(string companyId, string id);
 }
 
 public class InventoryMaterialStockValidator : IInventoryMaterialStockValidator
@@ -24,9 +24,9 @@ public class InventoryMaterialStockValidator : IInventoryMaterialStockValidator
         _materialDetailService = materialDetailService;
     }
 
-    public async Task<Material> ValidarMaterial(string id)
+    public async Task<Material> ValidarMaterial(string companyId, string id)
     {
-        var material = await _materialService.GetByIdAsync(id);
+        var material = await _materialService.GetByIdAsync(companyId, id);
         var materialDetails = await _materialDetailService.GetListAsync(material.Id);
         var productStocks = new List<ProductStock>();
         materialDetails.ForEach(item =>
