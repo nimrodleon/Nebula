@@ -6,7 +6,7 @@ namespace Nebula.Modules.Inventory.Stock;
 public interface IValidateStockService
 {
     Task<InventoryNotas> ValidarNotas(string companyId, string id);
-    Task<Transferencia> ValidarTransferencia(string id);
+    Task<Transferencia> ValidarTransferencia(string companyId, string id);
     Task<AjusteInventario> ValidarAjusteInventario(string id);
     Task<Material> ValidarMaterial(string id);
     Task ValidarInvoiceSale(string id);
@@ -39,9 +39,9 @@ public class ValidateStockService : IValidateStockService
         return await _inventoryNotasStockValidator.ValidarNotas(companyId, id);
     }
 
-    public async Task<Transferencia> ValidarTransferencia(string id)
+    public async Task<Transferencia> ValidarTransferencia(string companyId, string id)
     {
-        return await _inventoryTransferenciaStockValidator.ValidarTransferencia(id);
+        return await _inventoryTransferenciaStockValidator.ValidarTransferencia(companyId, id);
     }
 
     public async Task<AjusteInventario> ValidarAjusteInventario(string id)
