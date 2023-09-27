@@ -104,7 +104,7 @@ public class InvoiceSaleController : ControllerBase
     [HttpGet("Pendientes")]
     public async Task<IActionResult> Pendientes(string companyId)
     {
-        var invoiceSales = await _invoiceSaleService.GetInvoiceSalesPendingAsync();
+        var invoiceSales = await _invoiceSaleService.GetInvoiceSalesPendingAsync(companyId);
         return Ok(invoiceSales);
     }
 

@@ -19,6 +19,7 @@ using Nebula.Modules.Inventory.Notas;
 using Nebula.Modules.Inventory.Stock;
 using Nebula.Modules.Inventory.Stock.Validations;
 using Nebula.Modules.Inventory.Transferencias;
+using Nebula.Modules.InvoiceHub;
 using Nebula.Modules.Products;
 using Nebula.Modules.Purchases;
 using Nebula.Modules.Sales;
@@ -172,6 +173,14 @@ builder.Services.AddScoped<IConsultarValidezComprobanteService, ConsultarValidez
 
 builder.Services.AddScoped<ITallerRepairOrderService, TallerRepairOrderService>();
 builder.Services.AddScoped<ITallerItemRepairOrderService, TallerItemRepairOrderService>();
+
+#endregion
+
+#region ModuleInvoiceHub
+
+builder.Services.AddHttpClient<ICreditNoteHubService, CreditNoteHubService>();
+builder.Services.AddHttpClient<IInvoiceHubService, InvoiceHubService>();
+builder.Services.Configure<InvoiceHubSettings>(builder.Configuration.GetSection(nameof(InvoiceHubSettings)));
 
 #endregion
 
