@@ -1,12 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Modules.Auth;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Cashier.Helpers;
 using Nebula.Modules.Cashier.Models;
 
 namespace Nebula.Controllers.Cashier;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class CashierDetailController : ControllerBase
@@ -18,7 +18,7 @@ public class CashierDetailController : ControllerBase
         _cashierDetailService = cashierDetailService;
     }
 
-    [HttpGet("Index/{id}"), UserAuthorize(Permission.PosRead)]
+    [HttpGet("Index/{id}")]
     public async Task<IActionResult> Index(string id, [FromQuery] string? query)
     {
         if (string.IsNullOrEmpty(query)) query = string.Empty;
@@ -26,7 +26,7 @@ public class CashierDetailController : ControllerBase
         return Ok(responseData);
     }
 
-    [HttpPost("Create"), UserAuthorize(Permission.PosCreate)]
+    [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] CashierDetail model)
     {
         if (model.TypeOperation == TypeOperationCaja.EntradaDeDinero)
@@ -43,21 +43,21 @@ public class CashierDetailController : ControllerBase
         });
     }
 
-    [HttpGet("CountDocuments/{id}"), UserAuthorize(Permission.PosRead)]
+    [HttpGet("CountDocuments/{id}")]
     public async Task<IActionResult> CountDocuments(string id)
     {
         var countDocuments = await _cashierDetailService.CountDocumentsAsync(id);
         return Ok(countDocuments);
     }
 
-    [HttpGet("ResumenCaja/{id}"), UserAuthorize(Permission.PosRead)]
+    [HttpGet("ResumenCaja/{id}")]
     public async Task<IActionResult> ResumenCaja(string id)
     {
         var resumenCaja = await _cashierDetailService.GetResumenCaja(id);
         return Ok(resumenCaja);
     }
 
-    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.PosDelete)]
+    [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(string id)
     {
         var cashierDetail = await _cashierDetailService.GetByIdAsync(id);
