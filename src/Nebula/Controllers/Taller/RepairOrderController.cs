@@ -1,13 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Common.Dto;
-using Nebula.Modules.Auth;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Taller.Models;
 using Nebula.Modules.Taller.Services;
 
 namespace Nebula.Controllers.Taller;
 
-[Route("api/taller/[controller]")]
+[Authorize]
+[Route("api/taller/{companyId}/[controller]")]
 [ApiController]
 public class RepairOrderController : ControllerBase
 {
@@ -18,46 +18,48 @@ public class RepairOrderController : ControllerBase
         _repairOrderService = repairOrderService;
     }
 
-    [HttpGet("Index"), UserAuthorize(Permission.TallerRead)]
-    public async Task<IActionResult> Index([FromQuery] string? query)
+    [HttpGet]
+    public async Task<IActionResult> Index(string companyId, [FromQuery] string query = "")
     {
-        var repairOrders = await _repairOrderService.GetRepairOrders(query);
+        var repairOrders = await _repairOrderService.GetRepairOrders(companyId, query);
         return Ok(repairOrders);
     }
 
-    [HttpGet("GetMonthlyReport"), UserAuthorize(Permission.TallerRead)]
-    public async Task<IActionResult> GetMonthlyReport([FromQuery] DateQuery dto)
+    [HttpGet("GetMonthlyReport")]
+    public async Task<IActionResult> GetMonthlyReport(string companyId, [FromQuery] DateQuery dto)
     {
-        var repairOrders = await _repairOrderService.GetRepairOrdersMonthly(dto);
+        var repairOrders = await _repairOrderService.GetRepairOrdersMonthly(companyId, dto);
         return Ok(repairOrders);
     }
 
-    [HttpGet("Show/{id}"), UserAuthorize(Permission.TallerRead)]
-    public async Task<IActionResult> Show(string id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Show(string companyId, string id)
     {
-        var repairOrder = await _repairOrderService.GetByIdAsync(id);
+        var repairOrder = await _repairOrderService.GetByIdAsync(companyId, id);
         return Ok(repairOrder);
     }
 
-    [HttpGet("GetTicket/{id}"), UserAuthorize(Permission.TallerRead)]
-    public async Task<IActionResult> GetTicket(string id)
+    [HttpGet("GetTicket/{id}")]
+    public async Task<IActionResult> GetTicket(string companyId, string id)
     {
-        var ticket = await _repairOrderService.GetTicket(id);
+        var ticket = await _repairOrderService.GetTicket(companyId, id);
         return Ok(ticket);
     }
 
-    [HttpPost("Create"), UserAuthorize(Permission.TallerCreate)]
-    public async Task<IActionResult> Create([FromBody] TallerRepairOrder model)
+    [HttpPost]
+    public async Task<IActionResult> Create(string companyId, [FromBody] TallerRepairOrder model)
     {
+        model.CompanyId = companyId.Trim();
         await _repairOrderService.CreateRepairOrderAsync(model);
         return Ok(model);
     }
 
-    [HttpPut("Update/{id}"), UserAuthorize(Permission.TallerEdit)]
-    public async Task<IActionResult> Update(string id, [FromBody] TallerRepairOrder model)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(string companyId, string id, [FromBody] TallerRepairOrder model)
     {
-        var repairOrder = await _repairOrderService.GetByIdAsync(id);
+        var repairOrder = await _repairOrderService.GetByIdAsync(companyId, id);
         model.Id = repairOrder.Id;
+        model.CompanyId = companyId.Trim();
         model.Serie = repairOrder.Serie;
         model.Number = repairOrder.Number;
         model.CreatedAt = repairOrder.CreatedAt;
@@ -70,11 +72,11 @@ public class RepairOrderController : ControllerBase
         return Ok(repairOrder);
     }
 
-    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.TallerDelete)]
-    public async Task<IActionResult> Delete(string id)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var repairOrder = await _repairOrderService.GetByIdAsync(id);
-        await _repairOrderService.RemoveAsync(repairOrder.Id);
+        var repairOrder = await _repairOrderService.GetByIdAsync(companyId, id);
+        await _repairOrderService.RemoveAsync(companyId, repairOrder.Id);
         return Ok(repairOrder);
     }
 }

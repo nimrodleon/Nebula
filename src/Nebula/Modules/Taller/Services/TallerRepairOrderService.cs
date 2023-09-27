@@ -10,9 +10,9 @@ namespace Nebula.Modules.Taller.Services;
 public interface ITallerRepairOrderService : ICrudOperationService<TallerRepairOrder>
 {
     Task<TallerRepairOrder> CreateRepairOrderAsync(TallerRepairOrder obj);
-    Task<List<TallerRepairOrder>> GetRepairOrders(string? query = "", int limit = 25);
-    Task<List<TallerRepairOrder>> GetRepairOrdersMonthly(DateQuery dto, int limit = 25);
-    Task<TallerRepairOrderTicket> GetTicket(string id);
+    Task<List<TallerRepairOrder>> GetRepairOrders(string companyId, string query = "", int limit = 25);
+    Task<List<TallerRepairOrder>> GetRepairOrdersMonthly(string companyId, DateQuery dto, int limit = 25);
+    Task<TallerRepairOrderTicket> GetTicket(string companyId, string id);
 }
 
 /// <summary>
@@ -51,12 +51,15 @@ public class TallerRepairOrderService : CrudOperationService<TallerRepairOrder>,
     /// <param name="query">Nombre del Cliente</param>
     /// <param name="limit">Cantidad de registros</param>
     /// <returns>Lista de Ordenes de Servicio</returns>
-    public async Task<List<TallerRepairOrder>> GetRepairOrders(string? query = "", int limit = 25)
+    public async Task<List<TallerRepairOrder>> GetRepairOrders(string companyId, string query = "", int limit = 25)
     {
         var filter = Builders<TallerRepairOrder>.Filter.In("Status", new List<string>
         {
             TallerRepairOrderStatus.Pendiente, TallerRepairOrderStatus.EnProceso, TallerRepairOrderStatus.Finalizado
         });
+
+        filter = filter & Builders<TallerRepairOrder>.Filter.Eq(x => x.CompanyId, companyId);
+
         if (!string.IsNullOrWhiteSpace(query))
         {
             filter = filter &
@@ -76,9 +79,10 @@ public class TallerRepairOrderService : CrudOperationService<TallerRepairOrder>,
     /// <param name="dto">Mes, Año y texto de consulta</param>
     /// <param name="limit">Cantidad de Registros</param>
     /// <returns>Lista de Ordenes de Servicio</returns>
-    public async Task<List<TallerRepairOrder>> GetRepairOrdersMonthly(DateQuery dto, int limit = 25)
+    public async Task<List<TallerRepairOrder>> GetRepairOrdersMonthly(string companyId, DateQuery dto, int limit = 25)
     {
         var filterDate = Builders<TallerRepairOrder>.Filter.And(
+            Builders<TallerRepairOrder>.Filter.Eq(x => x.CompanyId, companyId),
             Builders<TallerRepairOrder>.Filter.Eq(x => x.Month, dto.Month),
             Builders<TallerRepairOrder>.Filter.Eq(x => x.Year, dto.Year));
         var filterStatus = Builders<TallerRepairOrder>.Filter.In("Status", new List<string>
@@ -104,9 +108,9 @@ public class TallerRepairOrderService : CrudOperationService<TallerRepairOrder>,
     /// </summary>
     /// <param name="id">Identificador de la Orden de servicio</param>
     /// <returns>TallerRepairOrderTicket</returns>
-    public async Task<TallerRepairOrderTicket> GetTicket(string id)
+    public async Task<TallerRepairOrderTicket> GetTicket(string companyId, string id)
     {
-        var repairOrder = await GetByIdAsync(id);
+        var repairOrder = await GetByIdAsync(companyId, id);
         var itemsRepairOrder = await _itemRepairOrderService.GetItemsRepairOrder(repairOrder.Id);
         return new TallerRepairOrderTicket()
         {
