@@ -1,16 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Cashier.Models;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Cashier.Helpers;
 using Nebula.Modules.Cashier.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Nebula.Common.Dto;
-using Nebula.Modules.Auth;
 using Nebula.Modules.Account;
 
 namespace Nebula.Controllers.Cashier;
 
-[Route("api/[controller]")]
+[Authorize]
+[Route("api/cashier/{companyId}/[controller]")]
 [ApiController]
 public class CajaDiariaController : ControllerBase
 {
@@ -28,26 +28,27 @@ public class CajaDiariaController : ControllerBase
         _cashierDetailService = cashierDetailService;
     }
 
-    [HttpGet("Index"), UserAuthorize(Permission.PosRead)]
-    public async Task<IActionResult> Index([FromQuery] DateQuery model)
+    [HttpGet]
+    public async Task<IActionResult> Index(string companyId, [FromQuery] DateQuery model)
     {
-        var cajaDiarias = await _cajaDiariaService.GetListAsync(model);
+        var cajaDiarias = await _cajaDiariaService.GetListAsync(companyId, model);
         return Ok(cajaDiarias);
     }
 
-    [HttpGet("Show/{id}"), UserAuthorize(Permission.PosRead)]
-    public async Task<IActionResult> Show(string id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Show(string companyId, string id)
     {
-        var cajaDiaria = await _cajaDiariaService.GetByIdAsync(id);
+        var cajaDiaria = await _cajaDiariaService.GetByIdAsync(companyId, id);
         return Ok(cajaDiaria);
     }
 
-    [HttpPost("Create"), UserAuthorize(Permission.PosCreate)]
-    public async Task<IActionResult> Create([FromBody] AperturaCaja model)
+    [HttpPost]
+    public async Task<IActionResult> Create(string companyId, [FromBody] AperturaCaja model)
     {
-        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(model.InvoiceSerie);
+        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(companyId, model.InvoiceSerie);
         var cajaDiaria = new CajaDiaria()
         {
+            CompanyId = companyId.Trim(),
             InvoiceSerie = invoiceSerie.Id,
             Terminal = invoiceSerie.Name,
             Status = "ABIERTO",
@@ -69,41 +70,32 @@ public class CajaDiariaController : ControllerBase
         };
         await _cashierDetailService.CreateAsync(detalleCaja);
 
-        return Ok(new
-        {
-            Ok = true,
-            Data = cajaDiaria,
-            Msg = "La apertura de caja ha sido registrado!"
-        });
+        return Ok(cajaDiaria);
     }
 
-    [HttpPut("Update/{id}"), UserAuthorize(Permission.PosEdit)]
-    public async Task<IActionResult> Update(string id, [FromBody] CerrarCaja model)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(string companyId, string id, [FromBody] CerrarCaja model)
     {
-        var cajaDiaria = await _cajaDiariaService.GetByIdAsync(id);
+        var cajaDiaria = await _cajaDiariaService.GetByIdAsync(companyId, id);
+        cajaDiaria.CompanyId = companyId.Trim();
         cajaDiaria.TotalContabilizado = model.TotalContabilizado;
         cajaDiaria.TotalCierre = model.TotalCierre;
         cajaDiaria.Status = "CERRADO";
         await _cajaDiariaService.UpdateAsync(id, cajaDiaria);
-        return Ok(new
-        {
-            Ok = true,
-            Data = cajaDiaria,
-            Msg = "El cierre de caja ha sido registrado!"
-        });
+        return Ok(cajaDiaria);
     }
 
-    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.PosDelete)]
-    public async Task<IActionResult> Delete(string id)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var cajaDiaria = await _cajaDiariaService.GetByIdAsync(id);
-        await _cajaDiariaService.RemoveAsync(cajaDiaria.Id);
-        return Ok(new { Ok = true, Data = cajaDiaria, Msg = "La caja diaria ha sido borrado!" });
+        var cajaDiaria = await _cajaDiariaService.GetByIdAsync(companyId, id);
+        await _cajaDiariaService.RemoveAsync(companyId, cajaDiaria.Id);
+        return Ok(cajaDiaria);
     }
 
-    [HttpGet("CajasAbiertas"), UserAuthorize(Permission.PosRead)]
-    public async Task<IActionResult> CajasAbiertas()
+    [HttpGet("CajasAbiertas")]
+    public async Task<IActionResult> CajasAbiertas(string companyId)
     {
-        return Ok(await _cajaDiariaService.GetCajasAbiertasAsync());
+        return Ok(await _cajaDiariaService.GetCajasAbiertasAsync(companyId));
     }
 }

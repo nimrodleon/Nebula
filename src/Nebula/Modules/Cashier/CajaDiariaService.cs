@@ -8,8 +8,8 @@ namespace Nebula.Modules.Cashier;
 
 public interface ICajaDiariaService : ICrudOperationService<CajaDiaria>
 {
-    Task<List<CajaDiaria>> GetListAsync(DateQuery query);
-    Task<List<CajaDiaria>> GetCajasAbiertasAsync();
+    Task<List<CajaDiaria>> GetListAsync(string companyId, DateQuery query);
+    Task<List<CajaDiaria>> GetCajasAbiertasAsync(string companyId);
 }
 
 public class CajaDiariaService : CrudOperationService<CajaDiaria>, ICajaDiariaService
@@ -22,27 +22,32 @@ public class CajaDiariaService : CrudOperationService<CajaDiaria>, ICajaDiariaSe
         _invoiceSerieService = invoiceSerieService;
     }
 
-    public async Task<List<CajaDiaria>> GetListAsync(DateQuery query)
+    public async Task<List<CajaDiaria>> GetListAsync(string companyId, DateQuery query)
     {
         var filter = Builders<CajaDiaria>.Filter.And(
+            Builders<CajaDiaria>.Filter.Eq(x => x.CompanyId, companyId),
             Builders<CajaDiaria>.Filter.Eq(x => x.Month, query.Month),
             Builders<CajaDiaria>.Filter.Eq(x => x.Year, query.Year));
         return await _collection.Find(filter).Sort(new SortDefinitionBuilder<CajaDiaria>()
             .Descending("$natural")).ToListAsync();
     }
 
-    public override async Task<CajaDiaria> GetByIdAsync(string id)
+    public override async Task<CajaDiaria> GetByIdAsync(string companyId, string id)
     {
-        var cajaDiaria = await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
-        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(cajaDiaria.InvoiceSerie);
+        var filter = Builders<CajaDiaria>.Filter.And(
+            Builders<CajaDiaria>.Filter.Eq(x => x.CompanyId, companyId),
+            Builders<CajaDiaria>.Filter.Eq(x => x.Id, id));
+        var cajaDiaria = await _collection.Find(filter).FirstOrDefaultAsync();
+        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(companyId, cajaDiaria.InvoiceSerie);
         cajaDiaria.WarehouseId = invoiceSerie.WarehouseId;
         return cajaDiaria;
     }
 
-    public async Task<List<CajaDiaria>> GetCajasAbiertasAsync()
+    public async Task<List<CajaDiaria>> GetCajasAbiertasAsync(string companyId)
     {
         var filter = Builders<CajaDiaria>.Filter;
-        var query = filter.And(filter.Eq(x => x.Status, "ABIERTO"),
+        var query = filter.And(filter.Eq(x => x.CompanyId, companyId),
+            filter.Eq(x => x.Status, "ABIERTO"),
             filter.Eq(x => x.Month, DateTime.Now.ToString("MM")),
             filter.Eq(x => x.Year, DateTime.Now.ToString("yyyy")));
         return await _collection.Find(query).ToListAsync();
