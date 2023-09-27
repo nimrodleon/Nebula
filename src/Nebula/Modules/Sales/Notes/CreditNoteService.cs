@@ -15,7 +15,7 @@ namespace Nebula.Modules.Sales.Notes;
 
 public interface ICreditNoteService : ICrudOperationService<CreditNote>
 {
-    Task<List<CreditNote>> GetListAsync(DateQuery query);
+    Task<List<CreditNote>> GetListAsync(string companyId, DateQuery query);
     Task<CreditNote> GetCreditNoteByInvoiceSaleIdAsync(string invoiceSaleId);
     Task<List<CreditNote>> GetCreditNotesByMonthAndYear(string month, string year);
     Task<List<CreditNote>> GetCreditNotesByDate(string date);
@@ -60,10 +60,11 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
         _tributoCreditNoteService = tributoCreditNoteService;
     }
 
-    public async Task<List<CreditNote>> GetListAsync(DateQuery query)
+    public async Task<List<CreditNote>> GetListAsync(string companyId, DateQuery query)
     {
         var builder = Builders<CreditNote>.Filter;
-        var filter = builder.And(builder.Eq(x => x.Month, query.Month), builder.Eq(x => x.Year, query.Year));
+        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId),
+            builder.Eq(x => x.Month, query.Month), builder.Eq(x => x.Year, query.Year));
         return await _collection.Find(filter).Sort(new SortDefinitionBuilder<CreditNote>().Descending("$natural"))
             .ToListAsync();
     }

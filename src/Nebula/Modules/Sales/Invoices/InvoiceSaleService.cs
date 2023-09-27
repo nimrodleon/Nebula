@@ -12,7 +12,7 @@ namespace Nebula.Modules.Sales.Invoices;
 
 public interface IInvoiceSaleService : ICrudOperationService<InvoiceSale>
 {
-    Task<List<InvoiceSale>> GetListAsync(DateQuery query);
+    Task<List<InvoiceSale>> GetListAsync(string companyId, DateQuery query);
     Task<ResponseInvoiceSale> GetInvoiceSaleAsync(string invoiceId);
     Task<List<InvoiceSale>> GetByContactIdAsync(string id, string month, string year);
     Task<List<InvoiceSale>> GetInvoicesByNumDocs(List<string> series, List<string> numbers);
@@ -20,7 +20,7 @@ public interface IInvoiceSaleService : ICrudOperationService<InvoiceSale>
     Task<List<InvoiceSale>> GetInvoiceSaleByDate(string date);
     Task<InvoiceSale> SetSituacionFacturador(string id, SituacionFacturadorDto dto);
     Task<InvoiceSale> AnularComprobante(string id);
-    Task<List<InvoiceSale>> GetInvoiceSalesPendingAsync();
+    Task<List<InvoiceSale>> GetInvoiceSalesPendingAsync(string companyId);
     Task<List<InvoiceSale>> BusquedaAvanzadaAsync(BuscarComprobanteFormDto dto);
     Task<TicketDto> GetTicketDto(string invoiceId);
 }
@@ -44,10 +44,11 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSal
         _tributoSaleService = tributoSaleService;
     }
 
-    public async Task<List<InvoiceSale>> GetListAsync(DateQuery query)
+    public async Task<List<InvoiceSale>> GetListAsync(string companyId, DateQuery query)
     {
         var builder = Builders<InvoiceSale>.Filter;
         var filter = builder.And(
+            builder.Eq(x => x.CompanyId, companyId),
             builder.Eq(x => x.Month, query.Month),
             builder.Eq(x => x.Year, query.Year),
             builder.In("DocType", new List<string>() { "BOLETA", "FACTURA" }));
@@ -132,10 +133,11 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSal
         return invoiceSale;
     }
 
-    public async Task<List<InvoiceSale>> GetInvoiceSalesPendingAsync()
+    public async Task<List<InvoiceSale>> GetInvoiceSalesPendingAsync(string companyId)
     {
         var builder = Builders<InvoiceSale>.Filter;
-        var filter = builder.And(builder.Not(builder.Eq(x => x.DocType, "NOTA")),
+        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId),
+            builder.Not(builder.Eq(x => x.DocType, "NOTA")),
             builder.Nin("SituacionFacturador", new List<string>()
             {
                 "03:Enviado y Aceptado SUNAT", "04:Enviado y Aceptado SUNAT con Obs.",

@@ -13,6 +13,11 @@ public class CreditNote : IGenericModel
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
+    /// Identificador de la empresa al que pertenece.
+    /// </summary>
+    public string CompanyId { get; set; } = string.Empty;
+
+    /// <summary>
     /// Identificador Comprobante de Venta.
     /// </summary>
     public string InvoiceSaleId { get; set; } = string.Empty;

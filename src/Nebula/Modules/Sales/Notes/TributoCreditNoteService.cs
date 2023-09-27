@@ -9,7 +9,7 @@ namespace Nebula.Modules.Sales.Notes;
 public interface ITributoCreditNoteService : ICrudOperationService<TributoCreditNote>
 {
     Task<List<TributoCreditNote>> GetListAsync(string creditNoteId);
-    Task<List<TributoCreditNote>> GetTributosMensual(DateQuery date);
+    Task<List<TributoCreditNote>> GetTributosMensual(string companyId, DateQuery date);
 }
 
 public class TributoCreditNoteService : CrudOperationService<TributoCreditNote>, ITributoCreditNoteService
@@ -26,11 +26,11 @@ public class TributoCreditNoteService : CrudOperationService<TributoCreditNote>,
     /// </summary>
     /// <param name="date">Datos mes y año</param>
     /// <returns>Lista de tributos</returns>
-    public async Task<List<TributoCreditNote>> GetTributosMensual(DateQuery date)
+    public async Task<List<TributoCreditNote>> GetTributosMensual(string companyId, DateQuery date)
     {
         var builder = Builders<TributoCreditNote>.Filter;
-        var filter = builder.And(builder.Eq(x => x.Month, date.Month),
-            builder.Eq(x => x.Year, date.Year));
+        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId),
+            builder.Eq(x => x.Month, date.Month), builder.Eq(x => x.Year, date.Year));
         return await _collection.Find(filter).ToListAsync();
     }
 }

@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Common.Dto;
 using Nebula.Common.Helpers;
 using Nebula.Modules.Account;
-using Nebula.Modules.Auth;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Configurations;
 using Nebula.Modules.Facturador;
 using Nebula.Modules.Facturador.Helpers;
@@ -19,7 +17,8 @@ using Nebula.Modules.Sales.Notes;
 
 namespace Nebula.Controllers.Sales;
 
-[Route("api/[controller]")]
+[Authorize]
+[Route("api/sales/{companyId}/[controller]")]
 [ApiController]
 public class InvoiceSaleController : ControllerBase
 {
@@ -64,24 +63,25 @@ public class InvoiceSaleController : ControllerBase
         _tributoCreditNoteService = tributoCreditNoteService;
     }
 
-    [HttpGet("Index"), UserAuthorize(Permission.SalesRead)]
-    public async Task<IActionResult> Index([FromQuery] DateQuery model)
+    [HttpGet]
+    public async Task<IActionResult> Index(string companyId, [FromQuery] DateQuery model)
     {
-        var invoiceSales = await _invoiceSaleService.GetListAsync(model);
+        var invoiceSales = await _invoiceSaleService.GetListAsync(companyId, model);
         return Ok(invoiceSales);
     }
 
     [AllowAnonymous]
     [HttpGet("ExcelRegistroVentasF141")]
-    public async Task<IActionResult> ExcelRegistroVentasF141([FromQuery] DateQuery dto)
+    public async Task<IActionResult> ExcelRegistroVentasF141(string companyId, [FromQuery] DateQuery dto)
     {
+        string[] fieldNames = new string[] { "Name" };
         ParamExcelRegistroVentasF141 param = new ParamExcelRegistroVentasF141
         {
-            InvoiceSeries = await _invoiceSerieService.GetAsync("Name", string.Empty),
-            InvoiceSales = await _invoiceSaleService.GetListAsync(dto),
-            CreditNotes = await _creditNoteService.GetListAsync(dto),
-            TributoSales = await _tributoSaleService.GetTributosMensual(dto),
-            TributoCreditNotes = await _tributoCreditNoteService.GetTributosMensual(dto)
+            InvoiceSeries = await _invoiceSerieService.GetFilteredAsync(companyId, fieldNames, string.Empty),
+            InvoiceSales = await _invoiceSaleService.GetListAsync(companyId, dto),
+            CreditNotes = await _creditNoteService.GetListAsync(companyId, dto),
+            TributoSales = await _tributoSaleService.GetTributosMensual(companyId, dto),
+            TributoCreditNotes = await _tributoCreditNoteService.GetTributosMensual(companyId, dto)
         };
         // Obtener lista de comprobantes de notas de crédito.
         List<string> seriesComprobante = new List<string>();
@@ -101,22 +101,22 @@ public class InvoiceSaleController : ControllerBase
         return new FileStreamResult(stream, ContentTypeFormat.Excel);
     }
 
-    [HttpGet("Pendientes"), UserAuthorize(Permission.SalesRead)]
-    public async Task<IActionResult> Pendientes()
+    [HttpGet("Pendientes")]
+    public async Task<IActionResult> Pendientes(string companyId)
     {
         var invoiceSales = await _invoiceSaleService.GetInvoiceSalesPendingAsync();
         return Ok(invoiceSales);
     }
 
-    [HttpPost("BusquedaAvanzada"), UserAuthorize(Permission.SalesRead)]
-    public async Task<IActionResult> BusquedaAvanzada([FromBody] BuscarComprobanteFormDto dto)
+    [HttpPost("BusquedaAvanzada")]
+    public async Task<IActionResult> BusquedaAvanzada(string companyId, [FromBody] BuscarComprobanteFormDto dto)
     {
         var invoiceSales = await _invoiceSaleService.BusquedaAvanzadaAsync(dto);
         return Ok(invoiceSales);
     }
 
-    [HttpPost("Create"), UserAuthorize(Permission.SalesCreate)]
-    public async Task<IActionResult> Create([FromBody] ComprobanteDto dto)
+    [HttpPost]
+    public async Task<IActionResult> Create(string companyId, [FromBody] ComprobanteDto dto)
     {
         _comprobanteService.SetComprobanteDto(dto);
         var invoiceSale = await _comprobanteService.SaveChangesAsync();
@@ -125,15 +125,15 @@ public class InvoiceSaleController : ControllerBase
         return Ok(invoiceSale);
     }
 
-    [HttpGet("Show/{id}"), UserAuthorize(Permission.SalesRead)]
-    public async Task<IActionResult> Show(string id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Show(string companyId, string id)
     {
         var responseInvoiceSale = await _invoiceSaleService.GetInvoiceSaleAsync(id);
         return Ok(responseInvoiceSale);
     }
 
-    [HttpPatch("AnularComprobante/{id}"), UserAuthorize(Permission.SalesEdit)]
-    public async Task<IActionResult> AnularComprobante(string id)
+    [HttpPatch("AnularComprobante/{id}")]
+    public async Task<IActionResult> AnularComprobante(string companyId, string id)
     {
         var responseAnularComprobante = new ResponseAnularComprobante();
         var creditNote = await _creditNoteService.AnulaciónDeLaOperación(id);
@@ -148,15 +148,15 @@ public class InvoiceSaleController : ControllerBase
         return Ok(responseAnularComprobante);
     }
 
-    [HttpPatch("SituacionFacturador/{id}"), UserAuthorize(Permission.SalesEdit)]
-    public async Task<IActionResult> SituacionFacturador(string id, [FromBody] SituacionFacturadorDto dto)
+    [HttpPatch("SituacionFacturador/{id}")]
+    public async Task<IActionResult> SituacionFacturador(string companyId, string id, [FromBody] SituacionFacturadorDto dto)
     {
         var response = await _invoiceSaleService.SetSituacionFacturador(id, dto);
         return Ok(response);
     }
 
-    [HttpPatch("SaveInControlFolder/{invoiceSaleId}"), UserAuthorize(Permission.SalesEdit)]
-    public async Task<IActionResult> SituacionFacturador(string invoiceSaleId)
+    [HttpPatch("SaveInControlFolder/{invoiceSaleId}")]
+    public async Task<IActionResult> SituacionFacturador(string companyId, string invoiceSaleId)
     {
         try
         {
@@ -169,8 +169,8 @@ public class InvoiceSaleController : ControllerBase
         }
     }
 
-    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.SalesDelete)]
-    public async Task<IActionResult> Delete(string id)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string companyId, string id)
     {
         var invoiceSale = await _invoiceSaleService.GetByIdAsync(id);
         await _invoiceSaleService.RemoveAsync(invoiceSale.Id);
@@ -179,8 +179,8 @@ public class InvoiceSaleController : ControllerBase
         return Ok(new { Ok = true, Data = invoiceSale, Msg = "El comprobante de venta ha sido borrado!" });
     }
 
-    [HttpDelete("BorrarArchivosAntiguos/{invoiceSaleId}"), UserAuthorize(Permission.SalesDelete)]
-    public async Task<IActionResult> BorrarArchivos(string invoiceSaleId)
+    [HttpDelete("BorrarArchivosAntiguos/{invoiceSaleId}")]
+    public async Task<IActionResult> BorrarArchivos(string companyId, string invoiceSaleId)
     {
         var invoiceSale = await _facturadorService.BorrarArchivosAntiguosInvoice(invoiceSaleId);
         await _facturadorService.JsonInvoiceParser(invoiceSale.Id);
@@ -221,8 +221,8 @@ public class InvoiceSaleController : ControllerBase
         return new FileStreamResult(stream, "application/pdf");
     }
 
-    [HttpGet("Ticket/{id}"), UserAuthorize(Permission.SalesRead)]
-    public async Task<IActionResult> Ticket(string id)
+    [HttpGet("Ticket/{id}")]
+    public async Task<IActionResult> Ticket(string companyId, string id)
     {
         var ticket = await _invoiceSaleService.GetTicketDto(id);
         return Ok(ticket);
@@ -230,7 +230,7 @@ public class InvoiceSaleController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet("ConsultarValidez")]
-    public async Task<IActionResult> ConsultarValidez([FromQuery] QueryConsultarValidezComprobante query)
+    public async Task<IActionResult> ConsultarValidez(string companyId, [FromQuery] QueryConsultarValidezComprobante query)
     {
         string pathArchivoZip = await _consultarValidezComprobanteService.CrearArchivosDeValidación(query);
         FileStream stream = new FileStream(pathArchivoZip, FileMode.Open);

@@ -8,7 +8,7 @@ namespace Nebula.Modules.Sales.Invoices;
 public interface ITributoSaleService : ICrudOperationService<TributoSale>
 {
     Task<List<TributoSale>> GetListAsync(string id);
-    Task<List<TributoSale>> GetTributosMensual(DateQuery date);
+    Task<List<TributoSale>> GetTributosMensual(string companyId, DateQuery date);
     Task CreateManyAsync(List<TributoSale> tributoSales);
     Task RemoveManyAsync(string id);
 }
@@ -27,11 +27,11 @@ public class TributoSaleService : CrudOperationService<TributoSale>, ITributoSal
     /// </summary>
     /// <param name="date">Datos mes y año</param>
     /// <returns>Lista de tributos</returns>
-    public async Task<List<TributoSale>> GetTributosMensual(DateQuery date)
+    public async Task<List<TributoSale>> GetTributosMensual(string companyId, DateQuery date)
     {
         var builder = Builders<TributoSale>.Filter;
-        var filter = builder.And(builder.Eq(x => x.Month, date.Month),
-            builder.Eq(x => x.Year, date.Year));
+        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId),
+            builder.Eq(x => x.Month, date.Month), builder.Eq(x => x.Year, date.Year));
         return await _collection.Find(filter).ToListAsync();
     }
 
