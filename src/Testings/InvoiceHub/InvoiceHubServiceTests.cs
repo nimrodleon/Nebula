@@ -1,12 +1,22 @@
 using Microsoft.Extensions.Options;
 using Nebula.Modules.InvoiceHub.Dto;
 using Nebula.Modules.InvoiceHub;
+using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace Testings.InvoiceHub;
 
 [TestClass]
 public class InvoiceHubServiceTests
 {
+    private ILogger<InvoiceHubService> _logger;
+
+    [TestInitialize]
+    public void Initialize()
+    {
+        _logger = Mock.Of<ILogger<InvoiceHubService>>();
+    }
+
     [TestMethod]
     public async Task SendInvoiceAsync_SuccessfulResponse_ReturnsBillingResponse()
     {
@@ -18,12 +28,12 @@ public class InvoiceHubServiceTests
         };
 
         var options = Options.Create(settings);
-        var invoiceHubService = new InvoiceHubService(new HttpClient(), options);
+        var invoiceHubService = new InvoiceHubService(new HttpClient(), options, _logger);
 
         // Act
         var invoiceRequest = new InvoiceRequestHub
         {
-            ruc = "20520485750",
+            Ruc = "20520485750",
             TipoOperacion = "0101",
             TipoDoc = "01",
             Serie = "F001",
@@ -80,12 +90,12 @@ public class InvoiceHubServiceTests
 
         var options = Options.Create(settings);
 
-        var invoiceHubService = new InvoiceHubService(new HttpClient(), options);
+        var invoiceHubService = new InvoiceHubService(new HttpClient(), options, _logger);
 
         // Act
         var invoiceRequest = new InvoiceRequestHub
         {
-            ruc = "20520485750",
+            Ruc = "20520485750",
             TipoOperacion = "0101",
             TipoDoc = "01",
             Serie = "F001",
