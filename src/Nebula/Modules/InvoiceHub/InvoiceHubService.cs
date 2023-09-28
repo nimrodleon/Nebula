@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Options;
 using Nebula.Modules.InvoiceHub.Dto;
 using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
 
 namespace Nebula.Modules.InvoiceHub;
 
@@ -24,8 +26,10 @@ public class InvoiceHubService : IInvoiceHubService
     {
         try
         {
+            var data = JsonSerializer.Serialize(invoiceRequest);
+            HttpContent content = new StringContent(data, Encoding.UTF8, "application/json");
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _settings.JwtToken);
-            var response = await _httpClient.PostAsJsonAsync($"{_settings.ApiBaseUrl}/api/invoice/send", invoiceRequest);
+            var response = await _httpClient.PostAsJsonAsync($"{_settings.ApiBaseUrl}/api/invoice/send", content);
 
             if (response.IsSuccessStatusCode)
             {
