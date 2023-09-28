@@ -11,7 +11,7 @@ public class DetailHub
     public string Unidad { get; set; } = string.Empty;
 
     [JsonPropertyName("cantidad")]
-    public int Cantidad { get; set; }
+    public decimal Cantidad { get; set; }
 
     [JsonPropertyName("mtoValorUnitario")]
     public decimal MtoValorUnitario { get; set; }
@@ -23,7 +23,7 @@ public class DetailHub
     public decimal MtoBaseIgv { get; set; }
 
     [JsonPropertyName("porcentajeIgv")]
-    public int PorcentajeIgv { get; set; }
+    public decimal PorcentajeIgv { get; set; }
 
     [JsonPropertyName("igv")]
     public decimal Igv { get; set; }

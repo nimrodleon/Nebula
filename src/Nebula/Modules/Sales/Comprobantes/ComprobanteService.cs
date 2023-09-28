@@ -12,7 +12,7 @@ namespace Nebula.Modules.Sales.Comprobantes;
 public interface IComprobanteService
 {
     void SetComprobanteDto(ComprobanteDto dto);
-    Task<InvoiceSale> SaveChangesAsync();
+    Task<InvoiceSaleAndDetails> SaveChangesAsync();
 }
 
 public class ComprobanteService : IComprobanteService
@@ -55,7 +55,7 @@ public class ComprobanteService : IComprobanteService
         comprobanteDto = dto;
     }
 
-    public async Task<InvoiceSale> SaveChangesAsync()
+    public async Task<InvoiceSaleAndDetails> SaveChangesAsync()
     {
         var configuration = await _configurationService.GetAsync();
         comprobanteDto.SetConfiguration(configuration);
@@ -91,7 +91,13 @@ public class ComprobanteService : IComprobanteService
             await _receivableService.CreateAsync(cargo);
         }
 
-        return invoiceSale;
+        var result = new InvoiceSaleAndDetails()
+        {
+            InvoiceSale = invoiceSale,
+            InvoiceSaleDetails = invoiceSaleDetails,
+        };
+
+        return result;
     }
 
     /// <summary>

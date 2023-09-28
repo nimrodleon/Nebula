@@ -7,6 +7,8 @@ using Nebula.Modules.Configurations;
 using Nebula.Modules.Facturador;
 using Nebula.Modules.Facturador.Helpers;
 using Nebula.Modules.Inventory.Stock;
+using Nebula.Modules.InvoiceHub;
+using Nebula.Modules.InvoiceHub.Helpers;
 using Nebula.Modules.Sales;
 using Nebula.Modules.Sales.Comprobantes;
 using Nebula.Modules.Sales.Comprobantes.Dto;
@@ -34,6 +36,7 @@ public class InvoiceSaleController : ControllerBase
     private readonly ICreditNoteService _creditNoteService;
     private readonly IValidateStockService _validateStockService;
     private readonly IConsultarValidezComprobanteService _consultarValidezComprobanteService;
+    private readonly IInvoiceHubService _invoiceHubService;
 
     public InvoiceSaleController(
         IConfigurationService configurationService,
@@ -47,7 +50,8 @@ public class InvoiceSaleController : ControllerBase
         IValidateStockService validateStockService,
         IConfiguration configuration,
         IConsultarValidezComprobanteService consultarValidezComprobanteService,
-        ITributoCreditNoteService tributoCreditNoteService)
+        ITributoCreditNoteService tributoCreditNoteService,
+        IInvoiceHubService invoiceHubService)
     {
         _configuration = configuration;
         _configurationService = configurationService;
@@ -61,6 +65,7 @@ public class InvoiceSaleController : ControllerBase
         _validateStockService = validateStockService;
         _consultarValidezComprobanteService = consultarValidezComprobanteService;
         _tributoCreditNoteService = tributoCreditNoteService;
+        _invoiceHubService = invoiceHubService;
     }
 
     [HttpGet]
@@ -119,10 +124,10 @@ public class InvoiceSaleController : ControllerBase
     public async Task<IActionResult> Create(string companyId, [FromBody] ComprobanteDto dto)
     {
         _comprobanteService.SetComprobanteDto(dto);
-        var invoiceSale = await _comprobanteService.SaveChangesAsync();
-        await _facturadorService.JsonInvoiceParser(invoiceSale.Id);
-        await _validateStockService.ValidarInvoiceSale(invoiceSale.Id);
-        return Ok(invoiceSale);
+        var comprobante = await _comprobanteService.SaveChangesAsync();
+        var invoiceRequest = InvoiceMapper.MapToInvoiceRequestHub(companyId, comprobante);
+        var result = await _invoiceHubService.SendInvoiceAsync(invoiceRequest);
+        return Ok(result);
     }
 
     [HttpGet("{id}")]
