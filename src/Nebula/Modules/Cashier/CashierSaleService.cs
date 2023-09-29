@@ -3,7 +3,6 @@ using Nebula.Modules.Sales.Models;
 using Nebula.Modules.Cashier.Models;
 using Nebula.Modules.Finanzas.Models;
 using Nebula.Modules.Finanzas;
-using Nebula.Modules.Configurations;
 using Nebula.Modules.Cashier.Helpers;
 using Nebula.Modules.Sales.Invoices;
 using Nebula.Modules.Sales.Comprobantes.Dto;
@@ -13,8 +12,7 @@ namespace Nebula.Modules.Cashier;
 
 public interface ICashierSaleService
 {
-    void SetComprobanteDto(ComprobanteDto dto);
-    Task<InvoiceSale> SaveChangesAsync(string cajaDiariaId);
+    Task<InvoiceSale> SaveChangesAsync(ComprobanteDto comprobanteDto, string cajaDiariaId);
 }
 
 /// <summary>
@@ -22,7 +20,6 @@ public interface ICashierSaleService
 /// </summary>
 public class CashierSaleService : ICashierSaleService
 {
-    private readonly IConfigurationService _configurationService;
     private readonly IInvoiceSaleService _invoiceSaleService;
     private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly ITributoSaleService _tributoSaleService;
@@ -32,13 +29,12 @@ public class CashierSaleService : ICashierSaleService
     private readonly ICajaDiariaService _cajaDiariaService;
     private readonly IDetallePagoSaleService _detallePagoSaleService;
 
-    public CashierSaleService(IConfigurationService configurationService,
+    public CashierSaleService(
         IInvoiceSaleService invoiceSaleService, IInvoiceSaleDetailService invoiceSaleDetailService,
         ITributoSaleService tributoSaleService, ICrudOperationService<InvoiceSerie> invoiceSerieService,
         ICashierDetailService cashierDetailService, IReceivableService receivableService,
         ICajaDiariaService cajaDiariaService, IDetallePagoSaleService detallePagoSaleService)
     {
-        _configurationService = configurationService;
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _tributoSaleService = tributoSaleService;
@@ -50,23 +46,10 @@ public class CashierSaleService : ICashierSaleService
     }
 
     /// <summary>
-    /// modelo de datos.
-    /// </summary>
-    private ComprobanteDto comprobanteDto = new ComprobanteDto();
-
-    /// <summary>
-    /// cargar modelo de datos al servicio.
-    /// </summary>
-    public void SetComprobanteDto(ComprobanteDto dto) { comprobanteDto = dto; }
-
-    /// <summary>
     /// Guardar comprobante de venta rápida.
     /// </summary>
-    public async Task<InvoiceSale> SaveChangesAsync(string cajaDiariaId)
+    public async Task<InvoiceSale> SaveChangesAsync(ComprobanteDto comprobanteDto, string cajaDiariaId)
     {
-        var configuration = await _configurationService.GetAsync();
-        comprobanteDto.SetConfiguration(configuration);
-
         var invoiceSale = comprobanteDto.GetInvoiceSale();
         var invoiceSerieId = comprobanteDto.Cabecera.InvoiceSerieId;
         var invoiceSerie = await _invoiceSerieService.GetByIdAsync(invoiceSerieId);
@@ -110,7 +93,7 @@ public class CashierSaleService : ICashierSaleService
                 var detallePagos = comprobanteDto.GetDetallePagos(invoiceSale.Id);
                 if (detallePagos.Count() > 0) await _detallePagoSaleService.InsertManyAsync(detallePagos);
             }
-            var cargo = GenerarCargo(invoiceSale, cajaDiaria, configuration.DiasPlazo);
+            var cargo = GenerarCargo(invoiceSale, cajaDiaria, comprobanteDto.UserCompany.DiasPlazo);
             await _receivableService.CreateAsync(cargo);
         }
 
@@ -121,10 +104,11 @@ public class CashierSaleService : ICashierSaleService
     {
         return new Receivable()
         {
+            CompanyId = invoiceSale.CompanyId,
             Type = "CARGO",
-            ContactId = comprobanteDto.Cabecera.ContactId,
-            ContactName = comprobanteDto.Cabecera.RznSocialUsuario,
-            Remark = comprobanteDto.Cabecera.Remark,
+            ContactId = invoiceSale.ContactId,
+            ContactName = invoiceSale.RznSocialUsuario,
+            Remark = invoiceSale.Remark,
             InvoiceSale = invoiceSale.Id,
             DocType = invoiceSale.DocType,
             Document = $"{invoiceSale.Serie}-{invoiceSale.Number}",

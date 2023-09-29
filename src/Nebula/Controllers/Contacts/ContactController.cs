@@ -128,9 +128,9 @@ public class ContactController : ControllerBase
     }
 
     [HttpGet("InvoiceSale/{id}"), UserAuthorize(Permission.ContactRead)]
-    public async Task<IActionResult> InvoiceSale(string id, [FromQuery] string month, [FromQuery] string year)
+    public async Task<IActionResult> InvoiceSale(string companyId, string id, [FromQuery] string month, [FromQuery] string year)
     {
-        var responseData = await _invoiceSaleService.GetByContactIdAsync(id, month, year);
+        var responseData = await _invoiceSaleService.GetByContactIdAsync(companyId, id, month, year);
         return Ok(responseData);
     }
 }

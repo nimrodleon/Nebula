@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Cashier;
-using Nebula.Modules.Facturador;
 using Nebula.Modules.Inventory.Stock;
 using Nebula.Modules.Sales.Comprobantes.Dto;
 using Nebula.Modules.Sales.Invoices;
@@ -17,18 +16,15 @@ public class InvoiceSaleCashierController : ControllerBase
     private readonly ICashierSaleService _cashierSaleService;
     private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly IValidateStockService _validateStockService;
-    private readonly IFacturadorService _facturadorService;
 
     public InvoiceSaleCashierController(
         ICashierSaleService cashierSaleService,
         IInvoiceSaleDetailService invoiceSaleDetailService,
-        IValidateStockService validateStockService,
-        IFacturadorService facturadorService)
+        IValidateStockService validateStockService)
     {
         _cashierSaleService = cashierSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _validateStockService = validateStockService;
-        _facturadorService = facturadorService;
     }
 
     /// <summary>
@@ -42,10 +38,10 @@ public class InvoiceSaleCashierController : ControllerBase
     {
         try
         {
-            _cashierSaleService.SetComprobanteDto(model);
-            var invoiceSale = await _cashierSaleService.SaveChangesAsync(id);
-            if (invoiceSale.DocType != "NOTA")
-                await _facturadorService.JsonInvoiceParser(invoiceSale.Id);
+            model.UserCompany = new Modules.Account.Models.Company();
+            var invoiceSale = await _cashierSaleService.SaveChangesAsync(model, id);
+            // if (invoiceSale.DocType != "NOTA")
+            // pass...
 
             // Validar Inventario.
             await _validateStockService.ValidarInvoiceSale(invoiceSale.Id);

@@ -1,4 +1,4 @@
-using Nebula.Modules.Configurations.Models;
+using Nebula.Modules.Account.Models;
 using Nebula.Modules.Purchases.Helpers;
 using Nebula.Modules.Purchases.Models;
 using Nebula.Modules.Sales.Helpers;
@@ -21,7 +21,7 @@ public class ItemCompraDto
     //public string productLoteId { get; set; } = string.Empty;
     //#endregion
 
-    public PurchaseInvoiceDetail GetDetail(Configuration configuration, string purchaseInvoiceId)
+    public PurchaseInvoiceDetail GetDetail(Company company, string purchaseInvoiceId)
     {
         // Tributo: Afectación al IGV por ítem.
         string tipAfeIgv = "10";
@@ -49,7 +49,7 @@ public class ItemCompraDto
                 codTipTributoIgvItem = "FRE";
                 break;
         }
-        var itemImporte = new ItemImporteCompra(configuration);
+        var itemImporte = new ItemImporteCompra(company);
         itemImporte = itemImporte.CalcularImporte(this);
         return new PurchaseInvoiceDetail()
         {
@@ -69,14 +69,14 @@ public class ItemCompraDto
             NomTributoIgvItem = nomTributoIgvItem,
             CodTipTributoIgvItem = codTipTributoIgvItem,
             TipAfeIgv = tipAfeIgv,
-            PorIgvItem = IgvSunat == TipoIGV.Gravado ? configuration.PorcentajeIgv : 0,
+            PorIgvItem = IgvSunat == TipoIGV.Gravado ? company.PorcentajeIgv : 0,
             // Tributo ICBPER 7152.
             CodTriIcbper = TriIcbper ? "7152" : "-",
             MtoTriIcbperItem = TriIcbper ? itemImporte.MtoTriIcbperItem : 0,
             CtdBolsasTriIcbperItem = TriIcbper ? Convert.ToInt32(CtdUnidadItem) : 0,
             NomTributoIcbperItem = "ICBPER",
             CodTipTributoIcbperItem = "OTH",
-            MtoTriIcbperUnidad = TriIcbper ? configuration.ValorImpuestoBolsa : 0,
+            MtoTriIcbperUnidad = TriIcbper ? company.ValorImpuestoBolsa : 0,
             // Precio de Compra Unitario.
             MtoPrecioCompraUnitario = MtoPrecioCompraUnitario,
             MtoValorCompraItem = itemImporte.MtoValorCompraItem,

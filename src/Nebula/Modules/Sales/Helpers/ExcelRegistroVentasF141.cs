@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using ClosedXML.Excel;
 using Nebula.Modules.Account.Models;
 using Nebula.Modules.Sales.Models;
@@ -936,7 +936,7 @@ public class ExcelRegistroVentasF141
     }
 
     private List<TributoSale> GetTributos(string id) =>
-        _param.TributoSales.Where(x => x.InvoiceSale.Equals(id)).ToList();
+        _param.TributoSales.Where(x => x.InvoiceSaleId.Equals(id)).ToList();
 
     private List<TributoCreditNote> GetTributosCreditNotes(string id) =>
         _param.TributoCreditNotes.Where(x => x.CreditNoteId.Equals(id)).ToList();

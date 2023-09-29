@@ -117,8 +117,8 @@ public class ComprobanteDto
             // agregar items al comprobante.
             invoiceSaleDetails.Add(new InvoiceSaleDetail
             {
-                InvoiceSale = invoiceId,
-                CajaDiaria = Cabecera.CajaDiaria,
+                InvoiceSaleId = invoiceId,
+                CajaDiariaId = Cabecera.CajaDiaria,
                 TipoItem = item.TipoItem,
                 CodUnidadMedida = item.CodUnidadMedida,
                 CtdUnidadItem = item.CtdUnidadItem,
@@ -181,7 +181,7 @@ public class ComprobanteDto
         {
             tributos.Add(new TributoSale()
             {
-                InvoiceSale = invoiceId,
+                InvoiceSaleId = invoiceId,
                 IdeTributo = "9998",
                 NomTributo = "INA",
                 CodTipTributo = "FRE",
@@ -196,7 +196,7 @@ public class ComprobanteDto
         {
             tributos.Add(new TributoSale()
             {
-                InvoiceSale = invoiceId,
+                InvoiceSaleId = invoiceId,
                 IdeTributo = "9997",
                 NomTributo = "EXO",
                 CodTipTributo = "VAT",
@@ -211,7 +211,7 @@ public class ComprobanteDto
         {
             tributos.Add(new TributoSale()
             {
-                InvoiceSale = invoiceId,
+                InvoiceSaleId = invoiceId,
                 IdeTributo = "1000",
                 NomTributo = "IGV",
                 CodTipTributo = "VAT",
@@ -226,7 +226,7 @@ public class ComprobanteDto
         {
             tributos.Add(new TributoSale()
             {
-                InvoiceSale = invoiceId,
+                InvoiceSaleId = invoiceId,
                 IdeTributo = "7152",
                 NomTributo = "ICBPER",
                 CodTipTributo = "OTH",
@@ -247,7 +247,7 @@ public class ComprobanteDto
         {
             detallePagos.Add(new DetallePagoSale()
             {
-                InvoiceSale = invoiceId,
+                InvoiceSaleId = invoiceId,
                 MtoCuotaPago = item.MtoCuotaPago,
                 FecCuotaPago = item.FecCuotaPago,
                 TipMonedaCuotaPago = UserCompany.TipMoneda,

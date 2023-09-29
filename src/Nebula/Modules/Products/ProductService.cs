@@ -1,7 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
 using Nebula.Common;
-using Nebula.Modules.Configurations;
 using Nebula.Modules.Products.Models;
 
 namespace Nebula.Modules.Products;
@@ -15,13 +14,7 @@ public interface IProductService : ICrudOperationService<Product>
 
 public class ProductService : CrudOperationService<Product>, IProductService
 {
-    private readonly IConfigurationService _configurationService;
-
-    public ProductService(MongoDatabaseService mongoDatabase,
-        IConfigurationService configurationService) : base(mongoDatabase)
-    {
-        _configurationService = configurationService;
-    }
+    public ProductService(MongoDatabaseService mongoDatabase) : base(mongoDatabase){}
 
     public async Task<List<Product>> GetListAsync(string? query, int limit = 25)
     {
@@ -30,16 +23,15 @@ public class ProductService : CrudOperationService<Product>, IProductService
             filter = Builders<Product>.Filter.Or(Builders<Product>.Filter.Eq("Barcode", query),
                 Builders<Product>.Filter.Regex("Description", new BsonRegularExpression(query.ToUpper(), "i")));
         var products = await _collection.Find(filter).Limit(limit).ToListAsync();
-        var configuration = await _configurationService.GetAsync();
-        if (!configuration.ModLotes) products.ForEach(item => item.HasLotes = false);
+        //if (!configuration.ModLotes) products.ForEach(item => item.HasLotes = false);
         return products;
     }
 
     public override async Task<Product> GetByIdAsync(string id)
     {
         var product = await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
-        var configuration = await _configurationService.GetAsync();
-        if (!configuration.ModLotes) product.HasLotes = false;
+        //var configuration = await _configurationService.GetAsync();
+        //if (!configuration.ModLotes) product.HasLotes = false;
         return product;
     }
 

@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Products.Models;
 using Nebula.Modules.Products;
-using Nebula.Modules.Configurations;
 using Nebula.Modules.Sales.Helpers;
 using Nebula.Modules.Products.Dto;
 using Microsoft.AspNetCore.Authorization;
+using Nebula.Modules.Account.Models;
 
 namespace Nebula.Controllers.Products;
 
@@ -15,15 +15,11 @@ public class ProductController : ControllerBase
 {
     private readonly IConfiguration _configuration;
     private readonly IProductService _productService;
-    private readonly IConfigurationService _configurationService;
 
-    public ProductController(IConfiguration configuration,
-        IProductService productService,
-        IConfigurationService configurationService)
+    public ProductController(IConfiguration configuration, IProductService productService)
     {
         _configuration = configuration;
         _productService = productService;
-        _configurationService = configurationService;
     }
 
     public class FormData : Product
@@ -96,8 +92,9 @@ public class ProductController : ControllerBase
             model.PathImage = "default.jpg";
         }
 
-        var configuration = await _configurationService.GetAsync();
-        decimal porcentajeIgv = configuration.PorcentajeIgv / 100 + 1;
+        // var configuration = await _configurationService.GetAsync();
+        Company company = new Company();
+        decimal porcentajeIgv = company.PorcentajeIgv / 100 + 1;
         decimal porcentajeTributo = model.IgvSunat == TipoIGV.Gravado ? porcentajeIgv : 1;
         model.ValorUnitario = model.PrecioVentaUnitario / porcentajeTributo;
 
@@ -151,8 +148,8 @@ public class ProductController : ControllerBase
             model.PathImage = product.PathImage;
         }
 
-        var configuration = await _configurationService.GetAsync();
-        decimal porcentajeIgv = configuration.PorcentajeIgv / 100 + 1;
+        Company company = new Company();
+        decimal porcentajeIgv = company.PorcentajeIgv / 100 + 1;
         decimal porcentajeTributo = model.IgvSunat == TipoIGV.Gravado ? porcentajeIgv : 1;
         model.ValorUnitario = model.PrecioVentaUnitario / porcentajeTributo;
         // actualización de datos del modelo.

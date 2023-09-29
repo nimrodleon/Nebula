@@ -1,68 +1,31 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Modules.Auth;
-using Nebula.Modules.Auth.Helpers;
-using Nebula.Modules.Configurations;
-using Nebula.Modules.Facturador;
-using Nebula.Modules.Facturador.Helpers;
 using Nebula.Modules.Sales;
 using Nebula.Modules.Sales.Notes;
 
 namespace Nebula.Controllers.Sales;
 
-[Route("api/[controller]")]
+[Route("api/sales/{companyId}/[controller]")]
 [ApiController]
 public class CreditNoteController : ControllerBase
 {
-    private readonly IConfiguration _configuration;
-    private readonly IConfigurationService _configurationService;
     private readonly ICreditNoteService _creditNoteService;
-    private readonly IFacturadorService _facturadorService;
 
-    public CreditNoteController(IConfiguration configuration,
-        IConfigurationService configurationService,
-        ICreditNoteService creditNoteService,
-        IFacturadorService facturadorService)
+    public CreditNoteController(ICreditNoteService creditNoteService)
     {
-        _configuration = configuration;
-        _configurationService = configurationService;
         _creditNoteService = creditNoteService;
-        _facturadorService = facturadorService;
     }
 
-    [HttpGet("Show/{id}"), UserAuthorize(Permission.SalesRead)]
-    public async Task<IActionResult> Show(string id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Show(string companyId, string id)
     {
-        var creditNote = await _creditNoteService.GetCreditNoteByInvoiceSaleIdAsync(id);
+        var creditNote = await _creditNoteService.GetCreditNoteByInvoiceSaleIdAsync(companyId, id);
         return Ok(creditNote);
     }
 
-    [HttpPatch("SituacionFacturador/{id}"), UserAuthorize(Permission.SalesRead)]
-    public async Task<IActionResult> SituacionFacturador(string id, [FromBody] SituacionFacturadorDto dto)
+    [HttpPatch("SituacionFacturador/{id}")]
+    public async Task<IActionResult> SituacionFacturador(string companyId, string id, [FromBody] SituacionFacturadorDto dto)
     {
-        var creditNote = await _creditNoteService.SetSituacionFacturador(id, dto);
-        return Ok(creditNote);
-    }
-
-    [HttpPatch("SaveInControlFolder/{creditNoteId}"), UserAuthorize(Permission.SalesEdit)]
-    public async Task<IActionResult> SituacionFacturador(string creditNoteId)
-    {
-        try
-        {
-            var creditNote = await _facturadorService.SaveCreditNoteInControlFolder(creditNoteId);
-            return Ok(creditNote);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
-    [HttpDelete("BorrarArchivosAntiguos/{creditNoteId}"), UserAuthorize(Permission.SalesEdit)]
-    public async Task<IActionResult> BorrarArchivos(string creditNoteId)
-    {
-        var creditNote = await _facturadorService.BorrarArchivosAntiguosCreditNote(creditNoteId);
-        await _facturadorService.CreateCreditNoteJsonFile(creditNote.Id);
+        var creditNote = await _creditNoteService.SetSituacionFacturador(companyId, id, dto);
         return Ok(creditNote);
     }
 
@@ -71,41 +34,11 @@ public class CreditNoteController : ControllerBase
     /// </summary>
     /// <param name="creditNoteId">Identificador de la Nota de crédito</param>
     /// <returns>JSON[PrintCreditNoteDto]</returns>
-    [HttpGet("Print/{creditNoteId}"), UserAuthorize(Permission.SalesRead)]
-    public async Task<IActionResult> Print(string creditNoteId)
+    [HttpGet("Print/{creditNoteId}")]
+    public async Task<IActionResult> Print(string companyId, string creditNoteId)
     {
-        var printCreditNoteDto = await _creditNoteService.GetPrintCreditNoteDto(creditNoteId);
+        var printCreditNoteDto = await _creditNoteService.GetPrintCreditNoteDto(companyId, creditNoteId);
         return Ok(printCreditNoteDto);
     }
 
-    [AllowAnonymous]
-    [HttpGet("GetPdf/{id}")]
-    [Obsolete("Este método está obsoleto.")]
-    public async Task<IActionResult> GetPdf(string id)
-    {
-        var configuration = await _configurationService.GetAsync();
-        var creditNote = await _creditNoteService.GetByIdAsync(id);
-        // 20520485750-07-BC01-00000008
-        string nomArch = $"{configuration.Ruc}-07-{creditNote.Serie}-{creditNote.Number}.pdf";
-        string pathPdf = string.Empty;
-        var storagePath = _configuration.GetValue<string>("StoragePath");
-        if (creditNote.DocumentPath == DocumentPathType.SFS)
-        {
-            string? sunatArchivos = _configuration.GetValue<string>("sunatArchivos");
-            if (sunatArchivos is null) sunatArchivos = string.Empty;
-            string carpetaArchivoSunat = Path.Combine(sunatArchivos, "sfs");
-            pathPdf = Path.Combine(carpetaArchivoSunat, "REPO", nomArch);
-        }
-
-        if (creditNote.DocumentPath == DocumentPathType.CONTROL)
-        {
-            if (storagePath is null) storagePath = string.Empty;
-            string carpetaArchivoSunat = Path.Combine(storagePath, "sunat");
-            string carpetaRepo = Path.Combine(carpetaArchivoSunat, "REPO", creditNote.Year, creditNote.Month);
-            pathPdf = Path.Combine(carpetaRepo, nomArch);
-        }
-
-        FileStream stream = new FileStream(pathPdf, FileMode.Open);
-        return new FileStreamResult(stream, "application/pdf");
-    }
 }

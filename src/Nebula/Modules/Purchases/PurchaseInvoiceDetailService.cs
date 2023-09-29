@@ -1,6 +1,5 @@
 using MongoDB.Driver;
 using Nebula.Common;
-using Nebula.Modules.Configurations;
 using Nebula.Modules.Purchases.Dto;
 using Nebula.Modules.Purchases.Models;
 
@@ -16,13 +15,8 @@ public interface IPurchaseInvoiceDetailService : ICrudOperationService<PurchaseI
 
 public class PurchaseInvoiceDetailService : CrudOperationService<PurchaseInvoiceDetail>, IPurchaseInvoiceDetailService
 {
-    private readonly IConfigurationService _configurationService;
-
-    public PurchaseInvoiceDetailService(MongoDatabaseService mongoDatabase,
-        IConfigurationService configurationService) : base(mongoDatabase)
-    {
-        _configurationService = configurationService;
-    }
+    public PurchaseInvoiceDetailService(MongoDatabaseService mongoDatabase)
+        : base(mongoDatabase) { }
 
     public async Task<List<PurchaseInvoiceDetail>> GetDetailsAsync(string purchaseInvoiceId)
     {
@@ -31,18 +25,16 @@ public class PurchaseInvoiceDetailService : CrudOperationService<PurchaseInvoice
 
     public async Task<PurchaseInvoiceDetail> CreateAsync(string purchaseInvoiceId, ItemCompraDto itemCompra)
     {
-        var configuration = await _configurationService.GetAsync();
-        var detail = itemCompra.GetDetail(configuration, purchaseInvoiceId);
+        var detail = itemCompra.GetDetail(new Account.Models.Company(), purchaseInvoiceId);
         await _collection.InsertOneAsync(detail);
         return detail;
     }
 
     public async Task<PurchaseInvoiceDetail> UpdateAsync(string id, ItemCompraDto itemCompra)
     {
-        var configuration = await _configurationService.GetAsync();
         var purchaseInvoiceDetail = await GetByIdAsync(id);
         itemCompra.Id = purchaseInvoiceDetail.Id;
-        purchaseInvoiceDetail = itemCompra.GetDetail(configuration, purchaseInvoiceDetail.PurchaseInvoiceId);
+        purchaseInvoiceDetail = itemCompra.GetDetail(new Account.Models.Company(), purchaseInvoiceDetail.PurchaseInvoiceId);
         await UpdateAsync(purchaseInvoiceDetail.Id, purchaseInvoiceDetail);
         return purchaseInvoiceDetail;
     }

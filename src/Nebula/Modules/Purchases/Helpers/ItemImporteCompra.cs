@@ -1,4 +1,4 @@
-using Nebula.Modules.Configurations.Models;
+using Nebula.Modules.Account.Models;
 using Nebula.Modules.Purchases.Dto;
 using Nebula.Modules.Sales.Helpers;
 
@@ -6,11 +6,11 @@ namespace Nebula.Modules.Purchases.Helpers;
 
 public class ItemImporteCompra
 {
-    private readonly Configuration _configuration;
+    private readonly Company _company;
 
-    public ItemImporteCompra(Configuration configuration)
+    public ItemImporteCompra(Company company)
     {
-        _configuration = configuration;
+        _company = company;
     }
 
     /// <summary>
@@ -52,9 +52,9 @@ public class ItemImporteCompra
     public ItemImporteCompra CalcularImporte(ItemCompraDto itemCompra)
     {
         decimal mtoTotalItem = itemCompra.CtdUnidadItem * itemCompra.MtoPrecioCompraUnitario;
-        decimal porcentajeIGV = itemCompra.IgvSunat == TipoIGV.Gravado ? _configuration.PorcentajeIgv / 100 + 1 : 1;
+        decimal porcentajeIGV = itemCompra.IgvSunat == TipoIGV.Gravado ? _company.PorcentajeIgv / 100 + 1 : 1;
         MtoValorCompraItem = mtoTotalItem / porcentajeIGV;
-        MtoTriIcbperItem = itemCompra.TriIcbper ? itemCompra.CtdUnidadItem * _configuration.ValorImpuestoBolsa : 0;
+        MtoTriIcbperItem = itemCompra.TriIcbper ? itemCompra.CtdUnidadItem * _company.ValorImpuestoBolsa : 0;
         MtoBaseIgvItem = mtoTotalItem / porcentajeIGV;
         MtoIgvItem = mtoTotalItem - MtoBaseIgvItem;
         SumTotTributosItem = MtoIgvItem + MtoTriIcbperItem; // el sistema soporta solo IGV/ICBPER.

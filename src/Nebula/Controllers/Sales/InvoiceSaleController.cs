@@ -3,10 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Common.Dto;
 using Nebula.Common.Helpers;
 using Nebula.Modules.Account;
-using Nebula.Modules.Configurations;
-using Nebula.Modules.Facturador;
-using Nebula.Modules.Facturador.Helpers;
-using Nebula.Modules.Inventory.Stock;
+using Nebula.Modules.Account.Models;
 using Nebula.Modules.InvoiceHub;
 using Nebula.Modules.InvoiceHub.Helpers;
 using Nebula.Modules.Sales;
@@ -24,45 +21,33 @@ namespace Nebula.Controllers.Sales;
 [ApiController]
 public class InvoiceSaleController : ControllerBase
 {
-    private readonly IConfiguration _configuration;
-    private readonly IConfigurationService _configurationService;
     private readonly IInvoiceSerieService _invoiceSerieService;
     private readonly IInvoiceSaleService _invoiceSaleService;
     private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly ITributoSaleService _tributoSaleService;
     private readonly ITributoCreditNoteService _tributoCreditNoteService;
     private readonly IComprobanteService _comprobanteService;
-    private readonly IFacturadorService _facturadorService;
     private readonly ICreditNoteService _creditNoteService;
-    private readonly IValidateStockService _validateStockService;
     private readonly IConsultarValidezComprobanteService _consultarValidezComprobanteService;
     private readonly IInvoiceHubService _invoiceHubService;
 
     public InvoiceSaleController(
-        IConfigurationService configurationService,
         IInvoiceSerieService invoiceSerieService,
         IInvoiceSaleService invoiceSaleService,
         IInvoiceSaleDetailService invoiceSaleDetailService,
         ITributoSaleService tributoSaleService,
         IComprobanteService comprobanteService,
-        IFacturadorService facturadorService,
         ICreditNoteService creditNoteService,
-        IValidateStockService validateStockService,
-        IConfiguration configuration,
         IConsultarValidezComprobanteService consultarValidezComprobanteService,
         ITributoCreditNoteService tributoCreditNoteService,
         IInvoiceHubService invoiceHubService)
     {
-        _configuration = configuration;
-        _configurationService = configurationService;
         _invoiceSerieService = invoiceSerieService;
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _tributoSaleService = tributoSaleService;
         _comprobanteService = comprobanteService;
-        _facturadorService = facturadorService;
         _creditNoteService = creditNoteService;
-        _validateStockService = validateStockService;
         _consultarValidezComprobanteService = consultarValidezComprobanteService;
         _tributoCreditNoteService = tributoCreditNoteService;
         _invoiceHubService = invoiceHubService;
@@ -98,7 +83,7 @@ public class InvoiceSaleController : ControllerBase
         });
         seriesComprobante = seriesComprobante.Distinct().ToList();
         númerosComprobante = númerosComprobante.Distinct().ToList();
-        var comprobantesDeNotas = await _invoiceSaleService.GetInvoicesByNumDocs(seriesComprobante, númerosComprobante);
+        var comprobantesDeNotas = await _invoiceSaleService.GetInvoicesByNumDocs(companyId, seriesComprobante, númerosComprobante);
         param.ComprobantesDeNotas = comprobantesDeNotas;
         // generar archivo excel y enviar como respuesta de solicitud.
         string filePath = new ExcelRegistroVentasF141(param).CrearArchivo();
@@ -116,15 +101,14 @@ public class InvoiceSaleController : ControllerBase
     [HttpPost("BusquedaAvanzada")]
     public async Task<IActionResult> BusquedaAvanzada(string companyId, [FromBody] BuscarComprobanteFormDto dto)
     {
-        var invoiceSales = await _invoiceSaleService.BusquedaAvanzadaAsync(dto);
+        var invoiceSales = await _invoiceSaleService.BusquedaAvanzadaAsync(companyId, dto);
         return Ok(invoiceSales);
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(string companyId, [FromBody] ComprobanteDto dto)
     {
-        _comprobanteService.SetComprobanteDto(dto);
-        var comprobante = await _comprobanteService.SaveChangesAsync();
+        var comprobante = await _comprobanteService.SaveChangesAsync(dto);
         var invoiceRequest = InvoiceMapper.MapToInvoiceRequestHub(companyId, comprobante);
         var result = await _invoiceHubService.SendInvoiceAsync(invoiceRequest);
         return Ok(result);
@@ -133,7 +117,7 @@ public class InvoiceSaleController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> Show(string companyId, string id)
     {
-        var responseInvoiceSale = await _invoiceSaleService.GetInvoiceSaleAsync(id);
+        var responseInvoiceSale = await _invoiceSaleService.GetInvoiceSaleAsync(companyId, id);
         return Ok(responseInvoiceSale);
     }
 
@@ -141,37 +125,22 @@ public class InvoiceSaleController : ControllerBase
     public async Task<IActionResult> AnularComprobante(string companyId, string id)
     {
         var responseAnularComprobante = new ResponseAnularComprobante();
-        var creditNote = await _creditNoteService.AnulaciónDeLaOperación(id);
+        var creditNote = await _creditNoteService.AnulaciónDeLaOperación(companyId, id);
         responseAnularComprobante.CreditNote = creditNote;
-        responseAnularComprobante.JsonFileCreated = await _facturadorService.CreateCreditNoteJsonFile(creditNote.Id);
-        if (responseAnularComprobante.JsonFileCreated)
-        {
-            responseAnularComprobante.InvoiceSale =
-                await _invoiceSaleService.AnularComprobante(creditNote.InvoiceSaleId);
-        }
-
+        //responseAnularComprobante.JsonFileCreated = await _facturadorService.CreateCreditNoteJsonFile(creditNote.Id);
+        //if (responseAnularComprobante.JsonFileCreated)
+        //{
+        //    responseAnularComprobante.InvoiceSale =
+        //        await _invoiceSaleService.AnularComprobante(creditNote.InvoiceSaleId);
+        //}
         return Ok(responseAnularComprobante);
     }
 
     [HttpPatch("SituacionFacturador/{id}")]
     public async Task<IActionResult> SituacionFacturador(string companyId, string id, [FromBody] SituacionFacturadorDto dto)
     {
-        var response = await _invoiceSaleService.SetSituacionFacturador(id, dto);
+        var response = await _invoiceSaleService.SetSituacionFacturador(companyId, id, dto);
         return Ok(response);
-    }
-
-    [HttpPatch("SaveInControlFolder/{invoiceSaleId}")]
-    public async Task<IActionResult> SituacionFacturador(string companyId, string invoiceSaleId)
-    {
-        try
-        {
-            var invoiceSale = await _facturadorService.SaveInvoiceInControlFolder(invoiceSaleId);
-            return Ok(invoiceSale);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
     }
 
     [HttpDelete("{id}")]
@@ -184,52 +153,17 @@ public class InvoiceSaleController : ControllerBase
         return Ok(new { Ok = true, Data = invoiceSale, Msg = "El comprobante de venta ha sido borrado!" });
     }
 
-    [HttpDelete("BorrarArchivosAntiguos/{invoiceSaleId}")]
-    public async Task<IActionResult> BorrarArchivos(string companyId, string invoiceSaleId)
-    {
-        var invoiceSale = await _facturadorService.BorrarArchivosAntiguosInvoice(invoiceSaleId);
-        await _facturadorService.JsonInvoiceParser(invoiceSale.Id);
-        return Ok(invoiceSale);
-    }
-
-    [AllowAnonymous]
-    [HttpGet("GetPdf/{id}")]
-    [Obsolete("Este método está obsoleto.")]
-    public async Task<IActionResult> GetPdf(string id)
-    {
-        var configuration = await _configurationService.GetAsync();
-        var comprobante = await _invoiceSaleService.GetByIdAsync(id);
-        string tipDocu = string.Empty;
-        if (comprobante.DocType.Equals("FACTURA")) tipDocu = "01";
-        if (comprobante.DocType.Equals("BOLETA")) tipDocu = "03";
-        // 20520485750-03-B001-00000015
-        string nomArch = $"{configuration.Ruc}-{tipDocu}-{comprobante.Serie}-{comprobante.Number}.pdf";
-        string pathPdf = string.Empty;
-        var storagePath = _configuration.GetValue<string>("StoragePath");
-        if (comprobante.DocumentPath == DocumentPathType.SFS)
-        {
-            string? sunatArchivos = _configuration.GetValue<string>("sunatArchivos");
-            if (sunatArchivos is null) sunatArchivos = string.Empty;
-            string carpetaArchivoSunat = Path.Combine(sunatArchivos, "sfs");
-            pathPdf = Path.Combine(carpetaArchivoSunat, "REPO", nomArch);
-        }
-
-        if (comprobante.DocumentPath == DocumentPathType.CONTROL)
-        {
-            if (storagePath is null) storagePath = string.Empty;
-            string carpetaArchivoSunat = Path.Combine(storagePath, "sunat");
-            string carpetaRepo = Path.Combine(carpetaArchivoSunat, "REPO", comprobante.Year, comprobante.Month);
-            pathPdf = Path.Combine(carpetaRepo, nomArch);
-        }
-
-        FileStream stream = new FileStream(pathPdf, FileMode.Open);
-        return new FileStreamResult(stream, "application/pdf");
-    }
-
     [HttpGet("Ticket/{id}")]
     public async Task<IActionResult> Ticket(string companyId, string id)
     {
-        var ticket = await _invoiceSaleService.GetTicketDto(id);
+        var responseInvoice = await _invoiceSaleService.GetInvoiceSaleAsync(companyId, id);
+        var ticket = new TicketDto()
+        {
+            Company = new Company(),
+            InvoiceSale = responseInvoice.InvoiceSale,
+            InvoiceSaleDetails = responseInvoice.InvoiceSaleDetails,
+            TributoSales = responseInvoice.TributoSales,
+        };
         return Ok(ticket);
     }
 
@@ -237,7 +171,7 @@ public class InvoiceSaleController : ControllerBase
     [HttpGet("ConsultarValidez")]
     public async Task<IActionResult> ConsultarValidez(string companyId, [FromQuery] QueryConsultarValidezComprobante query)
     {
-        string pathArchivoZip = await _consultarValidezComprobanteService.CrearArchivosDeValidación(query);
+        string pathArchivoZip = await _consultarValidezComprobanteService.CrearArchivosDeValidación(new Company(), query);
         FileStream stream = new FileStream(pathArchivoZip, FileMode.Open);
         return new FileStreamResult(stream, "application/zip");
     }

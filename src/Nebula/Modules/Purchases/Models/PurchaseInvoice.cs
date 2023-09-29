@@ -12,6 +12,11 @@ public class PurchaseInvoice : IGenericModel
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
+    /// Identificador de la empresa al que pertenece.
+    /// </summary>
+    public string CompanyId { get; set; } = string.Empty;
+
+    /// <summary>
     /// fecha de emisión. Formato: YYYY-MM-DD, an..10
     /// </summary>
     public string FecEmision { get; set; } = string.Empty;
