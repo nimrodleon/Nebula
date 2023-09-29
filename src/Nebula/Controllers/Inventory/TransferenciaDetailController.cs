@@ -17,28 +17,28 @@ public class TransferenciaDetailController : ControllerBase
         _transferenciaDetailService = transferenciaDetailService;
     }
 
-    [HttpGet("Index/{id}"), UserAuthorize(Permission.InventoryRead)]
+    [HttpGet("Index/{id}")]
     public async Task<IActionResult> Index(string id)
     {
         var responseData = await _transferenciaDetailService.GetListAsync(id);
         return Ok(responseData);
     }
 
-    [HttpGet("Show/{id}"), UserAuthorize(Permission.InventoryRead)]
+    [HttpGet("Show/{id}")]
     public async Task<IActionResult> Show(string id)
     {
         var transferenciaDetail = await _transferenciaDetailService.GetByIdAsync(id);
         return Ok(transferenciaDetail);
     }
 
-    [HttpPost("Create"), UserAuthorize(Permission.InventoryCreate)]
+    [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] TransferenciaDetail model)
     {
         var transferenciaDetail = await _transferenciaDetailService.CreateAsync(model);
         return Ok(transferenciaDetail);
     }
 
-    [HttpPut("Update/{id}"), UserAuthorize(Permission.InventoryEdit)]
+    [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] TransferenciaDetail model)
     {
         var transferenciaDetail = await _transferenciaDetailService.GetByIdAsync(id);
@@ -47,7 +47,7 @@ public class TransferenciaDetailController : ControllerBase
         return Ok(responseData);
     }
 
-    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.InventoryDelete)]
+    [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(string id)
     {
         var transferenciaDetail = await _transferenciaDetailService.GetByIdAsync(id);
@@ -55,7 +55,7 @@ public class TransferenciaDetailController : ControllerBase
         return Ok(transferenciaDetail);
     }
 
-    [HttpGet("CountDocuments/{id}"), UserAuthorize(Permission.InventoryRead)]
+    [HttpGet("CountDocuments/{id}")]
     public async Task<IActionResult> CountDocuments(string id)
     {
         var countDocuments = await _transferenciaDetailService.CountDocumentsAsync(id);

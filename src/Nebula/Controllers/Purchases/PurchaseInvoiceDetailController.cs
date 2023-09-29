@@ -20,7 +20,7 @@ public class PurchaseInvoiceDetailController : ControllerBase
         _purchaseInvoiceDetailService = purchaseInvoiceDetailService;
     }
 
-    [HttpPost("Create/{purchaseInvoiceId}"), UserAuthorize(Permission.PurchasesCreate)]
+    [HttpPost("Create/{purchaseInvoiceId}")]
     public async Task<IActionResult> Create(string purchaseInvoiceId, [FromBody] ItemCompraDto itemCompra)
     {
         var purchaseInvoiceDetail = await _purchaseInvoiceDetailService.CreateAsync(purchaseInvoiceId, itemCompra);
@@ -29,7 +29,7 @@ public class PurchaseInvoiceDetailController : ControllerBase
         return Ok(purchaseInvoiceDetail);
     }
 
-    [HttpPut("Update/{id}"), UserAuthorize(Permission.PurchasesEdit)]
+    [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] ItemCompraDto itemCompra)
     {
         var purchaseInvoiceDetail = await _purchaseInvoiceDetailService.UpdateAsync(id, itemCompra);
@@ -38,7 +38,7 @@ public class PurchaseInvoiceDetailController : ControllerBase
         return Ok(purchaseInvoiceDetail);
     }
 
-    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.PurchasesDelete)]
+    [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(string id)
     {
         var itemCompra = await _purchaseInvoiceDetailService.GetByIdAsync(id);

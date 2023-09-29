@@ -17,21 +17,21 @@ public class ItemRepairOrderController : ControllerBase
         _itemRepairOrderService = itemRepairOrderService;
     }
 
-    [HttpGet("Index/{id}"), UserAuthorize(Permission.MaterialTallerRead)]
+    [HttpGet("Index/{id}")]
     public async Task<IActionResult> Index(string id)
     {
         var itemsRepairOrder = await _itemRepairOrderService.GetItemsRepairOrder(id);
         return Ok(itemsRepairOrder);
     }
 
-    [HttpPost("Create"), UserAuthorize(Permission.MaterialTallerCreate)]
+    [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] TallerItemRepairOrder model)
     {
         await _itemRepairOrderService.CreateAsync(model);
         return Ok(model);
     }
 
-    [HttpPut("Update/{id}"), UserAuthorize(Permission.MaterialTallerEdit)]
+    [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] TallerItemRepairOrder model)
     {
         var itemRepairOrder = await _itemRepairOrderService.GetByIdAsync(id);
@@ -40,7 +40,7 @@ public class ItemRepairOrderController : ControllerBase
         return Ok(itemRepairOrder);
     }
 
-    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.MaterialTallerDelete)]
+    [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(string id)
     {
         var itemRepairOrder = await _itemRepairOrderService.GetByIdAsync(id);

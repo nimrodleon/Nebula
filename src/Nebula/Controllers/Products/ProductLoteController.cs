@@ -17,7 +17,7 @@ public class ProductLoteController : ControllerBase
         _productLoteService = productLoteService;
     }
 
-    [HttpGet("Index/{id}"), UserAuthorize(Permission.ProductRead)]
+    [HttpGet("Index/{id}")]
     public async Task<IActionResult> Index(string id, [FromQuery] string? expirationDate)
     {
         if (string.IsNullOrEmpty(expirationDate))
@@ -26,14 +26,14 @@ public class ProductLoteController : ControllerBase
         return Ok(responseData);
     }
 
-    [HttpGet("LotesByProduct/{id}"), UserAuthorize(Permission.ProductRead)]
+    [HttpGet("LotesByProduct/{id}")]
     public async Task<IActionResult> LotesByProduct(string id)
     {
         var responseData = await _productLoteService.GetLotesByProductId(id);
         return Ok(responseData);
     }
 
-    [HttpPost("Create"), UserAuthorize(Permission.ProductCreate)]
+    [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] ProductLote model)
     {
         model.LotNumber = model.LotNumber.ToUpper();
@@ -42,7 +42,7 @@ public class ProductLoteController : ControllerBase
         return Ok(model);
     }
 
-    [HttpPut("Update/{id}"), UserAuthorize(Permission.ProductEdit)]
+    [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] ProductLote model)
     {
         var lote = await _productLoteService.GetByIdAsync(id);
@@ -52,7 +52,7 @@ public class ProductLoteController : ControllerBase
         return Ok(model);
     }
 
-    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.ProductDelete)]
+    [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(string id)
     {
         var lote = await _productLoteService.GetByIdAsync(id);

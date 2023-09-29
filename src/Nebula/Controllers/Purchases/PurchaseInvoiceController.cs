@@ -28,14 +28,14 @@ public class PurchaseInvoiceController : ControllerBase
         _validezCompraService = validezCompraService;
     }
 
-    [HttpGet("Index"), UserAuthorize(Permission.PurchasesRead)]
+    [HttpGet("Index")]
     public async Task<IActionResult> Index([FromQuery] DateQuery query)
     {
         var purchases = await _purchaseInvoiceService.GetAsync(query);
         return Ok(purchases);
     }
 
-    [HttpGet("Show/{id}"), UserAuthorize(Permission.PurchasesRead)]
+    [HttpGet("Show/{id}")]
     public async Task<IActionResult> Show(string id)
     {
         var purchase = new PurchaseDto
@@ -46,21 +46,21 @@ public class PurchaseInvoiceController : ControllerBase
         return Ok(purchase);
     }
 
-    [HttpPost("Create"), UserAuthorize(Permission.PurchasesCreate)]
+    [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] CabeceraCompraDto cabecera)
     {
         var purchase = await _purchaseInvoiceService.CreateAsync(cabecera);
         return Ok(purchase);
     }
 
-    [HttpPut("Update/{id}"), UserAuthorize(Permission.PurchasesEdit)]
+    [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] CabeceraCompraDto cabecera)
     {
         var purchase = await _purchaseInvoiceService.UpdateAsync(id, cabecera);
         return Ok(purchase);
     }
 
-    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.PurchasesDelete)]
+    [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(string id)
     {
         var purchase = await _purchaseInvoiceService.GetByIdAsync(id);

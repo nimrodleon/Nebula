@@ -33,7 +33,7 @@ public class InvoiceSaleCashierController : ControllerBase
     /// <param name="id">ID caja diaria</param>
     /// <param name="model">GenerarVenta</param>
     /// <returns>IActionResult</returns>
-    [HttpPost("GenerarVenta/{id}"), UserAuthorize(Permission.PosCreate)]
+    [HttpPost("GenerarVenta/{id}")]
     public async Task<IActionResult> GenerarVenta(string id, [FromBody] ComprobanteDto model)
     {
         try
@@ -59,7 +59,7 @@ public class InvoiceSaleCashierController : ControllerBase
     /// </summary>
     /// <param name="id">ID CajaDiaria</param>
     /// <returns>Lista de Productos</returns>
-    [HttpGet("ProductReport/{id}"), UserAuthorize(Permission.PosRead)]
+    [HttpGet("ProductReport/{id}")]
     public async Task<IActionResult> ProductReport(string id)
     {
         List<InvoiceSaleDetail> invoiceSaleDetails = await _invoiceSaleDetailService.GetItemsByCajaDiaria(id);

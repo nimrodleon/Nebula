@@ -17,28 +17,28 @@ public class AjusteInventarioDetailController : ControllerBase
         _ajusteInventarioDetailService = ajusteInventarioDetailService;
     }
 
-    [HttpGet("Index/{id}"), UserAuthorize(Permission.InventoryRead)]
+    [HttpGet("Index/{id}")]
     public async Task<IActionResult> Index(string id)
     {
         var responseData = await _ajusteInventarioDetailService.GetListAsync(id);
         return Ok(responseData);
     }
 
-    [HttpGet("Show/{id}"), UserAuthorize(Permission.InventoryRead)]
+    [HttpGet("Show/{id}")]
     public async Task<IActionResult> Show(string id)
     {
         var ajusteInventarioDetail = await _ajusteInventarioDetailService.GetByIdAsync(id);
         return Ok(ajusteInventarioDetail);
     }
 
-    [HttpPost("Create"), UserAuthorize(Permission.InventoryCreate)]
+    [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] AjusteInventarioDetail model)
     {
         var ajusteInventarioDetail = await _ajusteInventarioDetailService.CreateAsync(model);
         return Ok(ajusteInventarioDetail);
     }
 
-    [HttpPut("Update/{id}"), UserAuthorize(Permission.InventoryEdit)]
+    [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] AjusteInventarioDetail model)
     {
         var ajusteInventarioDetail = await _ajusteInventarioDetailService.GetByIdAsync(id);
@@ -47,7 +47,7 @@ public class AjusteInventarioDetailController : ControllerBase
         return Ok(responseData);
     }
 
-    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.InventoryDelete)]
+    [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(string id)
     {
         var ajusteInventarioDetail = await _ajusteInventarioDetailService.GetByIdAsync(id);
@@ -55,7 +55,7 @@ public class AjusteInventarioDetailController : ControllerBase
         return Ok(ajusteInventarioDetail);
     }
 
-    [HttpGet("CountDocuments/{id}"), UserAuthorize(Permission.InventoryRead)]
+    [HttpGet("CountDocuments/{id}")]
     public async Task<IActionResult> CountDocuments(string id)
     {
         var countDocuments = await _ajusteInventarioDetailService.CountDocumentsAsync(id);

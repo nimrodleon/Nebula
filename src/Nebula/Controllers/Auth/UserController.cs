@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Models;
@@ -12,32 +11,30 @@ namespace Nebula.Controllers.Auth;
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
-    private readonly IRoleService _roleService;
     private readonly IConfiguration _configuration;
 
     public UserController(IUserService userService,
-        IRoleService roleService, IConfiguration configuration)
+        IConfiguration configuration)
     {
         _userService = userService;
-        _roleService = roleService;
         _configuration = configuration;
     }
 
-    [HttpGet("Index"), UserAuthorize(Permission.ConfigurationRead)]
+    [HttpGet("Index")]
     public async Task<IActionResult> Index([FromQuery] string? query)
     {
         var responseData = await _userService.GetListAsync(query);
         return Ok(responseData);
     }
 
-    [HttpGet("Show/{id}"), UserAuthorize(Permission.ConfigurationRead)]
+    [HttpGet("Show/{id}")]
     public async Task<IActionResult> Show(string id)
     {
         var user = await _userService.GetByIdAsync(id);
         return Ok(user);
     }
 
-    [HttpPost("Create"), UserAuthorize(Permission.ConfigurationCreate)]
+    [HttpPost("Create")]
     public async Task<IActionResult> Create([FromBody] UserRegister model)
     {
         var user = new User()
@@ -51,40 +48,7 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
-    [AllowAnonymous]
-    [HttpPost("CreateSupportUser")]
-    public async Task<IActionResult> CreateSupportUser()
-    {
-        var createUser = _configuration.GetValue<bool>("CreateSupportUser");
-        if (!createUser) return NotFound();
-                
-        var existingRole = await _roleService.GetByNombreAsync("SYSTEM");
-        if (existingRole != null) await _roleService.RemoveAsync(existingRole.Id);
-
-        var role = new Roles()
-        {
-            Id = string.Empty,
-            Nombre = "SYSTEM",
-            Permisos = Permission.GetAllPermissions(),
-        };
-        await _roleService.CreateAsync(role);
-
-        var existingUser = await _userService.GetByUserNameAsync("soporte");
-        if (existingUser != null) await _userService.RemoveAsync(existingUser.Id);
-
-        var user = new User()
-        {
-            UserName = "soporte",
-            Email = "soporte@local.pe",
-            PasswordHash = PasswordHasher.HashPassword("mangoloco"),
-            RolesId = role.Id,
-        };
-        await _userService.CreateAsync(user);
-
-        return Ok(user);
-    }
-
-    [HttpPut("Update/{id}"), UserAuthorize(Permission.ConfigurationEdit)]
+    [HttpPut("Update/{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] UserRegister model)
     {
         var user = await _userService.GetByIdAsync(id);
@@ -95,7 +59,7 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
-    [HttpPut("PasswordChange/{id}"), UserAuthorize(Permission.ConfigurationEdit)]
+    [HttpPut("PasswordChange/{id}")]
     public async Task<IActionResult> PasswordChange(string id, [FromBody] UserRegister model)
     {
         var user = await _userService.GetByIdAsync(id);
@@ -104,7 +68,7 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
-    [HttpDelete("Delete/{id}"), UserAuthorize(Permission.ConfigurationDelete)]
+    [HttpDelete("Delete/{id}")]
     public async Task<IActionResult> Delete(string id)
     {
         var user = await _userService.GetByIdAsync(id);

@@ -20,28 +20,28 @@ public class ProductStockController : ControllerBase
         _helperCalculateProductStockService = helperCalculateProductStockService;
     }
 
-    [HttpGet("GetStockInfos/{productId}"), UserAuthorize(Permission.ProductRead)]
+    [HttpGet("GetStockInfos/{productId}")]
     public async Task<IActionResult> GetStockInfos(string productId)
     {
         var responseData = await _helperCalculateProductStockService.GetProductStockInfos(productId);
         return Ok(responseData);
     }
 
-    [HttpPost("ChangeQuantity"), UserAuthorize(Permission.InventoryEdit)]
+    [HttpPost("ChangeQuantity")]
     public async Task<IActionResult> ChangeQuantity([FromBody] ChangeQuantityStockRequestParams requestParams)
     {
         var productStock = await _productStockService.ChangeQuantity(requestParams);
         return Ok(productStock);
     }
 
-    [HttpGet("StockQuantity/{warehouseId}/{productId}"), UserAuthorize(Permission.ProductRead)]
+    [HttpGet("StockQuantity/{warehouseId}/{productId}")]
     public async Task<IActionResult> StockQuantity(string warehouseId, string productId)
     {
         var result = await _productStockService.GetStockQuantityByWarehouseAsync(warehouseId, productId);
         return Ok(result);
     }
 
-    [HttpGet("LoteStockQuantity/{warehouseId}/{productLoteId}/{productId}"), UserAuthorize(Permission.ProductRead)]
+    [HttpGet("LoteStockQuantity/{warehouseId}/{productLoteId}/{productId}")]
     public async Task<IActionResult> LoteStockQuantity(string warehouseId, string productLoteId, string productId)
     {
         var result = await _productStockService.GetLoteStockQuantityByWarehouseAsync(warehouseId, productLoteId, productId);

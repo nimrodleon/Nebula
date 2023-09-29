@@ -120,14 +120,14 @@ public class ContactController : ControllerBase
         return Ok(contact);
     }
 
-    [HttpGet("EntradaSalida/{id}"), UserAuthorize(Permission.ContactRead)]
+    [HttpGet("EntradaSalida/{id}")]
     public async Task<IActionResult> EntradaSalida(string id, [FromQuery] string month, [FromQuery] string year)
     {
         var responseData = await _cashierDetailService.GetEntradaSalidaAsync(id, month, year);
         return Ok(responseData);
     }
 
-    [HttpGet("InvoiceSale/{id}"), UserAuthorize(Permission.ContactRead)]
+    [HttpGet("InvoiceSale/{id}")]
     public async Task<IActionResult> InvoiceSale(string companyId, string id, [FromQuery] string month, [FromQuery] string year)
     {
         var responseData = await _invoiceSaleService.GetByContactIdAsync(companyId, id, month, year);
