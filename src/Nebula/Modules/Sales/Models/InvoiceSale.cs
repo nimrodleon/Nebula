@@ -1,7 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Nebula.Common.Models;
-using Nebula.Modules.Facturador.Helpers;
 
 namespace Nebula.Modules.Sales.Models;
 
@@ -121,9 +120,9 @@ public class InvoiceSale : IGenericModel
     public bool Anulada { get; set; } = false;
 
     /// <summary>
-    /// Estado de Situación Facturador SUNAT.
+    /// Estado de Situación Facturador.
     /// </summary>
-    public string SituacionFacturador { get; set; } = "01:Por Generar XML";
+    public string SituacionFacturador { get; set; } = string.Empty;
 
     /// <summary>
     /// Año de registro.
@@ -148,12 +147,17 @@ public class InvoiceSale : IGenericModel
     #endregion
 
     /// <summary>
-    /// Ubicación de los documentos electrónicos.
-    /// </summary>
-    public string DocumentPath { get; set; } = DocumentPathType.NONE;
-
-    /// <summary>
     /// Comentario/Observación de la factura.
     /// </summary>
     public string Remark { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Guarda el DigestValue del XML firmado.
+    /// </summary>
+    public string XmlDigestValue { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Importe total de la venta, en letras.
+    /// </summary>
+    public string TotalEnLetras { get; set; } = string.Empty;
 }

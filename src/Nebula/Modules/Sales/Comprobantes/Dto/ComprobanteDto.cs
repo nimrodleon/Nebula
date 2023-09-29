@@ -1,5 +1,4 @@
 using Nebula.Modules.Account.Models;
-using Nebula.Modules.Configurations.Models;
 using Nebula.Modules.Sales.Helpers;
 using Nebula.Modules.Sales.Models;
 
@@ -7,7 +6,6 @@ namespace Nebula.Modules.Sales.Comprobantes.Dto;
 
 public class ComprobanteDto
 {
-    private Configuration _configuration = new Configuration();
     #region ORIGIN_HTTP_REQUEST!
     public CabeceraComprobanteDto Cabecera { get; set; } = new CabeceraComprobanteDto();
     public List<ItemComprobanteDto> Detalle { get; set; } = new List<ItemComprobanteDto>();
@@ -15,10 +13,7 @@ public class ComprobanteDto
     public List<CuotaPagoComprobanteDto> DetallePago { get; set; } = new List<CuotaPagoComprobanteDto>();
     #endregion
     private List<SumImpItemDto> ImpItemsDto { get; set; } = new List<SumImpItemDto>();
-    public void SetConfiguration(Configuration configuration)
-    {
-        _configuration = configuration;
-    }
+    public Company UserCompany { get; set; } = new Company();
 
     private SumImpVentaDto CalcularImporteVenta()
     {
@@ -27,9 +22,9 @@ public class ComprobanteDto
         {
             SumImpItemDto itemObj = new SumImpItemDto();
             decimal mtoTotalItem = item.CtdUnidadItem * item.MtoPrecioVentaUnitario;
-            decimal porcentajeIGV = item.IgvSunat == TipoIGV.Gravado ? _configuration.PorcentajeIgv / 100 + 1 : 1;
+            decimal porcentajeIGV = item.IgvSunat == TipoIGV.Gravado ? UserCompany.PorcentajeIgv / 100 + 1 : 1;
             itemObj.MtoValorVentaItem = mtoTotalItem / porcentajeIGV;
-            itemObj.MtoTriIcbperItem = item.TriIcbper ? item.CtdUnidadItem * _configuration.ValorImpuestoBolsa : 0;
+            itemObj.MtoTriIcbperItem = item.TriIcbper ? item.CtdUnidadItem * UserCompany.ValorImpuestoBolsa : 0;
             itemObj.MtoBaseIgvItem = mtoTotalItem / porcentajeIGV;
             itemObj.MtoIgvItem = mtoTotalItem - itemObj.MtoBaseIgvItem;
             itemObj.SumTotTributosItem = itemObj.MtoIgvItem + itemObj.MtoTriIcbperItem; // el sistema soporta solo IGV/ICBPER.
@@ -45,24 +40,22 @@ public class ComprobanteDto
     public InvoiceSale GetInvoiceSale()
     {
         var importeVenta = CalcularImporteVenta();
-        string tipOperacion = string.Empty;
-        if (_configuration.CpeSunat == TypeSee.None) tipOperacion = "-";
-        if (_configuration.CpeSunat == TypeSee.Sfs) tipOperacion = "0101"; // Venta interna
-        if (_configuration.CpeSunat == TypeSee.Nrus) tipOperacion = "0113"; // Venta Interna - NRUS
+        string tipOperacion = "0101";
         return new InvoiceSale
         {
+            CompanyId = UserCompany.Id,
             DocType = Cabecera.DocType,
             TipOperacion = tipOperacion,
             FecEmision = DateTime.Now.ToString("yyyy-MM-dd"),
             HorEmision = DateTime.Now.ToString("HH:mm:ss"),
             FecVencimiento = Cabecera.FecVencimiento,
-            CodLocalEmisor = _configuration.CodLocalEmisor,
+            CodLocalEmisor = UserCompany.CodLocalEmisor,
             FormaPago = DatoPago.FormaPago,
             ContactId = Cabecera.ContactId,
             TipDocUsuario = Cabecera.TipDocUsuario,
             NumDocUsuario = Cabecera.NumDocUsuario,
             RznSocialUsuario = Cabecera.RznSocialUsuario,
-            TipMoneda = _configuration.TipMoneda,
+            TipMoneda = UserCompany.TipMoneda,
             SumTotValVenta = importeVenta.SumTotValVenta,
             SumPrecioVenta = importeVenta.SumPrecioVenta,
             SumTotTributos = importeVenta.SumTotTributos,
@@ -113,9 +106,9 @@ public class ComprobanteDto
             SumImpItemDto impItemDto = new SumImpItemDto();
             impItemDto.IgvSunat = item.IgvSunat;
             decimal mtoTotalItem = item.CtdUnidadItem * item.MtoPrecioVentaUnitario;
-            decimal porcentajeIGV = item.IgvSunat == TipoIGV.Gravado ? _configuration.PorcentajeIgv / 100 + 1 : 1;
+            decimal porcentajeIGV = item.IgvSunat == TipoIGV.Gravado ? UserCompany.PorcentajeIgv / 100 + 1 : 1;
             impItemDto.MtoValorVentaItem = mtoTotalItem / porcentajeIGV;
-            impItemDto.MtoTriIcbperItem = item.TriIcbper ? item.CtdUnidadItem * _configuration.ValorImpuestoBolsa : 0;
+            impItemDto.MtoTriIcbperItem = item.TriIcbper ? item.CtdUnidadItem * UserCompany.ValorImpuestoBolsa : 0;
             impItemDto.MtoBaseIgvItem = mtoTotalItem / porcentajeIGV;
             impItemDto.MtoIgvItem = mtoTotalItem - impItemDto.MtoBaseIgvItem;
             impItemDto.SumTotTributosItem = impItemDto.MtoIgvItem + impItemDto.MtoTriIcbperItem; // el sistema soporta solo IGV/ICBPER.
@@ -141,14 +134,14 @@ public class ComprobanteDto
                 NomTributoIgvItem = nomTributoIgvItem,
                 CodTipTributoIgvItem = codTipTributoIgvItem,
                 TipAfeIgv = tipAfeIgv,
-                PorIgvItem = item.IgvSunat == TipoIGV.Gravado ? _configuration.PorcentajeIgv : 0,
+                PorIgvItem = item.IgvSunat == TipoIGV.Gravado ? UserCompany.PorcentajeIgv : 0,
                 // Tributo ICBPER 7152.
                 CodTriIcbper = item.TriIcbper ? "7152" : "-",
                 MtoTriIcbperItem = item.TriIcbper ? impItemDto.MtoTriIcbperItem : 0,
                 CtdBolsasTriIcbperItem = item.TriIcbper ? Convert.ToInt32(item.CtdUnidadItem) : 0,
                 NomTributoIcbperItem = "ICBPER",
                 CodTipTributoIcbperItem = "OTH",
-                MtoTriIcbperUnidad = item.TriIcbper ? _configuration.ValorImpuestoBolsa : 0,
+                MtoTriIcbperUnidad = item.TriIcbper ? UserCompany.ValorImpuestoBolsa : 0,
                 // Precio de Venta Unitario.
                 MtoPrecioVentaUnitario = item.MtoPrecioVentaUnitario,
                 MtoValorVentaItem = impItemDto.MtoValorVentaItem,
@@ -257,7 +250,7 @@ public class ComprobanteDto
                 InvoiceSale = invoiceId,
                 MtoCuotaPago = item.MtoCuotaPago,
                 FecCuotaPago = item.FecCuotaPago,
-                TipMonedaCuotaPago = _configuration.TipMoneda,
+                TipMonedaCuotaPago = UserCompany.TipMoneda,
             });
         });
         return detallePagos;

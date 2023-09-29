@@ -19,7 +19,7 @@ public class TributoSale : IGenericModel
     /// <summary>
     /// foreignKey in db.
     /// </summary>
-    public string InvoiceSale { get; set; } = string.Empty;
+    public string InvoiceSaleId { get; set; } = string.Empty;
 
     /// <summary>
     /// Identificador de tributo.

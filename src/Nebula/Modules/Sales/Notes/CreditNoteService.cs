@@ -3,10 +3,6 @@ using Nebula.Common;
 using Nebula.Common.Dto;
 using Nebula.Modules.Account;
 using Nebula.Modules.Account.Models;
-using Nebula.Modules.Configurations;
-using Nebula.Modules.Facturador.Helpers;
-using Nebula.Modules.Facturador.XmlDigest;
-using Nebula.Modules.Sales.Helpers;
 using Nebula.Modules.Sales.Invoices;
 using Nebula.Modules.Sales.Models;
 using Nebula.Modules.Sales.Notes.Dto;
@@ -16,24 +12,21 @@ namespace Nebula.Modules.Sales.Notes;
 public interface ICreditNoteService : ICrudOperationService<CreditNote>
 {
     Task<List<CreditNote>> GetListAsync(string companyId, DateQuery query);
-    Task<CreditNote> GetCreditNoteByInvoiceSaleIdAsync(string invoiceSaleId);
-    Task<List<CreditNote>> GetCreditNotesByMonthAndYear(string month, string year);
-    Task<List<CreditNote>> GetCreditNotesByDate(string date);
-    Task<CreditNote> SetSituacionFacturador(string id, SituacionFacturadorDto dto);
-    Task<CreditNoteDto> GetCreditNoteDtoAsync(string id);
-    Task<CreditNote> AnulaciónDeLaOperación(string id);
+    Task<CreditNote> GetCreditNoteByInvoiceSaleIdAsync(string companyId, string invoiceSaleId);
+    Task<List<CreditNote>> GetCreditNotesByMonthAndYear(string companyId, string month, string year);
+    Task<List<CreditNote>> GetCreditNotesByDate(string companyId, string date);
+    Task<CreditNote> SetSituacionFacturador(string companyId, string creditNoteId, SituacionFacturadorDto dto);
+    Task<CreditNoteDto> GetCreditNoteDtoAsync(string companyId, string CreditNoteId);
+    Task<CreditNote> AnulaciónDeLaOperación(string companyId, string invoiceSaleId);
     void GenerarSerieComprobante(ref InvoiceSerie invoiceSerie, ref CreditNote creditNote);
-    Task<PrintCreditNoteDto> GetPrintCreditNoteDto(string creditNoteId);
+    Task<PrintCreditNoteDto> GetPrintCreditNoteDto(string companyId, string creditNoteId);
 }
 
 public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteService
 {
-    private readonly IConfiguration _configuration;
-    private readonly IConfigurationService _configurationService;
     private readonly IInvoiceSaleService _invoiceSaleService;
     private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly ITributoSaleService _tributoSaleService;
-
     private readonly IInvoiceSerieService _invoiceSerieService;
 
     // ======================================================================
@@ -42,7 +35,6 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
 
     public CreditNoteService(MongoDatabaseService mongoDatabase,
         IConfiguration configuration,
-        IConfigurationService configurationService,
         IInvoiceSaleService invoiceSaleService,
         IInvoiceSaleDetailService invoiceSaleDetailService,
         ITributoSaleService tributoSaleService,
@@ -50,8 +42,6 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
         ICreditNoteDetailService creditNoteDetailService,
         ITributoCreditNoteService tributoCreditNoteService) : base(mongoDatabase)
     {
-        _configurationService = configurationService;
-        _configuration = configuration;
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _tributoSaleService = tributoSaleService;
@@ -69,8 +59,8 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
             .ToListAsync();
     }
 
-    public async Task<CreditNote> GetCreditNoteByInvoiceSaleIdAsync(string invoiceSaleId) =>
-        await _collection.Find(x => x.InvoiceSaleId == invoiceSaleId).FirstOrDefaultAsync();
+    public async Task<CreditNote> GetCreditNoteByInvoiceSaleIdAsync(string companyId, string invoiceSaleId) =>
+        await _collection.Find(x => x.CompanyId == companyId && x.InvoiceSaleId == invoiceSaleId).FirstOrDefaultAsync();
 
     /// <summary>
     /// Obtener notas de crédito por mes y año.
@@ -78,11 +68,11 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
     /// <param name="month">mes</param>
     /// <param name="year">año</param>
     /// <returns>Lista de notas de crédito</returns>
-    public async Task<List<CreditNote>> GetCreditNotesByMonthAndYear(string month, string year)
+    public async Task<List<CreditNote>> GetCreditNotesByMonthAndYear(string companyId, string month, string year)
     {
         var builder = Builders<CreditNote>.Filter;
-        var filter = builder.And(builder.Eq(x => x.Month, month),
-            builder.Eq(x => x.Year, year));
+        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId),
+            builder.Eq(x => x.Month, month), builder.Eq(x => x.Year, year));
         return await _collection.Find(filter).ToListAsync();
     }
 
@@ -91,16 +81,16 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
     /// </summary>
     /// <param name="date">fecha de emisión del comprobante</param>
     /// <returns>Lista de notas de crédito</returns>
-    public async Task<List<CreditNote>> GetCreditNotesByDate(string date)
+    public async Task<List<CreditNote>> GetCreditNotesByDate(string companyId, string date)
     {
         var builder = Builders<CreditNote>.Filter;
-        var filter = builder.Eq(x => x.FecEmision, date);
+        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId), builder.Eq(x => x.FecEmision, date));
         return await _collection.Find(filter).ToListAsync();
     }
 
-    public async Task<CreditNote> SetSituacionFacturador(string id, SituacionFacturadorDto dto)
+    public async Task<CreditNote> SetSituacionFacturador(string companyId, string creditNoteId, SituacionFacturadorDto dto)
     {
-        var creditNote = await GetByIdAsync(id);
+        var creditNote = await GetByIdAsync(companyId, creditNoteId);
         creditNote.SituacionFacturador = $"{dto.Id}:{dto.Nombre}";
         creditNote = await UpdateAsync(creditNote.Id, creditNote);
         return creditNote;
@@ -111,11 +101,11 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
     /// </summary>
     /// <param name="id">Identificador Nota de Crédito</param>
     /// <returns>CreditNoteDto</returns>
-    public async Task<CreditNoteDto> GetCreditNoteDtoAsync(string id)
+    public async Task<CreditNoteDto> GetCreditNoteDtoAsync(string companyId, string CreditNoteId)
     {
-        var creditNote = await GetByIdAsync(id);
+        var creditNote = await GetByIdAsync(companyId, CreditNoteId);
         var creditNoteDetails = await _creditNoteDetailService.GetListAsync(creditNote.Id);
-        var tributosCreditNote = await _tributoCreditNoteService.GetListAsync(creditNote.Id);
+        var tributosCreditNote = await _tributoCreditNoteService.GetListAsync(companyId, creditNote.Id);
         return new CreditNoteDto()
         {
             CreditNote = creditNote,
@@ -124,12 +114,12 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
         };
     }
 
-    public async Task<CreditNote> AnulaciónDeLaOperación(string id)
+    public async Task<CreditNote> AnulaciónDeLaOperación(string companyId, string invoiceSaleId)
     {
-        var invoiceSale = await _invoiceSaleService.GetByIdAsync(id);
+        var invoiceSale = await _invoiceSaleService.GetByIdAsync(companyId, invoiceSaleId);
         var invoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(invoiceSale.Id);
-        var tributoSales = await _tributoSaleService.GetListAsync(invoiceSale.Id);
-        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(invoiceSale.InvoiceSerieId);
+        var tributoSales = await _tributoSaleService.GetListAsync(companyId, invoiceSale.Id);
+        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(companyId, invoiceSale.InvoiceSerieId);
         var creditNote = GetCreditNote(invoiceSale);
         GenerarSerieComprobante(ref invoiceSerie, ref creditNote);
 
@@ -154,6 +144,7 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
 
         return new CreditNote()
         {
+            CompanyId = invoiceSale.CompanyId,
             InvoiceSaleId = invoiceSale.Id,
             TipOperacion = invoiceSale.TipOperacion,
             FecEmision = DateTime.Now.ToString("yyyy-MM-dd"),
@@ -266,46 +257,19 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
     /// </summary>
     /// <param name="creditNoteId">Identificador de la Nota de crédito</param>
     /// <returns>PrintCreditNoteDto</returns>
-    public async Task<PrintCreditNoteDto> GetPrintCreditNoteDto(string creditNoteId)
+    public async Task<PrintCreditNoteDto> GetPrintCreditNoteDto(string companyId, string creditNoteId)
     {
         // Cargar datos básicos.
-        var configuration = await _configurationService.GetAsync();
-        var creditNoteDto = await GetCreditNoteDtoAsync(creditNoteId);
-        var creditNote = creditNoteDto.CreditNote;
-        // configurar nombre de archivo XML.
-        // 20520485750-07-BC01-00000015
-        string nomArch = $"{configuration.Ruc}-07-{creditNote.Serie}-{creditNote.Number}.xml";
-        string pathXml = string.Empty;
-        var storagePath = _configuration.GetValue<string>("StoragePath");
-        // abrir en la ruta del facturador.
-        if (creditNote.DocumentPath == DocumentPathType.SFS)
-        {
-            string? sunatArchivos = _configuration.GetValue<string>("sunatArchivos");
-            if (sunatArchivos is null) sunatArchivos = string.Empty;
-            string carpetaArchivoSunat = Path.Combine(sunatArchivos, "sfs");
-            pathXml = Path.Combine(carpetaArchivoSunat, "FIRMA", nomArch);
-        }
-
-        // abrir en la ruta de la carpeta control.
-        if (creditNote.DocumentPath == DocumentPathType.CONTROL)
-        {
-            if (storagePath is null) storagePath = string.Empty;
-            string carpetaArchivoSunat = Path.Combine(storagePath, "facturador");
-            string carpetaRepo = Path.Combine(carpetaArchivoSunat, "FIRMA", creditNote.Year, creditNote.Month);
-            pathXml = Path.Combine(carpetaRepo, nomArch);
-        }
+        var creditNoteDto = await GetCreditNoteDtoAsync(companyId, creditNoteId);
 
         // establecer valores de retorno.
         var printCreditNote = new PrintCreditNoteDto
         {
-            Configuration = configuration,
+            Company = new Company(), // TODO: refactoring.
             CreditNote = creditNoteDto.CreditNote,
             CreditNoteDetails = creditNoteDto.CreditNoteDetails,
             TributosCreditNote = creditNoteDto.TributosCreditNote
         };
-        LeerDigestValue digest = new LeerDigestValue();
-        printCreditNote.DigestValue = digest.GetCreditNoteXmlValue(pathXml);
-        printCreditNote.TotalEnLetras = new NumberToLetters(creditNote.SumImpVenta).ToString();
         return printCreditNote;
     }
 }

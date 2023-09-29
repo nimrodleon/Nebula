@@ -17,7 +17,7 @@ public class DetallePagoSale : IGenericModel
     /// <summary>
     /// foreignKey in db.
     /// </summary>
-    public string InvoiceSale { get; set; } = string.Empty;
+    public string InvoiceSaleId { get; set; } = string.Empty;
 
     /// <summary>
     /// Monto(s) del pago único o de las cuotas.

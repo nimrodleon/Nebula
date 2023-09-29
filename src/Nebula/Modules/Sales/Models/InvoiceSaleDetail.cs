@@ -15,12 +15,12 @@ public class InvoiceSaleDetail : IGenericModel
     /// <summary>
     /// Identificador CajaDiaria.
     /// </summary>
-    public string CajaDiaria { get; set; } = "-";
+    public string CajaDiariaId { get; set; } = "-";
 
     /// <summary>
     /// foreignKey cabecera.
     /// </summary>
-    public string InvoiceSale { get; set; } = string.Empty;
+    public string InvoiceSaleId { get; set; } = string.Empty;
 
     /// <summary>
     /// Tipo registro producto o servicio.

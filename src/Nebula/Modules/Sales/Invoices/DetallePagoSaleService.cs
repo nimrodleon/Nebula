@@ -6,7 +6,7 @@ namespace Nebula.Modules.Sales.Invoices;
 
 public interface IDetallePagoSaleService : ICrudOperationService<DetallePagoSale>
 {
-    Task<List<DetallePagoSale>> GetListAsync(string id);
+    Task<List<DetallePagoSale>> GetListAsync(string invoiceSaleId);
     Task CreateManyAsync(List<DetallePagoSale> detallePago);
 }
 
@@ -14,8 +14,8 @@ public class DetallePagoSaleService : CrudOperationService<DetallePagoSale>, IDe
 {
     public DetallePagoSaleService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
 
-    public async Task<List<DetallePagoSale>> GetListAsync(string id) =>
-        await _collection.Find(x => x.InvoiceSale == id).ToListAsync();
+    public async Task<List<DetallePagoSale>> GetListAsync(string invoiceSaleId) =>
+        await _collection.Find(x => x.InvoiceSaleId == invoiceSaleId).ToListAsync();
 
     public async Task CreateManyAsync(List<DetallePagoSale> detallePago) =>
         await _collection.InsertManyAsync(detallePago);

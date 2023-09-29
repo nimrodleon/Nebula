@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Common.Dto;
@@ -8,7 +7,7 @@ namespace Nebula.Modules.Sales.Notes;
 
 public interface ITributoCreditNoteService : ICrudOperationService<TributoCreditNote>
 {
-    Task<List<TributoCreditNote>> GetListAsync(string creditNoteId);
+    Task<List<TributoCreditNote>> GetListAsync(string companyId, string creditNoteId);
     Task<List<TributoCreditNote>> GetTributosMensual(string companyId, DateQuery date);
 }
 
@@ -18,8 +17,8 @@ public class TributoCreditNoteService : CrudOperationService<TributoCreditNote>,
     {
     }
 
-    public async Task<List<TributoCreditNote>> GetListAsync(string creditNoteId) =>
-        await _collection.Find(x => x.CreditNoteId == creditNoteId).ToListAsync();
+    public async Task<List<TributoCreditNote>> GetListAsync(string companyId, string creditNoteId) =>
+        await _collection.Find(x => x.CompanyId == companyId && x.CreditNoteId == creditNoteId).ToListAsync();
 
     /// <summary>
     /// Obtener Lista de Tributos Mensual.

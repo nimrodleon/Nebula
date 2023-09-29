@@ -1,7 +1,6 @@
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 using Nebula.Common.Models;
-using Nebula.Modules.Facturador.Helpers;
 
 namespace Nebula.Modules.Sales.Models;
 
@@ -145,7 +144,12 @@ public class CreditNote : IGenericModel
     #endregion
 
     /// <summary>
-    /// Ubicación de los documentos electrónicos.
+    /// Guarda el DigestValue del XML firmado.
     /// </summary>
-    public string DocumentPath { get; set; } = DocumentPathType.NONE;
+    public string XmlDigestValue { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Importe total de la venta, en letras.
+    /// </summary>
+    public string TotalEnLetras { get; set; } = string.Empty;
 }
