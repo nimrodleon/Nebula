@@ -64,6 +64,7 @@ builder.Services.AddScoped(typeof(ICrudOperationService<>), typeof(CrudOperation
 #region ModuleAuth
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICollaboratorService, CollaboratorService>();
 builder.Services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();
 
 #endregion

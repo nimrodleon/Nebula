@@ -19,9 +19,4 @@ public class UserRegister
     /// Contraseña del usuario.
     /// </summary>
     public string Password { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Rol de usuario.
-    /// </summary>
-    public string RolesId { get; set; } = string.Empty;
 }

@@ -45,7 +45,7 @@ public class AuthController : ControllerBase
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Role, user.RolesId)
+                new Claim(ClaimTypes.Role, user.RolesId),
             };
 
             // Leemos el secretKey desde nuestro appSettings.json
