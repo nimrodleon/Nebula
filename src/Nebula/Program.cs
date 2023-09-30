@@ -5,6 +5,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Nebula.Common;
+using Nebula.Common.Helpers;
 using Nebula.Modules.Account;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Cashier;
@@ -60,6 +61,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
 builder.Services.AddScoped<MongoDatabaseService>();
 builder.Services.AddScoped(typeof(ICrudOperationService<>), typeof(CrudOperationService<>));
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 #region ModuleAuth
 
