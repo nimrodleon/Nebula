@@ -15,4 +15,6 @@ public class User : IGenericModel
     public string Email { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;
     public string UserType { get; set; } = UserTypeSystem.Customer;
+    public bool Suspended { get; set; } = false;
+    public string EmailValidationToken { get; set;} = string.Empty;
 }

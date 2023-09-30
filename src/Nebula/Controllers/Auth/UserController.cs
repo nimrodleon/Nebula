@@ -3,6 +3,8 @@ using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Models;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth.Dto;
+using Nebula.Common;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Nebula.Controllers.Auth;
 
@@ -11,10 +13,12 @@ namespace Nebula.Controllers.Auth;
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
+    private readonly IEmailService _emailService;
 
-    public UserController(IUserService userService)
+    public UserController(IUserService userService, IEmailService emailService)
     {
         _userService = userService;
+        _emailService = emailService;
     }
 
     [HttpPost]
@@ -28,6 +32,25 @@ public class UserController : ControllerBase
             UserType = UserTypeSystem.Customer,
         };
         await _userService.CreateAsync(user);
+
+        // enviar correo electrónico.
+        string fromEmail = "reddrc21@gmail.com";
+        string subject = $"Confirmación de Correo Electrónico - {user.Email.Trim()}";
+        string body = $"""
+        Hola {user.UserName},
+        Gracias por registrarte en nuestro sitio web.<br>
+        Para completar tu registro, por favor haz clic en el siguiente enlace para validar tu dirección de correo electrónico:
+        <br>
+        http://localhost:5042/swagger/index.html
+        <br>
+        Si no puedes hacer clic en el enlace, cópialo y pégalo en la barra de direcciones de tu navegador web.
+        <br>
+        ¡Gracias por unirte a nosotros!
+        <br>
+        Atentamente,
+        CPEDIGITAL.NET
+        """;
+        await _emailService.SendEmailAsync(fromEmail, user.Email.Trim(), subject, body);
         return Ok(user);
     }
 
