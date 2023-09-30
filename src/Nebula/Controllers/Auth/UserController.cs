@@ -6,35 +6,18 @@ using Nebula.Modules.Auth.Dto;
 
 namespace Nebula.Controllers.Auth;
 
-[Route("api/[controller]")]
+[Route("api/auth/[controller]")]
 [ApiController]
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
-    private readonly IConfiguration _configuration;
 
-    public UserController(IUserService userService,
-        IConfiguration configuration)
+    public UserController(IUserService userService)
     {
         _userService = userService;
-        _configuration = configuration;
     }
 
-    [HttpGet("Index")]
-    public async Task<IActionResult> Index([FromQuery] string? query)
-    {
-        var responseData = await _userService.GetListAsync(query);
-        return Ok(responseData);
-    }
-
-    [HttpGet("Show/{id}")]
-    public async Task<IActionResult> Show(string id)
-    {
-        var user = await _userService.GetByIdAsync(id);
-        return Ok(user);
-    }
-
-    [HttpPost("Create")]
+    [HttpPost]
     public async Task<IActionResult> Create([FromBody] UserRegister model)
     {
         var user = new User()
@@ -42,37 +25,50 @@ public class UserController : ControllerBase
             UserName = model.UserName,
             Email = model.Email,
             PasswordHash = PasswordHasher.HashPassword(model.Password),
-            RolesId = model.RolesId
+            UserType = UserTypeSystem.Customer,
         };
         await _userService.CreateAsync(user);
         return Ok(user);
     }
 
-    [HttpPut("Update/{id}")]
-    public async Task<IActionResult> Update(string id, [FromBody] UserRegister model)
-    {
-        var user = await _userService.GetByIdAsync(id);
-        user.UserName = model.UserName;
-        user.Email = model.Email;
-        user.RolesId = model.RolesId;
-        await _userService.UpdateAsync(id, user);
-        return Ok(user);
-    }
+    //[HttpGet]
+    //public async Task<IActionResult> Index([FromQuery] string query = "")
+    //{
+    //    var users = await _userService.GetListAsync(query);
+    //    return Ok(users);
+    //}
 
-    [HttpPut("PasswordChange/{id}")]
-    public async Task<IActionResult> PasswordChange(string id, [FromBody] UserRegister model)
-    {
-        var user = await _userService.GetByIdAsync(id);
-        user.PasswordHash = PasswordHasher.HashPassword(model.Password);
-        await _userService.UpdateAsync(id, user);
-        return Ok(user);
-    }
+    //[HttpGet("{id}")]
+    //public async Task<IActionResult> Show(string id)
+    //{
+    //    var user = await _userService.GetByIdAsync(id);
+    //    return Ok(user);
+    //}
 
-    [HttpDelete("Delete/{id}")]
-    public async Task<IActionResult> Delete(string id)
-    {
-        var user = await _userService.GetByIdAsync(id);
-        await _userService.RemoveAsync(id);
-        return Ok(user);
-    }
+    //[HttpPut("{id}")]
+    //public async Task<IActionResult> Update(string id, [FromBody] UserRegister model)
+    //{
+    //    var user = await _userService.GetByIdAsync(id);
+    //    user.UserName = model.UserName;
+    //    user.Email = model.Email;
+    //    await _userService.UpdateAsync(id, user);
+    //    return Ok(user);
+    //}
+
+    //[HttpPut("PasswordChange/{id}")]
+    //public async Task<IActionResult> PasswordChange(string id, [FromBody] UserRegister model)
+    //{
+    //    var user = await _userService.GetByIdAsync(id);
+    //    user.PasswordHash = PasswordHasher.HashPassword(model.Password);
+    //    await _userService.UpdateAsync(id, user);
+    //    return Ok(user);
+    //}
+
+    //[HttpDelete("{id}")]
+    //public async Task<IActionResult> Delete(string id)
+    //{
+    //    var user = await _userService.GetByIdAsync(id);
+    //    await _userService.RemoveAsync(id);
+    //    return Ok(user);
+    //}
 }

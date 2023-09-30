@@ -7,7 +7,7 @@ namespace Nebula.Modules.Auth;
 
 public interface IUserService : ICrudOperationService<User>
 {
-    Task<List<User>> GetListAsync(string? query, int limit = 25);
+    Task<List<User>> GetListAsync(string query, int limit = 25);
     Task<User> GetByUserNameAsync(string userName);
 }
 
@@ -17,7 +17,7 @@ public class UserService : CrudOperationService<User>, IUserService
     {
     }
 
-    public async Task<List<User>> GetListAsync(string? query, int limit = 25)
+    public async Task<List<User>> GetListAsync(string query = "", int limit = 25)
     {
         var filter = Builders<User>.Filter.Empty;
         if (!string.IsNullOrEmpty(query))

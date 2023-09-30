@@ -1,3 +1,5 @@
+using Nebula.Modules.Auth.Helpers;
+
 namespace Nebula.Modules.Auth.Dto;
 
 /// <summary>
