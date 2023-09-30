@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -16,18 +17,14 @@ public class AuthController : ControllerBase
 {
     private readonly IConfiguration _configuration;
     private readonly IUserService _userService;
+    private readonly ICollaboratorService _collaboratorService;
 
-    public AuthController(IConfiguration configuration, IUserService userService)
+    public AuthController(IConfiguration configuration,
+        IUserService userService, ICollaboratorService collaboratorService)
     {
         _configuration = configuration;
         _userService = userService;
-    }
-
-    [HttpGet("CreateSupportUser"), AllowAnonymous]
-    public IActionResult CreateSupportUser()
-    {
-        var result = _configuration.GetValue<bool>("CreateSupportUser");
-        return Ok(result);
+        _collaboratorService = collaboratorService;
     }
 
     [HttpPost("Login"), AllowAnonymous]
@@ -38,6 +35,13 @@ public class AuthController : ControllerBase
             var user = await _userService.GetByUserNameAsync(model.UserName);
             if (user is null) throw new Exception();
 
+            var collaborations = await _collaboratorService.GetCollaborationsByUserIdAsync(user.Id);
+            var companyUserRoles = new List<CompanyUserRoleInfo>();
+            collaborations.ForEach(item => companyUserRoles.Add(new CompanyUserRoleInfo() {
+                CompanyId = item.CompanyId,
+                UserRole = item.UserRole
+            }));
+
             if (PasswordHasher.VerifyHashedPassword(user.PasswordHash, model.Password)
                 .Equals(PasswordVerificationResult.Failed)) throw new Exception();
 
@@ -45,11 +49,13 @@ public class AuthController : ControllerBase
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Role, user.RolesId),
+                new Claim("UserType", user.UserType),
+                new Claim("CompanyUserRoles", JsonSerializer.Serialize(companyUserRoles)),
             };
 
             // Leemos el secretKey desde nuestro appSettings.json
-            var secretKey = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("SecretKey"));
+            string defaultKey = "3b6ef85c442b797567051e90df5a85ec6e22675203de344787718af0f140fc54";
+            var secretKey = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("SecretKey") ?? defaultKey);
             var credentials = new SigningCredentials(new SymmetricSecurityKey(secretKey),
                 SecurityAlgorithms.HmacSha256Signature);
             var expires = DateTime.UtcNow.AddHours(12);

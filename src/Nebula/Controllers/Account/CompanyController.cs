@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Account;
 using Nebula.Modules.Account.Models;
+using Nebula.Modules.Auth;
+using Nebula.Modules.Auth.Helpers;
+using Nebula.Modules.Auth.Models;
 
 namespace Nebula.Controllers.Account
 {
@@ -11,10 +14,12 @@ namespace Nebula.Controllers.Account
     public class CompanyController : ControllerBase
     {
         private readonly ICompanyService _companyService;
+        private readonly ICollaboratorService _collaboratorService;
 
-        public CompanyController(ICompanyService companyService)
+        public CompanyController(ICompanyService companyService, ICollaboratorService collaboratorService)
         {
             _companyService = companyService;
+            _collaboratorService = collaboratorService;
         }
 
         [HttpGet]
@@ -50,7 +55,14 @@ namespace Nebula.Controllers.Account
             model.Ruc = model.Ruc.Trim();
             model.RznSocial = model.RznSocial.Trim().ToUpper();
             model.Address = model.Address.Trim().ToUpper();
-            await _companyService.CreateAsync(model);
+            model = await _companyService.CreateAsync(model);
+            var collaborator = new Collaborator()
+            {
+                CompanyId = model.Id,
+                UserId = model.UserId,
+                UserRole = CompanyRoles.Owner,
+            };
+            await _collaboratorService.CreateAsync(collaborator);
             return Ok(model);
         }
 

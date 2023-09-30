@@ -2,15 +2,16 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Contacts.Models;
 using Nebula.Modules.Contacts;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Contacts.Dto;
 using Nebula.Modules.Sales.Invoices;
-using Nebula.Modules.Auth;
 using Microsoft.AspNetCore.Authorization;
+using Nebula.Modules.Auth;
+using Nebula.Modules.Auth.Helpers;
 
 namespace Nebula.Controllers.Contacts;
 
 [Authorize]
+[CustomerAuthorize(UserRole = CompanyRoles.User)]
 [Route("api/{companyId}/[controller]")]
 [ApiController]
 public class ContactController : ControllerBase
@@ -112,7 +113,7 @@ public class ContactController : ControllerBase
         return Ok(contact);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id}"), CustomerAuthorize(UserRole = CompanyRoles.Admin)]
     public async Task<IActionResult> Delete(string companyId, string id)
     {
         var contact = await _contactService.GetByIdAsync(companyId, id);
