@@ -23,7 +23,7 @@ public class CustomerAuthorizeAttribute : AuthorizeAttribute, IAuthorizationFilt
             if (userType == UserTypeSystem.Customer)
             {
                 var roles = UserRole.Split(":");
-                var companyUserRoles = JsonSerializer.Deserialize<List<CompanyUserRoleInfo>>(companyUserRolesJson);
+                var companyUserRoles = JsonSerializer.Deserialize<List<UserCompanyRole>>(companyUserRolesJson);
                 // Verificar si el usuario tiene acceso a esta empresa con el rol adecuado
                 if (companyUserRoles != null && companyUserRoles.Any(cr =>
                     cr.CompanyId == companyId && roles.Any(role => role == cr.UserRole))) return;

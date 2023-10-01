@@ -1,4 +1,5 @@
 using Nebula.Modules.Account.Models;
+using Nebula.Modules.Auth.Dto;
 using Nebula.Modules.Auth.Models;
 using StackExchange.Redis;
 using System.Text.Json;
@@ -10,6 +11,9 @@ public interface ICacheService
     Task SetUserAuthAsync(User user);
     Task<User?> GetUserAuthAsync(string userId);
     Task SetUserAuthCompaniesAsync(string userId, List<Company> companies);
+    Task<List<Company>> GetUserAuthCompaniesAsync(string userId);
+    Task SetUserAuthCompanyRolesAsync(string userId, List<UserCompanyRole> companyRoles);
+    Task<List<UserCompanyRole>> GetUserAuthCompanyRolesAsync(string userId);
 }
 
 public class CacheService : ICacheService
@@ -60,5 +64,27 @@ public class CacheService : ICacheService
 
         return new List<Company>();
     }
+
+    public async Task SetUserAuthCompanyRolesAsync(string userId, List<UserCompanyRole> companyRoles)
+    {
+        var serializedCompanyRoles = JsonSerializer.Serialize(companyRoles);
+        await _database.StringSetAsync($"nebula_user_company_roles_{userId}", serializedCompanyRoles);
+        await _database.KeyExpireAsync($"nebula_user_company_roles_{userId}", TimeSpan.FromMinutes(1000));
+    }
+
+    public async Task<List<UserCompanyRole>> GetUserAuthCompanyRolesAsync(string userId)
+    {
+        var serializedCompanyRoles = await _database.StringGetAsync($"nebula_user_company_roles_{userId}");
+
+        if (serializedCompanyRoles.HasValue && !serializedCompanyRoles.IsNull)
+        {
+            var companyRoles = JsonSerializer.Deserialize<List<UserCompanyRole>>(serializedCompanyRoles,
+                                  new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return companyRoles;
+        }
+
+        return new List<UserCompanyRole>();
+    }
+
 
 }

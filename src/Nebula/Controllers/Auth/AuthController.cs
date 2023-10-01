@@ -20,16 +20,44 @@ public class AuthController : ControllerBase
     private readonly ICompanyService _companyService;
     private readonly IJwtService _jwtService;
     private readonly ICacheService _cacheService;
+    private readonly IUserAuthenticationService _userAuthenticationService;
 
     public AuthController(IJwtService jwtService, ICacheService cacheService,
         IUserService userService, ICollaboratorService collaboratorService,
-        ICompanyService companyService)
+        ICompanyService companyService, IUserAuthenticationService userAuthenticationService)
     {
         _jwtService = jwtService;
         _cacheService = cacheService;
         _userService = userService;
         _collaboratorService = collaboratorService;
         _companyService = companyService;
+        _userAuthenticationService = userAuthenticationService;
+    }
+
+    [HttpGet("UserData")]
+    public async Task<IActionResult> GetUserData()
+    {
+        try
+        {
+            var userId = _userAuthenticationService.GetUserId();
+            var user = await _cacheService.GetUserAuthAsync(userId);
+            if (user == null) throw new Exception();
+            var companies = await _cacheService.GetUserAuthCompaniesAsync(userId);
+            var companyRoles = await _cacheService.GetUserAuthCompanyRolesAsync(userId);
+
+            var userAuthData = new UserAuth
+            {
+                User = user,
+                Companies = companies,
+                CompanyRoles = companyRoles
+            };
+
+            return Ok(userAuthData);
+        }
+        catch (Exception)
+        {
+            return BadRequest(new { ok = false, msg = "Error al recuperar los datos del usuario autenticado." });
+        }
     }
 
     [HttpPost("Login"), AllowAnonymous]
@@ -42,11 +70,11 @@ public class AuthController : ControllerBase
             await _cacheService.SetUserAuthAsync(user);
 
             var collaborations = await _collaboratorService.GetCollaborationsByUserIdAsync(user.Id);
-            var companyUserRoles = new List<CompanyUserRoleInfo>();
+            var companyUserRoles = new List<UserCompanyRole>();
             List<string> companyIds = new List<string>();
             collaborations.ForEach(item =>
             {
-                companyUserRoles.Add(new CompanyUserRoleInfo()
+                companyUserRoles.Add(new UserCompanyRole()
                 {
                     CompanyId = item.CompanyId,
                     UserRole = item.UserRole
@@ -56,6 +84,7 @@ public class AuthController : ControllerBase
 
             var companies = await _companyService.GetCompaniesByIds(companyIds.ToArray());
             await _cacheService.SetUserAuthCompaniesAsync(user.Id, companies);
+            await _cacheService.SetUserAuthCompanyRolesAsync(user.Id, companyUserRoles);
 
             if (PasswordHasher.VerifyHashedPassword(user.PasswordHash, model.Password)
                 .Equals(PasswordVerificationResult.Failed)) throw new Exception();
