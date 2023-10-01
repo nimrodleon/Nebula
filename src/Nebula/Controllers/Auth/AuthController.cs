@@ -30,7 +30,7 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var user = await _userService.GetByUserNameAsync(model.UserName);
+            var user = await _userService.GetByEmailAsync(model.Email);
             if (user is null) throw new Exception();
 
             var collaborations = await _collaboratorService.GetCollaborationsByUserIdAsync(user.Id);

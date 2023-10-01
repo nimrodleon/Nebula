@@ -16,5 +16,6 @@ public class User : IGenericModel
     public string PasswordHash { get; set; } = string.Empty;
     public string UserType { get; set; } = UserTypeSystem.Customer;
     public bool IsEmailVerified { get; set; } = false;
-    public string EmailValidationToken { get; set;} = string.Empty;
+    public string EmailValidationToken { get; set; } = string.Empty;
+    public string ResetPasswordToken { get; set; } = string.Empty;
 }

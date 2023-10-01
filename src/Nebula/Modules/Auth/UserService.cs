@@ -8,7 +8,7 @@ namespace Nebula.Modules.Auth;
 public interface IUserService : ICrudOperationService<User>
 {
     Task<List<User>> GetListAsync(string query, int limit = 25);
-    Task<User> GetByUserNameAsync(string userName);
+    Task<User> GetByEmailAsync(string email);
 }
 
 public class UserService : CrudOperationService<User>, IUserService
@@ -25,9 +25,9 @@ public class UserService : CrudOperationService<User>, IUserService
         return await _collection.Find(filter).Limit(limit).ToListAsync();
     }
 
-    public async Task<User> GetByUserNameAsync(string userName)
+    public async Task<User> GetByEmailAsync(string email)
     {
-        var filter = Builders<User>.Filter.Eq(x => x.UserName, userName);
+        var filter = Builders<User>.Filter.Eq(x => x.Email, email);
         return await _collection.Find(filter).FirstOrDefaultAsync();
     }
 }
