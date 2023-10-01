@@ -8,7 +8,8 @@ namespace Nebula.Modules.Account;
 
 public interface ICompanyService : ICrudOperationService<Company>
 {
-
+    Task<List<Company>> GetCompaniesByIds(string[] companyIds);
+    Task<List<Company>> GetCompaniesByUserIdAsync(string userId);
 }
 
 public class CompanyService : CrudOperationService<Company>, ICompanyService
@@ -19,6 +20,12 @@ public class CompanyService : CrudOperationService<Company>, ICompanyService
         IUserAuthenticationService userAuthenticationService) : base(mongoDatabase)
     {
         _userAuthenticationService = userAuthenticationService;
+    }
+
+    public async Task<List<Company>> GetCompaniesByIds(string[] companyIds)
+    {
+        var filter = Builders<Company>.Filter.In(x => x.Id, companyIds);
+        return await _collection.Find(filter).ToListAsync();
     }
 
     public override async Task<List<Company>> GetAsync(string field, string? query, int limit = 25)
@@ -32,6 +39,12 @@ public class CompanyService : CrudOperationService<Company>, ICompanyService
 
         }
         return await _collection.Find(filter).Limit(limit).ToListAsync();
+    }
+
+    public async Task<List<Company>> GetCompaniesByUserIdAsync(string userId)
+    {
+        var filter = Builders<Company>.Filter.Eq(x => x.UserId, userId.Trim());
+        return await _collection.Find(filter).ToListAsync();
     }
 
     public override async Task<Company> CreateAsync(Company obj)

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Common;
 using Nebula.Modules.Account;
 using Nebula.Modules.Account.Models;
 using Nebula.Modules.Auth;
@@ -15,11 +16,14 @@ namespace Nebula.Controllers.Account
     {
         private readonly ICompanyService _companyService;
         private readonly ICollaboratorService _collaboratorService;
+        private readonly ICacheService _cacheService;
 
-        public CompanyController(ICompanyService companyService, ICollaboratorService collaboratorService)
+        public CompanyController(ICompanyService companyService,
+            ICollaboratorService collaboratorService, ICacheService cacheService)
         {
             _companyService = companyService;
             _collaboratorService = collaboratorService;
+            _cacheService = cacheService;
         }
 
         [HttpGet]
@@ -56,6 +60,8 @@ namespace Nebula.Controllers.Account
             model.RznSocial = model.RznSocial.Trim().ToUpper();
             model.Address = model.Address.Trim().ToUpper();
             model = await _companyService.CreateAsync(model);
+            var companies = await _companyService.GetCompaniesByUserIdAsync(model.UserId);
+            await _cacheService.SetUserAuthCompaniesAsync(model.UserId, companies);
             var collaborator = new Collaborator()
             {
                 CompanyId = model.Id,
@@ -75,6 +81,8 @@ namespace Nebula.Controllers.Account
             model.RznSocial = model.RznSocial.Trim().ToUpper();
             model.Address = model.Address.Trim().ToUpper();
             company = await _companyService.UpdateAsync(company.Id, model);
+            var companies = await _companyService.GetCompaniesByUserIdAsync(company.UserId);
+            await _cacheService.SetUserAuthCompaniesAsync(company.UserId, companies);
             return Ok(company);
         }
 

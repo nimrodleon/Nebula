@@ -65,7 +65,7 @@ public class UserController : ControllerBase
         CPEDIGITAL.NET
         """;
         await _emailService.SendEmailAsync(fromEmail, user.Email.Trim(), subject, body);
-        return Ok(user);
+        return Ok(new { ok = true, msg = "Su registro ha sido exitoso. Por favor, revise su correo electrónico para confirmar su dirección de correo." });
     }
 
     [HttpGet("VerifyEmail")]
