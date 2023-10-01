@@ -1,28 +1,26 @@
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Dto;
 using Nebula.Modules.Auth.Helpers;
 
 namespace Nebula.Controllers.Auth;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class AuthController : ControllerBase
 {
-    private readonly IConfiguration _configuration;
     private readonly IUserService _userService;
     private readonly ICollaboratorService _collaboratorService;
+    private readonly IJwtService _jwtService;
 
-    public AuthController(IConfiguration configuration,
+    public AuthController(IJwtService jwtService,
         IUserService userService, ICollaboratorService collaboratorService)
     {
-        _configuration = configuration;
+        _jwtService = jwtService;
         _userService = userService;
         _collaboratorService = collaboratorService;
     }
@@ -37,7 +35,8 @@ public class AuthController : ControllerBase
 
             var collaborations = await _collaboratorService.GetCollaborationsByUserIdAsync(user.Id);
             var companyUserRoles = new List<CompanyUserRoleInfo>();
-            collaborations.ForEach(item => companyUserRoles.Add(new CompanyUserRoleInfo() {
+            collaborations.ForEach(item => companyUserRoles.Add(new CompanyUserRoleInfo()
+            {
                 CompanyId = item.CompanyId,
                 UserRole = item.UserRole
             }));
@@ -53,14 +52,8 @@ public class AuthController : ControllerBase
                 new Claim("CompanyUserRoles", JsonSerializer.Serialize(companyUserRoles)),
             };
 
-            // Leemos el secretKey desde nuestro appSettings.json
-            string defaultKey = "3b6ef85c442b797567051e90df5a85ec6e22675203de344787718af0f140fc54";
-            var secretKey = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("SecretKey") ?? defaultKey);
-            var credentials = new SigningCredentials(new SymmetricSecurityKey(secretKey),
-                SecurityAlgorithms.HmacSha256Signature);
-            var expires = DateTime.UtcNow.AddHours(12);
-            var token = new JwtSecurityToken(claims: claims, expires: expires, signingCredentials: credentials);
-            return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), expires });
+            var token = _jwtService.GenerateToken(claims, 1000);
+            return Ok(new { token });
         }
         catch (Exception)
         {

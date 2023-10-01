@@ -4,7 +4,8 @@ using Nebula.Modules.Auth.Models;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth.Dto;
 using Nebula.Common;
-using DocumentFormat.OpenXml.Spreadsheet;
+using System.Security.Claims;
+using System.Data.Common;
 
 namespace Nebula.Controllers.Auth;
 
@@ -14,15 +15,18 @@ public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
     private readonly IEmailService _emailService;
+    private readonly IJwtService _jwtService;
 
-    public UserController(IUserService userService, IEmailService emailService)
+    public UserController(IJwtService jwtService,
+        IUserService userService, IEmailService emailService)
     {
+        _jwtService = jwtService;
         _userService = userService;
         _emailService = emailService;
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] UserRegister model)
+    public async Task<IActionResult> Register([FromBody] UserRegister model)
     {
         var user = new User()
         {
@@ -30,8 +34,18 @@ public class UserController : ControllerBase
             Email = model.Email,
             PasswordHash = PasswordHasher.HashPassword(model.Password),
             UserType = UserTypeSystem.Customer,
+            IsEmailVerified = false,
         };
-        await _userService.CreateAsync(user);
+        user = await _userService.CreateAsync(user);
+
+        var claims = new[]
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(ClaimTypes.Name, user.UserName),
+        };
+        string token = _jwtService.GenerateToken(claims);
+        user.EmailValidationToken = token;
+        await _userService.UpdateAsync(user.Id, user);
 
         // enviar correo electrónico.
         string fromEmail = "reddrc21@gmail.com";
@@ -41,7 +55,7 @@ public class UserController : ControllerBase
         Gracias por registrarte en nuestro sitio web.<br>
         Para completar tu registro, por favor haz clic en el siguiente enlace para validar tu dirección de correo electrónico:
         <br>
-        http://localhost:5042/swagger/index.html
+        http://localhost:5042/api/auth/User/VerifyEmail?token={token}
         <br>
         Si no puedes hacer clic en el enlace, cópialo y pégalo en la barra de direcciones de tu navegador web.
         <br>
@@ -54,44 +68,69 @@ public class UserController : ControllerBase
         return Ok(user);
     }
 
-    //[HttpGet]
-    //public async Task<IActionResult> Index([FromQuery] string query = "")
-    //{
-    //    var users = await _userService.GetListAsync(query);
-    //    return Ok(users);
-    //}
+    [HttpGet("VerifyEmail")]
+    public async Task<IActionResult> VerifyEmail([FromQuery] string token)
+    {
+        try
+        {
+            // Validar el token usando el servicio JWT
+            var claimsPrincipal = _jwtService.ValidateToken(token);
+            if (claimsPrincipal == null)
+            {
+                return BadRequest(new
+                {
+                    ok = false,
+                    msg = "Token inválido."
+                });
+            }
 
-    //[HttpGet("{id}")]
-    //public async Task<IActionResult> Show(string id)
-    //{
-    //    var user = await _userService.GetByIdAsync(id);
-    //    return Ok(user);
-    //}
+            // Obtener el ID del usuario desde el token
+            string userId = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
+            var user = await _userService.GetByIdAsync(userId);
+            if (user == null)
+                return BadRequest(new
+                {
+                    ok = false,
+                    msg = "Usuario no encontrado."
+                });
+            if (user.EmailValidationToken != token)
+                return BadRequest(new
+                {
+                    ok = false,
+                    msg = "Token no coincide con el usuario."
+                });
 
-    //[HttpPut("{id}")]
-    //public async Task<IActionResult> Update(string id, [FromBody] UserRegister model)
-    //{
-    //    var user = await _userService.GetByIdAsync(id);
-    //    user.UserName = model.UserName;
-    //    user.Email = model.Email;
-    //    await _userService.UpdateAsync(id, user);
-    //    return Ok(user);
-    //}
+            // Marcar el correo electrónico como verificado y limpiar el token
+            user.IsEmailVerified = true;
+            user.EmailValidationToken = string.Empty;
 
-    //[HttpPut("PasswordChange/{id}")]
-    //public async Task<IActionResult> PasswordChange(string id, [FromBody] UserRegister model)
-    //{
-    //    var user = await _userService.GetByIdAsync(id);
-    //    user.PasswordHash = PasswordHasher.HashPassword(model.Password);
-    //    await _userService.UpdateAsync(id, user);
-    //    return Ok(user);
-    //}
+            // Actualizar el usuario en la base de datos
+            await _userService.UpdateAsync(userId, user);
 
-    //[HttpDelete("{id}")]
-    //public async Task<IActionResult> Delete(string id)
-    //{
-    //    var user = await _userService.GetByIdAsync(id);
-    //    await _userService.RemoveAsync(id);
-    //    return Ok(user);
-    //}
+            return Ok(new
+            {
+                ok = true,
+                msg = "Correo electrónico verificado correctamente."
+            });
+        }
+        catch (DbException ex)
+        {
+            // Manejar excepciones específicas de la base de datos
+            return BadRequest(new
+            {
+                ok = false,
+                msg = $"Error al verificar el correo electrónico: {ex.Message}"
+            });
+        }
+        catch (Exception ex)
+        {
+            // Manejar otras excepciones
+            return BadRequest(new
+            {
+                ok = false,
+                msg = $"Error al verificar el correo electrónico: {ex.Message}"
+            });
+        }
+    }
+
 }
