@@ -10,13 +10,10 @@ public interface ICacheService
 {
     Task SetUserAuthAsync(User user);
     Task<User?> GetUserAuthAsync(string userId);
-    Task RemoveUserAuthAsync(string userId);
     Task SetUserAuthCompaniesAsync(string userId, List<Company> companies);
     Task<List<Company>> GetUserAuthCompaniesAsync(string userId);
-    Task RemoveUserAuthCompaniesAsync(string userId);
     Task SetUserAuthCompanyRolesAsync(string userId, List<UserCompanyRole> companyRoles);
     Task<List<UserCompanyRole>> GetUserAuthCompanyRolesAsync(string userId);
-    Task RemoveUserAuthCompanyRolesAsync(string userId);
 }
 
 public class CacheService : ICacheService
@@ -47,11 +44,6 @@ public class CacheService : ICacheService
         return null;
     }
 
-    public async Task RemoveUserAuthAsync(string userId)
-    {
-        await _database.KeyDeleteAsync($"nebula_user_{userId}");
-    }
-
     public async Task SetUserAuthCompaniesAsync(string userId, List<Company> companies)
     {
         var serializedCompanies = JsonSerializer.Serialize(companies);
@@ -73,11 +65,6 @@ public class CacheService : ICacheService
         return new List<Company>();
     }
 
-    public async Task RemoveUserAuthCompaniesAsync(string userId)
-    {
-        await _database.KeyDeleteAsync($"nebula_user_companies_{userId}");
-    }
-
     public async Task SetUserAuthCompanyRolesAsync(string userId, List<UserCompanyRole> companyRoles)
     {
         var serializedCompanyRoles = JsonSerializer.Serialize(companyRoles);
@@ -97,11 +84,6 @@ public class CacheService : ICacheService
         }
 
         return new List<UserCompanyRole>();
-    }
-
-    public async Task RemoveUserAuthCompanyRolesAsync(string userId)
-    {
-        await _database.KeyDeleteAsync($"nebula_user_company_roles_{userId}");
     }
 
 }

@@ -107,21 +107,4 @@ public class AuthController : ControllerBase
         }
     }
 
-    [HttpDelete("Logout")]
-    public async Task<IActionResult> Logout()
-    {
-        try
-        {
-            var userId = _userAuthenticationService.GetUserId(); ; // Obtener el ID del usuario autenticado
-            await _cacheService.RemoveUserAuthAsync(userId); // Borrar el registro de usuario en Redis
-            await _cacheService.RemoveUserAuthCompaniesAsync(userId); // Borrar el registro de compañías en Redis
-            await _cacheService.RemoveUserAuthCompanyRolesAsync(userId); // Borrar el registro de roles de la compañía en Redis
-
-            return Ok(new { ok = true, msg = "Logout exitoso." });
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new { ok = false, msg = $"Error al realizar el logout: {ex.Message}" });
-        }
-    }
 }
