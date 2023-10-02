@@ -6,9 +6,9 @@ namespace Nebula.Modules.Auth.Dto;
 public class AuthLogin
 {
     /// <summary>
-    /// Nombre de usuario.
+    /// E-Mail del usuario.
     /// </summary>
-    public string UserName { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
 
     /// <summary>
     /// Contraseña del usuario.

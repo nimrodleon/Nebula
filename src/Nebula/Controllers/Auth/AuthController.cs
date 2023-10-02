@@ -2,6 +2,8 @@ using System.Security.Claims;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Common;
+using Nebula.Modules.Account;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Dto;
 using Nebula.Modules.Auth.Helpers;
@@ -15,14 +17,47 @@ public class AuthController : ControllerBase
 {
     private readonly IUserService _userService;
     private readonly ICollaboratorService _collaboratorService;
+    private readonly ICompanyService _companyService;
     private readonly IJwtService _jwtService;
+    private readonly ICacheService _cacheService;
+    private readonly IUserAuthenticationService _userAuthenticationService;
 
-    public AuthController(IJwtService jwtService,
-        IUserService userService, ICollaboratorService collaboratorService)
+    public AuthController(IJwtService jwtService, ICacheService cacheService,
+        IUserService userService, ICollaboratorService collaboratorService,
+        ICompanyService companyService, IUserAuthenticationService userAuthenticationService)
     {
         _jwtService = jwtService;
+        _cacheService = cacheService;
         _userService = userService;
         _collaboratorService = collaboratorService;
+        _companyService = companyService;
+        _userAuthenticationService = userAuthenticationService;
+    }
+
+    [HttpGet("UserData")]
+    public async Task<IActionResult> GetUserData()
+    {
+        try
+        {
+            var userId = _userAuthenticationService.GetUserId();
+            var user = await _cacheService.GetUserAuthAsync(userId);
+            if (user == null) throw new Exception();
+            var companies = await _cacheService.GetUserAuthCompaniesAsync(userId);
+            var companyRoles = await _cacheService.GetUserAuthCompanyRolesAsync(userId);
+
+            var userAuthData = new UserAuth
+            {
+                User = user,
+                Companies = companies,
+                CompanyRoles = companyRoles
+            };
+
+            return Ok(userAuthData);
+        }
+        catch (Exception)
+        {
+            return BadRequest(new { ok = false, msg = "Error al recuperar los datos del usuario autenticado." });
+        }
     }
 
     [HttpPost("Login"), AllowAnonymous]
@@ -30,16 +65,26 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var user = await _userService.GetByUserNameAsync(model.UserName);
+            var user = await _userService.GetByEmailAsync(model.Email);
             if (user is null) throw new Exception();
+            await _cacheService.SetUserAuthAsync(user);
 
             var collaborations = await _collaboratorService.GetCollaborationsByUserIdAsync(user.Id);
-            var companyUserRoles = new List<CompanyUserRoleInfo>();
-            collaborations.ForEach(item => companyUserRoles.Add(new CompanyUserRoleInfo()
+            var companyUserRoles = new List<UserCompanyRole>();
+            List<string> companyIds = new List<string>();
+            collaborations.ForEach(item =>
             {
-                CompanyId = item.CompanyId,
-                UserRole = item.UserRole
-            }));
+                companyUserRoles.Add(new UserCompanyRole()
+                {
+                    CompanyId = item.CompanyId,
+                    UserRole = item.UserRole
+                });
+                companyIds.Add(item.CompanyId);
+            });
+
+            var companies = await _companyService.GetCompaniesByIds(companyIds.ToArray());
+            await _cacheService.SetUserAuthCompaniesAsync(user.Id, companies);
+            await _cacheService.SetUserAuthCompanyRolesAsync(user.Id, companyUserRoles);
 
             if (PasswordHasher.VerifyHashedPassword(user.PasswordHash, model.Password)
                 .Equals(PasswordVerificationResult.Failed)) throw new Exception();

@@ -1,6 +1,8 @@
+using System.Configuration;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -26,6 +28,7 @@ using Nebula.Modules.Sales.Comprobantes;
 using Nebula.Modules.Sales.Invoices;
 using Nebula.Modules.Sales.Notes;
 using Nebula.Modules.Taller.Services;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 var secretKey = Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("SecretKey"));
@@ -63,6 +66,9 @@ builder.Services.AddScoped<MongoDatabaseService>();
 builder.Services.AddScoped(typeof(ICrudOperationService<>), typeof(CrudOperationService<>));
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration.GetValue<string>("Redis") ?? string.Empty));
+builder.Services.AddSingleton(provider => provider.GetRequiredService<IConnectionMultiplexer>().GetDatabase());
+builder.Services.AddScoped<ICacheService, CacheService>();
 
 #region ModuleAuth
 
