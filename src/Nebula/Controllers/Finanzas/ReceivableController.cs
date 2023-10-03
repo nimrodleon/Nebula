@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Modules.Auth.Helpers;
+using Nebula.Modules.Auth;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Finanzas;
 using Nebula.Modules.Finanzas.Dto;
@@ -8,6 +10,7 @@ using Nebula.Modules.Finanzas.Models;
 namespace Nebula.Controllers.Finanzas;
 
 [Authorize]
+[CustomerAuthorize(UserRole = CompanyRoles.User)]
 [Route("api/finanzas/{companyId}/[controller]")]
 [ApiController]
 public class ReceivableController : ControllerBase
@@ -64,7 +67,7 @@ public class ReceivableController : ControllerBase
         return Ok(receivable);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id}"), CustomerAuthorize(UserRole = CompanyRoles.Admin)]
     public async Task<IActionResult> Delete(string companyId, string id)
     {
         var receivable = await _receivableService.GetByIdAsync(companyId, id);
