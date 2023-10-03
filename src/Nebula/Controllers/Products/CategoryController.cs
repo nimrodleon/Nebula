@@ -3,10 +3,13 @@ using Nebula.Modules.Products.Models;
 using Nebula.Common.Dto;
 using Nebula.Modules.Products;
 using Microsoft.AspNetCore.Authorization;
+using Nebula.Modules.Auth.Helpers;
+using Nebula.Modules.Auth;
 
 namespace Nebula.Controllers.Products;
 
 [Authorize]
+[CustomerAuthorize(UserRole = CompanyRoles.User)]
 [Route("api/products/{companyId}/[controller]")]
 [ApiController]
 public class CategoryController : ControllerBase
@@ -70,7 +73,7 @@ public class CategoryController : ControllerBase
         return Ok(model);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id}"), CustomerAuthorize(UserRole = CompanyRoles.Admin)]
     public async Task<IActionResult> Delete(string companyId, string id)
     {
         var category = await _categoryService.GetByIdAsync(companyId, id);
