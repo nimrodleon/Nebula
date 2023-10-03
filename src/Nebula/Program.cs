@@ -68,7 +68,7 @@ builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Emai
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration.GetValue<string>("Redis") ?? string.Empty));
 builder.Services.AddSingleton(provider => provider.GetRequiredService<IConnectionMultiplexer>().GetDatabase());
-builder.Services.AddScoped<ICacheService, CacheService>();
+builder.Services.AddScoped<ICacheAuthService, CacheAuthService>();
 
 #region ModuleAuth
 

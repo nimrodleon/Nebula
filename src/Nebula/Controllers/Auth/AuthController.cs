@@ -19,15 +19,15 @@ public class AuthController : ControllerBase
     private readonly ICollaboratorService _collaboratorService;
     private readonly ICompanyService _companyService;
     private readonly IJwtService _jwtService;
-    private readonly ICacheService _cacheService;
+    private readonly ICacheAuthService _cacheAuthService;
     private readonly IUserAuthenticationService _userAuthenticationService;
 
-    public AuthController(IJwtService jwtService, ICacheService cacheService,
+    public AuthController(IJwtService jwtService, ICacheAuthService cacheAuthService,
         IUserService userService, ICollaboratorService collaboratorService,
         ICompanyService companyService, IUserAuthenticationService userAuthenticationService)
     {
         _jwtService = jwtService;
-        _cacheService = cacheService;
+        _cacheAuthService = cacheAuthService;
         _userService = userService;
         _collaboratorService = collaboratorService;
         _companyService = companyService;
@@ -40,10 +40,10 @@ public class AuthController : ControllerBase
         try
         {
             var userId = _userAuthenticationService.GetUserId();
-            var user = await _cacheService.GetUserAuthAsync(userId);
+            var user = await _cacheAuthService.GetUserAuthAsync(userId);
             if (user == null) throw new Exception();
-            var companies = await _cacheService.GetUserAuthCompaniesAsync(userId);
-            var companyRoles = await _cacheService.GetUserAuthCompanyRolesAsync(userId);
+            var companies = await _cacheAuthService.GetUserAuthCompaniesAsync(userId);
+            var companyRoles = await _cacheAuthService.GetUserAuthCompanyRolesAsync(userId);
 
             var userAuthData = new UserAuth
             {
@@ -67,7 +67,7 @@ public class AuthController : ControllerBase
         {
             var user = await _userService.GetByEmailAsync(model.Email);
             if (user is null) throw new Exception();
-            await _cacheService.SetUserAuthAsync(user);
+            await _cacheAuthService.SetUserAuthAsync(user);
 
             var collaborations = await _collaboratorService.GetCollaborationsByUserIdAsync(user.Id);
             var companyUserRoles = new List<UserCompanyRole>();
@@ -83,8 +83,8 @@ public class AuthController : ControllerBase
             });
 
             var companies = await _companyService.GetCompaniesByIds(companyIds.ToArray());
-            await _cacheService.SetUserAuthCompaniesAsync(user.Id, companies);
-            await _cacheService.SetUserAuthCompanyRolesAsync(user.Id, companyUserRoles);
+            await _cacheAuthService.SetUserAuthCompaniesAsync(user.Id, companies);
+            await _cacheAuthService.SetUserAuthCompanyRolesAsync(user.Id, companyUserRoles);
 
             if (PasswordHasher.VerifyHashedPassword(user.PasswordHash, model.Password)
                 .Equals(PasswordVerificationResult.Failed)) throw new Exception();

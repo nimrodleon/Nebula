@@ -16,10 +16,10 @@ namespace Nebula.Controllers.Account
     {
         private readonly ICompanyService _companyService;
         private readonly ICollaboratorService _collaboratorService;
-        private readonly ICacheService _cacheService;
+        private readonly ICacheAuthService _cacheService;
 
         public CompanyController(ICompanyService companyService,
-            ICollaboratorService collaboratorService, ICacheService cacheService)
+            ICollaboratorService collaboratorService, ICacheAuthService cacheService)
         {
             _companyService = companyService;
             _collaboratorService = collaboratorService;

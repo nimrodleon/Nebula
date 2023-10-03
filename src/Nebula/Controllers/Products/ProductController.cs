@@ -5,19 +5,26 @@ using Nebula.Modules.Sales.Helpers;
 using Nebula.Modules.Products.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Nebula.Modules.Account.Models;
+using Nebula.Modules.Auth.Helpers;
+using Nebula.Modules.Auth;
+using Nebula.Common;
 
 namespace Nebula.Controllers.Products;
 
 [Authorize]
+[CustomerAuthorize(UserRole = CompanyRoles.User)]
 [Route("api/products/{companyId}/[controller]")]
 [ApiController]
 public class ProductController : ControllerBase
 {
     private readonly IConfiguration _configuration;
     private readonly IProductService _productService;
+    private readonly ICacheAuthService _cacheAuthService;
 
-    public ProductController(IConfiguration configuration, IProductService productService)
+    public ProductController(IConfiguration configuration,
+        IProductService productService, ICacheAuthService cacheAuthService)
     {
+        _cacheAuthService = cacheAuthService;
         _configuration = configuration;
         _productService = productService;
     }
@@ -92,8 +99,7 @@ public class ProductController : ControllerBase
             model.PathImage = "default.jpg";
         }
 
-        // var configuration = await _configurationService.GetAsync();
-        Company company = new Company();
+        var company = await _cacheAuthService.GetCompanyByIdAsync(companyId);
         decimal porcentajeIgv = company.PorcentajeIgv / 100 + 1;
         decimal porcentajeTributo = model.IgvSunat == TipoIGV.Gravado ? porcentajeIgv : 1;
         model.ValorUnitario = model.PrecioVentaUnitario / porcentajeTributo;
@@ -148,7 +154,7 @@ public class ProductController : ControllerBase
             model.PathImage = product.PathImage;
         }
 
-        Company company = new Company();
+        var company = await _cacheAuthService.GetCompanyByIdAsync(companyId);
         decimal porcentajeIgv = company.PorcentajeIgv / 100 + 1;
         decimal porcentajeTributo = model.IgvSunat == TipoIGV.Gravado ? porcentajeIgv : 1;
         model.ValorUnitario = model.PrecioVentaUnitario / porcentajeTributo;
@@ -173,7 +179,7 @@ public class ProductController : ControllerBase
         return Ok(product);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id}"), CustomerAuthorize(UserRole = CompanyRoles.Admin)]
     public async Task<IActionResult> Delete(string companyId, string id)
     {
         var product = await _productService.GetByIdAsync(companyId, id);
