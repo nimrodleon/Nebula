@@ -7,7 +7,7 @@ namespace Nebula.Modules.Inventory.Stock;
 
 public interface IHelperCalculateProductStockService
 {
-    Task<List<ProductStockInfoDto>> GetProductStockInfos(string productId);
+    Task<List<ProductStockInfoDto>> GetProductStockInfos(string companyId, string productId);
 }
 
 public class HelperCalculateProductStockService : IHelperCalculateProductStockService
@@ -34,14 +34,14 @@ public class HelperCalculateProductStockService : IHelperCalculateProductStockSe
     /// </summary>
     /// <param name="productId">ID del producto a buscar</param>
     /// <returns></returns>
-    public async Task<List<ProductStockInfoDto>> GetProductStockInfos(string productId)
+    public async Task<List<ProductStockInfoDto>> GetProductStockInfos(string companyId, string productId)
     {
         var requestParams = new StockListRequestParams();
-        requestParams.Product = await _productService.GetByIdAsync(productId);
-        requestParams.Warehouses = await _warehouseService.GetAllAsync();
-        requestParams.Lotes = await _productLoteService.GetLotesByProductId(requestParams.Product.Id);
-        var warehouseIds = await _warehouseService.GetWarehouseIds();
-        requestParams.Stocks = await _productStockService.GetProductStockListByWarehousesIdsAsync(warehouseIds, requestParams.Product.Id);
+        requestParams.Product = await _productService.GetByIdAsync(companyId, productId);
+        requestParams.Warehouses = await _warehouseService.GetAllAsync(companyId);
+        requestParams.Lotes = await _productLoteService.GetLotesByProductId(companyId, requestParams.Product.Id);
+        var warehouseIds = await _warehouseService.GetWarehouseIds(companyId);
+        requestParams.Stocks = await _productStockService.GetProductStockListByWarehousesIdsAsync(companyId, warehouseIds, requestParams.Product.Id);
         var result = new HelperProductStockInfo(requestParams).GetStockList();
         return result;
     }

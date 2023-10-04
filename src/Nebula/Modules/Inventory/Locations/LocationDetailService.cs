@@ -6,34 +6,35 @@ namespace Nebula.Modules.Inventory.Locations;
 
 public interface ILocationDetailService : ICrudOperationService<LocationDetail>
 {
-    Task<List<LocationDetail>> GetListAsync(string id);
-    Task<long> CountDocumentsAsync(string id);
-    Task<List<AjusteInventarioDetail>> GetAjusteInventarioDetailsAsync(string locationId, string ajusteInventarioId);
+    Task<List<LocationDetail>> GetListAsync(string companyId, string id);
+    Task<long> CountDocumentsAsync(string companyId, string id);
+    Task<List<AjusteInventarioDetail>> GetAjusteInventarioDetailsAsync(string companyId, string locationId, string ajusteInventarioId);
 }
 
 public class LocationDetailService : CrudOperationService<LocationDetail>, ILocationDetailService
 {
     public LocationDetailService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
 
-    public async Task<List<LocationDetail>> GetListAsync(string id)
+    public async Task<List<LocationDetail>> GetListAsync(string companyId, string id)
     {
         var builder = Builders<LocationDetail>.Filter;
-        var filter = builder.Eq(x => x.LocationId, id);
+        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId), builder.Eq(x => x.LocationId, id));
         return await _collection.Find(filter).ToListAsync();
     }
 
-    public async Task<long> CountDocumentsAsync(string id) =>
-        await _collection.CountDocumentsAsync(x => x.LocationId == id);
+    public async Task<long> CountDocumentsAsync( string companyId, string id) =>
+        await _collection.CountDocumentsAsync(x => x.CompanyId == companyId && x.LocationId == id);
 
-    public async Task<List<AjusteInventarioDetail>> GetAjusteInventarioDetailsAsync(string locationId, string ajusteInventarioId)
+    public async Task<List<AjusteInventarioDetail>> GetAjusteInventarioDetailsAsync(string companyId, string locationId, string ajusteInventarioId)
     {
-        var locationDetails = await GetListAsync(locationId);
+        var locationDetails = await GetListAsync(companyId, locationId);
         var ajusteInventarioDetails = new List<AjusteInventarioDetail>();
         locationDetails.ForEach(item =>
         {
             ajusteInventarioDetails.Add(new AjusteInventarioDetail()
             {
                 Id = string.Empty,
+                CompanyId = companyId.Trim(),
                 AjusteInventarioId = ajusteInventarioId,
                 ProductId = item.ProductId,
                 ProductName = item.ProductName,

@@ -15,6 +15,11 @@ public class ProductPrices : IGenericModel
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
+    /// Identificador de la empresa al que pertenece.
+    /// </summary>
+    public string CompanyId { get; set; } = string.Empty;
+
+    /// <summary>
     /// Identificador del Producto.
     /// </summary>
     public string ProductId { get; set; } = string.Empty;

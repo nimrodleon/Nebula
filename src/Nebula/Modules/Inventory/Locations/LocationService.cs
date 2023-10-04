@@ -36,11 +36,11 @@ public class LocationService : CrudOperationService<Location>, ILocationService
     public async Task<RespLocationDetailStock> GetLocationDetailStocksAsync(string companyId, string id, bool reponer = false)
     {
         var location = await GetByIdAsync(companyId, id);
-        var locationDetails = await _locationDetailService.GetListAsync(location.Id);
+        var locationDetails = await _locationDetailService.GetListAsync(companyId, location.Id);
         var productArrId = new List<string>();
         // obtener lista de identificadores.
         locationDetails.ForEach(item => productArrId.Add(item.ProductId));
-        var productStocks = await _productStockService.GetProductStockByWarehouseIdAsync(location.WarehouseId, productArrId);
+        var productStocks = await _productStockService.GetProductStockByWarehouseIdAsync(companyId, location.WarehouseId, productArrId);
         var locationDetailStocks = new List<LocationItemStockDto>();
         locationDetails.ForEach(item =>
         {

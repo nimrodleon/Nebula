@@ -21,47 +21,49 @@ public class LocationDetailController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Index(string id)
+    public async Task<IActionResult> Index(string companyId, string id)
     {
-        var responseData = await _locationDetailService.GetListAsync(id);
+        var responseData = await _locationDetailService.GetListAsync(companyId, id);
         return Ok(responseData);
     }
 
     [HttpGet("Show/{id}")]
-    public async Task<IActionResult> Show(string id)
+    public async Task<IActionResult> Show(string companyId, string id)
     {
-        var locationDetail = await _locationDetailService.GetByIdAsync(id);
+        var locationDetail = await _locationDetailService.GetByIdAsync(companyId, id);
         return Ok(locationDetail);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] LocationDetail model)
+    public async Task<IActionResult> Create(string companyId, [FromBody] LocationDetail model)
     {
+        model.CompanyId = companyId.Trim();
         var locationDetail = await _locationDetailService.CreateAsync(model);
         return Ok(locationDetail);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(string id, [FromBody] LocationDetail model)
+    public async Task<IActionResult> Update(string companyId, string id, [FromBody] LocationDetail model)
     {
-        var locationDetail = await _locationDetailService.GetByIdAsync(id);
+        var locationDetail = await _locationDetailService.GetByIdAsync(companyId, id);
         model.Id = locationDetail.Id;
+        model.CompanyId = companyId.Trim();
         var responseData = await _locationDetailService.UpdateAsync(id, model);
         return Ok(responseData);
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(string id)
+    public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var locationDetail = await _locationDetailService.GetByIdAsync(id);
-        await _locationDetailService.RemoveAsync(locationDetail.Id);
+        var locationDetail = await _locationDetailService.GetByIdAsync(companyId, id);
+        await _locationDetailService.RemoveAsync(companyId, locationDetail.Id);
         return Ok(locationDetail);
     }
 
     [HttpGet("CountDocuments/{id}")]
-    public async Task<IActionResult> CountDocuments(string id)
+    public async Task<IActionResult> CountDocuments(string companyId, string id)
     {
-        var countDocuments = await _locationDetailService.CountDocumentsAsync(id);
+        var countDocuments = await _locationDetailService.CountDocumentsAsync(companyId, id);
         return Ok(countDocuments);
     }
 }

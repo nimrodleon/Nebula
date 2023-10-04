@@ -6,7 +6,7 @@ using Nebula.Modules.Inventory.Models;
 
 namespace Nebula.Controllers.Inventory;
 
-[Route("api/[controller]")]
+[Route("api/inventory/{companyId}/[controller]")]
 [ApiController]
 public class MaterialDetailController : ControllerBase
 {
@@ -17,49 +17,51 @@ public class MaterialDetailController : ControllerBase
         _materialDetailService = materialDetailService;
     }
 
-    [HttpGet("Index/{id}")]
-    public async Task<IActionResult> Index(string id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Index(string companyId, string id)
     {
-        var responseData = await _materialDetailService.GetListAsync(id);
+        var responseData = await _materialDetailService.GetListAsync(companyId, id);
         return Ok(responseData);
     }
 
     [HttpGet("Show/{id}")]
-    public async Task<IActionResult> Show(string id)
+    public async Task<IActionResult> Show(string companyId, string id)
     {
-        var materialDetail = await _materialDetailService.GetByIdAsync(id);
+        var materialDetail = await _materialDetailService.GetByIdAsync(companyId, id);
         return Ok(materialDetail);
     }
 
-    [HttpPost("Create")]
-    public async Task<IActionResult> Create([FromBody] MaterialDetail model)
+    [HttpPost]
+    public async Task<IActionResult> Create(string companyId, [FromBody] MaterialDetail model)
     {
+        model.CompanyId = companyId.Trim();
         var materialDetail = await _materialDetailService.CreateAsync(model);
         return Ok(materialDetail);
     }
 
-    [HttpPut("Update/{id}")]
-    public async Task<IActionResult> Update(string id, [FromBody] MaterialDetail model)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(string companyId, string id, [FromBody] MaterialDetail model)
     {
-        var materialDetail = await _materialDetailService.GetByIdAsync(id);
+        var materialDetail = await _materialDetailService.GetByIdAsync(companyId, id);
         model.Id = materialDetail.Id;
+        model.CompanyId = companyId.Trim();
         model.CreatedAt = materialDetail.CreatedAt;
         var responseData = await _materialDetailService.UpdateAsync(id, model);
         return Ok(responseData);
     }
 
-    [HttpDelete("Delete/{id}")]
-    public async Task<IActionResult> Delete(string id)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var materialDetail = await _materialDetailService.GetByIdAsync(id);
-        await _materialDetailService.RemoveAsync(materialDetail.Id);
+        var materialDetail = await _materialDetailService.GetByIdAsync(companyId, id);
+        await _materialDetailService.RemoveAsync(companyId, materialDetail.Id);
         return Ok(materialDetail);
     }
 
     [HttpGet("CountDocuments/{id}")]
-    public async Task<IActionResult> CountDocuments(string id)
+    public async Task<IActionResult> CountDocuments(string companyId, string id)
     {
-        var countDocuments = await _materialDetailService.CountDocumentsAsync(id);
+        var countDocuments = await _materialDetailService.CountDocumentsAsync(companyId, id);
         return Ok(countDocuments);
     }
 }

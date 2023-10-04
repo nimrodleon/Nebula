@@ -12,6 +12,11 @@ public class LocationDetail : IGenericModel
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
+    /// Identificador de la empresa al que pertenece.
+    /// </summary>
+    public string CompanyId { get; set; } = string.Empty;
+
+    /// <summary>
     /// Identificador de Ubicación.
     /// </summary>
     public string LocationId { get; set; } = string.Empty;

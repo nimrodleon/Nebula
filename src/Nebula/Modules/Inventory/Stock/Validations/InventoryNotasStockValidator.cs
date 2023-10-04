@@ -27,13 +27,14 @@ public class InventoryNotasStockValidator : IInventoryNotasStockValidator
     public async Task<InventoryNotas> ValidarNotas(string companyId, string id)
     {
         var inventoryNotas = await _inventoryNotasService.GetByIdAsync(companyId, id);
-        var inventoryNotasDetails = await _inventoryNotasDetailService.GetListAsync(inventoryNotas.Id);
+        var inventoryNotasDetails = await _inventoryNotasDetailService.GetListAsync(companyId, inventoryNotas.Id);
         var productStocks = new List<ProductStock>();
         inventoryNotasDetails.ForEach(item =>
         {
             productStocks.Add(new ProductStock
             {
                 Id = string.Empty,
+                CompanyId = companyId.Trim(),
                 WarehouseId = inventoryNotas.WarehouseId,
                 ProductId = item.ProductId,
                 Type = inventoryNotas.Type,

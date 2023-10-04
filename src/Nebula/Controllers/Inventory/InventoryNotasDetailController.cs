@@ -6,7 +6,7 @@ using Nebula.Modules.Inventory.Notas;
 
 namespace Nebula.Controllers.Inventory;
 
-[Route("api/[controller]")]
+[Route("api/inventory/{companyId}/[controller]")]
 [ApiController]
 public class InventoryNotasDetailController : ControllerBase
 {
@@ -17,48 +17,50 @@ public class InventoryNotasDetailController : ControllerBase
         _inventoryNotasDetailService = inventoryNotasDetailService;
     }
 
-    [HttpGet("Index/{id}")]
-    public async Task<IActionResult> Index(string id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Index(string companyId, string id)
     {
-        var responseData = await _inventoryNotasDetailService.GetListAsync(id);
+        var responseData = await _inventoryNotasDetailService.GetListAsync(companyId, id);
         return Ok(responseData);
     }
 
     [HttpGet("Show/{id}")]
-    public async Task<IActionResult> Show(string id)
+    public async Task<IActionResult> Show(string companyId, string id)
     {
-        var inventoryNotasDetail = await _inventoryNotasDetailService.GetByIdAsync(id);
+        var inventoryNotasDetail = await _inventoryNotasDetailService.GetByIdAsync(companyId, id);
         return Ok(inventoryNotasDetail);
     }
 
-    [HttpPost("Create")]
-    public async Task<IActionResult> Create([FromBody] InventoryNotasDetail model)
+    [HttpPost]
+    public async Task<IActionResult> Create(string companyId, [FromBody] InventoryNotasDetail model)
     {
+        model.CompanyId = companyId.Trim();
         var inventoryNotasDetail = await _inventoryNotasDetailService.CreateAsync(model);
         return Ok(inventoryNotasDetail);
     }
 
-    [HttpPut("Update/{id}")]
-    public async Task<IActionResult> Update(string id, [FromBody] InventoryNotasDetail model)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(string companyId, string id, [FromBody] InventoryNotasDetail model)
     {
-        var inventoryNotasDetail = await _inventoryNotasDetailService.GetByIdAsync(id);
+        var inventoryNotasDetail = await _inventoryNotasDetailService.GetByIdAsync(companyId, id);
         model.Id = inventoryNotasDetail.Id;
+        model.CompanyId = companyId.Trim();
         var responseData = await _inventoryNotasDetailService.UpdateAsync(id, model);
         return Ok(responseData);
     }
 
-    [HttpDelete("Delete/{id}")]
-    public async Task<IActionResult> Delete(string id)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var inventoryNotasDetail = await _inventoryNotasDetailService.GetByIdAsync(id);
-        await _inventoryNotasDetailService.RemoveAsync(inventoryNotasDetail.Id);
+        var inventoryNotasDetail = await _inventoryNotasDetailService.GetByIdAsync(companyId, id);
+        await _inventoryNotasDetailService.RemoveAsync(companyId, inventoryNotasDetail.Id);
         return Ok(inventoryNotasDetail);
     }
 
     [HttpGet("CountDocuments/{id}")]
-    public async Task<IActionResult> CountDocuments(string id)
+    public async Task<IActionResult> CountDocuments(string companyId, string id)
     {
-        var countDocuments = await _inventoryNotasDetailService.CountDocumentsAsync(id);
+        var countDocuments = await _inventoryNotasDetailService.CountDocumentsAsync(companyId, id);
         return Ok(countDocuments);
     }
 }

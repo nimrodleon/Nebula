@@ -45,7 +45,7 @@ public class AjusteInventarioController : ControllerBase
     {
         model.CompanyId = companyId.Trim();
         var ajusteInventario = await _ajusteInventarioService.CreateAsync(model);
-        await _ajusteInventarioDetailService.GenerateDetailAsync(ajusteInventario.LocationId, ajusteInventario.Id);
+        await _ajusteInventarioDetailService.GenerateDetailAsync(companyId, ajusteInventario.LocationId, ajusteInventario.Id);
         return Ok(ajusteInventario);
     }
 

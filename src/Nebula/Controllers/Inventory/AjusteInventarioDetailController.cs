@@ -6,7 +6,7 @@ using Nebula.Modules.Inventory.Models;
 
 namespace Nebula.Controllers.Inventory;
 
-[Route("api/[controller]")]
+[Route("api/inventory/{companyId}/[controller]")]
 [ApiController]
 public class AjusteInventarioDetailController : ControllerBase
 {
@@ -17,48 +17,50 @@ public class AjusteInventarioDetailController : ControllerBase
         _ajusteInventarioDetailService = ajusteInventarioDetailService;
     }
 
-    [HttpGet("Index/{id}")]
-    public async Task<IActionResult> Index(string id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Index(string companyId, string id)
     {
-        var responseData = await _ajusteInventarioDetailService.GetListAsync(id);
+        var responseData = await _ajusteInventarioDetailService.GetListAsync(companyId, id);
         return Ok(responseData);
     }
 
     [HttpGet("Show/{id}")]
-    public async Task<IActionResult> Show(string id)
+    public async Task<IActionResult> Show(string companyId, string id)
     {
-        var ajusteInventarioDetail = await _ajusteInventarioDetailService.GetByIdAsync(id);
+        var ajusteInventarioDetail = await _ajusteInventarioDetailService.GetByIdAsync(companyId, id);
         return Ok(ajusteInventarioDetail);
     }
 
-    [HttpPost("Create")]
-    public async Task<IActionResult> Create([FromBody] AjusteInventarioDetail model)
+    [HttpPost]
+    public async Task<IActionResult> Create(string companyId, [FromBody] AjusteInventarioDetail model)
     {
+        model.CompanyId = companyId.Trim();
         var ajusteInventarioDetail = await _ajusteInventarioDetailService.CreateAsync(model);
         return Ok(ajusteInventarioDetail);
     }
 
-    [HttpPut("Update/{id}")]
-    public async Task<IActionResult> Update(string id, [FromBody] AjusteInventarioDetail model)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(string companyId, string id, [FromBody] AjusteInventarioDetail model)
     {
-        var ajusteInventarioDetail = await _ajusteInventarioDetailService.GetByIdAsync(id);
+        var ajusteInventarioDetail = await _ajusteInventarioDetailService.GetByIdAsync(companyId, id);
         model.Id = ajusteInventarioDetail.Id;
+        model.CompanyId = companyId.Trim();
         var responseData = await _ajusteInventarioDetailService.UpdateAsync(id, model);
         return Ok(responseData);
     }
 
-    [HttpDelete("Delete/{id}")]
-    public async Task<IActionResult> Delete(string id)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var ajusteInventarioDetail = await _ajusteInventarioDetailService.GetByIdAsync(id);
-        await _ajusteInventarioDetailService.RemoveAsync(ajusteInventarioDetail.Id);
+        var ajusteInventarioDetail = await _ajusteInventarioDetailService.GetByIdAsync(companyId, id);
+        await _ajusteInventarioDetailService.RemoveAsync(companyId, ajusteInventarioDetail.Id);
         return Ok(ajusteInventarioDetail);
     }
 
     [HttpGet("CountDocuments/{id}")]
-    public async Task<IActionResult> CountDocuments(string id)
+    public async Task<IActionResult> CountDocuments(string companyId, string id)
     {
-        var countDocuments = await _ajusteInventarioDetailService.CountDocumentsAsync(id);
+        var countDocuments = await _ajusteInventarioDetailService.CountDocumentsAsync(companyId, id);
         return Ok(countDocuments);
     }
 }

@@ -27,13 +27,14 @@ public class InventoryMaterialStockValidator : IInventoryMaterialStockValidator
     public async Task<Material> ValidarMaterial(string companyId, string id)
     {
         var material = await _materialService.GetByIdAsync(companyId, id);
-        var materialDetails = await _materialDetailService.GetListAsync(material.Id);
+        var materialDetails = await _materialDetailService.GetListAsync(companyId, material.Id);
         var productStocks = new List<ProductStock>();
         materialDetails.ForEach(item =>
         {
             productStocks.Add(new ProductStock()
             {
                 Id = string.Empty,
+                CompanyId = companyId.Trim(),
                 WarehouseId = item.WarehouseId,
                 ProductId = item.ProductId,
                 Type = InventoryType.SALIDA,

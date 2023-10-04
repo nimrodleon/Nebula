@@ -12,6 +12,11 @@ public class InventoryNotasDetail : IGenericModel
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
+    /// Identificador de la empresa al que pertenece.
+    /// </summary>
+    public string CompanyId { get; set; } = string.Empty;
+
+    /// <summary>
     /// Clave foranea NotaId.
     /// </summary>
     public string InventoryNotasId { get; set; } = string.Empty;

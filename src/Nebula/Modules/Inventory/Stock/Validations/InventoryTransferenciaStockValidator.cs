@@ -27,7 +27,7 @@ public class InventoryTransferenciaStockValidator : IInventoryTransferenciaStock
     public async Task<Transferencia> ValidarTransferencia(string companyId, string id)
     {
         var transferencia = await _transferenciaService.GetByIdAsync(companyId, id);
-        var transferenciaDetails = await _transferenciaDetailService.GetListAsync(transferencia.Id);
+        var transferenciaDetails = await _transferenciaDetailService.GetListAsync(companyId, transferencia.Id);
         var productStockDestino = new List<ProductStock>();
         var productStockOrigen = new List<ProductStock>();
         transferenciaDetails.ForEach(item =>
@@ -35,6 +35,7 @@ public class InventoryTransferenciaStockValidator : IInventoryTransferenciaStock
             productStockDestino.Add(new ProductStock()
             {
                 Id = string.Empty,
+                CompanyId = companyId.Trim(),
                 WarehouseId = transferencia.WarehouseTargetId,
                 ProductId = item.ProductId,
                 Type = InventoryType.ENTRADA,
@@ -43,16 +44,17 @@ public class InventoryTransferenciaStockValidator : IInventoryTransferenciaStock
             productStockOrigen.Add(new ProductStock()
             {
                 Id = string.Empty,
+                CompanyId = companyId.Trim(),
                 WarehouseId = transferencia.WarehouseOriginId,
                 ProductId = item.ProductId,
                 Type = InventoryType.SALIDA,
                 Quantity = item.CantTransferido,
             });
         });
-        transferenciaDetails = await _productStockService.CalcularCantidadExistenteRestanteTransferenciaAsync(transferenciaDetails, transferencia.WarehouseOriginId);
+        transferenciaDetails = await _productStockService.CalcularCantidadExistenteRestanteTransferenciaAsync(companyId, transferenciaDetails, transferencia.WarehouseOriginId);
         await _productStockService.CreateManyAsync(productStockDestino);
         await _productStockService.CreateManyAsync(productStockOrigen);
-        await _transferenciaDetailService.DeleteManyAsync(transferencia.Id);
+        await _transferenciaDetailService.DeleteManyAsync(companyId, transferencia.Id);
         await _transferenciaDetailService.InsertManyAsync(transferenciaDetails);
         transferencia.Status = InventoryStatus.VALIDADO;
         await _transferenciaService.UpdateAsync(transferencia.Id, transferencia);

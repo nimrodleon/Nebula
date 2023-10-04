@@ -6,7 +6,7 @@ using Nebula.Modules.Inventory.Stock.Dto;
 
 namespace Nebula.Controllers.Inventory;
 
-[Route("api/Inventory/[controller]")]
+[Route("api/inventory/{companyId}/[controller]")]
 [ApiController]
 public class ProductStockController : ControllerBase
 {
@@ -21,30 +21,30 @@ public class ProductStockController : ControllerBase
     }
 
     [HttpGet("GetStockInfos/{productId}")]
-    public async Task<IActionResult> GetStockInfos(string productId)
+    public async Task<IActionResult> GetStockInfos(string companyId, string productId)
     {
-        var responseData = await _helperCalculateProductStockService.GetProductStockInfos(productId);
+        var responseData = await _helperCalculateProductStockService.GetProductStockInfos(companyId, productId);
         return Ok(responseData);
     }
 
     [HttpPost("ChangeQuantity")]
-    public async Task<IActionResult> ChangeQuantity([FromBody] ChangeQuantityStockRequestParams requestParams)
+    public async Task<IActionResult> ChangeQuantity(string companyId, [FromBody] ChangeQuantityStockRequestParams requestParams)
     {
-        var productStock = await _productStockService.ChangeQuantity(requestParams);
+        var productStock = await _productStockService.ChangeQuantity(companyId, requestParams);
         return Ok(productStock);
     }
 
     [HttpGet("StockQuantity/{warehouseId}/{productId}")]
-    public async Task<IActionResult> StockQuantity(string warehouseId, string productId)
+    public async Task<IActionResult> StockQuantity(string companyId, string warehouseId, string productId)
     {
-        var result = await _productStockService.GetStockQuantityByWarehouseAsync(warehouseId, productId);
+        var result = await _productStockService.GetStockQuantityByWarehouseAsync(companyId, warehouseId, productId);
         return Ok(result);
     }
 
     [HttpGet("LoteStockQuantity/{warehouseId}/{productLoteId}/{productId}")]
-    public async Task<IActionResult> LoteStockQuantity(string warehouseId, string productLoteId, string productId)
+    public async Task<IActionResult> LoteStockQuantity(string companyId, string warehouseId, string productLoteId, string productId)
     {
-        var result = await _productStockService.GetLoteStockQuantityByWarehouseAsync(warehouseId, productLoteId, productId);
+        var result = await _productStockService.GetLoteStockQuantityByWarehouseAsync(companyId, warehouseId, productLoteId, productId);
         return Ok(result);
     }
 

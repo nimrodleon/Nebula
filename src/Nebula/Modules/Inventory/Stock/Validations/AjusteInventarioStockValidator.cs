@@ -27,17 +27,18 @@ public class AjusteInventarioStockValidator : IAjusteInventarioStockValidator
     public async Task<AjusteInventario> ValidarAjusteInventario(string companyId, string id)
     {
         var ajusteInventario = await _ajusteInventarioService.GetByIdAsync(companyId, id);
-        var ajusteInventarioDetails = await _ajusteInventarioDetailService.GetListAsync(ajusteInventario.Id);
-        ajusteInventarioDetails = await _productStockService.CalcularCantidadExistenteAjusteInventarioAsync(ajusteInventarioDetails, ajusteInventario.WarehouseId);
+        var ajusteInventarioDetails = await _ajusteInventarioDetailService.GetListAsync(companyId, ajusteInventario.Id);
+        ajusteInventarioDetails = await _productStockService.CalcularCantidadExistenteAjusteInventarioAsync(companyId, ajusteInventarioDetails, ajusteInventario.WarehouseId);
         var productArrId = new List<string>();
         ajusteInventarioDetails.ForEach(item => productArrId.Add(item.ProductId));
-        await _productStockService.DeleteProductStockByWarehouseIdAsync(ajusteInventario.WarehouseId, productArrId);
+        await _productStockService.DeleteProductStockByWarehouseIdAsync(companyId, ajusteInventario.WarehouseId, productArrId);
         var productStocks = new List<ProductStock>();
         ajusteInventarioDetails.ForEach(item =>
         {
             productStocks.Add(new ProductStock()
             {
                 Id = string.Empty,
+                CompanyId = companyId.Trim(),
                 WarehouseId = ajusteInventario.WarehouseId,
                 ProductId = item.ProductId,
                 Type = InventoryType.ENTRADA,
@@ -45,7 +46,7 @@ public class AjusteInventarioStockValidator : IAjusteInventarioStockValidator
             });
         });
         await _productStockService.CreateManyAsync(productStocks);
-        await _ajusteInventarioDetailService.DeleteManyAsync(ajusteInventario.Id);
+        await _ajusteInventarioDetailService.DeleteManyAsync(companyId, ajusteInventario.Id);
         await _ajusteInventarioDetailService.InsertManyAsync(ajusteInventarioDetails);
         ajusteInventario.Status = InventoryStatus.VALIDADO;
         await _ajusteInventarioService.UpdateAsync(ajusteInventario.Id, ajusteInventario);

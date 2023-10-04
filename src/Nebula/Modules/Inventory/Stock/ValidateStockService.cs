@@ -9,7 +9,7 @@ public interface IValidateStockService
     Task<Transferencia> ValidarTransferencia(string companyId, string id);
     Task<AjusteInventario> ValidarAjusteInventario(string companyId, string id);
     Task<Material> ValidarMaterial(string companyId, string id);
-    Task ValidarInvoiceSale(string id);
+    Task ValidarInvoiceSale(string companyId, string id);
 }
 
 public class ValidateStockService : IValidateStockService
@@ -54,8 +54,8 @@ public class ValidateStockService : IValidateStockService
         return await _inventoryMaterialStockValidator.ValidarMaterial(companyId, id);
     }
 
-    public async Task ValidarInvoiceSale(string id)
+    public async Task ValidarInvoiceSale(string companyId, string id)
     {
-        await _invoiceSaleStockValidator.ValidarInvoiceSale(id);
+        await _invoiceSaleStockValidator.ValidarInvoiceSale(companyId, id);
     }
 }

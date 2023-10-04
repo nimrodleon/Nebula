@@ -7,7 +7,7 @@ namespace Nebula.Modules.Inventory.Stock.Validations;
 
 public interface IInvoiceSaleStockValidator
 {
-    Task ValidarInvoiceSale(string id);
+    Task ValidarInvoiceSale(string companyId, string id);
 }
 
 public class InvoiceSaleStockValidator : IInvoiceSaleStockValidator
@@ -22,9 +22,9 @@ public class InvoiceSaleStockValidator : IInvoiceSaleStockValidator
         _invoiceSaleDetailService = invoiceSaleDetailService;
     }
 
-    public async Task ValidarInvoiceSale(string id)
+    public async Task ValidarInvoiceSale(string companyId, string id)
     {
-        var invoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(id);
+        var invoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(companyId, id);
         var productStocks = new List<ProductStock>();
         invoiceSaleDetails.ForEach(item =>
         {
@@ -33,6 +33,7 @@ public class InvoiceSaleStockValidator : IInvoiceSaleStockValidator
                 productStocks.Add(new ProductStock()
                 {
                     Id = string.Empty,
+                    CompanyId = companyId.Trim(),
                     WarehouseId = item.WarehouseId,
                     ProductId = item.CodProducto,
                     Type = InventoryType.SALIDA,
