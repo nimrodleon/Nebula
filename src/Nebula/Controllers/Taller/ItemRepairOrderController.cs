@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
@@ -6,6 +7,8 @@ using Nebula.Modules.Taller.Services;
 
 namespace Nebula.Controllers.Taller;
 
+[Authorize]
+[CustomerAuthorize(UserRole = CompanyRoles.User)]
 [Route("api/taller/[controller]")]
 [ApiController]
 public class ItemRepairOrderController : ControllerBase
@@ -17,21 +20,21 @@ public class ItemRepairOrderController : ControllerBase
         _itemRepairOrderService = itemRepairOrderService;
     }
 
-    [HttpGet("Index/{id}")]
+    [HttpGet("{id}")]
     public async Task<IActionResult> Index(string id)
     {
         var itemsRepairOrder = await _itemRepairOrderService.GetItemsRepairOrder(id);
         return Ok(itemsRepairOrder);
     }
 
-    [HttpPost("Create")]
+    [HttpPost]
     public async Task<IActionResult> Create([FromBody] TallerItemRepairOrder model)
     {
-        await _itemRepairOrderService.CreateAsync(model);
+        model = await _itemRepairOrderService.CreateAsync(model);
         return Ok(model);
     }
 
-    [HttpPut("Update/{id}")]
+    [HttpPut("{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] TallerItemRepairOrder model)
     {
         var itemRepairOrder = await _itemRepairOrderService.GetByIdAsync(id);
@@ -40,7 +43,7 @@ public class ItemRepairOrderController : ControllerBase
         return Ok(itemRepairOrder);
     }
 
-    [HttpDelete("Delete/{id}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
         var itemRepairOrder = await _itemRepairOrderService.GetByIdAsync(id);
