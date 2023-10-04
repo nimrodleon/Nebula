@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
@@ -6,7 +7,9 @@ using Nebula.Modules.Inventory.Models;
 
 namespace Nebula.Controllers.Inventory;
 
-[Route("api/[controller]")]
+[Authorize]
+[CustomerAuthorize(UserRole = CompanyRoles.User)]
+[Route("api/inventory/{companyId}/[controller]")]
 [ApiController]
 public class LocationDetailController : ControllerBase
 {
@@ -17,7 +20,7 @@ public class LocationDetailController : ControllerBase
         _locationDetailService = locationDetailService;
     }
 
-    [HttpGet("Index/{id}")]
+    [HttpGet("{id}")]
     public async Task<IActionResult> Index(string id)
     {
         var responseData = await _locationDetailService.GetListAsync(id);
@@ -31,14 +34,14 @@ public class LocationDetailController : ControllerBase
         return Ok(locationDetail);
     }
 
-    [HttpPost("Create")]
+    [HttpPost]
     public async Task<IActionResult> Create([FromBody] LocationDetail model)
     {
         var locationDetail = await _locationDetailService.CreateAsync(model);
         return Ok(locationDetail);
     }
 
-    [HttpPut("Update/{id}")]
+    [HttpPut("{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] LocationDetail model)
     {
         var locationDetail = await _locationDetailService.GetByIdAsync(id);
@@ -47,7 +50,7 @@ public class LocationDetailController : ControllerBase
         return Ok(responseData);
     }
 
-    [HttpDelete("Delete/{id}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
         var locationDetail = await _locationDetailService.GetByIdAsync(id);
