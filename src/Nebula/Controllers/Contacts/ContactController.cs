@@ -46,6 +46,7 @@ public class ContactController : ControllerBase
         return Ok(contact);
     }
 
+    [Obsolete]
     [HttpGet("Document/{document}")]
     public async Task<IActionResult> Document(string companyId, string document)
     {
