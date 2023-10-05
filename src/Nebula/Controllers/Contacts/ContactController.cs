@@ -12,7 +12,7 @@ namespace Nebula.Controllers.Contacts;
 
 [Authorize]
 [CustomerAuthorize(UserRole = CompanyRoles.User)]
-[Route("api/{companyId}/[controller]")]
+[Route("api/contacts/{companyId}/[controller]")]
 [ApiController]
 public class ContactController : ControllerBase
 {
@@ -122,9 +122,9 @@ public class ContactController : ControllerBase
     }
 
     [HttpGet("EntradaSalida/{id}")]
-    public async Task<IActionResult> EntradaSalida(string id, [FromQuery] string month, [FromQuery] string year)
+    public async Task<IActionResult> EntradaSalida(string companyId, string id, [FromQuery] string month, [FromQuery] string year)
     {
-        var responseData = await _cashierDetailService.GetEntradaSalidaAsync(id, month, year);
+        var responseData = await _cashierDetailService.GetEntradaSalidaAsync(companyId, id, month, year);
         return Ok(responseData);
     }
 
