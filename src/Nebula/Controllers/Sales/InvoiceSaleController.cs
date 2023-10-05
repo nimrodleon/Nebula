@@ -4,6 +4,8 @@ using Nebula.Common.Dto;
 using Nebula.Common.Helpers;
 using Nebula.Modules.Account;
 using Nebula.Modules.Account.Models;
+using Nebula.Modules.Auth.Helpers;
+using Nebula.Modules.Auth;
 using Nebula.Modules.InvoiceHub;
 using Nebula.Modules.InvoiceHub.Helpers;
 using Nebula.Modules.Sales;
@@ -17,6 +19,7 @@ using Nebula.Modules.Sales.Notes;
 namespace Nebula.Controllers.Sales;
 
 [Authorize]
+[CustomerAuthorize(UserRole = CompanyRoles.User)]
 [Route("api/sales/{companyId}/[controller]")]
 [ApiController]
 public class InvoiceSaleController : ControllerBase

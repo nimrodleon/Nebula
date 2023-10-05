@@ -1,9 +1,14 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Modules.Auth.Helpers;
+using Nebula.Modules.Auth;
 using Nebula.Modules.Sales;
 using Nebula.Modules.Sales.Notes;
 
 namespace Nebula.Controllers.Sales;
 
+[Authorize]
+[CustomerAuthorize(UserRole = CompanyRoles.User)]
 [Route("api/sales/{companyId}/[controller]")]
 [ApiController]
 public class CreditNoteController : ControllerBase

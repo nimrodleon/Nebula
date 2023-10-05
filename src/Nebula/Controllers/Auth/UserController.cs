@@ -6,9 +6,11 @@ using Nebula.Modules.Auth.Dto;
 using Nebula.Common;
 using System.Security.Claims;
 using System.Data.Common;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Nebula.Controllers.Auth;
 
+[Authorize]
 [Route("api/auth/[controller]")]
 [ApiController]
 public class UserController : ControllerBase
