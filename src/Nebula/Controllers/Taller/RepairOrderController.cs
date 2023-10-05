@@ -52,8 +52,7 @@ public class RepairOrderController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(string companyId, [FromBody] TallerRepairOrder model)
     {
-        model.CompanyId = companyId.Trim();
-        await _repairOrderService.CreateRepairOrderAsync(model);
+        await _repairOrderService.CreateRepairOrderAsync(companyId, model);
         return Ok(model);
     }
 

@@ -9,10 +9,10 @@ namespace Nebula.Modules.Cashier;
 
 public interface ICashierDetailService : ICrudOperationService<CashierDetail>
 {
-    Task<List<CashierDetail>> GetListAsync(string id, string query);
-    Task<ResumenCajaDto> GetResumenCaja(string cajaDiariaId);
-    Task<long> CountDocumentsAsync(string id);
-    Task<List<CashierDetail>> GetEntradaSalidaAsync(string contactId, string month, string year);
+    Task<List<CashierDetail>> GetListAsync(string companyId, string id, string query);
+    Task<ResumenCajaDto> GetResumenCaja(string companyId, string cajaDiariaId);
+    Task<long> CountDocumentsAsync(string companyId, string id);
+    Task<List<CashierDetail>> GetEntradaSalidaAsync(string companyId, string contactId, string month, string year);
 }
 
 public class CashierDetailService : CrudOperationService<CashierDetail>, ICashierDetailService
@@ -21,10 +21,10 @@ public class CashierDetailService : CrudOperationService<CashierDetail>, ICashie
     {
     }
 
-    public async Task<List<CashierDetail>> GetListAsync(string id, string query)
+    public async Task<List<CashierDetail>> GetListAsync(string companyId, string id, string query)
     {
         var builder = Builders<CashierDetail>.Filter;
-        var filter = builder.And(builder.Eq(x => x.CajaDiaria, id),
+        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId), builder.Eq(x => x.CajaDiariaId, id),
             builder.Or(builder.Regex("Document", new BsonRegularExpression(query.ToUpper(), "i")),
                 builder.Regex("ContactName", new BsonRegularExpression(query.ToUpper(), "i")),
                 builder.Regex("Remark", new BsonRegularExpression(query.ToUpper(), "i"))));
@@ -38,10 +38,10 @@ public class CashierDetailService : CrudOperationService<CashierDetail>, ICashie
         return filter.Sum(x => x.Amount);
     }
 
-    public async Task<ResumenCajaDto> GetResumenCaja(string cajaDiariaId)
+    public async Task<ResumenCajaDto> GetResumenCaja(string companyId, string cajaDiariaId)
     {
         var builder = Builders<CashierDetail>.Filter;
-        var filter = builder.Eq(x => x.CajaDiaria, cajaDiariaId);
+        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId), builder.Eq(x => x.CajaDiariaId, cajaDiariaId));
         List<CashierDetail> detalleCaja = await _collection.Find(filter).ToListAsync();
         decimal totalSalidas = detalleCaja.Where(x =>
                 x.TypeOperation == TypeOperationCaja.SalidaDeDinero && x.FormaPago == FormaPago.Contado)
@@ -59,13 +59,14 @@ public class CashierDetailService : CrudOperationService<CashierDetail>, ICashie
         return resumenCaja;
     }
 
-    public async Task<long> CountDocumentsAsync(string id) =>
-        await _collection.CountDocumentsAsync(x => x.CajaDiaria == id);
+    public async Task<long> CountDocumentsAsync(string companyId, string id) =>
+        await _collection.CountDocumentsAsync(x => x.CompanyId == companyId && x.CajaDiariaId == id);
 
-    public async Task<List<CashierDetail>> GetEntradaSalidaAsync(string contactId, string month, string year)
+    public async Task<List<CashierDetail>> GetEntradaSalidaAsync(string companyId, string contactId, string month, string year)
     {
         var builder = Builders<CashierDetail>.Filter;
-        var filter = builder.And(builder.Eq(x => x.ContactId, contactId),
+        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId),
+            builder.Eq(x => x.ContactId, contactId),
             builder.Eq(x => x.Month, month), builder.Eq(x => x.Year, year),
             builder.In("TypeOperation", new List<string>() { "ENTRADA_DE_DINERO", "SALIDA_DE_DINERO" }));
         return await _collection.Find(filter).ToListAsync();

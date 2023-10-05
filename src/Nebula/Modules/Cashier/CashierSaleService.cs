@@ -72,8 +72,8 @@ public class CashierSaleService : ICashierSaleService
         var cajaDiaria = await _cajaDiariaService.GetByIdAsync(cajaDiariaId);
         var cashierDetail = new CashierDetail()
         {
-            CajaDiaria = cajaDiaria.Id,
-            InvoiceSale = invoiceSale.Id,
+            CajaDiariaId = cajaDiaria.Id,
+            InvoiceSaleId = invoiceSale.Id,
             DocType = invoiceSale.DocType,
             Document = $"{invoiceSale.Serie}-{invoiceSale.Number}",
             ContactId = invoiceSale.ContactId,

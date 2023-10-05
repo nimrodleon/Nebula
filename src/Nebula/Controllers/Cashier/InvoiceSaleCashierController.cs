@@ -44,7 +44,7 @@ public class InvoiceSaleCashierController : ControllerBase
             // pass...
 
             // Validar Inventario.
-            await _validateStockService.ValidarInvoiceSale(invoiceSale.Id);
+            await _validateStockService.ValidarInvoiceSale( invoiceSale.Id);
 
             return Ok(invoiceSale);
         }

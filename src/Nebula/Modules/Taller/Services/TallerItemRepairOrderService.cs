@@ -6,7 +6,7 @@ namespace Nebula.Modules.Taller.Services;
 
 public interface ITallerItemRepairOrderService : ICrudOperationService<TallerItemRepairOrder>
 {
-    Task<List<TallerItemRepairOrder>> GetItemsRepairOrder(string id);
+    Task<List<TallerItemRepairOrder>> GetItemsRepairOrder(string companyId, string id);
 }
 
 /// <summary>
@@ -23,9 +23,10 @@ public class TallerItemRepairOrderService : CrudOperationService<TallerItemRepai
     /// </summary>
     /// <param name="id">Id Orden Reparación</param>
     /// <returns>Lista de Items - Orden de Reparación</returns>
-    public async Task<List<TallerItemRepairOrder>> GetItemsRepairOrder(string id)
+    public async Task<List<TallerItemRepairOrder>> GetItemsRepairOrder(string companyId, string id)
     {
-        var filter = Builders<TallerItemRepairOrder>.Filter.Eq(x => x.RepairOrderId, id);
+        var builder = Builders<TallerItemRepairOrder>.Filter;
+        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId), builder.Eq(x => x.RepairOrderId, id));
         return await _collection.Find(filter).ToListAsync();
     }
 }

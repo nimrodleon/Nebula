@@ -9,7 +9,7 @@ namespace Nebula.Modules.Taller.Services;
 
 public interface ITallerRepairOrderService : ICrudOperationService<TallerRepairOrder>
 {
-    Task<TallerRepairOrder> CreateRepairOrderAsync(TallerRepairOrder obj);
+    Task<TallerRepairOrder> CreateRepairOrderAsync(string companyId, TallerRepairOrder obj);
     Task<List<TallerRepairOrder>> GetRepairOrders(string companyId, string query = "", int limit = 25);
     Task<List<TallerRepairOrder>> GetRepairOrdersMonthly(string companyId, DateQuery dto, int limit = 25);
     Task<TallerRepairOrderTicket> GetTicket(string companyId, string id);
@@ -31,10 +31,11 @@ public class TallerRepairOrderService : CrudOperationService<TallerRepairOrder>,
         _invoiceSerieService = invoiceSerieService;
     }
 
-    public async Task<TallerRepairOrder> CreateRepairOrderAsync(TallerRepairOrder obj)
+    public async Task<TallerRepairOrder> CreateRepairOrderAsync(string companyId, TallerRepairOrder obj)
     {
         obj.Id = string.Empty;
-        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(obj.InvoiceSerieId);
+        obj.CompanyId = companyId.Trim();
+        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(companyId, obj.InvoiceSerieId);
         obj.Serie = invoiceSerie.NotaDeVenta;
         int numComprobante = invoiceSerie.CounterNotaDeVenta + 1;
         obj.Number = numComprobante.ToString();
@@ -111,7 +112,7 @@ public class TallerRepairOrderService : CrudOperationService<TallerRepairOrder>,
     public async Task<TallerRepairOrderTicket> GetTicket(string companyId, string id)
     {
         var repairOrder = await GetByIdAsync(companyId, id);
-        var itemsRepairOrder = await _itemRepairOrderService.GetItemsRepairOrder(repairOrder.Id);
+        var itemsRepairOrder = await _itemRepairOrderService.GetItemsRepairOrder(companyId, repairOrder.Id);
         return new TallerRepairOrderTicket()
         {
             RepairOrder = repairOrder,

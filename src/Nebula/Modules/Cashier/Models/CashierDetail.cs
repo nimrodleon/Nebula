@@ -15,14 +15,19 @@ public class CashierDetail : IGenericModel
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
+    /// Identificador de la empresa al que pertenece.
+    /// </summary>
+    public string CompanyId { get; set; } = string.Empty;
+
+    /// <summary>
     /// Identificador CajaDiaria.
     /// </summary>
-    public string CajaDiaria { get; set; } = string.Empty;
+    public string CajaDiariaId { get; set; } = string.Empty;
 
     /// <summary>
     /// Clave foránea comprobante de venta.
     /// </summary>
-    public string InvoiceSale { get; set; } = "-";
+    public string InvoiceSaleId { get; set; } = "-";
 
     /// <summary>
     /// Configura el Tipo de comprobante.

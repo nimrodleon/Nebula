@@ -21,33 +21,35 @@ public class ItemRepairOrderController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Index(string id)
+    public async Task<IActionResult> Index(string companyId, string id)
     {
-        var itemsRepairOrder = await _itemRepairOrderService.GetItemsRepairOrder(id);
+        var itemsRepairOrder = await _itemRepairOrderService.GetItemsRepairOrder(companyId, id);
         return Ok(itemsRepairOrder);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] TallerItemRepairOrder model)
+    public async Task<IActionResult> Create(string companyId, [FromBody] TallerItemRepairOrder model)
     {
+        model.CompanyId = companyId.Trim();
         model = await _itemRepairOrderService.CreateAsync(model);
         return Ok(model);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(string id, [FromBody] TallerItemRepairOrder model)
+    public async Task<IActionResult> Update(string companyId, string id, [FromBody] TallerItemRepairOrder model)
     {
-        var itemRepairOrder = await _itemRepairOrderService.GetByIdAsync(id);
+        var itemRepairOrder = await _itemRepairOrderService.GetByIdAsync(companyId, id);
         model.Id = itemRepairOrder.Id;
+        model.CompanyId = companyId.Trim();
         itemRepairOrder = await _itemRepairOrderService.UpdateAsync(itemRepairOrder.Id, model);
         return Ok(itemRepairOrder);
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(string id)
+    public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var itemRepairOrder = await _itemRepairOrderService.GetByIdAsync(id);
-        await _itemRepairOrderService.RemoveAsync(itemRepairOrder.Id);
+        var itemRepairOrder = await _itemRepairOrderService.GetByIdAsync(companyId, id);
+        await _itemRepairOrderService.RemoveAsync(companyId, itemRepairOrder.Id);
         return Ok(itemRepairOrder);
     }
 }
