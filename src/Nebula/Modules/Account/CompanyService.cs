@@ -28,7 +28,7 @@ public class CompanyService : CrudOperationService<Company>, ICompanyService
         return await _collection.Find(filter).ToListAsync();
     }
 
-    public override async Task<List<Company>> GetAsync(string field, string? query, int limit = 25)
+    public override async Task<List<Company>> GetAsync(string field, string query = "", int limit = 25)
     {
         var userId = _userAuthenticationService.GetUserId();
         var filter = Builders<Company>.Filter.Eq(x => x.UserId, userId);

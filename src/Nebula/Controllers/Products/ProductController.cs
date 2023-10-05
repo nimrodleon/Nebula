@@ -135,7 +135,7 @@ public class ProductController : ControllerBase
 
         if (model.File?.Length > 0)
         {
-            var storagePath = _configuration.GetValue<string>("StoragePath");
+            var storagePath = _configuration.GetValue<string>("StoragePath") ?? "";
             var dirPath = Path.Combine(storagePath, "uploads");
             // borrar archivo antiguo si existe.
             var oldFile = Path.Combine(dirPath, product.PathImage ?? string.Empty);
@@ -184,7 +184,7 @@ public class ProductController : ControllerBase
     {
         var product = await _productService.GetByIdAsync(companyId, id);
         // directorio principal.
-        var storagePath = _configuration.GetValue<string>("StoragePath");
+        var storagePath = _configuration.GetValue<string>("StoragePath") ?? "";
         var dirPath = Path.Combine(storagePath, "uploads");
         // borrar archivo si existe.
         if (product.PathImage != "default.jpg")

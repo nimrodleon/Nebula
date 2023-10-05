@@ -1,8 +1,6 @@
-using System.Configuration;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -31,7 +29,8 @@ using Nebula.Modules.Taller.Services;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
-var secretKey = Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("SecretKey"));
+string keygen = "5dc7a849f2668157c3a7c4f037dcafa62c6ba82e5d9b31b56edbcc6731f8c9c8";
+var secretKey = Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("SecretKey") ?? keygen);
 
 builder.Services.AddAuthentication(options =>
 {
@@ -213,8 +212,8 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
-var applicationPort = builder.Configuration.GetValue<string>("ApplicationPort");
-var storagePath = builder.Configuration.GetValue<string>("StoragePath");
+var applicationPort = builder.Configuration.GetValue<string>("ApplicationPort") ?? "5042";
+var storagePath = builder.Configuration.GetValue<string>("StoragePath") ?? string.Empty;
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
