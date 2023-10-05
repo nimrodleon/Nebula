@@ -104,7 +104,7 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
     public async Task<CreditNoteDto> GetCreditNoteDtoAsync(string companyId, string CreditNoteId)
     {
         var creditNote = await GetByIdAsync(companyId, CreditNoteId);
-        var creditNoteDetails = await _creditNoteDetailService.GetListAsync(creditNote.Id);
+        var creditNoteDetails = await _creditNoteDetailService.GetListAsync(companyId, creditNote.Id);
         var tributosCreditNote = await _tributoCreditNoteService.GetListAsync(companyId, creditNote.Id);
         return new CreditNoteDto()
         {
@@ -117,7 +117,7 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
     public async Task<CreditNote> AnulaciónDeLaOperación(string companyId, string invoiceSaleId)
     {
         var invoiceSale = await _invoiceSaleService.GetByIdAsync(companyId, invoiceSaleId);
-        var invoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(invoiceSale.Id);
+        var invoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(companyId, invoiceSale.Id);
         var tributoSales = await _tributoSaleService.GetListAsync(companyId, invoiceSale.Id);
         var invoiceSerie = await _invoiceSerieService.GetByIdAsync(companyId, invoiceSale.InvoiceSerieId);
         var creditNote = GetCreditNote(invoiceSale);
