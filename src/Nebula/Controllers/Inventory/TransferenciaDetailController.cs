@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
@@ -6,6 +7,8 @@ using Nebula.Modules.Inventory.Transferencias;
 
 namespace Nebula.Controllers.Inventory;
 
+[Authorize]
+[CustomerAuthorize(UserRole = CompanyRoles.User)]
 [Route("api/inventory/{companyId}/[controller]")]
 [ApiController]
 public class TransferenciaDetailController : ControllerBase

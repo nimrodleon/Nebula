@@ -6,9 +6,9 @@ namespace Nebula.Modules.Products;
 
 public interface IProductPriceService : ICrudOperationService<ProductPrices>
 {
-    Task<List<ProductPrices>> GetAsync(string productId);
-    Task<long> GetPricesCountByProductId(string productId);
-    Task UpdateProductHasPrices(string productId);
+    Task<List<ProductPrices>> GetAsync(string companyId, string productId);
+    Task<long> GetPricesCountByProductId(string companyId, string productId);
+    Task UpdateProductHasPrices(string companyId, string productId);
 }
 
 public class ProductPriceService : CrudOperationService<ProductPrices>, IProductPriceService
@@ -21,24 +21,25 @@ public class ProductPriceService : CrudOperationService<ProductPrices>, IProduct
         _productService = productService;
     }
 
-    public async Task<List<ProductPrices>> GetAsync(string productId)
+    public async Task<List<ProductPrices>> GetAsync(string companyId, string productId)
     {
         var builder = Builders<ProductPrices>.Filter;
-        var filter = builder.Eq(x => x.ProductId, productId);
+        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId), builder.Eq(x => x.ProductId, productId));
         return await _collection.Find(filter).ToListAsync();
     }
 
-    public async Task<long> GetPricesCountByProductId(string productId)
+    public async Task<long> GetPricesCountByProductId(string companyId, string productId)
     {
-        var filter = Builders<ProductPrices>.Filter.Eq(x => x.ProductId, productId);
+        var builder = Builders<ProductPrices>.Filter;
+        var filter = builder.And(builder.Eq(x => x.CompanyId), builder.Eq(x => x.ProductId, productId));
         var count = await _collection.CountDocumentsAsync(filter);
         return count;
     }
 
-    public async Task UpdateProductHasPrices(string productId)
+    public async Task UpdateProductHasPrices(string companyId, string productId)
     {
-        long countPrices = await GetPricesCountByProductId(productId);
-        await _productService.UpdateHasPrices(productId, countPrices > 0L);
+        long countPrices = await GetPricesCountByProductId(companyId, productId);
+        await _productService.UpdateHasPrices(companyId, productId, countPrices > 0L);
     }
 
 }
