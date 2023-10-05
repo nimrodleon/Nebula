@@ -11,7 +11,9 @@ using Nebula.Modules.Sales;
 
 namespace Nebula.Controllers.Purchases;
 
-[Route("api/[controller]")]
+[Authorize]
+[CustomerAuthorize(UserRole = CompanyRoles.User)]
+[Route("api/purchases/{companyId}/[controller]")]
 [ApiController]
 public class PurchaseInvoiceController : ControllerBase
 {
@@ -28,61 +30,61 @@ public class PurchaseInvoiceController : ControllerBase
         _validezCompraService = validezCompraService;
     }
 
-    [HttpGet("Index")]
-    public async Task<IActionResult> Index([FromQuery] DateQuery query)
+    [HttpGet]
+    public async Task<IActionResult> Index(string companyId, [FromQuery] DateQuery query)
     {
-        var purchases = await _purchaseInvoiceService.GetAsync(query);
+        var purchases = await _purchaseInvoiceService.GetAsync(companyId, query);
         return Ok(purchases);
     }
 
-    [HttpGet("Show/{id}")]
-    public async Task<IActionResult> Show(string id)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Show(string companyId, string id)
     {
         var purchase = new PurchaseDto
         {
-            PurchaseInvoice = await _purchaseInvoiceService.GetByIdAsync(id),
-            PurchaseInvoiceDetails = await _purchaseInvoiceDetailService.GetDetailsAsync(id),
+            PurchaseInvoice = await _purchaseInvoiceService.GetByIdAsync(companyId, id),
+            PurchaseInvoiceDetails = await _purchaseInvoiceDetailService.GetDetailsAsync(companyId, id),
         };
         return Ok(purchase);
     }
 
-    [HttpPost("Create")]
-    public async Task<IActionResult> Create([FromBody] CabeceraCompraDto cabecera)
+    [HttpPost]
+    public async Task<IActionResult> Create(string companyId, [FromBody] CabeceraCompraDto cabecera)
     {
-        var purchase = await _purchaseInvoiceService.CreateAsync(cabecera);
+        var purchase = await _purchaseInvoiceService.CreateAsync(companyId, cabecera);
         return Ok(purchase);
     }
 
-    [HttpPut("Update/{id}")]
-    public async Task<IActionResult> Update(string id, [FromBody] CabeceraCompraDto cabecera)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(string companyId, string id, [FromBody] CabeceraCompraDto cabecera)
     {
-        var purchase = await _purchaseInvoiceService.UpdateAsync(id, cabecera);
+        var purchase = await _purchaseInvoiceService.UpdateAsync(companyId, id, cabecera);
         return Ok(purchase);
     }
 
-    [HttpDelete("Delete/{id}")]
-    public async Task<IActionResult> Delete(string id)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var purchase = await _purchaseInvoiceService.GetByIdAsync(id);
-        await _purchaseInvoiceService.RemoveAsync(purchase.Id);
-        await _purchaseInvoiceDetailService.DeleteManyAsync(purchase.Id);
+        var purchase = await _purchaseInvoiceService.GetByIdAsync(companyId, id);
+        await _purchaseInvoiceService.RemoveAsync(companyId, purchase.Id);
+        await _purchaseInvoiceDetailService.DeleteManyAsync(companyId, purchase.Id);
         return Ok(purchase);
     }
 
     [AllowAnonymous]
     [HttpGet("ConsultarValidez")]
-    public async Task<IActionResult> ConsultarValidez([FromQuery] QueryConsultarValidezComprobante query)
+    public async Task<IActionResult> ConsultarValidez(string companyId, [FromQuery] QueryConsultarValidezComprobante query)
     {
-        string pathArchivoZip = await _validezCompraService.CrearArchivosDeValidacion(query);
+        string pathArchivoZip = await _validezCompraService.CrearArchivosDeValidacion(companyId, query);
         FileStream stream = new FileStream(pathArchivoZip, FileMode.Open);
         return new FileStreamResult(stream, "application/zip");
     }
 
     [AllowAnonymous]
     [HttpGet("ExcelRegistroComprasF81")]
-    public async Task<IActionResult> ExcelRegistroComprasF81([FromQuery] DateQuery query)
+    public async Task<IActionResult> ExcelRegistroComprasF81(string companyId, [FromQuery] DateQuery query)
     {
-        var purchases = await _purchaseInvoiceService.GetFacturasByMonthAndYearAsync(query.Month, query.Year);
+        var purchases = await _purchaseInvoiceService.GetFacturasByMonthAndYearAsync(companyId, query.Month, query.Year);
         // generar archivo excel y enviar como respuesta de solicitud.
         string filePath = new ExcelRegistroComprasF81(purchases).CrearArchivo();
         FileStream stream = new FileStream(filePath, FileMode.Open);

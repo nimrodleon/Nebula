@@ -9,13 +9,13 @@ namespace Nebula.Modules.Purchases;
 
 public interface IPurchaseInvoiceService : ICrudOperationService<PurchaseInvoice>
 {
-    Task<List<PurchaseInvoice>> GetAsync(DateQuery query);
-    Task<List<PurchaseInvoice>> GetByFecEmisionAsync(string date);
-    Task<List<PurchaseInvoice>> GetByMonthAndYearAsync(string month, string year);
-    Task<List<PurchaseInvoice>> GetFacturasByMonthAndYearAsync(string month, string year);
-    Task<PurchaseInvoice> CreateAsync(CabeceraCompraDto cabecera);
-    Task<PurchaseInvoice> UpdateAsync(string id, CabeceraCompraDto cabecera);
-    Task<PurchaseInvoice> UpdateImporteAsync(string id, List<PurchaseInvoiceDetail> details);
+    Task<List<PurchaseInvoice>> GetAsync(string companyId, DateQuery query);
+    Task<List<PurchaseInvoice>> GetByFecEmisionAsync(string companyId, string date);
+    Task<List<PurchaseInvoice>> GetByMonthAndYearAsync(string companyId, string month, string year);
+    Task<List<PurchaseInvoice>> GetFacturasByMonthAndYearAsync(string companyId, string month, string year);
+    Task<PurchaseInvoice> CreateAsync(string companyId, CabeceraCompraDto cabecera);
+    Task<PurchaseInvoice> UpdateAsync(string companyId, string id, CabeceraCompraDto cabecera);
+    Task<PurchaseInvoice> UpdateImporteAsync(string companyId, string id, List<PurchaseInvoiceDetail> details);
 }
 
 public class PurchaseInvoiceService : CrudOperationService<PurchaseInvoice>, IPurchaseInvoiceService
@@ -24,59 +24,63 @@ public class PurchaseInvoiceService : CrudOperationService<PurchaseInvoice>, IPu
     {
     }
 
-    public async Task<List<PurchaseInvoice>> GetAsync(DateQuery query)
+    public async Task<List<PurchaseInvoice>> GetAsync(string companyId, DateQuery query)
     {
         var builder = Builders<PurchaseInvoice>.Filter;
         var filter = builder.And(
+            builder.Eq(x => x.CompanyId, companyId),
             builder.Eq(x => x.Month, query.Month),
             builder.Eq(x => x.Year, query.Year));
         return await _collection.Find(filter).SortBy(x => x.FecEmision).ToListAsync();
     }
 
-    public async Task<List<PurchaseInvoice>> GetByFecEmisionAsync(string date)
+    public async Task<List<PurchaseInvoice>> GetByFecEmisionAsync(string companyId, string date)
     {
         var builder = Builders<PurchaseInvoice>.Filter;
-        var filter = builder.Eq(x => x.FecEmision, date);
+        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId), builder.Eq(x => x.FecEmision, date));
         return await _collection.Find(filter).ToListAsync();
     }
 
-    public async Task<List<PurchaseInvoice>> GetByMonthAndYearAsync(string month, string year)
+    public async Task<List<PurchaseInvoice>> GetByMonthAndYearAsync(string companyId, string month, string year)
     {
         var builder = Builders<PurchaseInvoice>.Filter;
-        var filter = builder.And(builder.Eq(x => x.Month, month),
+        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId),
+            builder.Eq(x => x.Month, month), builder.Eq(x => x.Year, year));
+        return await _collection.Find(filter).ToListAsync();
+    }
+
+    public async Task<List<PurchaseInvoice>> GetFacturasByMonthAndYearAsync(string companyId, string month, string year)
+    {
+        var builder = Builders<PurchaseInvoice>.Filter;
+        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId),
+            builder.Eq(x => x.DocType, "FACTURA"), builder.Eq(x => x.Month, month),
             builder.Eq(x => x.Year, year));
         return await _collection.Find(filter).ToListAsync();
     }
 
-    public async Task<List<PurchaseInvoice>> GetFacturasByMonthAndYearAsync(string month, string year)
-    {
-        var builder = Builders<PurchaseInvoice>.Filter;
-        var filter = builder.And(builder.Eq(x => x.DocType, "FACTURA"),
-            builder.Eq(x => x.Month, month),
-            builder.Eq(x => x.Year, year));
-        return await _collection.Find(filter).ToListAsync();
-    }
-
-    public async Task<PurchaseInvoice> CreateAsync(CabeceraCompraDto cabecera)
+    public async Task<PurchaseInvoice> CreateAsync(string companyId, CabeceraCompraDto cabecera)
     {
         var purchase = cabecera.GetPurchaseInvoice();
+        purchase.CompanyId = companyId.Trim();
         await _collection.InsertOneAsync(purchase);
         return purchase;
     }
 
-    public async Task<PurchaseInvoice> UpdateAsync(string id, CabeceraCompraDto cabecera)
+    public async Task<PurchaseInvoice> UpdateAsync(string companyId, string id, CabeceraCompraDto cabecera)
     {
-        var purchase = await GetByIdAsync(id);
+        var purchase = await GetByIdAsync(companyId, id);
         purchase = cabecera.GetPurchaseInvoice(purchase);
+        purchase.CompanyId = companyId.Trim();
         await UpdateAsync(purchase.Id, purchase);
         return purchase;
     }
 
-    public async Task<PurchaseInvoice> UpdateImporteAsync(string id, List<PurchaseInvoiceDetail> details)
+    public async Task<PurchaseInvoice> UpdateImporteAsync(string companyId, string id, List<PurchaseInvoiceDetail> details)
     {
-        var purchase = await GetByIdAsync(id);
+        var purchase = await GetByIdAsync(companyId, id);
         var calcularImporte = new CalcularImporteCompra(details);
         purchase = calcularImporte.Calcular(purchase);
+        purchase.CompanyId = companyId.Trim();
         await UpdateAsync(purchase.Id, purchase);
         return purchase;
     }

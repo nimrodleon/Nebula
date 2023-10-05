@@ -54,6 +54,7 @@ public class ItemCompraDto
         return new PurchaseInvoiceDetail()
         {
             Id = Id != null ? Id : string.Empty,
+            CompanyId = company.Id.Trim(),
             PurchaseInvoiceId = purchaseInvoiceId,
             TipoItem = TipoItem,
             CodUnidadMedida = CodUnidadMedida,

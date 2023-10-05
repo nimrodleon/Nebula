@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
@@ -6,7 +7,9 @@ using Nebula.Modules.Purchases.Dto;
 
 namespace Nebula.Controllers.Purchases;
 
-[Route("api/[controller]")]
+[Authorize]
+[CustomerAuthorize(UserRole = CompanyRoles.User)]
+[Route("api/purchases/{companyId}/[controller]")]
 [ApiController]
 public class PurchaseInvoiceDetailController : ControllerBase
 {
@@ -20,31 +23,31 @@ public class PurchaseInvoiceDetailController : ControllerBase
         _purchaseInvoiceDetailService = purchaseInvoiceDetailService;
     }
 
-    [HttpPost("Create/{purchaseInvoiceId}")]
-    public async Task<IActionResult> Create(string purchaseInvoiceId, [FromBody] ItemCompraDto itemCompra)
+    [HttpPost("{purchaseInvoiceId}")]
+    public async Task<IActionResult> Create(string companyId, string purchaseInvoiceId, [FromBody] ItemCompraDto itemCompra)
     {
-        var purchaseInvoiceDetail = await _purchaseInvoiceDetailService.CreateAsync(purchaseInvoiceId, itemCompra);
-        var details = await _purchaseInvoiceDetailService.GetDetailsAsync(purchaseInvoiceId);
-        await _purchaseInvoiceService.UpdateImporteAsync(purchaseInvoiceId, details);
+        var purchaseInvoiceDetail = await _purchaseInvoiceDetailService.CreateAsync(companyId, purchaseInvoiceId, itemCompra);
+        var details = await _purchaseInvoiceDetailService.GetDetailsAsync(companyId, purchaseInvoiceId);
+        await _purchaseInvoiceService.UpdateImporteAsync(companyId, purchaseInvoiceId, details);
         return Ok(purchaseInvoiceDetail);
     }
 
-    [HttpPut("Update/{id}")]
-    public async Task<IActionResult> Update(string id, [FromBody] ItemCompraDto itemCompra)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(string companyId, string id, [FromBody] ItemCompraDto itemCompra)
     {
-        var purchaseInvoiceDetail = await _purchaseInvoiceDetailService.UpdateAsync(id, itemCompra);
-        var details = await _purchaseInvoiceDetailService.GetDetailsAsync(purchaseInvoiceDetail.PurchaseInvoiceId);
-        await _purchaseInvoiceService.UpdateImporteAsync(purchaseInvoiceDetail.PurchaseInvoiceId, details);
+        var purchaseInvoiceDetail = await _purchaseInvoiceDetailService.UpdateAsync(companyId, id, itemCompra);
+        var details = await _purchaseInvoiceDetailService.GetDetailsAsync(companyId, purchaseInvoiceDetail.PurchaseInvoiceId);
+        await _purchaseInvoiceService.UpdateImporteAsync(companyId, purchaseInvoiceDetail.PurchaseInvoiceId, details);
         return Ok(purchaseInvoiceDetail);
     }
 
-    [HttpDelete("Delete/{id}")]
-    public async Task<IActionResult> Delete(string id)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var itemCompra = await _purchaseInvoiceDetailService.GetByIdAsync(id);
-        await _purchaseInvoiceDetailService.RemoveAsync(itemCompra.Id);
-        var details = await _purchaseInvoiceDetailService.GetDetailsAsync(itemCompra.PurchaseInvoiceId);
-        await _purchaseInvoiceService.UpdateImporteAsync(itemCompra.PurchaseInvoiceId, details);
+        var itemCompra = await _purchaseInvoiceDetailService.GetByIdAsync(companyId, id);
+        await _purchaseInvoiceDetailService.RemoveAsync(companyId, itemCompra.Id);
+        var details = await _purchaseInvoiceDetailService.GetDetailsAsync(companyId, itemCompra.PurchaseInvoiceId);
+        await _purchaseInvoiceService.UpdateImporteAsync(companyId, itemCompra.PurchaseInvoiceId, details);
         return Ok(itemCompra);
     }
 }
