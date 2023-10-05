@@ -31,7 +31,8 @@ public class ProductPriceService : CrudOperationService<ProductPrices>, IProduct
     public async Task<long> GetPricesCountByProductId(string companyId, string productId)
     {
         var builder = Builders<ProductPrices>.Filter;
-        var filter = builder.And(builder.Eq(x => x.CompanyId), builder.Eq(x => x.ProductId, productId));
+        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId),
+            builder.Eq(x => x.ProductId, productId));
         var count = await _collection.CountDocumentsAsync(filter);
         return count;
     }

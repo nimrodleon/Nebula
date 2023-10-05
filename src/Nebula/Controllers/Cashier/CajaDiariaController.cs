@@ -6,10 +6,13 @@ using Nebula.Modules.Cashier.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Nebula.Common.Dto;
 using Nebula.Modules.Account;
+using Nebula.Modules.Auth.Helpers;
+using Nebula.Modules.Auth;
 
 namespace Nebula.Controllers.Cashier;
 
 [Authorize]
+[CustomerAuthorize(UserRole = CompanyRoles.User)]
 [Route("api/cashier/{companyId}/[controller]")]
 [ApiController]
 public class CajaDiariaController : ControllerBase
@@ -62,7 +65,8 @@ public class CajaDiariaController : ControllerBase
         // registrar apertura de caja.
         var detalleCaja = new CashierDetail()
         {
-            CajaDiaria = cajaDiaria.Id,
+            CompanyId = companyId.Trim(),
+            CajaDiariaId = cajaDiaria.Id,
             Remark = "APERTURA DE CAJA",
             TypeOperation = TypeOperationCaja.AperturaDeCaja,
             FormaPago = FormaPago.Contado,

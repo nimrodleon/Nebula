@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Modules.Auth.Helpers;
+using Nebula.Modules.Auth;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Cashier.Helpers;
 using Nebula.Modules.Cashier.Models;
@@ -7,7 +9,8 @@ using Nebula.Modules.Cashier.Models;
 namespace Nebula.Controllers.Cashier;
 
 [Authorize]
-[Route("api/[controller]")]
+[CustomerAuthorize(UserRole = CompanyRoles.User)]
+[Route("api/cashier/{companyId}/[controller]")]
 [ApiController]
 public class CashierDetailController : ControllerBase
 {
@@ -18,22 +21,23 @@ public class CashierDetailController : ControllerBase
         _cashierDetailService = cashierDetailService;
     }
 
-    [HttpGet("Index/{id}")]
-    public async Task<IActionResult> Index(string id, [FromQuery] string? query)
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Index(string companyId, string id, [FromQuery] string query = "")
     {
         if (string.IsNullOrEmpty(query)) query = string.Empty;
-        var responseData = await _cashierDetailService.GetListAsync(id, query);
+        var responseData = await _cashierDetailService.GetListAsync(companyId, id, query);
         return Ok(responseData);
     }
 
-    [HttpPost("Create")]
-    public async Task<IActionResult> Create([FromBody] CashierDetail model)
+    [HttpPost]
+    public async Task<IActionResult> Create(string companyId, [FromBody] CashierDetail model)
     {
         if (model.TypeOperation == TypeOperationCaja.EntradaDeDinero)
             model.TypeOperation = TypeOperationCaja.EntradaDeDinero;
         if (model.TypeOperation == TypeOperationCaja.SalidaDeDinero)
             model.TypeOperation = TypeOperationCaja.SalidaDeDinero;
         model.FormaPago = FormaPago.Contado;
+        model.CompanyId = companyId.Trim();
         await _cashierDetailService.CreateAsync(model);
         return Ok(new
         {
@@ -44,24 +48,24 @@ public class CashierDetailController : ControllerBase
     }
 
     [HttpGet("CountDocuments/{id}")]
-    public async Task<IActionResult> CountDocuments(string id)
+    public async Task<IActionResult> CountDocuments(string companyId, string id)
     {
-        var countDocuments = await _cashierDetailService.CountDocumentsAsync(id);
+        var countDocuments = await _cashierDetailService.CountDocumentsAsync(companyId, id);
         return Ok(countDocuments);
     }
 
     [HttpGet("ResumenCaja/{id}")]
-    public async Task<IActionResult> ResumenCaja(string id)
+    public async Task<IActionResult> ResumenCaja(string companyId, string id)
     {
-        var resumenCaja = await _cashierDetailService.GetResumenCaja(id);
+        var resumenCaja = await _cashierDetailService.GetResumenCaja(companyId, id);
         return Ok(resumenCaja);
     }
 
-    [HttpDelete("Delete/{id}")]
-    public async Task<IActionResult> Delete(string id)
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var cashierDetail = await _cashierDetailService.GetByIdAsync(id);
-        await _cashierDetailService.RemoveAsync(cashierDetail.Id);
-        return Ok(new { Ok = true, Data = cashierDetail, Msg = "El detalle de caja ha sido borrado!" });
+        var cashierDetail = await _cashierDetailService.GetByIdAsync(companyId, id);
+        await _cashierDetailService.RemoveAsync(companyId, cashierDetail.Id);
+        return Ok(cashierDetail);
     }
 }

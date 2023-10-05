@@ -48,7 +48,7 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSal
     public async Task<ResponseInvoiceSale> GetInvoiceSaleAsync(string companyId, string invoiceSaleId)
     {
         var invoiceSale = await GetByIdAsync(companyId, invoiceSaleId);
-        var invoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(invoiceSale.Id);
+        var invoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(companyId, invoiceSale.Id);
         var tributoSales = await _tributoSaleService.GetListAsync(companyId, invoiceSale.Id);
         return new ResponseInvoiceSale()
         {
