@@ -38,13 +38,8 @@ public class CashierDetailController : ControllerBase
             model.TypeOperation = TypeOperationCaja.SalidaDeDinero;
         model.FormaPago = FormaPago.Contado;
         model.CompanyId = companyId.Trim();
-        await _cashierDetailService.CreateAsync(model);
-        return Ok(new
-        {
-            Ok = true,
-            Data = model,
-            Msg = "La operación ha sido registrado!"
-        });
+        model = await _cashierDetailService.CreateAsync(model);
+        return Ok(model);
     }
 
     [HttpGet("CountDocuments/{id}")]
