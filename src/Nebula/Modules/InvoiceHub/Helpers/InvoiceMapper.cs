@@ -5,7 +5,7 @@ namespace Nebula.Modules.InvoiceHub.Helpers;
 
 public static class InvoiceMapper
 {
-    public static InvoiceRequestHub MapToInvoiceRequestHub(string companyId, InvoiceSaleAndDetails document)
+    public static InvoiceRequestHub MapToInvoiceRequestHub(string ruc, InvoiceSaleAndDetails document)
     {
         var invoice = document.InvoiceSale;
         var details = document.InvoiceSaleDetails;
@@ -14,7 +14,7 @@ public static class InvoiceMapper
         if (invoice.DocType == "FACTURA") tipoDoc = "01";
         var invoiceRequest = new InvoiceRequestHub()
         {
-            Ruc = companyId.Trim(),
+            Ruc = ruc.Trim(),
             TipoOperacion = invoice.TipOperacion,
             TipoDoc = tipoDoc,
             Serie = invoice.Serie.Trim(),

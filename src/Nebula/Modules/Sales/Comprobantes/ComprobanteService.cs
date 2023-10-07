@@ -44,9 +44,10 @@ public class ComprobanteService : IComprobanteService
     /// <returns>InvoiceSaleAndDetails</returns>
     public async Task<InvoiceSaleAndDetails> SaveChangesAsync(ComprobanteDto comprobante)
     {
+        string companyId = comprobante.Company.Id;
         var invoiceSale = comprobante.GetInvoiceSale();
         var invoiceSerieId = comprobante.Cabecera.InvoiceSerieId;
-        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(invoiceSerieId);
+        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(companyId, invoiceSerieId);
         comprobante.GenerarSerieComprobante(ref invoiceSerie, ref invoiceSale);
         invoiceSale.InvoiceSerieId = invoiceSerie.Id;
 

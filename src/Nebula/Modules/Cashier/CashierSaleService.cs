@@ -93,7 +93,7 @@ public class CashierSaleService : ICashierSaleService
                 var detallePagos = comprobanteDto.GetDetallePagos(invoiceSale.Id);
                 if (detallePagos.Count() > 0) await _detallePagoSaleService.InsertManyAsync(detallePagos);
             }
-            var cargo = GenerarCargo(invoiceSale, cajaDiaria, comprobanteDto.UserCompany.DiasPlazo);
+            var cargo = GenerarCargo(invoiceSale, cajaDiaria, comprobanteDto.Company.DiasPlazo);
             await _receivableService.CreateAsync(cargo);
         }
 

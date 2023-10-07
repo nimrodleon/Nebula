@@ -57,7 +57,7 @@ namespace Nebula.Controllers
                 },
             },
             };
-            var result = await _invoiceHubService.SendInvoiceAsync(invoiceRequest);
+            var result = await _invoiceHubService.SendInvoiceAsync("651b559c6256e58372cde4c2", invoiceRequest);
             return Ok(result);
         }
     }

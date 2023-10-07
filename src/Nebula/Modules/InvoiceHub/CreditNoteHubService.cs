@@ -8,7 +8,7 @@ namespace Nebula.Modules.InvoiceHub;
 
 public interface ICreditNoteHubService
 {
-    Task<BillingResponse> SendCreditNoteAsync(CreditNoteRequestHub creditNoteRequest);
+    Task<BillingResponse> SendCreditNoteAsync(string companyId, CreditNoteRequestHub creditNoteRequest);
 }
 
 public class CreditNoteHubService : ICreditNoteHubService
@@ -25,12 +25,12 @@ public class CreditNoteHubService : ICreditNoteHubService
         _logger = logger;
     }
 
-    public async Task<BillingResponse> SendCreditNoteAsync(CreditNoteRequestHub creditNoteRequest)
+    public async Task<BillingResponse> SendCreditNoteAsync(string companyId, CreditNoteRequestHub creditNoteRequest)
     {
         try
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _settings.JwtToken);
-            string url = $"{_settings.ApiBaseUrl}/api/creditNote/send";
+            string url = $"{_settings.ApiBaseUrl}/api/creditNote/send/{companyId.Trim()}";
             string jsonCreditNoteRequest = JsonSerializer.Serialize(creditNoteRequest);
             HttpContent content = new StringContent(jsonCreditNoteRequest, Encoding.UTF8, "application/json");
             _logger.LogInformation("Remote URL Invoice: " + url);

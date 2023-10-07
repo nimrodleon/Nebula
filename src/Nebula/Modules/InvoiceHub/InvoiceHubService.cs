@@ -8,7 +8,7 @@ namespace Nebula.Modules.InvoiceHub;
 
 public interface IInvoiceHubService
 {
-    Task<BillingResponse> SendInvoiceAsync(InvoiceRequestHub invoiceRequest);
+    Task<BillingResponse> SendInvoiceAsync(string companyId, InvoiceRequestHub invoiceRequest);
 }
 
 public class InvoiceHubService : IInvoiceHubService
@@ -24,12 +24,12 @@ public class InvoiceHubService : IInvoiceHubService
         _logger = logger;
     }
 
-    public async Task<BillingResponse> SendInvoiceAsync(InvoiceRequestHub invoiceRequest)
+    public async Task<BillingResponse> SendInvoiceAsync(string companyId, InvoiceRequestHub invoiceRequest)
     {
         try
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _settings.JwtToken);
-            string url = $"{_settings.ApiBaseUrl}/api/invoice/send";
+            string url = $"{_settings.ApiBaseUrl}/api/invoice/send/{companyId.Trim()}";
             string jsonInvoiceRequest = JsonSerializer.Serialize(invoiceRequest);
             HttpContent content = new StringContent(jsonInvoiceRequest, Encoding.UTF8, "application/json");
             _logger.LogInformation("Remote URL Invoice: " + url);

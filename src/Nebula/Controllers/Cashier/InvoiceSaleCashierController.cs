@@ -45,7 +45,7 @@ public class InvoiceSaleCashierController : ControllerBase
     {
         try
         {
-            model.UserCompany =await _cacheAuthService.GetCompanyByIdAsync(companyId.Trim());
+            model.Company = await _cacheAuthService.GetCompanyByIdAsync(companyId.Trim());
             var invoiceSale = await _cashierSaleService.SaveChangesAsync(model, id);
             // if (invoiceSale.DocType != "NOTA")
             // pass...

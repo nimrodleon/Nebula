@@ -15,6 +15,7 @@ using Nebula.Modules.Sales.Helpers;
 using Nebula.Modules.Sales.Invoices;
 using Nebula.Modules.Sales.Invoices.Dto;
 using Nebula.Modules.Sales.Notes;
+using Nebula.Common;
 
 namespace Nebula.Controllers.Sales;
 
@@ -24,6 +25,7 @@ namespace Nebula.Controllers.Sales;
 [ApiController]
 public class InvoiceSaleController : ControllerBase
 {
+    private readonly ICacheAuthService _cacheAuthService;
     private readonly IInvoiceSerieService _invoiceSerieService;
     private readonly IInvoiceSaleService _invoiceSaleService;
     private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
@@ -35,6 +37,7 @@ public class InvoiceSaleController : ControllerBase
     private readonly IInvoiceHubService _invoiceHubService;
 
     public InvoiceSaleController(
+        ICacheAuthService cacheAuthService,
         IInvoiceSerieService invoiceSerieService,
         IInvoiceSaleService invoiceSaleService,
         IInvoiceSaleDetailService invoiceSaleDetailService,
@@ -45,6 +48,7 @@ public class InvoiceSaleController : ControllerBase
         ITributoCreditNoteService tributoCreditNoteService,
         IInvoiceHubService invoiceHubService)
     {
+        _cacheAuthService = cacheAuthService;
         _invoiceSerieService = invoiceSerieService;
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
@@ -111,9 +115,10 @@ public class InvoiceSaleController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(string companyId, [FromBody] ComprobanteDto dto)
     {
+        dto.Company = await _cacheAuthService.GetCompanyByIdAsync(companyId);
         var comprobante = await _comprobanteService.SaveChangesAsync(dto);
-        var invoiceRequest = InvoiceMapper.MapToInvoiceRequestHub(companyId, comprobante);
-        var result = await _invoiceHubService.SendInvoiceAsync(invoiceRequest);
+        var invoiceRequest = InvoiceMapper.MapToInvoiceRequestHub(dto.Company.Ruc, comprobante);
+        var result = await _invoiceHubService.SendInvoiceAsync(companyId, invoiceRequest);
         return Ok(result);
     }
 

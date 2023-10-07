@@ -20,19 +20,16 @@ public class Company : IGenericModel
     /// <summary>
     /// R.U.C. Empresa.
     /// </summary>
-    [Required(ErrorMessage = "El campo 'R.U.C' es obligatorio.")]
     public string Ruc { get; set; } = string.Empty;
 
     /// <summary>
     /// Razón Social.
     /// </summary>
-    [Required(ErrorMessage = "El campo 'Razón Social' es obligatorio.")]
     public string RznSocial { get; set; } = string.Empty;
 
     /// <summary>
     /// Dirección Empresa.
     /// </summary>
-    [Required(ErrorMessage = "El campo 'Dirección' es obligatorio.")]
     public string Address { get; set; } = string.Empty;
 
     /// <summary>
