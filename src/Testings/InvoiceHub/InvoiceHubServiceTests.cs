@@ -71,7 +71,7 @@ public class InvoiceHubServiceTests
             },
         };
 
-        var billingResponse = await invoiceHubService.SendInvoiceAsync("651b559c6256e58372cde4c2", invoiceRequest);
+        var billingResponse = await invoiceHubService.SendInvoiceAsync("6519b9191d1a04bb07c280b2", invoiceRequest);
 
         // Assert
         Assert.IsNotNull(billingResponse);
@@ -133,7 +133,7 @@ public class InvoiceHubServiceTests
             },
         };
 
-        var billingResponse = await invoiceHubService.SendInvoiceAsync("651b559c6256e58372cde4c2", invoiceRequest);
+        var billingResponse = await invoiceHubService.SendInvoiceAsync("6519b9191d1a04bb07c280b2", invoiceRequest);
 
         // Assert
         Assert.IsNotNull(billingResponse);

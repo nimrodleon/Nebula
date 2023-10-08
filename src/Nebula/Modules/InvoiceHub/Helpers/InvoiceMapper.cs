@@ -45,6 +45,7 @@ public static class InvoiceMapper
                 Descripcion = item.DesItem.Trim(),
                 MtoBaseIgv = Math.Round(item.MtoBaseIgvItem, 4),
                 PorcentajeIgv = Math.Round(item.PorIgvItem, 2),
+                Igv = Math.Round(item.MtoIgvItem, 4),
                 TipAfeIgv = item.TipAfeIgv.Trim(),
                 TotalImpuestos = Math.Round((item.MtoIgvItem + item.MtoTriIcbperItem), 4),
                 MtoValorVenta = Math.Round(item.MtoValorVentaItem, 4),

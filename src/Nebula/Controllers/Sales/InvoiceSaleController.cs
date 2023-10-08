@@ -35,6 +35,7 @@ public class InvoiceSaleController : ControllerBase
     private readonly ICreditNoteService _creditNoteService;
     private readonly IConsultarValidezComprobanteService _consultarValidezComprobanteService;
     private readonly IInvoiceHubService _invoiceHubService;
+    private readonly ILogger<InvoiceSaleController> _logger;
 
     public InvoiceSaleController(
         ICacheAuthService cacheAuthService,
@@ -46,7 +47,8 @@ public class InvoiceSaleController : ControllerBase
         ICreditNoteService creditNoteService,
         IConsultarValidezComprobanteService consultarValidezComprobanteService,
         ITributoCreditNoteService tributoCreditNoteService,
-        IInvoiceHubService invoiceHubService)
+        IInvoiceHubService invoiceHubService,
+        ILogger<InvoiceSaleController> logger)
     {
         _cacheAuthService = cacheAuthService;
         _invoiceSerieService = invoiceSerieService;
@@ -58,6 +60,7 @@ public class InvoiceSaleController : ControllerBase
         _consultarValidezComprobanteService = consultarValidezComprobanteService;
         _tributoCreditNoteService = tributoCreditNoteService;
         _invoiceHubService = invoiceHubService;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -65,6 +68,35 @@ public class InvoiceSaleController : ControllerBase
     {
         var invoiceSales = await _invoiceSaleService.GetListAsync(companyId, model);
         return Ok(invoiceSales);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> Show(string companyId, string id)
+    {
+        var responseInvoiceSale = await _invoiceSaleService.GetInvoiceSaleAsync(companyId, id);
+        return Ok(responseInvoiceSale);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create(string companyId, [FromBody] ComprobanteDto dto)
+    {
+        dto.Company = await _cacheAuthService.GetCompanyByIdAsync(companyId);
+        var comprobante = await _comprobanteService.SaveChangesAsync(dto);
+        var invoiceRequest = InvoiceMapper.MapToInvoiceRequestHub(dto.Company.Ruc, comprobante);
+        var billingResponse = await _invoiceHubService.SendInvoiceAsync(companyId, invoiceRequest);
+        comprobante.InvoiceSale.BillingResponse = billingResponse;
+        await _invoiceSaleService.UpdateAsync(comprobante.InvoiceSale.Id, comprobante.InvoiceSale);
+        return Ok(new { Data = billingResponse, InvoiceId = comprobante.InvoiceSale.Id });
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string companyId, string id)
+    {
+        var invoiceSale = await _invoiceSaleService.GetByIdAsync(companyId, id);
+        await _invoiceSaleService.RemoveAsync(companyId, invoiceSale.Id);
+        await _invoiceSaleDetailService.RemoveAsync(companyId, invoiceSale.Id);
+        await _tributoSaleService.RemoveAsync(companyId, invoiceSale.Id);
+        return Ok(new { Ok = true, Data = invoiceSale, Msg = "El comprobante de venta ha sido borrado!" });
     }
 
     [AllowAnonymous]
@@ -112,23 +144,6 @@ public class InvoiceSaleController : ControllerBase
         return Ok(invoiceSales);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Create(string companyId, [FromBody] ComprobanteDto dto)
-    {
-        dto.Company = await _cacheAuthService.GetCompanyByIdAsync(companyId);
-        var comprobante = await _comprobanteService.SaveChangesAsync(dto);
-        var invoiceRequest = InvoiceMapper.MapToInvoiceRequestHub(dto.Company.Ruc, comprobante);
-        var result = await _invoiceHubService.SendInvoiceAsync(companyId, invoiceRequest);
-        return Ok(result);
-    }
-
-    [HttpGet("{id}")]
-    public async Task<IActionResult> Show(string companyId, string id)
-    {
-        var responseInvoiceSale = await _invoiceSaleService.GetInvoiceSaleAsync(companyId, id);
-        return Ok(responseInvoiceSale);
-    }
-
     [HttpPatch("AnularComprobante/{id}")]
     public async Task<IActionResult> AnularComprobante(string companyId, string id)
     {
@@ -144,30 +159,13 @@ public class InvoiceSaleController : ControllerBase
         return Ok(responseAnularComprobante);
     }
 
-    [HttpPatch("SituacionFacturador/{id}")]
-    public async Task<IActionResult> SituacionFacturador(string companyId, string id, [FromBody] SituacionFacturadorDto dto)
-    {
-        var response = await _invoiceSaleService.SetSituacionFacturador(companyId, id, dto);
-        return Ok(response);
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(string companyId, string id)
-    {
-        var invoiceSale = await _invoiceSaleService.GetByIdAsync(companyId, id);
-        await _invoiceSaleService.RemoveAsync(companyId, invoiceSale.Id);
-        await _invoiceSaleDetailService.RemoveAsync(companyId, invoiceSale.Id);
-        await _tributoSaleService.RemoveAsync(companyId, invoiceSale.Id);
-        return Ok(new { Ok = true, Data = invoiceSale, Msg = "El comprobante de venta ha sido borrado!" });
-    }
-
     [HttpGet("Ticket/{id}")]
     public async Task<IActionResult> Ticket(string companyId, string id)
     {
         var responseInvoice = await _invoiceSaleService.GetInvoiceSaleAsync(companyId, id);
         var ticket = new TicketDto()
         {
-            Company = new Company(),
+            Company = await _cacheAuthService.GetCompanyByIdAsync(companyId),
             InvoiceSale = responseInvoice.InvoiceSale,
             InvoiceSaleDetails = responseInvoice.InvoiceSaleDetails,
             TributoSales = responseInvoice.TributoSales,
