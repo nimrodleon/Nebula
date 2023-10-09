@@ -133,13 +133,19 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSal
 
     public async Task<List<InvoiceSale>> BusquedaAvanzadaAsync(string companyId, BuscarComprobanteFormDto dto)
     {
-        var filter = Builders<InvoiceSale>.Filter;
-        var query = filter.And(filter.Eq(x => x.CompanyId, companyId),
-            filter.Gte(x => x.FecEmision, dto.FechaDesde),
-            filter.Lte(x => x.FecEmision, dto.FechaHasta));
+        var filterBuilder = Builders<InvoiceSale>.Filter;
+        var filters = new List<FilterDefinition<InvoiceSale>>();
+
+        filters.Add(filterBuilder.Eq(x => x.CompanyId, companyId));
+        filters.Add(filterBuilder.Gte(x => x.FecEmision, dto.FechaDesde));
+        filters.Add(filterBuilder.Lte(x => x.FecEmision, dto.FechaHasta));
+
         if (!string.IsNullOrEmpty(dto.ContactId))
-            query = filter.And(filter.Gte(x => x.FecEmision, dto.FechaDesde),
-                filter.Lte(x => x.FecEmision, dto.FechaHasta), filter.Eq(x => x.ContactId, dto.ContactId));
+        {
+            filters.Add(filterBuilder.Eq(x => x.ContactId, dto.ContactId));
+        }
+
+        var query = filterBuilder.And(filters);
         return await _collection.Find(query).ToListAsync();
     }
 
