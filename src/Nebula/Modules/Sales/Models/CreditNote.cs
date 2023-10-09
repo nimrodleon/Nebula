@@ -1,6 +1,7 @@
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 using Nebula.Common.Models;
+using Nebula.Modules.InvoiceHub.Dto;
 
 namespace Nebula.Modules.Sales.Models;
 
@@ -117,11 +118,6 @@ public class CreditNote : IGenericModel
     public decimal SumImpVenta { get; set; }
 
     /// <summary>
-    /// Estado de Situación Facturador SUNAT.
-    /// </summary>
-    public string SituacionFacturador { get; set; } = "01:Por Generar XML";
-
-    /// <summary>
     /// Año de registro.
     /// </summary>
     public string Year { get; set; } = DateTime.Now.ToString("yyyy");
@@ -144,9 +140,9 @@ public class CreditNote : IGenericModel
     #endregion
 
     /// <summary>
-    /// Guarda el DigestValue del XML firmado.
+    /// Estado de Situación Facturador.
     /// </summary>
-    public string XmlDigestValue { get; set; } = string.Empty;
+    public BillingResponse BillingResponse { get; set; } = new BillingResponse();
 
     /// <summary>
     /// Importe total de la venta, en letras.

@@ -7,14 +7,14 @@ public class CreditNoteRequestHub
     [JsonPropertyName("ruc")]
     public string Ruc { get; set; } = string.Empty;
 
-    [JsonPropertyName("tipoDoc")]
-    public string TipoDoc { get; set; } = string.Empty;
-
     [JsonPropertyName("serie")]
     public string Serie { get; set; } = string.Empty;
 
     [JsonPropertyName("correlativo")]
     public string Correlativo { get; set; } = string.Empty;
+
+    [JsonPropertyName("fechaEmision")]
+    public string FechaEmision { get; set; } = string.Empty;
 
     [JsonPropertyName("tipDocAfectado")]
     public string TipDocAfectado { get; set; } = string.Empty;

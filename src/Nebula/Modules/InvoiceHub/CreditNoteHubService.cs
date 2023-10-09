@@ -30,12 +30,10 @@ public class CreditNoteHubService : ICreditNoteHubService
         try
         {
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _settings.JwtToken);
-            string url = $"{_settings.ApiBaseUrl}/api/creditNote/send/{companyId.Trim()}";
             string jsonCreditNoteRequest = JsonSerializer.Serialize(creditNoteRequest);
             HttpContent content = new StringContent(jsonCreditNoteRequest, Encoding.UTF8, "application/json");
-            _logger.LogInformation("Remote URL Invoice: " + url);
             _logger.LogInformation(jsonCreditNoteRequest.ToString());
-            var response = await _httpClient.PostAsync($"{_settings.ApiBaseUrl}/api/creditNote/send", content);
+            var response = await _httpClient.PostAsync($"{_settings.ApiBaseUrl}/api/creditNote/send/{companyId}", content);
 
             if (response.IsSuccessStatusCode)
             {

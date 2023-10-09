@@ -35,7 +35,7 @@ public class InvoiceSaleController : ControllerBase
     private readonly ICreditNoteService _creditNoteService;
     private readonly IConsultarValidezComprobanteService _consultarValidezComprobanteService;
     private readonly IInvoiceHubService _invoiceHubService;
-    private readonly ILogger<InvoiceSaleController> _logger;
+    private readonly ICreditNoteHubService _creditNoteHubService;
 
     public InvoiceSaleController(
         ICacheAuthService cacheAuthService,
@@ -48,7 +48,7 @@ public class InvoiceSaleController : ControllerBase
         IConsultarValidezComprobanteService consultarValidezComprobanteService,
         ITributoCreditNoteService tributoCreditNoteService,
         IInvoiceHubService invoiceHubService,
-        ILogger<InvoiceSaleController> logger)
+        ICreditNoteHubService creditNoteHubService)
     {
         _cacheAuthService = cacheAuthService;
         _invoiceSerieService = invoiceSerieService;
@@ -60,7 +60,7 @@ public class InvoiceSaleController : ControllerBase
         _consultarValidezComprobanteService = consultarValidezComprobanteService;
         _tributoCreditNoteService = tributoCreditNoteService;
         _invoiceHubService = invoiceHubService;
-        _logger = logger;
+        _creditNoteHubService = creditNoteHubService;
     }
 
     [HttpGet]
@@ -96,7 +96,7 @@ public class InvoiceSaleController : ControllerBase
         await _invoiceSaleService.RemoveAsync(companyId, invoiceSale.Id);
         await _invoiceSaleDetailService.RemoveAsync(companyId, invoiceSale.Id);
         await _tributoSaleService.RemoveAsync(companyId, invoiceSale.Id);
-        return Ok(new { Ok = true, Data = invoiceSale, Msg = "El comprobante de venta ha sido borrado!" });
+        return Ok(invoiceSale);
     }
 
     [AllowAnonymous]
@@ -147,16 +147,17 @@ public class InvoiceSaleController : ControllerBase
     [HttpPatch("AnularComprobante/{id}")]
     public async Task<IActionResult> AnularComprobante(string companyId, string id)
     {
-        var responseAnularComprobante = new ResponseAnularComprobante();
-        var creditNote = await _creditNoteService.AnulaciónDeLaOperación(companyId, id);
-        responseAnularComprobante.CreditNote = creditNote;
-        //responseAnularComprobante.JsonFileCreated = await _facturadorService.CreateCreditNoteJsonFile(creditNote.Id);
-        //if (responseAnularComprobante.JsonFileCreated)
-        //{
-        //    responseAnularComprobante.InvoiceSale =
-        //        await _invoiceSaleService.AnularComprobante(creditNote.InvoiceSaleId);
-        //}
-        return Ok(responseAnularComprobante);
+        var company = await _cacheAuthService.GetCompanyByIdAsync(companyId);
+        var invoiceCancellationResponse = await _creditNoteService.InvoiceCancellation(companyId, id);
+        var creditNoteRequest = CreditNoteMapper.MapToCreditNoteRequestHub(company.Ruc, invoiceCancellationResponse);
+        var billingResponse = await _creditNoteHubService.SendCreditNoteAsync(companyId, creditNoteRequest);
+        var creditNote = invoiceCancellationResponse.CreditNote;
+        creditNote.BillingResponse = billingResponse;
+        await _creditNoteService.UpdateAsync(creditNote.Id, creditNote);
+        var invoice = invoiceCancellationResponse.InvoiceSale;
+        invoice.Anulada = billingResponse.Success;
+        await _invoiceSaleService.UpdateAsync(invoice.Id, invoice);
+        return Ok(new { billingResponse, creditNote });
     }
 
     [HttpGet("Ticket/{id}")]

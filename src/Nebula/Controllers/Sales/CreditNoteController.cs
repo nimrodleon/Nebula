@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth;
-using Nebula.Modules.Sales;
 using Nebula.Modules.Sales.Notes;
 
 namespace Nebula.Controllers.Sales;
@@ -24,13 +23,6 @@ public class CreditNoteController : ControllerBase
     public async Task<IActionResult> Show(string companyId, string id)
     {
         var creditNote = await _creditNoteService.GetCreditNoteByInvoiceSaleIdAsync(companyId, id);
-        return Ok(creditNote);
-    }
-
-    [HttpPatch("SituacionFacturador/{id}")]
-    public async Task<IActionResult> SituacionFacturador(string companyId, string id, [FromBody] SituacionFacturadorDto dto)
-    {
-        var creditNote = await _creditNoteService.SetSituacionFacturador(companyId, id, dto);
         return Ok(creditNote);
     }
 

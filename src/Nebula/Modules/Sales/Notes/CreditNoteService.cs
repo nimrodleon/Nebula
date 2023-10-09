@@ -3,6 +3,7 @@ using Nebula.Common;
 using Nebula.Common.Dto;
 using Nebula.Modules.Account;
 using Nebula.Modules.Account.Models;
+using Nebula.Modules.Sales.Comprobantes.Dto;
 using Nebula.Modules.Sales.Invoices;
 using Nebula.Modules.Sales.Models;
 using Nebula.Modules.Sales.Notes.Dto;
@@ -15,9 +16,8 @@ public interface ICreditNoteService : ICrudOperationService<CreditNote>
     Task<CreditNote> GetCreditNoteByInvoiceSaleIdAsync(string companyId, string invoiceSaleId);
     Task<List<CreditNote>> GetCreditNotesByMonthAndYear(string companyId, string month, string year);
     Task<List<CreditNote>> GetCreditNotesByDate(string companyId, string date);
-    Task<CreditNote> SetSituacionFacturador(string companyId, string creditNoteId, SituacionFacturadorDto dto);
     Task<CreditNoteDto> GetCreditNoteDtoAsync(string companyId, string CreditNoteId);
-    Task<CreditNote> AnulaciónDeLaOperación(string companyId, string invoiceSaleId);
+    Task<InvoiceCancellationResponse> InvoiceCancellation(string companyId, string invoiceSaleId);
     void GenerarSerieComprobante(ref InvoiceSerie invoiceSerie, ref CreditNote creditNote);
     Task<PrintCreditNoteDto> GetPrintCreditNoteDto(string companyId, string creditNoteId);
 }
@@ -34,7 +34,6 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
     private readonly ITributoCreditNoteService _tributoCreditNoteService;
 
     public CreditNoteService(MongoDatabaseService mongoDatabase,
-        IConfiguration configuration,
         IInvoiceSaleService invoiceSaleService,
         IInvoiceSaleDetailService invoiceSaleDetailService,
         ITributoSaleService tributoSaleService,
@@ -88,14 +87,6 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
         return await _collection.Find(filter).ToListAsync();
     }
 
-    public async Task<CreditNote> SetSituacionFacturador(string companyId, string creditNoteId, SituacionFacturadorDto dto)
-    {
-        var creditNote = await GetByIdAsync(companyId, creditNoteId);
-        creditNote.SituacionFacturador = $"{dto.Id}:{dto.Nombre}";
-        creditNote = await UpdateAsync(creditNote.Id, creditNote);
-        return creditNote;
-    }
-
     /// <summary>
     /// Retorna los datos completos de una Nota de crédito.
     /// </summary>
@@ -114,7 +105,7 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
         };
     }
 
-    public async Task<CreditNote> AnulaciónDeLaOperación(string companyId, string invoiceSaleId)
+    public async Task<InvoiceCancellationResponse> InvoiceCancellation(string companyId, string invoiceSaleId)
     {
         var invoiceSale = await _invoiceSaleService.GetByIdAsync(companyId, invoiceSaleId);
         var invoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(companyId, invoiceSale.Id);
@@ -133,7 +124,12 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
         var tributosCreditNote = GetTributosCreditNote(creditNote.Id, tributoSales);
         await _tributoCreditNoteService.InsertManyAsync(tributosCreditNote);
 
-        return creditNote;
+        return new InvoiceCancellationResponse()
+        {
+            InvoiceSale = invoiceSale,
+            CreditNote = creditNote,
+            CreditNoteDetail = creditNoteDetails,
+        };
     }
 
     private CreditNote GetCreditNote(InvoiceSale invoiceSale)
@@ -165,6 +161,7 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
             // DIRECCIÓN_DEL_CLIENTE!
             CodUbigeoCliente = invoiceSale.CodUbigeoCliente,
             DesDireccionCliente = invoiceSale.DesDireccionCliente,
+            TotalEnLetras = invoiceSale.TotalEnLetras,
         };
     }
 
@@ -175,6 +172,7 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
         {
             creditNoteDetails.Add(new CreditNoteDetail()
             {
+                CompanyId = item.CompanyId,
                 CreditNoteId = creditNoteId,
                 TipoItem = item.TipoItem,
                 CodUnidadMedida = item.CodUnidadMedida,

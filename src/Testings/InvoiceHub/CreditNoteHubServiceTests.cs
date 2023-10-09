@@ -34,7 +34,6 @@ public class CreditNoteHubServiceTests
         var creditNoteRequest = new CreditNoteRequestHub
         {
             Ruc = "20520485750",
-            TipoDoc = "07",
             Serie = "FC01",
             Correlativo = "10",
             TipDocAfectado = "01",
@@ -107,7 +106,6 @@ public class CreditNoteHubServiceTests
         var creditNoteRequest = new CreditNoteRequestHub
         {
             Ruc = "20520485750",
-            TipoDoc = "07",
             Serie = "FC01",
             Correlativo = "-",
             TipDocAfectado = "01",
