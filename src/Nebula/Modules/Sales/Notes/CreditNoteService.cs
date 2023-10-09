@@ -19,7 +19,6 @@ public interface ICreditNoteService : ICrudOperationService<CreditNote>
     Task<CreditNoteDto> GetCreditNoteDtoAsync(string companyId, string CreditNoteId);
     Task<InvoiceCancellationResponse> InvoiceCancellation(string companyId, string invoiceSaleId);
     void GenerarSerieComprobante(ref InvoiceSerie invoiceSerie, ref CreditNote creditNote);
-    Task<PrintCreditNoteDto> GetPrintCreditNoteDto(string companyId, string creditNoteId);
 }
 
 public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteService
@@ -247,27 +246,7 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
                 break;
         }
 
-        creditNote.Number = numComprobante.ToString("D8");
+        creditNote.Number = numComprobante.ToString();
     }
 
-    /// <summary>
-    /// Retorna datos de nota de crédito para Imprimir.
-    /// </summary>
-    /// <param name="creditNoteId">Identificador de la Nota de crédito</param>
-    /// <returns>PrintCreditNoteDto</returns>
-    public async Task<PrintCreditNoteDto> GetPrintCreditNoteDto(string companyId, string creditNoteId)
-    {
-        // Cargar datos básicos.
-        var creditNoteDto = await GetCreditNoteDtoAsync(companyId, creditNoteId);
-
-        // establecer valores de retorno.
-        var printCreditNote = new PrintCreditNoteDto
-        {
-            Company = new Company(), // TODO: refactoring.
-            CreditNote = creditNoteDto.CreditNote,
-            CreditNoteDetails = creditNoteDto.CreditNoteDetails,
-            TributosCreditNote = creditNoteDto.TributosCreditNote
-        };
-        return printCreditNote;
-    }
 }

@@ -127,11 +127,7 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSal
         var builder = Builders<InvoiceSale>.Filter;
         var filter = builder.And(builder.Eq(x => x.CompanyId, companyId),
             builder.Not(builder.Eq(x => x.DocType, "NOTA")),
-            builder.Nin("SituacionFacturador", new List<string>()
-            {
-                "03:Enviado y Aceptado SUNAT", "04:Enviado y Aceptado SUNAT con Obs.",
-                "11:Enviado y Aceptado SUNAT", "12:Enviado y Aceptado SUNAT con Obs.",
-            }));
+            builder.Eq(x => x.BillingResponse.Success, false));
         return await _collection.Find(filter).ToListAsync();
     }
 

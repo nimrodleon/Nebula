@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Sales.Notes;
+using Nebula.Modules.Sales.Notes.Dto;
+using Nebula.Common;
 
 namespace Nebula.Controllers.Sales;
 
@@ -12,10 +14,12 @@ namespace Nebula.Controllers.Sales;
 [ApiController]
 public class CreditNoteController : ControllerBase
 {
+    private readonly ICacheAuthService _cacheAuthService;
     private readonly ICreditNoteService _creditNoteService;
 
-    public CreditNoteController(ICreditNoteService creditNoteService)
+    public CreditNoteController(ICacheAuthService cacheAuthService, ICreditNoteService creditNoteService)
     {
+        _cacheAuthService = cacheAuthService;
         _creditNoteService = creditNoteService;
     }
 
@@ -34,8 +38,16 @@ public class CreditNoteController : ControllerBase
     [HttpGet("Print/{creditNoteId}")]
     public async Task<IActionResult> Print(string companyId, string creditNoteId)
     {
-        var printCreditNoteDto = await _creditNoteService.GetPrintCreditNoteDto(companyId, creditNoteId);
-        return Ok(printCreditNoteDto);
+        var company = await _cacheAuthService.GetCompanyByIdAsync(companyId);
+        var creditNoteDto = await _creditNoteService.GetCreditNoteDtoAsync(companyId, creditNoteId);
+        var printCreditNote = new PrintCreditNoteDto()
+        {
+            Company = company,
+            CreditNote = creditNoteDto.CreditNote,
+            CreditNoteDetails = creditNoteDto.CreditNoteDetails,
+            TributosCreditNote = creditNoteDto.TributosCreditNote,
+        };
+        return Ok(printCreditNote);
     }
 
 }
