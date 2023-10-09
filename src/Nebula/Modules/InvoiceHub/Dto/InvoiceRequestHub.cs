@@ -19,8 +19,17 @@ public class InvoiceRequestHub
     [JsonPropertyName("correlativo")]
     public string Correlativo { get; set; } = string.Empty;
 
+    [JsonPropertyName("fechaEmision")]
+    public string FechaEmision { get; set; } = string.Empty;
+
     [JsonPropertyName("formaPago")]
     public FormaPagoHub FormaPago { get; set; } = new FormaPagoHub();
+
+    [JsonPropertyName("cuotas")]
+    public List<CuotaHub> Cuotas { get; set; } = new List<CuotaHub>();
+
+    [JsonPropertyName("fecVencimiento")]
+    public string FecVencimiento { get; set; } = string.Empty;
 
     [JsonPropertyName("tipoMoneda")]
     public string TipoMoneda { get; set; } = string.Empty;

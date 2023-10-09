@@ -6,4 +6,5 @@ public class InvoiceSaleAndDetails
 {
     public InvoiceSale InvoiceSale { get; set; } = new InvoiceSale();
     public List<InvoiceSaleDetail> InvoiceSaleDetails { get; set; } = new List<InvoiceSaleDetail>();
+    public List<DetallePagoSale> DetallePagoSale { get; set; } = new List<DetallePagoSale>();
 }

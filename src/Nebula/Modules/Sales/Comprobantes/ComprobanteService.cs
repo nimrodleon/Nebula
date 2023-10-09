@@ -64,12 +64,14 @@ public class ComprobanteService : IComprobanteService
         await _tributoSaleService.CreateManyAsync(tributoSales);
 
         // registrar detalle de pago si la operación es a crédito.
+        var detallePagos = new List<DetallePagoSale>();
         if (comprobante.DatoPago.FormaPago == FormaPago.Credito)
         {
             if (invoiceSale.DocType == "FACTURA")
             {
-                var detallePagos = comprobante.GetDetallePagos(invoiceSale.Id);
-                if (detallePagos.Count() > 0) await _detallePagoSaleService.InsertManyAsync(detallePagos);
+                detallePagos = comprobante.GetDetallePagos(invoiceSale.Id);
+                if (detallePagos.Count() > 0)
+                    await _detallePagoSaleService.InsertManyAsync(detallePagos);
             }
 
             // registrar cargo.
@@ -81,6 +83,7 @@ public class ComprobanteService : IComprobanteService
         {
             InvoiceSale = invoiceSale,
             InvoiceSaleDetails = invoiceSaleDetails,
+            DetallePagoSale = detallePagos,
         };
 
         return result;

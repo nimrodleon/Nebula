@@ -19,10 +19,11 @@ public static class InvoiceMapper
             TipoDoc = tipoDoc,
             Serie = invoice.Serie.Trim(),
             Correlativo = invoice.Number,
+            FechaEmision = invoice.FecEmision,
             FormaPago = new FormaPagoHub()
             {
                 Moneda = invoice.TipMoneda,
-                Tipo = "Contado", //TODO: refactorizar.
+                Tipo = invoice.FormaPago.Split(":")[0].Trim(),
                 Monto = Math.Round(invoice.SumImpVenta, 4),
             },
             TipoMoneda = invoice.TipMoneda,
@@ -33,6 +34,19 @@ public static class InvoiceMapper
                 RznSocial = invoice.RznSocialUsuario.Trim(),
             },
         };
+        if (invoiceRequest.FormaPago.Tipo == "Credito" && invoice.DocType == "FACTURA")
+        {
+            invoiceRequest.FecVencimiento = invoice.FecVencimiento;
+            document.DetallePagoSale.ForEach(item =>
+            {
+                invoiceRequest.Cuotas.Add(new CuotaHub
+                {
+                    Moneda = item.TipMonedaCuotaPago.Trim(),
+                    Monto = item.MtoCuotaPago,
+                    FechaPago = item.FecCuotaPago,
+                });
+            });
+        }
         var detailList = new List<DetailHub>();
         details.ForEach(item =>
         {
@@ -40,16 +54,18 @@ public static class InvoiceMapper
             {
                 CodProducto = item.CodProducto,
                 Unidad = item.CodUnidadMedida.Split(":")[0].Trim(),
-                Cantidad = Math.Round(item.CtdUnidadItem, 4),
-                MtoValorUnitario = Math.Round(item.MtoValorUnitario, 4),
+                Cantidad = item.CtdUnidadItem,
+                MtoValorUnitario = item.MtoValorUnitario,
                 Descripcion = item.DesItem.Trim(),
-                MtoBaseIgv = Math.Round(item.MtoBaseIgvItem, 4),
+                MtoBaseIgv = item.MtoBaseIgvItem,
                 PorcentajeIgv = Math.Round(item.PorIgvItem, 2),
-                Igv = Math.Round(item.MtoIgvItem, 4),
+                Igv = item.MtoIgvItem,
                 TipAfeIgv = item.TipAfeIgv.Trim(),
-                TotalImpuestos = Math.Round((item.MtoIgvItem + item.MtoTriIcbperItem), 4),
-                MtoValorVenta = Math.Round(item.MtoValorVentaItem, 4),
-                MtoPrecioUnitario = Math.Round(item.MtoPrecioVentaUnitario, 4),
+                Icbper = item.MtoTriIcbperItem,
+                FactorIcbper = item.MtoTriIcbperUnidad,
+                TotalImpuestos = item.MtoIgvItem + item.MtoTriIcbperItem,
+                MtoValorVenta = item.MtoValorVentaItem,
+                MtoPrecioUnitario = item.MtoPrecioVentaUnitario,
             });
         });
         invoiceRequest.Details = detailList;
