@@ -1,6 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Nebula.Common.Models;
+using Nebula.Modules.InvoiceHub.Dto;
 
 namespace Nebula.Modules.Sales.Models;
 
@@ -115,16 +116,6 @@ public class InvoiceSale : IGenericModel
     public decimal SumImpVenta { get; set; }
 
     /// <summary>
-    /// Anulación de la Operación.
-    /// </summary>
-    public bool Anulada { get; set; } = false;
-
-    /// <summary>
-    /// Estado de Situación Facturador.
-    /// </summary>
-    public string SituacionFacturador { get; set; } = string.Empty;
-
-    /// <summary>
     /// Año de registro.
     /// </summary>
     public string Year { get; set; } = DateTime.Now.ToString("yyyy");
@@ -152,9 +143,14 @@ public class InvoiceSale : IGenericModel
     public string Remark { get; set; } = string.Empty;
 
     /// <summary>
-    /// Guarda el DigestValue del XML firmado.
+    /// Anulación de la Operación.
     /// </summary>
-    public string XmlDigestValue { get; set; } = string.Empty;
+    public bool Anulada { get; set; } = false;
+
+    /// <summary>
+    /// Estado de Situación Facturador.
+    /// </summary>
+    public BillingResponse BillingResponse { get; set; } = new BillingResponse();
 
     /// <summary>
     /// Importe total de la venta, en letras.

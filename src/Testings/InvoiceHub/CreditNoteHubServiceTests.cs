@@ -34,7 +34,6 @@ public class CreditNoteHubServiceTests
         var creditNoteRequest = new CreditNoteRequestHub
         {
             Ruc = "20520485750",
-            TipoDoc = "07",
             Serie = "FC01",
             Correlativo = "10",
             TipDocAfectado = "01",
@@ -83,7 +82,7 @@ public class CreditNoteHubServiceTests
                 }
         };
 
-        var billingResponse = await creditNoteHubService.SendCreditNoteAsync("651b559c6256e58372cde4c2", creditNoteRequest);
+        var billingResponse = await creditNoteHubService.SendCreditNoteAsync("6519b9191d1a04bb07c280b2", creditNoteRequest);
 
         // Assert
         Assert.IsNotNull(billingResponse);
@@ -107,7 +106,6 @@ public class CreditNoteHubServiceTests
         var creditNoteRequest = new CreditNoteRequestHub
         {
             Ruc = "20520485750",
-            TipoDoc = "07",
             Serie = "FC01",
             Correlativo = "-",
             TipDocAfectado = "01",
@@ -141,7 +139,7 @@ public class CreditNoteHubServiceTests
                 }
         };
 
-        var billingResponse = await creditNoteHubService.SendCreditNoteAsync("651b559c6256e58372cde4c2", creditNoteRequest);
+        var billingResponse = await creditNoteHubService.SendCreditNoteAsync("6519b9191d1a04bb07c280b2", creditNoteRequest);
 
         // Assert
         Assert.IsNotNull(billingResponse);

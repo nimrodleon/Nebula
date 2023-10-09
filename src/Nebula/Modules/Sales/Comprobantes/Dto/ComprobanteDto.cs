@@ -62,13 +62,13 @@ public class ComprobanteDto
             SumImpVenta = importeVenta.SumImpVenta,
             Year = DateTime.Now.ToString("yyyy"),
             Month = DateTime.Now.ToString("MM"),
-            SituacionFacturador = "01:Por Generar XML",
             Anulada = false,
             // DIRECCIÓN_DEL_CLIENTE!
             CodUbigeoCliente = Cabecera.CodUbigeoCliente,
             DesDireccionCliente = Cabecera.DesDireccionCliente,
             // Comentario/Observación de la factura.
             Remark = Cabecera.Remark.Trim(),
+            TotalEnLetras = new NumberToLetters(importeVenta.SumImpVenta).ToString(),
         };
     }
 
@@ -117,6 +117,7 @@ public class ComprobanteDto
             // agregar items al comprobante.
             invoiceSaleDetails.Add(new InvoiceSaleDetail
             {
+                CompanyId = Company.Id,
                 InvoiceSaleId = invoiceId,
                 CajaDiariaId = Cabecera.CajaDiaria,
                 TipoItem = item.TipoItem,
@@ -181,6 +182,7 @@ public class ComprobanteDto
         {
             tributos.Add(new TributoSale()
             {
+                CompanyId = Company.Id,
                 InvoiceSaleId = invoiceId,
                 IdeTributo = "9998",
                 NomTributo = "INA",
@@ -196,6 +198,7 @@ public class ComprobanteDto
         {
             tributos.Add(new TributoSale()
             {
+                CompanyId = Company.Id,
                 InvoiceSaleId = invoiceId,
                 IdeTributo = "9997",
                 NomTributo = "EXO",
@@ -211,6 +214,7 @@ public class ComprobanteDto
         {
             tributos.Add(new TributoSale()
             {
+                CompanyId = Company.Id,
                 InvoiceSaleId = invoiceId,
                 IdeTributo = "1000",
                 NomTributo = "IGV",
@@ -226,6 +230,7 @@ public class ComprobanteDto
         {
             tributos.Add(new TributoSale()
             {
+                CompanyId = Company.Id,
                 InvoiceSaleId = invoiceId,
                 IdeTributo = "7152",
                 NomTributo = "ICBPER",
@@ -247,6 +252,7 @@ public class ComprobanteDto
         {
             detallePagos.Add(new DetallePagoSale()
             {
+                CompanyId = Company.Id,
                 InvoiceSaleId = invoiceId,
                 MtoCuotaPago = item.MtoCuotaPago,
                 FecCuotaPago = item.FecCuotaPago,
@@ -288,6 +294,6 @@ public class ComprobanteDto
                 break;
         }
 
-        invoiceSale.Number = numComprobante.ToString("D8");
+        invoiceSale.Number = numComprobante.ToString();
     }
 }

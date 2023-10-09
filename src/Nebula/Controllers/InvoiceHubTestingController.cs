@@ -29,7 +29,7 @@ namespace Nebula.Controllers
                 {
                     Moneda = "PEN",
                     Tipo = "Contado",
-                    Monto = 100,
+                    Monto = 100.0000M,
                 },
                 TipoMoneda = "PEN",
                 Client = new ClientHub
@@ -42,22 +42,22 @@ namespace Nebula.Controllers
             {
                 new DetailHub
                 {
-                    CodProducto = "P001",
+                    CodProducto = "6519b9191d1a04bb07c280b2",
                     Unidad = "NIU",
                     Cantidad = 2,
-                    MtoValorUnitario = 50,
+                    MtoValorUnitario = 50.0000M,
                     Descripcion = "Producto 1",
-                    MtoBaseIgv = 100,
+                    MtoBaseIgv = 100.0000M,
                     PorcentajeIgv = 18,
                     Igv = 18,
                     TipAfeIgv = "10",
                     TotalImpuestos = 18,
-                    MtoValorVenta = 100,
-                    MtoPrecioUnitario = 59,
+                    MtoValorVenta = 100.0000M,
+                    MtoPrecioUnitario = 59.0000M,
                 },
             },
             };
-            var result = await _invoiceHubService.SendInvoiceAsync("651b559c6256e58372cde4c2", invoiceRequest);
+            var result = await _invoiceHubService.SendInvoiceAsync("6519b9191d1a04bb07c280b2", invoiceRequest);
             return Ok(result);
         }
     }

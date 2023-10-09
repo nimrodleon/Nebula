@@ -3,6 +3,7 @@ using Nebula.Common;
 using Nebula.Modules.Sales.Models;
 using Nebula.Common.Dto;
 using Nebula.Modules.Sales.Invoices.Dto;
+using Nebula.Modules.InvoiceHub.Dto;
 
 namespace Nebula.Modules.Sales.Invoices;
 
@@ -14,7 +15,6 @@ public interface IInvoiceSaleService : ICrudOperationService<InvoiceSale>
     Task<List<InvoiceSale>> GetInvoicesByNumDocs(string companyId, List<string> series, List<string> numbers);
     Task<List<InvoiceSale>> GetInvoiceSaleByMonthAndYear(string companyId, string month, string year);
     Task<List<InvoiceSale>> GetInvoiceSaleByDate(string companyId, string date);
-    Task<InvoiceSale> SetSituacionFacturador(string companyId, string invoiceSaleId, SituacionFacturadorDto dto);
     Task<InvoiceSale> AnularComprobante(string companyId, string invoiceSaleId);
     Task<List<InvoiceSale>> GetInvoiceSalesPendingAsync(string companyId);
     Task<List<InvoiceSale>> BusquedaAvanzadaAsync(string companyId, BuscarComprobanteFormDto dto);
@@ -107,11 +107,10 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSal
         return await _collection.Find(filter).ToListAsync();
     }
 
-    public async Task<InvoiceSale> SetSituacionFacturador(string companyId, string invoiceSaleId, SituacionFacturadorDto dto)
+    public async Task<InvoiceSale> SetStatusFacturador(InvoiceSale invoice, BillingResponse billing)
     {
-        var invoiceSale = await GetByIdAsync(companyId, invoiceSaleId);
-        invoiceSale.SituacionFacturador = $"{dto.Id}:{dto.Nombre}";
-        invoiceSale = await UpdateAsync(invoiceSale.Id, invoiceSale);
+
+        var invoiceSale = await UpdateAsync(invoice.Id, invoice);
         return invoiceSale;
     }
 
@@ -128,11 +127,7 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSal
         var builder = Builders<InvoiceSale>.Filter;
         var filter = builder.And(builder.Eq(x => x.CompanyId, companyId),
             builder.Not(builder.Eq(x => x.DocType, "NOTA")),
-            builder.Nin("SituacionFacturador", new List<string>()
-            {
-                "03:Enviado y Aceptado SUNAT", "04:Enviado y Aceptado SUNAT con Obs.",
-                "11:Enviado y Aceptado SUNAT", "12:Enviado y Aceptado SUNAT con Obs.",
-            }));
+            builder.Eq(x => x.BillingResponse.Success, false));
         return await _collection.Find(filter).ToListAsync();
     }
 
