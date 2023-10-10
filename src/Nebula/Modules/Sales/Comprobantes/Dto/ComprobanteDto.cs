@@ -63,9 +63,6 @@ public class ComprobanteDto
             Year = DateTime.Now.ToString("yyyy"),
             Month = DateTime.Now.ToString("MM"),
             Anulada = false,
-            // DIRECCIÓN_DEL_CLIENTE!
-            CodUbigeoCliente = Cabecera.CodUbigeoCliente,
-            DesDireccionCliente = Cabecera.DesDireccionCliente,
             // Comentario/Observación de la factura.
             Remark = Cabecera.Remark.Trim(),
             TotalEnLetras = new NumberToLetters(importeVenta.SumImpVenta).ToString(),
@@ -147,7 +144,6 @@ public class ComprobanteDto
                 MtoPrecioVentaUnitario = item.MtoPrecioVentaUnitario,
                 MtoValorVentaItem = impItemDto.MtoValorVentaItem,
                 WarehouseId = item.WarehouseId,
-                ControlStock = item.ControlStock,
             });
         });
         return invoiceSaleDetails;

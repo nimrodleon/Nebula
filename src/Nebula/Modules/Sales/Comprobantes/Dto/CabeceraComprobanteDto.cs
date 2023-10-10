@@ -11,8 +11,4 @@ public class CabeceraComprobanteDto
     public string FecVencimiento { get; set; } = "-";
     public string InvoiceSerieId { get; set; } = "-";
     public string Remark { get; set; } = string.Empty;
-    #region DIRECCIÓN_DEL_CLIENTE!
-    public string CodUbigeoCliente { get; set; } = "-";
-    public string DesDireccionCliente { get; set; } = string.Empty;
-    #endregion
 }
