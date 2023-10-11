@@ -38,7 +38,7 @@ public class CajaDiariaService : CrudOperationService<CajaDiaria>, ICajaDiariaSe
             Builders<CajaDiaria>.Filter.Eq(x => x.CompanyId, companyId),
             Builders<CajaDiaria>.Filter.Eq(x => x.Id, id));
         var cajaDiaria = await _collection.Find(filter).FirstOrDefaultAsync();
-        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(companyId, cajaDiaria.InvoiceSerie);
+        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(companyId, cajaDiaria.InvoiceSerieId);
         cajaDiaria.WarehouseId = invoiceSerie.WarehouseId;
         return cajaDiaria;
     }

@@ -52,7 +52,7 @@ public class CajaDiariaController : ControllerBase
         var cajaDiaria = new CajaDiaria()
         {
             CompanyId = companyId.Trim(),
-            InvoiceSerie = invoiceSerie.Id,
+            InvoiceSerieId = invoiceSerie.Id,
             Terminal = invoiceSerie.Name,
             Status = "ABIERTO",
             TotalApertura = model.Total,

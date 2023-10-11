@@ -19,7 +19,7 @@ public class CajaDiaria : IGenericModel
     /// <summary>
     /// ID Serie de facturación.
     /// </summary>
-    public string InvoiceSerie { get; set; } = string.Empty;
+    public string InvoiceSerieId { get; set; } = string.Empty;
 
     /// <summary>
     /// Series de facturación.
