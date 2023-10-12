@@ -78,10 +78,12 @@ public class ContactController : ControllerBase
             {
                 Id = item.Id,
                 Text = $"{item.Document} - {item.Name}",
-                DocType = item.DocType,
+                CompanyId = item.CompanyId,
                 Document = item.Document,
+                DocType = item.DocType,
                 Name = item.Name,
                 Address = item.Address,
+                PhoneNumber = item.PhoneNumber,
                 CodUbigeo = item.CodUbigeo,
             });
         });

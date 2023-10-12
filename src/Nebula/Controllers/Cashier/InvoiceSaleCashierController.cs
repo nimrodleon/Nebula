@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Common;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
-using Nebula.Modules.Cashier;
 using Nebula.Modules.Inventory.Stock;
+using Nebula.Modules.InvoiceHub;
+using Nebula.Modules.InvoiceHub.Helpers;
+using Nebula.Modules.Sales.Comprobantes;
 using Nebula.Modules.Sales.Comprobantes.Dto;
 using Nebula.Modules.Sales.Invoices;
 using Nebula.Modules.Sales.Models;
@@ -18,42 +20,51 @@ namespace Nebula.Controllers.Cashier;
 public class InvoiceSaleCashierController : ControllerBase
 {
     private readonly ICacheAuthService _cacheAuthService;
-    private readonly ICashierSaleService _cashierSaleService;
     private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly IValidateStockService _validateStockService;
+    private readonly IComprobanteService _comprobanteService;
+    private readonly IInvoiceHubService _invoiceHubService;
+    private readonly IInvoiceSaleService _invoiceSaleService;
 
     public InvoiceSaleCashierController(
         ICacheAuthService cacheAuthService,
-        ICashierSaleService cashierSaleService,
         IInvoiceSaleDetailService invoiceSaleDetailService,
-        IValidateStockService validateStockService)
+        IValidateStockService validateStockService,
+        IComprobanteService comprobanteService,
+        IInvoiceHubService invoiceHubService,
+        IInvoiceSaleService invoiceSaleService)
     {
         _cacheAuthService = cacheAuthService;
-        _cashierSaleService = cashierSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _validateStockService = validateStockService;
+        _comprobanteService = comprobanteService;
+        _invoiceHubService = invoiceHubService;
+        _invoiceSaleService = invoiceSaleService;
     }
 
     /// <summary>
     /// registrar venta rápida.
     /// </summary>
-    /// <param name="id">ID caja diaria</param>
-    /// <param name="model">GenerarVenta</param>
-    /// <returns>IActionResult</returns>
-    [HttpPost("GenerarVenta/{id}")]
-    public async Task<IActionResult> GenerarVenta(string companyId, string id, [FromBody] ComprobanteDto model)
+    /// <param name="companyId">Identificador Empresa</param>
+    /// <param name="model">Modelo Comprobante</param>
+    /// <returns>BillingResponse</returns>
+    [HttpPost("GenerarVenta")]
+    public async Task<IActionResult> GenerarVenta(string companyId, [FromBody] ComprobanteDto model)
     {
         try
         {
             model.Company = await _cacheAuthService.GetCompanyByIdAsync(companyId.Trim());
-            var invoiceSale = await _cashierSaleService.SaveChangesAsync(model, id);
-            // if (invoiceSale.DocType != "NOTA")
-            // pass...
-
-            // Validar Inventario.
-            await _validateStockService.ValidarInvoiceSale(companyId, invoiceSale.Id);
-
-            return Ok(invoiceSale);
+            var comprobante = await _comprobanteService.SaveChangesAsync(model);
+            await _validateStockService.ValidarInvoiceSale(companyId, comprobante.InvoiceSale.Id);
+            if (comprobante.InvoiceSale.DocType != "NOTA")
+            {
+                var invoiceRequest = InvoiceMapper.MapToInvoiceRequestHub(model.Company.Ruc, comprobante);
+                var billingResponse = await _invoiceHubService.SendInvoiceAsync(companyId, invoiceRequest);
+                comprobante.InvoiceSale.BillingResponse = billingResponse;
+                await _invoiceSaleService.UpdateAsync(comprobante.InvoiceSale.Id, comprobante.InvoiceSale);
+                return Ok(new { invoiceSaleId = comprobante.InvoiceSale.Id, billingResponse });
+            }
+            return Ok(new { invoiceSaleId = comprobante.InvoiceSale.Id });
         }
         catch (Exception e)
         {
