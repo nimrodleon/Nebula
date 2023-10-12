@@ -1,8 +1,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 using Nebula.Common;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
+using Nebula.Modules.Cashier;
+using Nebula.Modules.Cashier.Helpers;
+using Nebula.Modules.Cashier.Models;
 using Nebula.Modules.Inventory.Stock;
 using Nebula.Modules.InvoiceHub;
 using Nebula.Modules.InvoiceHub.Helpers;
@@ -25,6 +29,7 @@ public class InvoiceSaleCashierController : ControllerBase
     private readonly IComprobanteService _comprobanteService;
     private readonly IInvoiceHubService _invoiceHubService;
     private readonly IInvoiceSaleService _invoiceSaleService;
+    private readonly ICashierDetailService _cashierDetailService;
 
     public InvoiceSaleCashierController(
         ICacheAuthService cacheAuthService,
@@ -32,7 +37,8 @@ public class InvoiceSaleCashierController : ControllerBase
         IValidateStockService validateStockService,
         IComprobanteService comprobanteService,
         IInvoiceHubService invoiceHubService,
-        IInvoiceSaleService invoiceSaleService)
+        IInvoiceSaleService invoiceSaleService,
+        ICashierDetailService cashierDetailService)
     {
         _cacheAuthService = cacheAuthService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
@@ -40,6 +46,7 @@ public class InvoiceSaleCashierController : ControllerBase
         _comprobanteService = comprobanteService;
         _invoiceHubService = invoiceHubService;
         _invoiceSaleService = invoiceSaleService;
+        _cashierDetailService = cashierDetailService;
     }
 
     /// <summary>
@@ -56,6 +63,27 @@ public class InvoiceSaleCashierController : ControllerBase
             model.Company = await _cacheAuthService.GetCompanyByIdAsync(companyId.Trim());
             var comprobante = await _comprobanteService.SaveChangesAsync(model);
             await _validateStockService.ValidarInvoiceSale(companyId, comprobante.InvoiceSale.Id);
+
+            // registrar operacion en caja.
+            if (ObjectId.TryParse(model.Cabecera.CajaDiaria, out ObjectId _))
+            {
+                var cashierDetail = new CashierDetail()
+                {
+                    CompanyId = companyId,
+                    CajaDiariaId = model.Cabecera.CajaDiaria,
+                    InvoiceSaleId = comprobante.InvoiceSale.Id,
+                    DocType = comprobante.InvoiceSale.DocType,
+                    Document = $"{ comprobante.InvoiceSale.Serie}-{comprobante.InvoiceSale.Number}",
+                    ContactId = comprobante.InvoiceSale.ContactId,
+                    ContactName = comprobante.InvoiceSale.RznSocialUsuario,
+                    Remark = comprobante.InvoiceSale.Remark,
+                    TypeOperation = TypeOperationCaja.ComprobanteDeVenta,
+                    FormaPago = model.DatoPago.FormaPago,
+                    Amount = comprobante.InvoiceSale.SumImpVenta
+                };
+                await _cashierDetailService.CreateAsync(cashierDetail);
+            }
+
             if (comprobante.InvoiceSale.DocType != "NOTA")
             {
                 var invoiceRequest = InvoiceMapper.MapToInvoiceRequestHub(model.Company.Ruc, comprobante);
