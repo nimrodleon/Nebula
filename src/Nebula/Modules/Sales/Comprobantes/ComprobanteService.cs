@@ -5,6 +5,9 @@ using Nebula.Modules.Cashier.Helpers;
 using Nebula.Modules.Sales.Comprobantes.Dto;
 using Nebula.Modules.Sales.Invoices;
 using Nebula.Modules.Account;
+using MongoDB.Bson;
+using Nebula.Modules.Cashier.Models;
+using Nebula.Modules.Cashier;
 
 namespace Nebula.Modules.Sales.Comprobantes;
 
@@ -21,13 +24,15 @@ public class ComprobanteService : IComprobanteService
     private readonly IInvoiceSerieService _invoiceSerieService;
     private readonly IDetallePagoSaleService _detallePagoSaleService;
     private readonly IReceivableService _receivableService;
+    private readonly ICashierDetailService _cashierDetailService;
 
     public ComprobanteService(IInvoiceSaleService invoiceSaleService,
         IInvoiceSaleDetailService invoiceSaleDetailService,
         ITributoSaleService tributoSaleService,
         IInvoiceSerieService invoiceSerieService,
         IDetallePagoSaleService detallePagoSaleService,
-        IReceivableService receivableService)
+        IReceivableService receivableService,
+        ICashierDetailService cashierDetailService)
     {
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
@@ -35,6 +40,7 @@ public class ComprobanteService : IComprobanteService
         _invoiceSerieService = invoiceSerieService;
         _detallePagoSaleService = detallePagoSaleService;
         _receivableService = receivableService;
+        _cashierDetailService = cashierDetailService;
     }
 
     /// <summary>
@@ -62,6 +68,26 @@ public class ComprobanteService : IComprobanteService
         // agregar Tributos de Factura.
         var tributoSales = comprobante.GetTributoSales(invoiceSale.Id);
         await _tributoSaleService.CreateManyAsync(tributoSales);
+
+        // registrar operacion en caja.
+        if(ObjectId.TryParse(comprobante.Cabecera.CajaDiaria, out ObjectId _))
+        {
+            var cashierDetail = new CashierDetail()
+            {
+                CompanyId = companyId,
+                CajaDiariaId = comprobante.Cabecera.CajaDiaria,
+                InvoiceSaleId = invoiceSale.Id,
+                DocType = invoiceSale.DocType,
+                Document = $"{invoiceSale.Serie}-{invoiceSale.Number}",
+                ContactId = invoiceSale.ContactId,
+                ContactName = invoiceSale.RznSocialUsuario,
+                Remark = comprobante.Cabecera.Remark,
+                TypeOperation = TypeOperationCaja.ComprobanteDeVenta,
+                FormaPago = comprobante.DatoPago.FormaPago,
+                Amount = invoiceSale.SumImpVenta
+            };
+            await _cashierDetailService.CreateAsync(cashierDetail);
+        }
 
         // registrar detalle de pago si la operación es a crédito.
         var detallePagos = new List<DetallePagoSale>();
