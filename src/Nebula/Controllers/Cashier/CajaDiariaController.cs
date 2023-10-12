@@ -8,6 +8,8 @@ using Nebula.Common.Dto;
 using Nebula.Modules.Account;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth;
+using Nebula.Common;
+using Nebula.Modules.Contacts;
 
 namespace Nebula.Controllers.Cashier;
 
@@ -17,18 +19,24 @@ namespace Nebula.Controllers.Cashier;
 [ApiController]
 public class CajaDiariaController : ControllerBase
 {
+    private readonly ICacheAuthService _cacheAuthService;
     private readonly ICajaDiariaService _cajaDiariaService;
     private readonly IInvoiceSerieService _invoiceSerieService;
     private readonly ICashierDetailService _cashierDetailService;
+    private readonly IContactService _contactService;
 
     public CajaDiariaController(
+        ICacheAuthService cacheAuthService,
         ICajaDiariaService cajaDiariaService,
         IInvoiceSerieService invoiceSerieService,
-        ICashierDetailService cashierDetailService)
+        ICashierDetailService cashierDetailService,
+        IContactService contactService)
     {
+        _cacheAuthService = cacheAuthService;
         _cajaDiariaService = cajaDiariaService;
         _invoiceSerieService = invoiceSerieService;
         _cashierDetailService = cashierDetailService;
+        _contactService = contactService;
     }
 
     [HttpGet]
@@ -42,6 +50,8 @@ public class CajaDiariaController : ControllerBase
     public async Task<IActionResult> Show(string companyId, string id)
     {
         var cajaDiaria = await _cajaDiariaService.GetByIdAsync(companyId, id);
+        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(companyId, cajaDiaria.InvoiceSerieId);
+        cajaDiaria.WarehouseId = invoiceSerie.WarehouseId;
         return Ok(cajaDiaria);
     }
 
@@ -101,5 +111,29 @@ public class CajaDiariaController : ControllerBase
     public async Task<IActionResult> CajasAbiertas(string companyId)
     {
         return Ok(await _cajaDiariaService.GetCajasAbiertasAsync(companyId));
+    }
+
+    /// <summary>
+    /// Configuración Inicial para el punto de venta.
+    /// </summary>
+    /// <param name="companyId">Identificador de la empresa</param>
+    /// <param name="id">Identificador de la caja diaria</param>
+    /// <returns>Configuración</returns>
+    [HttpGet("GetQuickSaleConfig/{id}")]
+    public async Task<IActionResult> GetQuickSaleConfig(string companyId, string id)
+    {
+        var company = await _cacheAuthService.GetCompanyByIdAsync(companyId);
+        var cajaDiaria = await _cajaDiariaService.GetByIdAsync(companyId, id);
+        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(companyId, cajaDiaria.InvoiceSerieId);
+        cajaDiaria.WarehouseId = invoiceSerie.WarehouseId;
+        var contact = await _contactService.GetByIdAsync(companyId, company.ContactId);
+
+        var quickSaleConfig = new QuickSaleConfig()
+        {
+            Company = company,
+            CajaDiaria = cajaDiaria,
+            Contact = contact
+        };
+        return Ok(quickSaleConfig);
     }
 }
