@@ -68,6 +68,7 @@ public class ProductController : ControllerBase
     public async Task<IActionResult> Create(string companyId, [FromBody] Product model)
     {
         model.CompanyId = companyId.Trim();
+        model.Description = model.Description.ToUpper();
         model = await _productService.CreateAsync(model);
         return Ok(model);
     }
@@ -77,6 +78,7 @@ public class ProductController : ControllerBase
     {
         var product = await _productService.GetByIdAsync(companyId, id);
         if (product == null) return BadRequest();
+        model.Description = model.Description.ToUpper();
         product = await _productService.UpdateAsync(product.Id, model);
         return Ok(product);
     }
