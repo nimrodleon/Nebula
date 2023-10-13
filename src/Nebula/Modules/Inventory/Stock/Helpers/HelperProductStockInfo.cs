@@ -10,7 +10,6 @@ public class StockListRequestParams
 {
     public List<ProductStock> Stocks { get; set; } = new List<ProductStock>();
     public List<Warehouse> Warehouses { get; set; } = new List<Warehouse>();
-    public List<ProductLote> Lotes { get; set; } = new List<ProductLote>();
     public Product Product { get; set; } = new Product();
 }
 
@@ -33,32 +32,7 @@ public class HelperProductStockInfo
     /// <returns>Lista de stock</returns>
     public List<ProductStockInfoDto> GetStockList()
     {
-        return _params.Product.HasLotes ? GetProductStockListWithLotes() : GetStockListWithoutLotes();
-    }
-
-    /// <summary>
-    /// Obtener el stock del producto para cada almacén con cada lote de producto.
-    /// </summary>
-    private List<ProductStockInfoDto> GetProductStockListWithLotes()
-    {
-        var result = new List<ProductStockInfoDto>();
-        _params.Warehouses.ForEach(warehouse =>
-        {
-            _params.Lotes.ForEach(lote =>
-            {
-                result.Add(new ProductStockInfoDto
-                {
-                    WarehouseId = warehouse.Id,
-                    WarehouseName = warehouse.Name,
-                    ProductId = _params.Product.Id,
-                    ProductLoteId = lote.Id,
-                    ProductLoteName = lote.LotNumber,
-                    Quantity = GetQuantityWithLotes(warehouse.Id, lote.Id),
-                    ExpirationDate = lote.ExpirationDate
-                });
-            });
-        });
-        return result;
+        return GetStockListWithoutLotes();
     }
 
     /// <summary>

@@ -15,18 +15,15 @@ public class HelperCalculateProductStockService : IHelperCalculateProductStockSe
     private readonly IProductService _productService;
     private readonly IProductStockService _productStockService;
     private readonly IWarehouseService _warehouseService;
-    private readonly IProductLoteService _productLoteService;
 
     public HelperCalculateProductStockService(
         IProductService productService,
         IProductStockService productStockService,
-        IWarehouseService warehouseService,
-        IProductLoteService productLoteService)
+        IWarehouseService warehouseService)
     {
         _productService = productService;
         _productStockService = productStockService;
         _warehouseService = warehouseService;
-        _productLoteService = productLoteService;
     }
 
     /// <summary>
@@ -39,7 +36,6 @@ public class HelperCalculateProductStockService : IHelperCalculateProductStockSe
         var requestParams = new StockListRequestParams();
         requestParams.Product = await _productService.GetByIdAsync(companyId, productId);
         requestParams.Warehouses = await _warehouseService.GetAllAsync(companyId);
-        requestParams.Lotes = await _productLoteService.GetLotesByProductId(companyId, requestParams.Product.Id);
         var warehouseIds = await _warehouseService.GetWarehouseIds(companyId);
         requestParams.Stocks = await _productStockService.GetProductStockListByWarehousesIdsAsync(companyId, warehouseIds, requestParams.Product.Id);
         var result = new HelperProductStockInfo(requestParams).GetStockList();
