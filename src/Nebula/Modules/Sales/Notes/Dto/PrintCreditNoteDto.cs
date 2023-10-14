@@ -11,5 +11,4 @@ public class PrintCreditNoteDto
     public Company Company { get; set; } = new Company();
     public CreditNote CreditNote { get; set; } = new CreditNote();
     public List<CreditNoteDetail> CreditNoteDetails { get; set; } = new List<CreditNoteDetail>();
-    public List<TributoCreditNote> TributosCreditNote { get; set; } = new List<TributoCreditNote>();
 }

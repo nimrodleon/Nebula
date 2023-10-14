@@ -151,12 +151,9 @@ builder.Services.AddScoped<IConsultarValidezCompraService, ConsultarValidezCompr
 
 builder.Services.AddScoped<IInvoiceSaleService, InvoiceSaleService>();
 builder.Services.AddScoped<IInvoiceSaleDetailService, InvoiceSaleDetailService>();
-builder.Services.AddScoped<ITributoSaleService, TributoSaleService>();
-builder.Services.AddScoped<IDetallePagoSaleService, DetallePagoSaleService>();
 builder.Services.AddScoped<IComprobanteService, ComprobanteService>();
 builder.Services.AddScoped<ICreditNoteService, CreditNoteService>();
 builder.Services.AddScoped<ICreditNoteDetailService, CreditNoteDetailService>();
-builder.Services.AddScoped<ITributoCreditNoteService, TributoCreditNoteService>();
 builder.Services.AddScoped<IConsultarValidezComprobanteService, ConsultarValidezComprobanteService>();
 
 #endregion
