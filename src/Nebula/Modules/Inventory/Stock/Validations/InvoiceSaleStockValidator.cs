@@ -28,18 +28,18 @@ public class InvoiceSaleStockValidator : IInvoiceSaleStockValidator
         var productStocks = new List<ProductStock>();
         invoiceSaleDetails.ForEach(item =>
         {
-            if (item.ControlStock == TipoControlStock.STOCK)
-            {
-                productStocks.Add(new ProductStock()
-                {
-                    Id = string.Empty,
-                    CompanyId = companyId.Trim(),
-                    WarehouseId = item.WarehouseId,
-                    ProductId = item.CodProducto,
-                    Type = InventoryType.SALIDA,
-                    Quantity = (long)item.CtdUnidadItem,
-                });
-            }
+            //if (item.ControlStock == TipoControlStock.STOCK)
+            //{
+            //    productStocks.Add(new ProductStock()
+            //    {
+            //        Id = string.Empty,
+            //        CompanyId = companyId.Trim(),
+            //        WarehouseId = item.WarehouseId,
+            //        ProductId = item.CodProducto,
+            //        Type = InventoryType.SALIDA,
+            //        Quantity = (long)item.CtdUnidadItem,
+            //    });
+            //}
         });
         if (productStocks.Count > 0)
             await _productStockService.CreateManyAsync(productStocks);

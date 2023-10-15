@@ -9,43 +9,40 @@ public static class InvoiceMapper
     {
         var invoice = document.InvoiceSale;
         var details = document.InvoiceSaleDetails;
-        string tipoDoc = string.Empty;
-        if (invoice.DocType == "BOLETA") tipoDoc = "03";
-        if (invoice.DocType == "FACTURA") tipoDoc = "01";
         var invoiceRequest = new InvoiceRequestHub()
         {
             Ruc = ruc.Trim(),
-            TipoOperacion = invoice.TipOperacion,
-            TipoDoc = tipoDoc,
+            TipoOperacion = invoice.TipoOperacion,
+            TipoDoc = invoice.TipoDoc,
             Serie = invoice.Serie.Trim(),
-            Correlativo = invoice.Number,
-            FechaEmision = invoice.FecEmision,
+            Correlativo = invoice.Correlativo,
+            FechaEmision = invoice.FechaEmision,
             FormaPago = new FormaPagoHub()
             {
-                Moneda = invoice.TipMoneda,
-                Tipo = invoice.FormaPago.Split(":")[0].Trim(),
-                Monto = Math.Round(invoice.SumImpVenta, 4),
+                Moneda = invoice.FormaPago.Moneda,
+                Tipo = invoice.FormaPago.Tipo,
+                Monto = invoice.FormaPago.Monto,
             },
-            TipoMoneda = invoice.TipMoneda,
+            TipoMoneda = invoice.TipoMoneda,
             Client = new ClientHub()
             {
-                TipoDoc = invoice.TipDocUsuario.Split(":")[0].Trim(),
-                NumDoc = invoice.NumDocUsuario.Trim(),
-                RznSocial = invoice.RznSocialUsuario.Trim(),
+                TipoDoc = invoice.Cliente.TipoDoc,
+                NumDoc = invoice.Cliente.NumDoc,
+                RznSocial = invoice.Cliente.RznSocial,
             },
         };
-        if (invoiceRequest.FormaPago.Tipo == "Credito" && invoice.DocType == "FACTURA")
+        if (invoiceRequest.FormaPago.Tipo == "Credito" && invoice.TipoDoc == "01")
         {
             invoiceRequest.FecVencimiento = invoice.FecVencimiento;
-            document.DetallePagoSale.ForEach(item =>
-            {
-                invoiceRequest.Cuotas.Add(new CuotaHub
-                {
-                    Moneda = item.TipMonedaCuotaPago.Trim(),
-                    Monto = item.MtoCuotaPago,
-                    FechaPago = item.FecCuotaPago,
-                });
-            });
+            //document.DetallePagoSale.ForEach(item =>
+            //{
+            //    invoiceRequest.Cuotas.Add(new CuotaHub
+            //    {
+            //        Moneda = item.TipMonedaCuotaPago.Trim(),
+            //        Monto = item.MtoCuotaPago,
+            //        FechaPago = item.FecCuotaPago,
+            //    });
+            //});
         }
         var detailList = new List<DetailHub>();
         details.ForEach(item =>
@@ -53,19 +50,17 @@ public static class InvoiceMapper
             detailList.Add(new DetailHub()
             {
                 CodProducto = item.CodProducto,
-                Unidad = item.CodUnidadMedida.Split(":")[0].Trim(),
-                Cantidad = item.CtdUnidadItem,
+                Unidad = item.Unidad.Split(":")[0].Trim(),
+                Cantidad = item.Cantidad,
                 MtoValorUnitario = item.MtoValorUnitario,
-                Descripcion = item.DesItem.Trim(),
-                MtoBaseIgv = item.MtoBaseIgvItem,
-                PorcentajeIgv = Math.Round(item.PorIgvItem, 2),
-                Igv = item.MtoIgvItem,
+                Descripcion = item.Description,
+                MtoBaseIgv = item.MtoBaseIgv,
+                PorcentajeIgv = Math.Round(item.PorcentajeIgv, 2),
+                Igv = item.Igv,
                 TipAfeIgv = item.TipAfeIgv.Trim(),
-                Icbper = item.MtoTriIcbperItem,
-                FactorIcbper = item.MtoTriIcbperUnidad,
-                TotalImpuestos = item.MtoIgvItem + item.MtoTriIcbperItem,
-                MtoValorVenta = item.MtoValorVentaItem,
-                MtoPrecioUnitario = item.MtoPrecioVentaUnitario,
+                TotalImpuestos = item.TotalImpuestos,
+                MtoValorVenta = item.MtoValorVenta,
+                MtoPrecioUnitario = item.MtoPrecioUnitario,
             });
         });
         invoiceRequest.Details = detailList;

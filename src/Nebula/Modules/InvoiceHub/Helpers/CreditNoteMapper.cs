@@ -13,18 +13,18 @@ public class CreditNoteMapper
         {
             Ruc = ruc.Trim(),
             Serie = creditNote.Serie.Trim(),
-            Correlativo = creditNote.Number,
-            FechaEmision = creditNote.FecEmision,
+            Correlativo = creditNote.Correlativo,
+            FechaEmision = creditNote.FechaEmision,
             TipDocAfectado = creditNote.TipDocAfectado,
-            NumDocAfectado = creditNote.NumDocAfectado,
+            NumDocAfectado = creditNote.NumDocfectado,
             CodMotivo = creditNote.CodMotivo,
             DesMotivo = creditNote.DesMotivo,
-            TipoMoneda = creditNote.TipMoneda,
+            TipoMoneda = creditNote.TipoMoneda,
             Client = new ClientHub()
             {
-                TipoDoc = creditNote.TipDocUsuario.Split(":")[0].Trim(),
-                NumDoc = creditNote.NumDocUsuario.Trim(),
-                RznSocial = creditNote.RznSocialUsuario.Trim(),
+                TipoDoc = creditNote.Cliente.TipoDoc,
+                NumDoc = creditNote.Cliente.NumDoc,
+                RznSocial = creditNote.Cliente.RznSocial,
             },
         };
 
@@ -34,19 +34,17 @@ public class CreditNoteMapper
             detailList.Add(new DetailHub()
             {
                 CodProducto = item.CodProducto,
-                Unidad = item.CodUnidadMedida.Split(":")[0].Trim(),
-                Cantidad = item.CtdUnidadItem,
+                Unidad = item.Unidad.Split(":")[0].Trim(),
+                Cantidad = item.Cantidad,
                 MtoValorUnitario = item.MtoValorUnitario,
-                Descripcion = item.DesItem.Trim(),
-                MtoBaseIgv = item.MtoBaseIgvItem,
-                PorcentajeIgv = Math.Round(item.PorIgvItem, 2),
-                Igv = item.MtoIgvItem,
+                Descripcion = item.Description.Trim(),
+                MtoBaseIgv = item.MtoBaseIgv,
+                PorcentajeIgv = Math.Round(item.PorcentajeIgv, 2),
+                Igv = item.Igv,
                 TipAfeIgv = item.TipAfeIgv.Trim(),
-                Icbper = item.MtoTriIcbperItem,
-                FactorIcbper = item.MtoTriIcbperUnidad,
-                TotalImpuestos = item.MtoIgvItem + item.MtoTriIcbperItem,
-                MtoValorVenta = item.MtoValorVentaItem,
-                MtoPrecioUnitario = item.MtoPrecioVentaUnitario,
+                TotalImpuestos = item.TotalImpuestos,
+                MtoValorVenta = item.MtoValorVenta,
+                MtoPrecioUnitario = item.MtoPrecioUnitario,
             });
         });
         creditNoteRequest.Details = detailList;
