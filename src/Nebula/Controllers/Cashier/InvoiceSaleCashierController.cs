@@ -60,33 +60,33 @@ public class InvoiceSaleCashierController : ControllerBase
     {
         try
         {
-            model.Company = await _cacheAuthService.GetCompanyByIdAsync(companyId.Trim());
-            var comprobante = await _comprobanteService.SaveChangesAsync(model);
+            var company = await _cacheAuthService.GetCompanyByIdAsync(companyId);
+            var comprobante = await _comprobanteService.SaveChangesAsync(company, model);
             await _validateStockService.ValidarInvoiceSale(companyId, comprobante.InvoiceSale.Id);
 
             // registrar operacion en caja.
-            if (ObjectId.TryParse(model.Cabecera.CajaDiaria, out ObjectId _))
+            if (ObjectId.TryParse(model.Cabecera.CajaDiariaId, out ObjectId _))
             {
                 var cashierDetail = new CashierDetail()
                 {
                     CompanyId = companyId,
-                    CajaDiariaId = model.Cabecera.CajaDiaria,
+                    CajaDiariaId = model.Cabecera.CajaDiariaId,
                     InvoiceSaleId = comprobante.InvoiceSale.Id,
-                    DocType = comprobante.InvoiceSale.DocType,
-                    Document = $"{ comprobante.InvoiceSale.Serie}-{comprobante.InvoiceSale.Number}",
+                    DocType = comprobante.InvoiceSale.TipoDoc,
+                    Document = $"{comprobante.InvoiceSale.Serie}-{comprobante.InvoiceSale.Correlativo}",
                     ContactId = comprobante.InvoiceSale.ContactId,
-                    ContactName = comprobante.InvoiceSale.RznSocialUsuario,
+                    ContactName = comprobante.InvoiceSale.Cliente.RznSocial,
                     Remark = comprobante.InvoiceSale.Remark,
                     TypeOperation = TypeOperationCaja.ComprobanteDeVenta,
-                    FormaPago = model.DatoPago.FormaPago,
-                    Amount = comprobante.InvoiceSale.SumImpVenta
+                    FormaPago = model.FormaPago.Tipo,
+                    Amount = comprobante.InvoiceSale.MtoImpVenta
                 };
                 await _cashierDetailService.CreateAsync(cashierDetail);
             }
 
-            if (comprobante.InvoiceSale.DocType != "NOTA")
+            if (comprobante.InvoiceSale.TipoDoc != "NOTA")
             {
-                var invoiceRequest = InvoiceMapper.MapToInvoiceRequestHub(model.Company.Ruc, comprobante);
+                var invoiceRequest = InvoiceMapper.MapToInvoiceRequestHub(company.Ruc, comprobante);
                 var billingResponse = await _invoiceHubService.SendInvoiceAsync(companyId, invoiceRequest);
                 comprobante.InvoiceSale.BillingResponse = billingResponse;
                 await _invoiceSaleService.UpdateAsync(comprobante.InvoiceSale.Id, comprobante.InvoiceSale);

@@ -6,27 +6,26 @@ using Nebula.Modules.Sales.Comprobantes.Dto;
 using Nebula.Modules.Sales.Invoices;
 using Nebula.Modules.Account;
 using Nebula.Common;
+using Nebula.Modules.Account.Models;
 
 namespace Nebula.Modules.Sales.Comprobantes;
 
 public interface IComprobanteService
 {
-    Task<InvoiceSaleAndDetails> SaveChangesAsync(string companyId, ComprobanteDto comprobante);
+    Task<InvoiceSaleAndDetails> SaveChangesAsync(Company company, ComprobanteDto comprobante);
 }
 
 public class ComprobanteService : IComprobanteService
 {
-    private readonly ICacheAuthService _cacheAuthService;
     private readonly IInvoiceSaleService _invoiceSaleService;
     private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly IInvoiceSerieService _invoiceSerieService;
     private readonly IReceivableService _receivableService;
 
-    public ComprobanteService(ICacheAuthService cacheAuthService,
-        IInvoiceSaleService invoiceSaleService, IInvoiceSaleDetailService invoiceSaleDetailService,
+    public ComprobanteService(IInvoiceSaleService invoiceSaleService,
+        IInvoiceSaleDetailService invoiceSaleDetailService,
         IInvoiceSerieService invoiceSerieService, IReceivableService receivableService)
     {
-        _cacheAuthService = cacheAuthService;
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _invoiceSerieService = invoiceSerieService;
@@ -38,12 +37,11 @@ public class ComprobanteService : IComprobanteService
     /// </summary>
     /// <param name="comprobante">ComprobanteDto</param>
     /// <returns>InvoiceSaleAndDetails</returns>
-    public async Task<InvoiceSaleAndDetails> SaveChangesAsync(string companyId, ComprobanteDto comprobante)
+    public async Task<InvoiceSaleAndDetails> SaveChangesAsync(Company company, ComprobanteDto comprobante)
     {
-        var company = await _cacheAuthService.GetCompanyByIdAsync(companyId);
         var invoiceSale = comprobante.GetInvoiceSale(company);
         var invoiceSerieId = comprobante.Cabecera.InvoiceSerieId;
-        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(companyId, invoiceSerieId);
+        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(company.Id, invoiceSerieId);
         comprobante.GenerarSerieComprobante(ref invoiceSerie, ref invoiceSale);
         invoiceSale.InvoiceSerieId = invoiceSerie.Id;
 
