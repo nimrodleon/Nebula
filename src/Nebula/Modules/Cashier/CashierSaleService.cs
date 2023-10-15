@@ -12,7 +12,7 @@ namespace Nebula.Modules.Cashier;
 
 public interface ICashierSaleService
 {
-    Task<InvoiceSale> SaveChangesAsync(ComprobanteDto comprobanteDto, string cajaDiariaId);
+    Task<InvoiceSale> SaveChangesAsync(Company company, ComprobanteDto comprobanteDto, string cajaDiariaId);
 }
 
 /// <summary>
@@ -22,35 +22,31 @@ public class CashierSaleService : ICashierSaleService
 {
     private readonly IInvoiceSaleService _invoiceSaleService;
     private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
-    private readonly ITributoSaleService _tributoSaleService;
     private readonly ICrudOperationService<InvoiceSerie> _invoiceSerieService;
     private readonly ICashierDetailService _cashierDetailService;
     private readonly IReceivableService _receivableService;
     private readonly ICajaDiariaService _cajaDiariaService;
-    private readonly IDetallePagoSaleService _detallePagoSaleService;
 
     public CashierSaleService(
         IInvoiceSaleService invoiceSaleService, IInvoiceSaleDetailService invoiceSaleDetailService,
-        ITributoSaleService tributoSaleService, ICrudOperationService<InvoiceSerie> invoiceSerieService,
+         ICrudOperationService<InvoiceSerie> invoiceSerieService,
         ICashierDetailService cashierDetailService, IReceivableService receivableService,
-        ICajaDiariaService cajaDiariaService, IDetallePagoSaleService detallePagoSaleService)
+        ICajaDiariaService cajaDiariaService)
     {
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
-        _tributoSaleService = tributoSaleService;
         _invoiceSerieService = invoiceSerieService;
         _cashierDetailService = cashierDetailService;
         _receivableService = receivableService;
         _cajaDiariaService = cajaDiariaService;
-        _detallePagoSaleService = detallePagoSaleService;
     }
 
     /// <summary>
     /// Guardar comprobante de venta rápida.
     /// </summary>
-    public async Task<InvoiceSale> SaveChangesAsync(ComprobanteDto comprobanteDto, string cajaDiariaId)
+    public async Task<InvoiceSale> SaveChangesAsync( Company company, ComprobanteDto comprobanteDto, string cajaDiariaId)
     {
-        var invoiceSale = comprobanteDto.GetInvoiceSale();
+        var invoiceSale = comprobanteDto.GetInvoiceSale(company);
         var invoiceSerieId = comprobanteDto.Cabecera.InvoiceSerieId;
         var invoiceSerie = await _invoiceSerieService.GetByIdAsync(invoiceSerieId);
         comprobanteDto.GenerarSerieComprobante(ref invoiceSerie, ref invoiceSale);
@@ -61,12 +57,8 @@ public class CashierSaleService : ICashierSaleService
         await _invoiceSaleService.CreateAsync(invoiceSale);
 
         // agregar detalles del comprobante.
-        var invoiceSaleDetails = comprobanteDto.GetInvoiceSaleDetails(invoiceSale.Id);
+        var invoiceSaleDetails = comprobanteDto.GetInvoiceSaleDetails(company, invoiceSale.Id);
         await _invoiceSaleDetailService.CreateManyAsync(invoiceSaleDetails);
-
-        // agregar Tributos de Factura.
-        var tributoSales = comprobanteDto.GetTributoSales(invoiceSale.Id);
-        await _tributoSaleService.CreateManyAsync(tributoSales);
 
         // registrar operación de Caja.
         var cajaDiaria = await _cajaDiariaService.GetByIdAsync(cajaDiariaId);
@@ -74,26 +66,21 @@ public class CashierSaleService : ICashierSaleService
         {
             CajaDiariaId = cajaDiaria.Id,
             InvoiceSaleId = invoiceSale.Id,
-            DocType = invoiceSale.DocType,
-            Document = $"{invoiceSale.Serie}-{invoiceSale.Number}",
+            DocType = invoiceSale.TipoDoc,
+            Document = $"{invoiceSale.Serie}-{invoiceSale.Correlativo}",
             ContactId = invoiceSale.ContactId,
-            ContactName = invoiceSale.RznSocialUsuario,
+            ContactName = invoiceSale.Cliente.RznSocial,
             Remark = comprobanteDto.Cabecera.Remark,
             TypeOperation = TypeOperationCaja.ComprobanteDeVenta,
-            FormaPago = comprobanteDto.DatoPago.FormaPago,
-            Amount = invoiceSale.SumImpVenta
+            FormaPago = comprobanteDto.FormaPago.Tipo,
+            Amount = invoiceSale.MtoImpVenta
         };
         await _cashierDetailService.CreateAsync(cashierDetail);
 
-        // registrar cargo y detalle de pago si la operación es a crédito.
-        if (comprobanteDto.DatoPago.FormaPago == FormaPago.Credito)
-        {
-            if (invoiceSale.DocType == "FACTURA")
-            {
-                var detallePagos = comprobanteDto.GetDetallePagos(invoiceSale.Id);
-                if (detallePagos.Count() > 0) await _detallePagoSaleService.InsertManyAsync(detallePagos);
-            }
-            var cargo = GenerarCargo(invoiceSale, cajaDiaria, comprobanteDto.Company.DiasPlazo);
+        // registrar cargo si la operación es a crédito.
+        if (comprobanteDto.FormaPago.Tipo == FormaPago.Credito)
+        {            
+            var cargo = GenerarCargo(invoiceSale, cajaDiaria, company.DiasPlazo);
             await _receivableService.CreateAsync(cargo);
         }
 
@@ -107,13 +94,13 @@ public class CashierSaleService : ICashierSaleService
             CompanyId = invoiceSale.CompanyId,
             Type = "CARGO",
             ContactId = invoiceSale.ContactId,
-            ContactName = invoiceSale.RznSocialUsuario,
+            ContactName = invoiceSale.Cliente.RznSocial,
             Remark = invoiceSale.Remark,
             InvoiceSale = invoiceSale.Id,
-            DocType = invoiceSale.DocType,
-            Document = $"{invoiceSale.Serie}-{invoiceSale.Number}",
+            DocType = invoiceSale.TipoDoc,
+            Document = $"{invoiceSale.Serie}-{invoiceSale.Correlativo}",
             FormaPago = "-",
-            Cargo = invoiceSale.SumImpVenta,
+            Cargo = invoiceSale.MtoImpVenta,
             Status = "PENDIENTE",
             CajaDiaria = cajaDiaria.Id,
             Terminal = cajaDiaria.Terminal,

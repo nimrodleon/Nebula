@@ -49,10 +49,10 @@ public class CashierDetailService : CrudOperationService<CashierDetail>, ICashie
         decimal totalContado = CalcularTotalesCaja(detalleCaja, FormaPago.Contado);
         ResumenCajaDto resumenCaja = new ResumenCajaDto
         {
-            Yape = CalcularTotalesCaja(detalleCaja, FormaPago.Yape),
+            Yape = 0, // CalcularTotalesCaja(detalleCaja, FormaPago.Yape),
             Credito = CalcularTotalesCaja(detalleCaja, FormaPago.Credito),
             Contado = totalContado,
-            Deposito = CalcularTotalesCaja(detalleCaja, FormaPago.Deposito),
+            Deposito = 0, // CalcularTotalesCaja(detalleCaja, FormaPago.Deposito),
             Salida = totalSalidas,
             MontoTotal = totalContado - totalSalidas
         };
