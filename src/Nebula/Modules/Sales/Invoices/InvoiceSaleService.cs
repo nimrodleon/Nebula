@@ -3,7 +3,6 @@ using Nebula.Common;
 using Nebula.Modules.Sales.Models;
 using Nebula.Common.Dto;
 using Nebula.Modules.Sales.Invoices.Dto;
-using Nebula.Modules.InvoiceHub.Dto;
 
 namespace Nebula.Modules.Sales.Invoices;
 
@@ -23,14 +22,11 @@ public interface IInvoiceSaleService : ICrudOperationService<InvoiceSale>
 public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSaleService
 {
     private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
-    private readonly ITributoSaleService _tributoSaleService;
 
     public InvoiceSaleService(MongoDatabaseService mongoDatabase,
-        IInvoiceSaleDetailService invoiceSaleDetailService,
-        ITributoSaleService tributoSaleService) : base(mongoDatabase)
+        IInvoiceSaleDetailService invoiceSaleDetailService) : base(mongoDatabase)
     {
         _invoiceSaleDetailService = invoiceSaleDetailService;
-        _tributoSaleService = tributoSaleService;
     }
 
     public async Task<List<InvoiceSale>> GetListAsync(string companyId, DateQuery query)
@@ -40,7 +36,7 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSal
             builder.Eq(x => x.CompanyId, companyId),
             builder.Eq(x => x.Month, query.Month),
             builder.Eq(x => x.Year, query.Year),
-            builder.In("DocType", new List<string>() { "BOLETA", "FACTURA" }));
+            builder.In("TipoDoc", new List<string>() { "03", "01" }));
         return await _collection.Find(filter).Sort(new SortDefinitionBuilder<InvoiceSale>().Descending("$natural"))
             .ToListAsync();
     }
@@ -49,12 +45,10 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSal
     {
         var invoiceSale = await GetByIdAsync(companyId, invoiceSaleId);
         var invoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(companyId, invoiceSale.Id);
-        var tributoSales = await _tributoSaleService.GetListAsync(companyId, invoiceSale.Id);
         return new ResponseInvoiceSale()
         {
             InvoiceSale = invoiceSale,
-            InvoiceSaleDetails = invoiceSaleDetails,
-            TributoSales = tributoSales
+            InvoiceSaleDetails = invoiceSaleDetails
         };
     }
 
@@ -70,14 +64,15 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSal
     /// <summary>
     /// Obtener comprobantes por serie y números.
     /// </summary>
-    /// <param name="series">series de los comprobantes</param>
-    /// <param name="numbers">Lista de números de comprobantes</param>
-    /// <returns>Lista de Comprobantes</returns>
-    public async Task<List<InvoiceSale>> GetInvoicesByNumDocs(string companyId, List<string> series, List<string> numbers)
+    /// <param name="companyId">Identificador empresa</param>
+    /// <param name="series">series</param>
+    /// <param name="correlativos">correlativos</param>
+    /// <returns></returns>
+    public async Task<List<InvoiceSale>> GetInvoicesByNumDocs(string companyId, List<string> series, List<string> correlativos)
     {
         var builder = Builders<InvoiceSale>.Filter;
         var filter = builder.And(builder.Eq(x => x.CompanyId, companyId),
-            builder.In(x => x.Serie, series), builder.In(x => x.Number, numbers));
+            builder.In(x => x.Serie, series), builder.In(x => x.Correlativo, correlativos));
         return await _collection.Find(filter).ToListAsync();
     }
 
@@ -103,15 +98,8 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSal
     public async Task<List<InvoiceSale>> GetInvoiceSaleByDate(string companyId, string date)
     {
         var builder = Builders<InvoiceSale>.Filter;
-        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId), builder.Eq(x => x.FecEmision, date));
+        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId), builder.Eq(x => x.FechaEmision, date));
         return await _collection.Find(filter).ToListAsync();
-    }
-
-    public async Task<InvoiceSale> SetStatusFacturador(InvoiceSale invoice, BillingResponse billing)
-    {
-
-        var invoiceSale = await UpdateAsync(invoice.Id, invoice);
-        return invoiceSale;
     }
 
     public async Task<InvoiceSale> AnularComprobante(string companyId, string invoiceSaleId)
@@ -126,7 +114,7 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSal
     {
         var builder = Builders<InvoiceSale>.Filter;
         var filter = builder.And(builder.Eq(x => x.CompanyId, companyId),
-            builder.Not(builder.Eq(x => x.DocType, "NOTA")),
+            builder.Not(builder.Eq(x => x.TipoDoc, "NOTA")),
             builder.Eq(x => x.BillingResponse.Success, false));
         return await _collection.Find(filter).ToListAsync();
     }
@@ -137,8 +125,8 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSal
         var filters = new List<FilterDefinition<InvoiceSale>>();
 
         filters.Add(filterBuilder.Eq(x => x.CompanyId, companyId));
-        filters.Add(filterBuilder.Gte(x => x.FecEmision, dto.FechaDesde));
-        filters.Add(filterBuilder.Lte(x => x.FecEmision, dto.FechaHasta));
+        filters.Add(filterBuilder.Gte(x => x.FechaEmision, dto.FechaDesde));
+        filters.Add(filterBuilder.Lte(x => x.FechaEmision, dto.FechaHasta));
 
         if (!string.IsNullOrEmpty(dto.ContactId))
         {
