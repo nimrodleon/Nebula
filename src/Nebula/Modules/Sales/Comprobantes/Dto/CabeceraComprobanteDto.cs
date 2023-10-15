@@ -2,8 +2,8 @@ namespace Nebula.Modules.Sales.Comprobantes.Dto;
 
 public class CabeceraComprobanteDto
 {
-    public string CajaDiaria { get; set; } = "-";
-    public string DocType { get; set; } = "BOLETA";
+    public string CajaDiariaId { get; set; } = "-";
+    public string TipoDoc { get; set; } = "03";
     public string ContactId { get; set; } = string.Empty;
     public string TipDocUsuario { get; set; } = string.Empty;
     public string NumDocUsuario { get; set; } = string.Empty;

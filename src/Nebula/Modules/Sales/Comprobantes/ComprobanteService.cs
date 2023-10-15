@@ -5,35 +5,31 @@ using Nebula.Modules.Cashier.Helpers;
 using Nebula.Modules.Sales.Comprobantes.Dto;
 using Nebula.Modules.Sales.Invoices;
 using Nebula.Modules.Account;
+using Nebula.Common;
 
 namespace Nebula.Modules.Sales.Comprobantes;
 
 public interface IComprobanteService
 {
-    Task<InvoiceSaleAndDetails> SaveChangesAsync(ComprobanteDto comprobante);
+    Task<InvoiceSaleAndDetails> SaveChangesAsync(string companyId, ComprobanteDto comprobante);
 }
 
 public class ComprobanteService : IComprobanteService
 {
+    private readonly ICacheAuthService _cacheAuthService;
     private readonly IInvoiceSaleService _invoiceSaleService;
     private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
-    private readonly ITributoSaleService _tributoSaleService;
     private readonly IInvoiceSerieService _invoiceSerieService;
-    private readonly IDetallePagoSaleService _detallePagoSaleService;
     private readonly IReceivableService _receivableService;
 
-    public ComprobanteService(IInvoiceSaleService invoiceSaleService,
-        IInvoiceSaleDetailService invoiceSaleDetailService,
-        ITributoSaleService tributoSaleService,
-        IInvoiceSerieService invoiceSerieService,
-        IDetallePagoSaleService detallePagoSaleService,
-        IReceivableService receivableService)
+    public ComprobanteService(ICacheAuthService cacheAuthService,
+        IInvoiceSaleService invoiceSaleService, IInvoiceSaleDetailService invoiceSaleDetailService,
+        IInvoiceSerieService invoiceSerieService, IReceivableService receivableService)
     {
+        _cacheAuthService = cacheAuthService;
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
-        _tributoSaleService = tributoSaleService;
         _invoiceSerieService = invoiceSerieService;
-        _detallePagoSaleService = detallePagoSaleService;
         _receivableService = receivableService;
     }
 
@@ -42,10 +38,10 @@ public class ComprobanteService : IComprobanteService
     /// </summary>
     /// <param name="comprobante">ComprobanteDto</param>
     /// <returns>InvoiceSaleAndDetails</returns>
-    public async Task<InvoiceSaleAndDetails> SaveChangesAsync(ComprobanteDto comprobante)
+    public async Task<InvoiceSaleAndDetails> SaveChangesAsync(string companyId, ComprobanteDto comprobante)
     {
-        string companyId = comprobante.Company.Id;
-        var invoiceSale = comprobante.GetInvoiceSale();
+        var company = await _cacheAuthService.GetCompanyByIdAsync(companyId);
+        var invoiceSale = comprobante.GetInvoiceSale(company);
         var invoiceSerieId = comprobante.Cabecera.InvoiceSerieId;
         var invoiceSerie = await _invoiceSerieService.GetByIdAsync(companyId, invoiceSerieId);
         comprobante.GenerarSerieComprobante(ref invoiceSerie, ref invoiceSale);
@@ -56,24 +52,12 @@ public class ComprobanteService : IComprobanteService
         await _invoiceSaleService.CreateAsync(invoiceSale);
 
         // agregar detalles del comprobante.
-        var invoiceSaleDetails = comprobante.GetInvoiceSaleDetails(invoiceSale.Id);
+        var invoiceSaleDetails = comprobante.GetInvoiceSaleDetails(company, invoiceSale.Id);
         await _invoiceSaleDetailService.CreateManyAsync(invoiceSaleDetails);
 
-        // agregar Tributos de Factura.
-        var tributoSales = comprobante.GetTributoSales(invoiceSale.Id);
-        await _tributoSaleService.CreateManyAsync(tributoSales);
-
-        // registrar detalle de pago si la operación es a crédito.
-        var detallePagos = new List<DetallePagoSale>();
-        if (comprobante.DatoPago.FormaPago == FormaPago.Credito)
+        // registrar cargo si la operación es a crédito.
+        if (comprobante.FormaPago.Tipo == FormaPago.Credito)
         {
-            if (invoiceSale.DocType == "FACTURA")
-            {
-                detallePagos = comprobante.GetDetallePagos(invoiceSale.Id);
-                if (detallePagos.Count() > 0)
-                    await _detallePagoSaleService.InsertManyAsync(detallePagos);
-            }
-
             // registrar cargo.
             Receivable cargo = GenerarCargo(invoiceSale);
             await _receivableService.CreateAsync(cargo);
@@ -82,8 +66,7 @@ public class ComprobanteService : IComprobanteService
         var result = new InvoiceSaleAndDetails()
         {
             InvoiceSale = invoiceSale,
-            InvoiceSaleDetails = invoiceSaleDetails,
-            DetallePagoSale = detallePagos,
+            InvoiceSaleDetails = invoiceSaleDetails
         };
 
         return result;
@@ -96,18 +79,23 @@ public class ComprobanteService : IComprobanteService
     /// <returns>Receivable</returns>
     private Receivable GenerarCargo(InvoiceSale invoiceSale)
     {
+        string tipoDoc = string.Empty;
+        if (invoiceSale.TipoDoc == "01") tipoDoc = "FACTURA";
+        if (invoiceSale.TipoDoc == "03") tipoDoc = "BOLETA";
+        if (invoiceSale.TipoDoc == "NOTA") tipoDoc = "NOTA";
+
         return new Receivable()
         {
             Type = "CARGO",
             CompanyId = invoiceSale.CompanyId,
             ContactId = invoiceSale.ContactId,
-            ContactName = invoiceSale.RznSocialUsuario,
+            ContactName = invoiceSale.Cliente.RznSocial,
             Remark = invoiceSale.Remark,
             InvoiceSale = invoiceSale.Id,
-            DocType = invoiceSale.DocType,
-            Document = $"{invoiceSale.Serie}-{invoiceSale.Number}",
+            DocType = tipoDoc,
+            Document = $"{invoiceSale.Serie}-{invoiceSale.Correlativo}",
             FormaPago = "-",
-            Cargo = invoiceSale.SumImpVenta,
+            Cargo = invoiceSale.MtoImpVenta,
             Status = "PENDIENTE",
             CreatedAt = DateTime.Now.ToString("yyyy-MM-dd"),
             EndDate = invoiceSale.FecVencimiento,
