@@ -45,7 +45,6 @@ public class CreditNoteController : ControllerBase
             Company = company,
             CreditNote = creditNoteDto.CreditNote,
             CreditNoteDetails = creditNoteDto.CreditNoteDetails,
-            TributosCreditNote = creditNoteDto.TributosCreditNote,
         };
         return Ok(printCreditNote);
     }

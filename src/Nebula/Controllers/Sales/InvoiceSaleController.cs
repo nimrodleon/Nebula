@@ -29,8 +29,6 @@ public class InvoiceSaleController : ControllerBase
     private readonly IInvoiceSerieService _invoiceSerieService;
     private readonly IInvoiceSaleService _invoiceSaleService;
     private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
-    private readonly ITributoSaleService _tributoSaleService;
-    private readonly ITributoCreditNoteService _tributoCreditNoteService;
     private readonly IComprobanteService _comprobanteService;
     private readonly ICreditNoteService _creditNoteService;
     private readonly IConsultarValidezComprobanteService _consultarValidezComprobanteService;
@@ -42,11 +40,9 @@ public class InvoiceSaleController : ControllerBase
         IInvoiceSerieService invoiceSerieService,
         IInvoiceSaleService invoiceSaleService,
         IInvoiceSaleDetailService invoiceSaleDetailService,
-        ITributoSaleService tributoSaleService,
         IComprobanteService comprobanteService,
         ICreditNoteService creditNoteService,
         IConsultarValidezComprobanteService consultarValidezComprobanteService,
-        ITributoCreditNoteService tributoCreditNoteService,
         IInvoiceHubService invoiceHubService,
         ICreditNoteHubService creditNoteHubService)
     {
@@ -54,11 +50,9 @@ public class InvoiceSaleController : ControllerBase
         _invoiceSerieService = invoiceSerieService;
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
-        _tributoSaleService = tributoSaleService;
         _comprobanteService = comprobanteService;
         _creditNoteService = creditNoteService;
         _consultarValidezComprobanteService = consultarValidezComprobanteService;
-        _tributoCreditNoteService = tributoCreditNoteService;
         _invoiceHubService = invoiceHubService;
         _creditNoteHubService = creditNoteHubService;
     }
@@ -80,9 +74,9 @@ public class InvoiceSaleController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(string companyId, [FromBody] ComprobanteDto dto)
     {
-        dto.Company = await _cacheAuthService.GetCompanyByIdAsync(companyId);
-        var comprobante = await _comprobanteService.SaveChangesAsync(dto);
-        var invoiceRequest = InvoiceMapper.MapToInvoiceRequestHub(dto.Company.Ruc, comprobante);
+        var company = await _cacheAuthService.GetCompanyByIdAsync(companyId);
+        var comprobante = await _comprobanteService.SaveChangesAsync(company, dto);
+        var invoiceRequest = InvoiceMapper.MapToInvoiceRequestHub(company.Ruc, comprobante);
         var billingResponse = await _invoiceHubService.SendInvoiceAsync(companyId, invoiceRequest);
         comprobante.InvoiceSale.BillingResponse = billingResponse;
         await _invoiceSaleService.UpdateAsync(comprobante.InvoiceSale.Id, comprobante.InvoiceSale);
@@ -95,7 +89,6 @@ public class InvoiceSaleController : ControllerBase
         var invoiceSale = await _invoiceSaleService.GetByIdAsync(companyId, id);
         await _invoiceSaleService.RemoveAsync(companyId, invoiceSale.Id);
         await _invoiceSaleDetailService.RemoveAsync(companyId, invoiceSale.Id);
-        await _tributoSaleService.RemoveAsync(companyId, invoiceSale.Id);
         return Ok(invoiceSale);
     }
 
@@ -109,16 +102,14 @@ public class InvoiceSaleController : ControllerBase
             InvoiceSeries = await _invoiceSerieService.GetFilteredAsync(companyId, fieldNames, string.Empty),
             InvoiceSales = await _invoiceSaleService.GetListAsync(companyId, dto),
             CreditNotes = await _creditNoteService.GetListAsync(companyId, dto),
-            TributoSales = await _tributoSaleService.GetTributosMensual(companyId, dto),
-            TributoCreditNotes = await _tributoCreditNoteService.GetTributosMensual(companyId, dto)
         };
         // Obtener lista de comprobantes de notas de crédito.
         List<string> seriesComprobante = new List<string>();
         List<string> númerosComprobante = new List<string>();
         param.CreditNotes.ForEach(item =>
         {
-            seriesComprobante.Add(item.NumDocAfectado.Split("-")[0].Trim());
-            númerosComprobante.Add(item.NumDocAfectado.Split("-")[1].Trim());
+            seriesComprobante.Add(item.NumDocfectado.Split("-")[0].Trim());
+            númerosComprobante.Add(item.NumDocfectado.Split("-")[1].Trim());
         });
         seriesComprobante = seriesComprobante.Distinct().ToList();
         númerosComprobante = númerosComprobante.Distinct().ToList();
@@ -169,7 +160,6 @@ public class InvoiceSaleController : ControllerBase
             Company = await _cacheAuthService.GetCompanyByIdAsync(companyId),
             InvoiceSale = responseInvoice.InvoiceSale,
             InvoiceSaleDetails = responseInvoice.InvoiceSaleDetails,
-            TributoSales = responseInvoice.TributoSales,
         };
         return Ok(ticket);
     }
