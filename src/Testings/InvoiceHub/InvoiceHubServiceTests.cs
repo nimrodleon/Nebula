@@ -38,6 +38,7 @@ public class InvoiceHubServiceTests
             TipoDoc = "01",
             Serie = "F001",
             Correlativo = "1",
+            FechaEmision = "2023-10-15",
             FormaPago = new FormaPagoHub
             {
                 Moneda = "PEN",

@@ -31,12 +31,6 @@ public class DetailHub
     [JsonPropertyName("tipAfeIgv")]
     public string TipAfeIgv { get; set; } = string.Empty;
 
-    [JsonPropertyName("icbper")]
-    public decimal Icbper { get; set; }
-
-    [JsonPropertyName("factorIcbper")]
-    public decimal FactorIcbper { get; set; }
-
     [JsonPropertyName("totalImpuestos")]
     public decimal TotalImpuestos { get; set; }
 

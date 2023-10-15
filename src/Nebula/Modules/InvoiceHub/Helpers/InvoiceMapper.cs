@@ -34,15 +34,15 @@ public static class InvoiceMapper
         if (invoiceRequest.FormaPago.Tipo == "Credito" && invoice.TipoDoc == "01")
         {
             invoiceRequest.FecVencimiento = invoice.FecVencimiento;
-            //document.DetallePagoSale.ForEach(item =>
-            //{
-            //    invoiceRequest.Cuotas.Add(new CuotaHub
-            //    {
-            //        Moneda = item.TipMonedaCuotaPago.Trim(),
-            //        Monto = item.MtoCuotaPago,
-            //        FechaPago = item.FecCuotaPago,
-            //    });
-            //});
+            document.InvoiceSale.Cuotas.ForEach(item =>
+            {
+                invoiceRequest.Cuotas.Add(new CuotaHub()
+                {
+                    Moneda = item.Moneda,
+                    Monto = item.Monto,
+                    FechaPago = item.FechaPago,
+                });
+            });
         }
         var detailList = new List<DetailHub>();
         details.ForEach(item =>
