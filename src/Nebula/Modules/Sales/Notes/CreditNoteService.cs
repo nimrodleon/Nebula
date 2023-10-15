@@ -25,27 +25,19 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
 {
     private readonly IInvoiceSaleService _invoiceSaleService;
     private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
-    private readonly ITributoSaleService _tributoSaleService;
     private readonly IInvoiceSerieService _invoiceSerieService;
-
-    // ======================================================================
     private readonly ICreditNoteDetailService _creditNoteDetailService;
-    private readonly ITributoCreditNoteService _tributoCreditNoteService;
 
     public CreditNoteService(MongoDatabaseService mongoDatabase,
         IInvoiceSaleService invoiceSaleService,
         IInvoiceSaleDetailService invoiceSaleDetailService,
-        ITributoSaleService tributoSaleService,
         IInvoiceSerieService invoiceSerieService,
-        ICreditNoteDetailService creditNoteDetailService,
-        ITributoCreditNoteService tributoCreditNoteService) : base(mongoDatabase)
+        ICreditNoteDetailService creditNoteDetailService) : base(mongoDatabase)
     {
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
-        _tributoSaleService = tributoSaleService;
         _invoiceSerieService = invoiceSerieService;
         _creditNoteDetailService = creditNoteDetailService;
-        _tributoCreditNoteService = tributoCreditNoteService;
     }
 
     public async Task<List<CreditNote>> GetListAsync(string companyId, DateQuery query)
@@ -82,7 +74,7 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
     public async Task<List<CreditNote>> GetCreditNotesByDate(string companyId, string date)
     {
         var builder = Builders<CreditNote>.Filter;
-        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId), builder.Eq(x => x.FecEmision, date));
+        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId), builder.Eq(x => x.FechaEmision, date));
         return await _collection.Find(filter).ToListAsync();
     }
 
@@ -95,12 +87,10 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
     {
         var creditNote = await GetByIdAsync(companyId, CreditNoteId);
         var creditNoteDetails = await _creditNoteDetailService.GetListAsync(companyId, creditNote.Id);
-        var tributosCreditNote = await _tributoCreditNoteService.GetListAsync(companyId, creditNote.Id);
         return new CreditNoteDto()
         {
             CreditNote = creditNote,
             CreditNoteDetails = creditNoteDetails,
-            TributosCreditNote = tributosCreditNote,
         };
     }
 
@@ -108,7 +98,6 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
     {
         var invoiceSale = await _invoiceSaleService.GetByIdAsync(companyId, invoiceSaleId);
         var invoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(companyId, invoiceSale.Id);
-        var tributoSales = await _tributoSaleService.GetListAsync(companyId, invoiceSale.Id);
         var invoiceSerie = await _invoiceSerieService.GetByIdAsync(companyId, invoiceSale.InvoiceSerieId);
         var creditNote = GetCreditNote(invoiceSale);
         GenerarSerieComprobante(ref invoiceSerie, ref creditNote);
@@ -120,9 +109,6 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
         var creditNoteDetails = GetCreditNoteDetails(creditNote.Id, invoiceSaleDetails);
         await _creditNoteDetailService.InsertManyAsync(creditNoteDetails);
 
-        var tributosCreditNote = GetTributosCreditNote(creditNote.Id, tributoSales);
-        await _tributoCreditNoteService.InsertManyAsync(tributosCreditNote);
-
         return new InvoiceCancellationResponse()
         {
             InvoiceSale = invoiceSale,
@@ -133,34 +119,31 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
 
     private CreditNote GetCreditNote(InvoiceSale invoiceSale)
     {
-        string tipDocAfectado = string.Empty;
-        if (invoiceSale.DocType == "FACTURA") tipDocAfectado = "01";
-        if (invoiceSale.DocType == "BOLETA") tipDocAfectado = "03";
-
         return new CreditNote()
         {
             CompanyId = invoiceSale.CompanyId,
             InvoiceSaleId = invoiceSale.Id,
-            TipOperacion = invoiceSale.TipOperacion,
-            FecEmision = DateTime.Now.ToString("yyyy-MM-dd"),
-            HorEmision = DateTime.Now.ToString("HH:mm:ss"),
-            CodLocalEmisor = invoiceSale.CodLocalEmisor,
-            TipDocUsuario = invoiceSale.TipDocUsuario,
-            NumDocUsuario = invoiceSale.NumDocUsuario,
-            RznSocialUsuario = invoiceSale.RznSocialUsuario,
-            TipMoneda = invoiceSale.TipMoneda,
+            InvoiceSerieId = invoiceSale.InvoiceSerieId,
+            TipoDoc = "07",
+            FechaEmision = DateTime.Now.ToString("yyyy-MM-dd"),
+            ContactId = invoiceSale.ContactId,
+            Cliente = invoiceSale.Cliente,
+            TipoMoneda = invoiceSale.TipoMoneda,
             CodMotivo = "01",
             DesMotivo = "ANULACIÓN DE LA OPERACIÓN",
-            TipDocAfectado = tipDocAfectado,
-            NumDocAfectado = $"{invoiceSale.Serie}-{invoiceSale.Number}",
-            SumTotTributos = invoiceSale.SumTotTributos,
-            SumTotValVenta = invoiceSale.SumTotValVenta,
-            SumPrecioVenta = invoiceSale.SumPrecioVenta,
-            SumImpVenta = invoiceSale.SumImpVenta,
-            // DIRECCIÓN_DEL_CLIENTE!
-            CodUbigeoCliente = invoiceSale.CodUbigeoCliente,
-            DesDireccionCliente = invoiceSale.DesDireccionCliente,
+            TipDocAfectado = invoiceSale.TipoDoc,
+            NumDocfectado = $"{invoiceSale.Serie}-{invoiceSale.Correlativo}",
+            MtoOperGravadas = invoiceSale.MtoOperGravadas,
+            MtoOperInafectas = invoiceSale.MtoOperInafectas,
+            MtoOperExoneradas = invoiceSale.MtoOperExoneradas,
+            MtoIGV = invoiceSale.MtoIGV,
+            TotalImpuestos = invoiceSale.TotalImpuestos,
+            ValorVenta = invoiceSale.ValorVenta,
+            SubTotal = invoiceSale.SubTotal,
+            MtoImpVenta = invoiceSale.MtoImpVenta,
             TotalEnLetras = invoiceSale.TotalEnLetras,
+            Year = DateTime.Now.ToString("yyyy"),
+            Month = DateTime.Now.ToString("MM"),
         };
     }
 
@@ -173,53 +156,26 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
             {
                 CompanyId = item.CompanyId,
                 CreditNoteId = creditNoteId,
+                WarehouseId = item.WarehouseId,
                 TipoItem = item.TipoItem,
-                CodUnidadMedida = item.CodUnidadMedida,
-                CtdUnidadItem = item.CtdUnidadItem,
+                Unidad = item.Unidad,
+                Cantidad = item.Cantidad,
                 CodProducto = item.CodProducto,
-                CodProductoSunat = item.CodProductoSunat,
-                DesItem = item.DesItem,
+                Description = item.Description,
                 MtoValorUnitario = item.MtoValorUnitario,
-                SumTotTributosItem = item.SumTotTributosItem,
-                CodTriIgv = item.CodTriIgv,
-                MtoIgvItem = item.MtoIgvItem,
-                MtoBaseIgvItem = item.MtoBaseIgvItem,
-                NomTributoIgvItem = item.NomTributoIgvItem,
-                CodTipTributoIgvItem = item.CodTipTributoIgvItem,
+                MtoBaseIgv = item.MtoBaseIgv,
+                PorcentajeIgv = item.PorcentajeIgv,
+                Igv = item.Igv,
                 TipAfeIgv = item.TipAfeIgv,
-                PorIgvItem = item.PorIgvItem,
-                CodTriIcbper = item.CodTriIcbper,
-                MtoTriIcbperItem = item.MtoTriIcbperItem,
-                CtdBolsasTriIcbperItem = item.CtdBolsasTriIcbperItem,
-                NomTributoIcbperItem = item.NomTributoIcbperItem,
-                CodTipTributoIcbperItem = item.CodTipTributoIcbperItem,
-                MtoTriIcbperUnidad = item.MtoTriIcbperUnidad,
-                MtoPrecioVentaUnitario = item.MtoPrecioVentaUnitario,
-                MtoValorVentaItem = item.MtoValorVentaItem,
-                MtoValorReferencialUnitario = item.MtoValorReferencialUnitario,
-            });
-        });
-        return creditNoteDetails;
-    }
-
-    private List<TributoCreditNote> GetTributosCreditNote(string creditNoteId, List<TributoSale> tributoSales)
-    {
-        var tributosCreditNote = new List<TributoCreditNote>();
-        tributoSales.ForEach(item =>
-        {
-            tributosCreditNote.Add(new TributoCreditNote()
-            {
-                CreditNoteId = creditNoteId,
-                IdeTributo = item.IdeTributo,
-                NomTributo = item.NomTributo,
-                CodTipTributo = item.CodTipTributo,
-                MtoBaseImponible = item.MtoBaseImponible,
-                MtoTributo = item.MtoTributo,
+                TotalImpuestos = item.TotalImpuestos,
+                MtoPrecioUnitario = item.MtoPrecioUnitario,
+                MtoValorVenta = item.MtoValorVenta,
+                RecordType = item.RecordType,
                 Year = DateTime.Now.ToString("yyyy"),
                 Month = DateTime.Now.ToString("MM"),
             });
         });
-        return tributosCreditNote;
+        return creditNoteDetails;
     }
 
     public void GenerarSerieComprobante(ref InvoiceSerie invoiceSerie, ref CreditNote creditNote)
@@ -246,7 +202,7 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
                 break;
         }
 
-        creditNote.Number = numComprobante.ToString();
+        creditNote.Correlativo = numComprobante.ToString();
     }
 
 }

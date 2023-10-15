@@ -13,8 +13,6 @@ public class ParamExcelRegistroVentasF141
     public List<InvoiceSerie> InvoiceSeries { get; set; } = new List<InvoiceSerie>();
     public List<InvoiceSale> InvoiceSales { get; set; } = new List<InvoiceSale>();
     public List<CreditNote> CreditNotes { get; set; } = new List<CreditNote>();
-    public List<TributoSale> TributoSales { get; set; } = new List<TributoSale>();
-    public List<TributoCreditNote> TributoCreditNotes { get; set; } = new List<TributoCreditNote>();
     public List<InvoiceSale> ComprobantesDeNotas { get; set; } = new List<InvoiceSale>();
 }
 
@@ -612,7 +610,7 @@ public class ExcelRegistroVentasF141
             {
                 // Fecha de emisión del Comprobante de Pago
                 DateTime fechaEmisión =
-                    DateTime.ParseExact(item.FecEmision, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    DateTime.ParseExact(item.FechaEmision, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 worksheet.Cell(contador, 4).Style.NumberFormat.Format = "@";
                 worksheet.Cell(contador, 4).Value = fechaEmisión.ToString("dd/MM/yyyy");
                 // Tipo de Comprobante de Pago o Documento
@@ -622,38 +620,38 @@ public class ExcelRegistroVentasF141
                 worksheet.Cell(contador, 7).Value = item.Serie;
                 // Número del comprobante de pago o documento.
                 worksheet.Cell(contador, 8).Style.NumberFormat.Format = "@";
-                worksheet.Cell(contador, 8).Value = item.Number;
+                worksheet.Cell(contador, 8).Value = item.Correlativo;
                 // Tipo de Documento de Identidad del cliente
                 worksheet.Cell(contador, 10).Style.NumberFormat.Format = "@";
-                worksheet.Cell(contador, 10).Value = item.TipDocUsuario.Split(":")[0];
+                worksheet.Cell(contador, 10).Value = item.Cliente.TipoDoc.Split(":")[0];
                 // Número de Documento de Identidad del cliente
                 worksheet.Cell(contador, 11).Style.NumberFormat.Format = "@";
-                worksheet.Cell(contador, 11).Value = item.NumDocUsuario;
+                worksheet.Cell(contador, 11).Value = item.Cliente.NumDoc;
                 // Apellidos y nombres, denominación o razón social  del cliente.
-                if (item.RznSocialUsuario.Length >= 100)
-                    worksheet.Cell(contador, 12).Value = item.RznSocialUsuario.Substring(0, 99);
+                if (item.Cliente.RznSocial.Length >= 100)
+                    worksheet.Cell(contador, 12).Value = item.Cliente.RznSocial.Substring(0, 99);
                 else
-                    worksheet.Cell(contador, 12).Value = item.RznSocialUsuario;
+                    worksheet.Cell(contador, 12).Value = item.Cliente.RznSocial;
                 // Base imponible de la operación gravada (4)
-                var tributos = GetTributos(item.Id);
-                var igvItem = tributos.Single(x => x.IdeTributo.Equals("1000"));
+                // var tributos = GetTributos(item.Id);
+                // var igvItem = tributos.Single(x => x.IdeTributo.Equals("1000"));
                 worksheet.Cell(contador, 14).Style.NumberFormat.Format = "###########0.00";
-                worksheet.Cell(contador, 14).Value = igvItem.MtoBaseImponible;
-                // Impuesto General a las Ventas y/o Impuesto de Promoción Municipal
-                worksheet.Cell(contador, 16).Style.NumberFormat.Format = "###########0.00";
-                worksheet.Cell(contador, 16).Value = igvItem.MtoTributo;
+                //worksheet.Cell(contador, 14).Value = igvItem.MtoBaseImponible;
+                //// Impuesto General a las Ventas y/o Impuesto de Promoción Municipal
+                //worksheet.Cell(contador, 16).Style.NumberFormat.Format = "###########0.00";
+                //worksheet.Cell(contador, 16).Value = igvItem.MtoTributo;
                 // Impuesto al Consumo de las Bolsas de Plástico.
-                var bolsaItem = tributos.SingleOrDefault(x => x.IdeTributo.Equals("7152"));
+                // var bolsaItem = tributos.SingleOrDefault(x => x.IdeTributo.Equals("7152"));
                 worksheet.Cell(contador, 23).Style.NumberFormat.Format = "###########0.00";
-                if (bolsaItem == null)
-                    worksheet.Cell(contador, 23).Value = 0;
-                else
-                    worksheet.Cell(contador, 23).Value = bolsaItem.MtoTributo;
+                //if (bolsaItem == null)
+                //    worksheet.Cell(contador, 23).Value = 0;
+                //else
+                //    worksheet.Cell(contador, 23).Value = bolsaItem.MtoTributo;
                 // Importe total del comprobante de pago
                 worksheet.Cell(contador, 25).Style.NumberFormat.Format = "###########0.00";
-                worksheet.Cell(contador, 25).Value = item.SumImpVenta;
-                // Código  de la Moneda (Tabla 4)
-                worksheet.Cell(contador, 26).Value = item.TipMoneda;
+                //worksheet.Cell(contador, 25).Value = item.SumImpVenta;
+                //// Código  de la Moneda (Tabla 4)
+                //worksheet.Cell(contador, 26).Value = item.TipMoneda;
                 // Tipo de cambio (5)
                 worksheet.Cell(contador, 27).Style.NumberFormat.Format = "#.000";
                 worksheet.Cell(contador, 27).Value = 1;
@@ -671,7 +669,7 @@ public class ExcelRegistroVentasF141
             {
                 // Fecha de emisión del Comprobante de Pago
                 DateTime fechaEmisión =
-                    DateTime.ParseExact(item.FecEmision, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    DateTime.ParseExact(item.FechaEmision, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 worksheet.Cell(contador, 4).Style.NumberFormat.Format = "@";
                 worksheet.Cell(contador, 4).Value = fechaEmisión.ToString("dd/MM/yyyy");
                 // Tipo de Comprobante de Pago o Documento
@@ -681,38 +679,38 @@ public class ExcelRegistroVentasF141
                 worksheet.Cell(contador, 7).Value = item.Serie;
                 // Número del comprobante de pago o documento.
                 worksheet.Cell(contador, 8).Style.NumberFormat.Format = "@";
-                worksheet.Cell(contador, 8).Value = item.Number;
+                worksheet.Cell(contador, 8).Value = item.Correlativo;
                 // Tipo de Documento de Identidad del cliente
                 worksheet.Cell(contador, 10).Style.NumberFormat.Format = "@";
-                worksheet.Cell(contador, 10).Value = item.TipDocUsuario.Split(":")[0];
+                worksheet.Cell(contador, 10).Value = item.Cliente.TipoDoc.Split(":")[0];
                 // Número de Documento de Identidad del cliente
                 worksheet.Cell(contador, 11).Style.NumberFormat.Format = "@";
-                worksheet.Cell(contador, 11).Value = item.NumDocUsuario;
+                worksheet.Cell(contador, 11).Value = item.Cliente.NumDoc;
                 // Apellidos y nombres, denominación o razón social  del cliente.
-                if (item.RznSocialUsuario.Length >= 100)
-                    worksheet.Cell(contador, 12).Value = item.RznSocialUsuario.Substring(0, 99);
+                if (item.Cliente.RznSocial.Length >= 100)
+                    worksheet.Cell(contador, 12).Value = item.Cliente.RznSocial.Substring(0, 99);
                 else
-                    worksheet.Cell(contador, 12).Value = item.RznSocialUsuario;
+                    worksheet.Cell(contador, 12).Value = item.Cliente.RznSocial;
                 // Base imponible de la operación gravada (4)
-                var tributos = GetTributos(item.Id);
-                var igvItem = tributos.Single(x => x.IdeTributo.Equals("1000"));
+                // var tributos = GetTributos(item.Id);
+                // var igvItem = tributos.Single(x => x.IdeTributo.Equals("1000"));
                 worksheet.Cell(contador, 14).Style.NumberFormat.Format = "###########0.00";
-                worksheet.Cell(contador, 14).Value = igvItem.MtoBaseImponible;
+                // worksheet.Cell(contador, 14).Value = igvItem.MtoBaseImponible;
                 // Impuesto General a las Ventas y/o Impuesto de Promoción Municipal
                 worksheet.Cell(contador, 16).Style.NumberFormat.Format = "###########0.00";
-                worksheet.Cell(contador, 16).Value = igvItem.MtoTributo;
+                // worksheet.Cell(contador, 16).Value = igvItem.MtoTributo;
                 // Impuesto al Consumo de las Bolsas de Plástico.
-                var bolsaItem = tributos.SingleOrDefault(x => x.IdeTributo.Equals("7152"));
+                // var bolsaItem = tributos.SingleOrDefault(x => x.IdeTributo.Equals("7152"));
                 worksheet.Cell(contador, 23).Style.NumberFormat.Format = "###########0.00";
-                if (bolsaItem == null)
-                    worksheet.Cell(contador, 23).Value = 0;
-                else
-                    worksheet.Cell(contador, 23).Value = bolsaItem.MtoTributo;
+                //if (bolsaItem == null)
+                //    worksheet.Cell(contador, 23).Value = 0;
+                //else
+                //    worksheet.Cell(contador, 23).Value = bolsaItem.MtoTributo;
                 // Importe total del comprobante de pago
                 worksheet.Cell(contador, 25).Style.NumberFormat.Format = "###########0.00";
-                worksheet.Cell(contador, 25).Value = item.SumImpVenta;
-                // Código  de la Moneda (Tabla 4)
-                worksheet.Cell(contador, 26).Value = item.TipMoneda;
+                //worksheet.Cell(contador, 25).Value = item.SumImpVenta;
+                //// Código  de la Moneda (Tabla 4)
+                //worksheet.Cell(contador, 26).Value = item.TipMoneda;
                 // Tipo de cambio (5)
                 worksheet.Cell(contador, 27).Style.NumberFormat.Format = "#.000";
                 worksheet.Cell(contador, 27).Value = 1;
@@ -730,7 +728,7 @@ public class ExcelRegistroVentasF141
             {
                 // Fecha de emisión del Comprobante de Pago
                 DateTime fechaEmisión =
-                    DateTime.ParseExact(item.FecEmision, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    DateTime.ParseExact(item.FechaEmision, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 worksheet.Cell(contador, 4).Style.NumberFormat.Format = "@";
                 worksheet.Cell(contador, 4).Value = fechaEmisión.ToString("dd/MM/yyyy");
                 // Tipo de Comprobante de Pago o Documento
@@ -740,59 +738,59 @@ public class ExcelRegistroVentasF141
                 worksheet.Cell(contador, 7).Value = item.Serie;
                 // Número del comprobante de pago o documento.
                 worksheet.Cell(contador, 8).Style.NumberFormat.Format = "@";
-                worksheet.Cell(contador, 8).Value = item.Number;
+                worksheet.Cell(contador, 8).Value = item.Correlativo;
                 // Tipo de Documento de Identidad del cliente
                 worksheet.Cell(contador, 10).Style.NumberFormat.Format = "@";
-                worksheet.Cell(contador, 10).Value = item.TipDocUsuario.Split(":")[0];
+                worksheet.Cell(contador, 10).Value = item.Cliente.TipoDoc.Split(":")[0];
                 // Número de Documento de Identidad del cliente
                 worksheet.Cell(contador, 11).Style.NumberFormat.Format = "@";
-                worksheet.Cell(contador, 11).Value = item.NumDocUsuario;
+                worksheet.Cell(contador, 11).Value = item.Cliente.NumDoc;
                 // Apellidos y nombres, denominación o razón social  del cliente.
-                if (item.RznSocialUsuario.Length >= 100)
-                    worksheet.Cell(contador, 12).Value = item.RznSocialUsuario.Substring(0, 99);
+                if (item.Cliente.RznSocial.Length >= 100)
+                    worksheet.Cell(contador, 12).Value = item.Cliente.RznSocial.Substring(0, 99);
                 else
-                    worksheet.Cell(contador, 12).Value = item.RznSocialUsuario;
+                    worksheet.Cell(contador, 12).Value = item.Cliente.RznSocial;
                 // Base imponible de la operación gravada (4)
-                var tributos = GetTributosCreditNotes(item.Id);
-                var igvItem = tributos.Single(x => x.IdeTributo.Equals("1000"));
+                // var tributos = GetTributosCreditNotes(item.Id);
+                // var igvItem = tributos.Single(x => x.IdeTributo.Equals("1000"));
                 worksheet.Cell(contador, 14).Style.NumberFormat.Format = "###########0.00";
-                worksheet.Cell(contador, 14).Value = igvItem.MtoBaseImponible * -1;
+                // worksheet.Cell(contador, 14).Value = igvItem.MtoBaseImponible * -1;
                 // Impuesto General a las Ventas y/o Impuesto de Promoción Municipal
                 worksheet.Cell(contador, 16).Style.NumberFormat.Format = "###########0.00";
-                worksheet.Cell(contador, 16).Value = igvItem.MtoTributo * -1;
+                // worksheet.Cell(contador, 16).Value = igvItem.MtoTributo * -1;
                 // Impuesto al Consumo de las Bolsas de Plástico.
-                var bolsaItem = tributos.SingleOrDefault(x => x.IdeTributo.Equals("7152"));
+                // var bolsaItem = tributos.SingleOrDefault(x => x.IdeTributo.Equals("7152"));
                 worksheet.Cell(contador, 23).Style.NumberFormat.Format = "###########0.00";
-                if (bolsaItem == null)
-                    worksheet.Cell(contador, 23).Value = 0;
-                else
-                    worksheet.Cell(contador, 23).Value = bolsaItem.MtoTributo * -1;
+                //if (bolsaItem == null)
+                //    worksheet.Cell(contador, 23).Value = 0;
+                //else
+                //    worksheet.Cell(contador, 23).Value = bolsaItem.MtoTributo * -1;
                 // Importe total del comprobante de pago
                 worksheet.Cell(contador, 25).Style.NumberFormat.Format = "###########0.00";
-                worksheet.Cell(contador, 25).Value = item.SumImpVenta * -1;
-                // Código  de la Moneda (Tabla 4)
-                worksheet.Cell(contador, 26).Value = item.TipMoneda;
+                //worksheet.Cell(contador, 25).Value = item.SumImpVenta * -1;
+                //// Código  de la Moneda (Tabla 4)
+                //worksheet.Cell(contador, 26).Value = item.TipMoneda;
                 // Tipo de cambio (5)
                 worksheet.Cell(contador, 27).Style.NumberFormat.Format = "#.000";
                 worksheet.Cell(contador, 27).Value = 1;
                 // Fecha de emisión del comprobante de pago o documento original que se modifica (6) o documento referencial al documento que sustenta el crédito fiscal
-                var comprobante = GetInvoiceByCreditNote(item.NumDocAfectado);
-                if (comprobante != null)
-                {
-                    DateTime date =
-                        DateTime.ParseExact(comprobante.FecEmision, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                    worksheet.Cell(contador, 28).Style.NumberFormat.Format = "@";
-                    worksheet.Cell(contador, 28).Value = date.ToString("dd/MM/yyyy");
-                }
+                // var comprobante = GetInvoiceByCreditNote(item.NumDocAfectado);
+                //if (comprobante != null)
+                //{
+                //    DateTime date =
+                //        DateTime.ParseExact(comprobante.FecEmision, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                //    worksheet.Cell(contador, 28).Style.NumberFormat.Format = "@";
+                //    worksheet.Cell(contador, 28).Value = date.ToString("dd/MM/yyyy");
+                //}
 
                 // Tipo del comprobante de pago que se modifica (6)
                 worksheet.Cell(contador, 29).Style.NumberFormat.Format = "@";
                 worksheet.Cell(contador, 29).Value = item.TipDocAfectado;
                 // Número de serie del comprobante de pago que se modifica (6) o Código de la Dependencia Aduanera
-                worksheet.Cell(contador, 30).Value = item.NumDocAfectado.Split("-")[0].Trim();
+                // worksheet.Cell(contador, 30).Value = item.NumDocAfectado.Split("-")[0].Trim();
                 // Número del comprobante de pago que se modifica (6) o Número de la DUA, de corresponder
                 worksheet.Cell(contador, 31).Style.NumberFormat.Format = "@";
-                worksheet.Cell(contador, 31).Value = item.NumDocAfectado.Split("-")[1].Trim();
+                // worksheet.Cell(contador, 31).Value = item.NumDocAfectado.Split("-")[1].Trim();
                 // Estado que identifica la oportunidad de la anotación o indicación si ésta corresponde a alguna de las situaciones previstas en el inciso e) del artículo 8° de la Resolución de Superintendencia N.° 286-2009/SUNAT
                 worksheet.Cell(contador, 35).Value = 1;
                 contador++;
@@ -807,7 +805,7 @@ public class ExcelRegistroVentasF141
             {
                 // Fecha de emisión del Comprobante de Pago
                 DateTime fechaEmisión =
-                    DateTime.ParseExact(item.FecEmision, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    DateTime.ParseExact(item.FechaEmision, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 worksheet.Cell(contador, 4).Style.NumberFormat.Format = "@";
                 worksheet.Cell(contador, 4).Value = fechaEmisión.ToString("dd/MM/yyyy");
                 // Tipo de Comprobante de Pago o Documento
@@ -817,59 +815,59 @@ public class ExcelRegistroVentasF141
                 worksheet.Cell(contador, 7).Value = item.Serie;
                 // Número del comprobante de pago o documento.
                 worksheet.Cell(contador, 8).Style.NumberFormat.Format = "@";
-                worksheet.Cell(contador, 8).Value = item.Number;
+                // worksheet.Cell(contador, 8).Value = item.Number;
                 // Tipo de Documento de Identidad del cliente
                 worksheet.Cell(contador, 10).Style.NumberFormat.Format = "@";
-                worksheet.Cell(contador, 10).Value = item.TipDocUsuario.Split(":")[0];
+                // worksheet.Cell(contador, 10).Value = item.TipDocUsuario.Split(":")[0];
                 // Número de Documento de Identidad del cliente
                 worksheet.Cell(contador, 11).Style.NumberFormat.Format = "@";
-                worksheet.Cell(contador, 11).Value = item.NumDocUsuario;
+                // worksheet.Cell(contador, 11).Value = item.NumDocUsuario;
                 // Apellidos y nombres, denominación o razón social  del cliente.
-                if (item.RznSocialUsuario.Length >= 100)
-                    worksheet.Cell(contador, 12).Value = item.RznSocialUsuario.Substring(0, 99);
-                else
-                    worksheet.Cell(contador, 12).Value = item.RznSocialUsuario;
+                //if (item.RznSocialUsuario.Length >= 100)
+                //    worksheet.Cell(contador, 12).Value = item.RznSocialUsuario.Substring(0, 99);
+                //else
+                //    worksheet.Cell(contador, 12).Value = item.RznSocialUsuario;
                 // Base imponible de la operación gravada (4)
-                var tributos = GetTributosCreditNotes(item.Id);
-                var igvItem = tributos.Single(x => x.IdeTributo.Equals("1000"));
+               //  var tributos = GetTributosCreditNotes(item.Id);
+                // var igvItem = tributos.Single(x => x.IdeTributo.Equals("1000"));
                 worksheet.Cell(contador, 14).Style.NumberFormat.Format = "###########0.00";
-                worksheet.Cell(contador, 14).Value = igvItem.MtoBaseImponible * -1;
+               // worksheet.Cell(contador, 14).Value = igvItem.MtoBaseImponible * -1;
                 // Impuesto General a las Ventas y/o Impuesto de Promoción Municipal
                 worksheet.Cell(contador, 16).Style.NumberFormat.Format = "###########0.00";
-                worksheet.Cell(contador, 16).Value = igvItem.MtoTributo * -1;
+                // worksheet.Cell(contador, 16).Value = igvItem.MtoTributo * -1;
                 // Impuesto al Consumo de las Bolsas de Plástico.
-                var bolsaItem = tributos.SingleOrDefault(x => x.IdeTributo.Equals("7152"));
+                // var bolsaItem = tributos.SingleOrDefault(x => x.IdeTributo.Equals("7152"));
                 worksheet.Cell(contador, 23).Style.NumberFormat.Format = "###########0.00";
-                if (bolsaItem == null)
-                    worksheet.Cell(contador, 23).Value = 0;
-                else
-                    worksheet.Cell(contador, 23).Value = bolsaItem.MtoTributo * -1;
+                //if (bolsaItem == null)
+                //    worksheet.Cell(contador, 23).Value = 0;
+                //else
+                //    worksheet.Cell(contador, 23).Value = bolsaItem.MtoTributo * -1;
                 // Importe total del comprobante de pago
                 worksheet.Cell(contador, 25).Style.NumberFormat.Format = "###########0.00";
-                worksheet.Cell(contador, 25).Value = item.SumImpVenta * -1;
+                // worksheet.Cell(contador, 25).Value = item.SumImpVenta * -1;
                 // Código  de la Moneda (Tabla 4)
-                worksheet.Cell(contador, 26).Value = item.TipMoneda;
+                // worksheet.Cell(contador, 26).Value = item.TipMoneda;
                 // Tipo de cambio (5)
                 worksheet.Cell(contador, 27).Style.NumberFormat.Format = "#.000";
                 worksheet.Cell(contador, 27).Value = 1;
                 // Fecha de emisión del comprobante de pago o documento original que se modifica (6) o documento referencial al documento que sustenta el crédito fiscal
-                var comprobante = GetInvoiceByCreditNote(item.NumDocAfectado);
-                if (comprobante != null)
-                {
-                    DateTime date =
-                        DateTime.ParseExact(comprobante.FecEmision, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                    worksheet.Cell(contador, 28).Style.NumberFormat.Format = "@";
-                    worksheet.Cell(contador, 28).Value = date.ToString("dd/MM/yyyy");
-                }
+                // var comprobante = GetInvoiceByCreditNote(item.NumDocAfectado);
+                //if (comprobante != null)
+                //{
+                //    DateTime date =
+                //        DateTime.ParseExact(comprobante.FecEmision, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                //    worksheet.Cell(contador, 28).Style.NumberFormat.Format = "@";
+                //    worksheet.Cell(contador, 28).Value = date.ToString("dd/MM/yyyy");
+                //}
 
                 // Tipo del comprobante de pago que se modifica (6)
                 worksheet.Cell(contador, 29).Style.NumberFormat.Format = "@";
                 worksheet.Cell(contador, 29).Value = item.TipDocAfectado;
                 // Número de serie del comprobante de pago que se modifica (6) o Código de la Dependencia Aduanera
-                worksheet.Cell(contador, 30).Value = item.NumDocAfectado.Split("-")[0].Trim();
+                // worksheet.Cell(contador, 30).Value = item.NumDocAfectado.Split("-")[0].Trim();
                 // Número del comprobante de pago que se modifica (6) o Número de la DUA, de corresponder
                 worksheet.Cell(contador, 31).Style.NumberFormat.Format = "@";
-                worksheet.Cell(contador, 31).Value = item.NumDocAfectado.Split("-")[1].Trim();
+                // worksheet.Cell(contador, 31).Value = item.NumDocAfectado.Split("-")[1].Trim();
                 // Estado que identifica la oportunidad de la anotación o indicación si ésta corresponde a alguna de las situaciones previstas en el inciso e) del artículo 8° de la Resolución de Superintendencia N.° 286-2009/SUNAT
                 worksheet.Cell(contador, 35).Value = 1;
                 contador++;
@@ -925,26 +923,20 @@ public class ExcelRegistroVentasF141
 
     private List<InvoiceSale> GetFacturas(string invoiceSerieId)
     {
-        return _param.InvoiceSales.Where(x => x.DocType == "FACTURA" && x.InvoiceSerieId == invoiceSerieId)
-            .OrderBy(x => x.Number).ToList();
+        return _param.InvoiceSales.Where(x => x.TipoDoc == "01" && x.InvoiceSerieId == invoiceSerieId)
+            .OrderBy(x => x.Correlativo).ToList();
     }
 
     private List<InvoiceSale> GetBoletas(string invoiceSerieId)
     {
-        return _param.InvoiceSales.Where(x => x.DocType == "BOLETA" && x.InvoiceSerieId == invoiceSerieId)
-            .OrderBy(x => x.Number).ToList();
+        return _param.InvoiceSales.Where(x => x.TipoDoc == "03" && x.InvoiceSerieId == invoiceSerieId)
+            .OrderBy(x => x.Correlativo).ToList();
     }
-
-    private List<TributoSale> GetTributos(string id) =>
-        _param.TributoSales.Where(x => x.InvoiceSaleId.Equals(id)).ToList();
-
-    private List<TributoCreditNote> GetTributosCreditNotes(string id) =>
-        _param.TributoCreditNotes.Where(x => x.CreditNoteId.Equals(id)).ToList();
 
     private List<CreditNote> GetCreditNotes(string invoiceSerieId, string serie)
     {
         return _param.CreditNotes.Where(x => x.InvoiceSerieId.Equals(invoiceSerieId) && x.Serie.Equals(serie))
-            .OrderBy(x => x.Number).ToList();
+            .OrderBy(x => x.Correlativo).ToList();
     }
 
     /// <summary>
@@ -957,6 +949,6 @@ public class ExcelRegistroVentasF141
         string serie = numDoc.Split("-")[0].Trim();
         string number = numDoc.Split("-")[1].Trim();
         return _param.ComprobantesDeNotas.SingleOrDefault(x =>
-            x.Serie.Equals(serie) && x.Number.Equals(number));
+            x.Serie.Equals(serie) && x.Correlativo.Equals(number));
     }
 }

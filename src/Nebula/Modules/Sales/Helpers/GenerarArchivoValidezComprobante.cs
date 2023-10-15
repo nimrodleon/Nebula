@@ -33,7 +33,7 @@ public class GenerarArchivoValidezComprobante
     /// <returns>Lista de Comprobantes</returns>
     private List<InvoiceSale> GetComprobantesByTypeAndSerie(string type, string serie)
     {
-        return _invoiceSales.Where(x => x.DocType.Equals(type) && x.Serie.Equals(serie)).ToList();
+        return _invoiceSales.Where(x => x.TipoDoc.Equals(type) && x.Serie.Equals(serie)).ToList();
     }
 
     /// <summary>
@@ -96,9 +96,6 @@ public class GenerarArchivoValidezComprobante
     /// <param name="serie">serie del comprobante</param>
     private void GenerarArchivoPlanoComprobantes(string pathComprobante, string rucEmisor, string type, string serie)
     {
-        string docType = string.Empty;
-        if (type.Equals("FACTURA")) docType = "01";
-        if (type.Equals("BOLETA")) docType = "03";
         List<InvoiceSale> comprobantes = GetComprobantesByTypeAndSerie(type, serie);
         // Dividir la lista en grupos de 100 comprobantes.
         var gruposDeComprobantes = comprobantes
@@ -116,15 +113,15 @@ public class GenerarArchivoValidezComprobante
             using StreamWriter streamWriter = new StreamWriter(pathArchivoPlano);
             foreach (var comprobante in grupo)
             {
-                DateTime date = DateTime.Parse(comprobante.FecEmision);
+                DateTime date = DateTime.Parse(comprobante.FechaEmision);
                 string fecEmision = date.ToString("dd/MM/yyyy");
-                string sumImpVenta = comprobante.SumImpVenta.ToString("N2", numberFormatInfo);
+                string sumImpVenta = comprobante.MtoImpVenta.ToString("N2", numberFormatInfo);
                 if (comprobante == grupo.Last())
                     streamWriter.Write(
-                        $"{rucEmisor}|{docType}|{comprobante.Serie}|{comprobante.Number}|{fecEmision}|{sumImpVenta}");
+                        $"{rucEmisor}|{type}|{comprobante.Serie}|{comprobante.Correlativo}|{fecEmision}|{sumImpVenta}");
                 else
                     streamWriter.WriteLine(
-                        $"{rucEmisor}|{docType}|{comprobante.Serie}|{comprobante.Number}|{fecEmision}|{sumImpVenta}");
+                        $"{rucEmisor}|{type}|{comprobante.Serie}|{comprobante.Correlativo}|{fecEmision}|{sumImpVenta}");
             }
 
             numeroDeGrupo++;
@@ -156,15 +153,15 @@ public class GenerarArchivoValidezComprobante
             using StreamWriter streamWriter = new StreamWriter(pathArchivoPlano);
             foreach (var comprobante in grupo)
             {
-                DateTime date = DateTime.Parse(comprobante.FecEmision);
+                DateTime date = DateTime.Parse(comprobante.FechaEmision);
                 string fecEmision = date.ToString("dd/MM/yyyy");
-                string sumImpVenta = comprobante.SumImpVenta.ToString("N2", numberFormatInfo);
+                string sumImpVenta = comprobante.MtoImpVenta.ToString("N2", numberFormatInfo);
                 if (comprobante == grupo.Last())
                     streamWriter.Write(
-                        $"{rucEmisor}|07|{comprobante.Serie}|{comprobante.Number}|{fecEmision}|{sumImpVenta}");
+                        $"{rucEmisor}|07|{comprobante.Serie}|{comprobante.Correlativo}|{fecEmision}|{sumImpVenta}");
                 else
                     streamWriter.WriteLine(
-                        $"{rucEmisor}|07|{comprobante.Serie}|{comprobante.Number}|{fecEmision}|{sumImpVenta}");
+                        $"{rucEmisor}|07|{comprobante.Serie}|{comprobante.Correlativo}|{fecEmision}|{sumImpVenta}");
             }
 
             numeroDeGrupo++;
@@ -186,8 +183,8 @@ public class GenerarArchivoValidezComprobante
             _invoiceSeries.ForEach(item =>
             {
                 // generar archivos planos de comprobantes.
-                GenerarArchivoPlanoComprobantes(carpetaDeTrabajo, rucEmisor, "BOLETA", item.Boleta);
-                GenerarArchivoPlanoComprobantes(carpetaDeTrabajo, rucEmisor, "FACTURA", item.Factura);
+                GenerarArchivoPlanoComprobantes(carpetaDeTrabajo, rucEmisor, "03", item.Boleta);
+                GenerarArchivoPlanoComprobantes(carpetaDeTrabajo, rucEmisor, "01", item.Factura);
                 GenerarArchivoPlanoNotaDeCrédito(carpetaDeTrabajo, rucEmisor, item.CreditNoteBoleta);
                 GenerarArchivoPlanoNotaDeCrédito(carpetaDeTrabajo, rucEmisor, item.CreditNoteFactura);
             });
