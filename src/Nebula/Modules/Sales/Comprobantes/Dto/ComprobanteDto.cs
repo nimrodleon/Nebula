@@ -57,13 +57,14 @@ public class ComprobanteDto
             ContactId = Cabecera.ContactId.Trim(),
             Cliente = new Cliente()
             {
-                TipoDoc = Cabecera.TipDocUsuario.Trim(),
+                TipoDoc = Cabecera.TipDocUsuario.Split(":")[0].Trim(),
                 NumDoc = Cabecera.NumDocUsuario.Trim(),
                 RznSocial = Cabecera.RznSocialUsuario.Trim(),
             },
             TipoMoneda = company.TipMoneda.Trim(),
             TipoOperacion = "0101",
             FecVencimiento = Cabecera.FecVencimiento.Trim(),
+            PaymentMethod = Cabecera.PaymentMethod.Trim(),
             FormaPago = FormaPago,
             Cuotas = Cuotas,
             MtoOperGravadas = _mtoOperGravadas,

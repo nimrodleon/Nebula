@@ -8,6 +8,7 @@ public class CabeceraComprobanteDto
     public string TipDocUsuario { get; set; } = string.Empty;
     public string NumDocUsuario { get; set; } = string.Empty;
     public string RznSocialUsuario { get; set; } = string.Empty;
+    public string PaymentMethod { get; set; } = string.Empty;
     public string FecVencimiento { get; set; } = "-";
     public string InvoiceSerieId { get; set; } = "-";
     public string Remark { get; set; } = string.Empty;
