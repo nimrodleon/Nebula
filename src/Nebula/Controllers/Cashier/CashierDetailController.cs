@@ -36,7 +36,7 @@ public class CashierDetailController : ControllerBase
             model.TypeOperation = TypeOperationCaja.EntradaDeDinero;
         if (model.TypeOperation == TypeOperationCaja.SalidaDeDinero)
             model.TypeOperation = TypeOperationCaja.SalidaDeDinero;
-        model.FormaPago = FormaPago.Contado;
+        model.FormaPago = MetodosPago.Contado;
         model.CompanyId = companyId.Trim();
         model = await _cashierDetailService.CreateAsync(model);
         return Ok(model);
