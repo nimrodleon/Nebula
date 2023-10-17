@@ -14,10 +14,10 @@ public class InventoryNotasDetailService : CrudOperationService<InventoryNotasDe
 {
     public InventoryNotasDetailService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
 
-    public async Task<List<InventoryNotasDetail>> GetListAsync(string companyId, string id)
+    public async Task<List<InventoryNotasDetail>> GetListAsync(string companyId, string inventoryNotasId)
     {
         var filter = Builders<InventoryNotasDetail>.Filter;
-        var query = filter.And(filter.Eq(x => x.CompanyId, companyId), filter.Eq(x => x.InventoryNotasId, id));
+        var query = filter.And(filter.Eq(x => x.CompanyId, companyId), filter.Eq(x => x.InventoryNotasId, inventoryNotasId));
         return await _collection.Find(query).ToListAsync();
     }
 

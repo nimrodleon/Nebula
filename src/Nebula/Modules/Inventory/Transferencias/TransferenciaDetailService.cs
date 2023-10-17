@@ -15,10 +15,10 @@ public class TransferenciaDetailService : CrudOperationService<TransferenciaDeta
 {
     public TransferenciaDetailService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
 
-    public async Task<List<TransferenciaDetail>> GetListAsync(string companyId, string id)
+    public async Task<List<TransferenciaDetail>> GetListAsync(string companyId, string transferenciaId)
     {
         var filter = Builders<TransferenciaDetail>.Filter;
-        var query = filter.And(filter.Eq(x => x.CompanyId, companyId), filter.Eq(x => x.TransferenciaId, id));
+        var query = filter.And(filter.Eq(x => x.CompanyId, companyId), filter.Eq(x => x.TransferenciaId, transferenciaId));
         return await _collection.Find(query).ToListAsync();
     }
 

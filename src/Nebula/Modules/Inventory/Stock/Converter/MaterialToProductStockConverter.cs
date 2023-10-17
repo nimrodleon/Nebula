@@ -6,21 +6,28 @@ namespace Nebula.Modules.Inventory.Stock.Converter;
 
 public class MaterialToProductStockConverter
 {
-    public List<ProductStock> Convertir(MaterialDto dto)
+    private readonly MaterialDto _materialDto;
+
+    public MaterialToProductStockConverter(MaterialDto materialDto)
+    {
+        _materialDto = materialDto;
+    }
+
+    public List<ProductStock> Convertir()
     {
         var productStocks = new List<ProductStock>();
-        dto.MaterialDetails.ForEach(item =>
-        {
-            productStocks.Add(new ProductStock()
-            {
-                Id = string.Empty,
-                CompanyId = dto.Material.CompanyId.Trim(),
-                WarehouseId = item.WarehouseId,
-                ProductId = item.ProductId,
-                TransactionType = TransactionType.SALIDA,
-                Quantity = item.CantUsado,
-            });
-        });
+        _materialDto.MaterialDetails.ForEach(item =>
+         {
+             productStocks.Add(new ProductStock()
+             {
+                 Id = string.Empty,
+                 CompanyId = _materialDto.Material.CompanyId.Trim(),
+                 WarehouseId = item.WarehouseId,
+                 ProductId = item.ProductId,
+                 TransactionType = TransactionType.SALIDA,
+                 Quantity = item.CantUsado,
+             });
+         });
         return productStocks;
     }
 }

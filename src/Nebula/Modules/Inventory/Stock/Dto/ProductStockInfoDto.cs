@@ -18,22 +18,7 @@ public class ProductStockInfoDto
     public string ProductId { get; set; } = string.Empty;
 
     /// <summary>
-    /// Identificador del Lote del producto.
-    /// </summary>
-    public string ProductLoteId { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Nombre del Lote del producto.
-    /// </summary>
-    public string ProductLoteName { get; set; } = string.Empty;
-
-    /// <summary>
     /// Cantidad de Productos.
     /// </summary>
     public decimal Quantity { get; set; }
-
-    /// <summary>
-    /// Fecha de Vencimiento.
-    /// </summary>
-    public string ExpirationDate { get; set; } = string.Empty;
 }

@@ -6,7 +6,7 @@ namespace Nebula.Modules.Inventory.Materiales;
 
 public interface IMaterialDetailService : ICrudOperationService<MaterialDetail>
 {
-    Task<List<MaterialDetail>> GetListAsync(string companyId, string id);
+    Task<List<MaterialDetail>> GetListAsync(string companyId, string materialId);
     Task<long> CountDocumentsAsync(string companyId, string id);
 }
 
@@ -14,10 +14,10 @@ public class MaterialDetailService : CrudOperationService<MaterialDetail>, IMate
 {
     public MaterialDetailService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
 
-    public async Task<List<MaterialDetail>> GetListAsync(string companyId, string id)
+    public async Task<List<MaterialDetail>> GetListAsync(string companyId, string materialId)
     {
         var filter = Builders<MaterialDetail>.Filter;
-        var query = filter.And(filter.Eq(x => x.CompanyId, companyId), filter.Eq(x => x.MaterialId, id));
+        var query = filter.And(filter.Eq(x => x.CompanyId, companyId), filter.Eq(x => x.MaterialId, materialId));
         return await _collection.Find(query).ToListAsync();
     }
 

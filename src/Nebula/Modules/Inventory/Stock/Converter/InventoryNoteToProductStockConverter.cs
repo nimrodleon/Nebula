@@ -5,18 +5,25 @@ namespace Nebula.Modules.Inventory.Stock.Converter;
 
 public class InventoryNoteToProductStockConverter
 {
-    public List<ProductStock> Convertir(InventoryNoteDto notaDto)
+    private readonly InventoryNoteDto _inventoryNoteDto;
+
+    public InventoryNoteToProductStockConverter(InventoryNoteDto inventoryNoteDto)
+    {
+        _inventoryNoteDto = inventoryNoteDto;
+    }
+
+    public List<ProductStock> Convertir()
     {
         var productStocks = new List<ProductStock>();
-        notaDto.InventoryNotasDetail.ForEach(item =>
+        _inventoryNoteDto.InventoryNotasDetail.ForEach(item =>
         {
             productStocks.Add(new ProductStock
             {
                 Id = string.Empty,
-                CompanyId = notaDto.InventoryNotas.CompanyId,
-                WarehouseId = notaDto.InventoryNotas.WarehouseId,
+                CompanyId = _inventoryNoteDto.InventoryNotas.CompanyId,
+                WarehouseId = _inventoryNoteDto.InventoryNotas.WarehouseId,
                 ProductId = item.ProductId,
-                TransactionType = notaDto.InventoryNotas.TransactionType,
+                TransactionType = _inventoryNoteDto.InventoryNotas.TransactionType,
                 Quantity = item.Demanda
             });
         });
