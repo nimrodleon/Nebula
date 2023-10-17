@@ -1,36 +1,45 @@
 using Nebula.Modules.Inventory.Dto;
 using Nebula.Modules.Inventory.Helpers;
 using Nebula.Modules.Inventory.Models;
+using Nebula.Modules.Inventory.Stock.Dto;
 
 namespace Nebula.Modules.Inventory.Stock.Converter;
 
 public class TransferenciaToProductStockConverter
 {
-    public object Convertir(TransferenciaDto dto)
+    private readonly TransferenciaDto _transferenciaDto;
+
+    public TransferenciaToProductStockConverter(TransferenciaDto transferenciaDto)
+    {
+        _transferenciaDto = transferenciaDto;
+    }
+
+    public TransferenciaResult Convertir()
     {
         var productStockDestino = new List<ProductStock>();
         var productStockOrigen = new List<ProductStock>();
-        dto.TransferenciaDetails.ForEach(item =>
+        var result = new TransferenciaResult();
+        _transferenciaDto.TransferenciaDetails.ForEach(item =>
         {
-            productStockDestino.Add(new ProductStock()
+            result.ProductStockDestino.Add(new ProductStock()
             {
                 Id = string.Empty,
-                CompanyId = dto.Transferencia.CompanyId.Trim(),
-                WarehouseId = dto.Transferencia.WarehouseTargetId,
+                CompanyId = _transferenciaDto.Transferencia.CompanyId.Trim(),
+                WarehouseId = _transferenciaDto.Transferencia.WarehouseTargetId,
                 ProductId = item.ProductId,
                 TransactionType = TransactionType.ENTRADA,
                 Quantity = item.CantTransferido,
             });
-            productStockOrigen.Add(new ProductStock()
+            result.ProductStockOrigen.Add(new ProductStock()
             {
                 Id = string.Empty,
-                CompanyId = dto.Transferencia.CompanyId.Trim(),
-                WarehouseId = dto.Transferencia.WarehouseOriginId,
+                CompanyId = _transferenciaDto.Transferencia.CompanyId.Trim(),
+                WarehouseId = _transferenciaDto.Transferencia.WarehouseOriginId,
                 ProductId = item.ProductId,
                 TransactionType = TransactionType.SALIDA,
                 Quantity = item.CantTransferido,
             });
         });
-        return new { productStockOrigen, productStockDestino };
+        return result;
     }
 }

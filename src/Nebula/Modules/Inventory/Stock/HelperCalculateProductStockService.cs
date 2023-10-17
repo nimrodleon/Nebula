@@ -36,9 +36,10 @@ public class HelperCalculateProductStockService : IHelperCalculateProductStockSe
         var requestParams = new StockListRequestParams();
         requestParams.Product = await _productService.GetByIdAsync(companyId, productId);
         requestParams.Warehouses = await _warehouseService.GetAllAsync(companyId);
-        var warehouseIds = await _warehouseService.GetWarehouseIds(companyId);
-        requestParams.Stocks = await _productStockService.GetProductStockListByWarehousesIdsAsync(companyId, warehouseIds, requestParams.Product.Id);
-        var result = new HelperProductStockInfo(requestParams).GetStockList();
+        var warehouseArrId = new List<string>();
+        requestParams.Warehouses.ForEach(item => warehouseArrId.Add(item.Id));
+        requestParams.Stocks = await _productStockService.GetProductStocksByWarehousesIdsAsync(companyId, warehouseArrId, requestParams.Product.Id);
+        var result = new HelperProductStockInfo(requestParams).GetStockInfo();
         return result;
     }
 }

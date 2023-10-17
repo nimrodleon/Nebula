@@ -40,14 +40,7 @@ public class ProductStockController : ControllerBase
     [HttpGet("StockQuantity/{warehouseId}/{productId}")]
     public async Task<IActionResult> StockQuantity(string companyId, string warehouseId, string productId)
     {
-        var result = await _productStockService.GetStockQuantityByWarehouseAsync(companyId, warehouseId, productId);
-        return Ok(result);
-    }
-
-    [HttpGet("LoteStockQuantity/{warehouseId}/{productLoteId}/{productId}")]
-    public async Task<IActionResult> LoteStockQuantity(string companyId, string warehouseId, string productLoteId, string productId)
-    {
-        var result = await _productStockService.GetLoteStockQuantityByWarehouseAsync(companyId, warehouseId, productLoteId, productId);
+        var result = await _productStockService.GetStockQuantityAsync(companyId, warehouseId, productId);
         return Ok(result);
     }
 

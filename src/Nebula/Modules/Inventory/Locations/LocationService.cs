@@ -40,7 +40,7 @@ public class LocationService : CrudOperationService<Location>, ILocationService
         var productArrId = new List<string>();
         // obtener lista de identificadores.
         locationDetails.ForEach(item => productArrId.Add(item.ProductId));
-        var productStocks = await _productStockService.GetProductStockByWarehouseIdAsync(companyId, location.WarehouseId, productArrId);
+        var productStocks = await _productStockService.GetProductStockByProductIdsAsync(companyId, location.WarehouseId, productArrId);
         var locationDetailStocks = new List<LocationItemStockDto>();
         locationDetails.ForEach(item =>
         {

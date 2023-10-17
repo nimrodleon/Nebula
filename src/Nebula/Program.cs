@@ -16,7 +16,6 @@ using Nebula.Modules.Inventory.Locations;
 using Nebula.Modules.Inventory.Materiales;
 using Nebula.Modules.Inventory.Notas;
 using Nebula.Modules.Inventory.Stock;
-using Nebula.Modules.Inventory.Stock.Validations;
 using Nebula.Modules.Inventory.Transferencias;
 using Nebula.Modules.InvoiceHub;
 using Nebula.Modules.Products;
@@ -121,13 +120,6 @@ builder.Services.AddScoped<ITransferenciaService, TransferenciaService>();
 builder.Services.AddScoped<ITransferenciaDetailService, TransferenciaDetailService>();
 builder.Services.AddScoped<IAjusteInventarioService, AjusteInventarioService>();
 builder.Services.AddScoped<IAjusteInventarioDetailService, AjusteInventarioDetailService>();
-
-// Validación de Stocks.
-builder.Services.AddScoped<INotaStockValidator, InventoryNoteToProductStockConverter>();
-builder.Services.AddScoped<IInventoryTransferenciaStockValidator, InventoryTransferenciaStockValidator>();
-builder.Services.AddScoped<IAjusteInventarioStockValidator, AjusteInventarioStockValidator>();
-builder.Services.AddScoped<IInventoryMaterialStockValidator, InventoryMaterialStockValidator>();
-builder.Services.AddScoped<IInvoiceSaleStockValidator, InvoiceSaleStockValidator>();
 builder.Services.AddScoped<IValidateStockService, ValidateStockService>();
 
 #endregion
