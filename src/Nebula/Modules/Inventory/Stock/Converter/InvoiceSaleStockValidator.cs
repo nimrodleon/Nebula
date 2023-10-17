@@ -3,7 +3,7 @@ using Nebula.Modules.Inventory.Models;
 using Nebula.Modules.Products.Helpers;
 using Nebula.Modules.Sales.Invoices;
 
-namespace Nebula.Modules.Inventory.Stock.Validations;
+namespace Nebula.Modules.Inventory.Stock.Converter;
 
 public interface IInvoiceSaleStockValidator
 {

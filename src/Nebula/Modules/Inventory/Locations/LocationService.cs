@@ -51,10 +51,10 @@ public class LocationService : CrudOperationService<Location>, ILocationService
             itemStock.QuantityMax = item.QuantityMax;
             itemStock.QuantityMin = item.QuantityMin;
             // calcular existencia de productos.
-            var entradasList = products.Where(x => x.Type == "ENTRADA").ToList();
-            var salidasList = products.Where(x => x.Type == "SALIDA").ToList();
-            long totalEntradas = entradasList.Sum(x => x.Quantity);
-            long totalSalidas = salidasList.Sum(x => x.Quantity);
+            var entradasList = products.Where(x => x.TransactionType == "ENTRADA").ToList();
+            var salidasList = products.Where(x => x.TransactionType == "SALIDA").ToList();
+            decimal totalEntradas = entradasList.Sum(x => x.Quantity);
+            decimal totalSalidas = salidasList.Sum(x => x.Quantity);
             itemStock.Stock = totalEntradas - totalSalidas;
             if (!reponer)
                 locationDetailStocks.Add(itemStock);

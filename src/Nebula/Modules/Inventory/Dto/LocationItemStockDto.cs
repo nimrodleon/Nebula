@@ -6,5 +6,5 @@ public class LocationItemStockDto
     public string Description { get; set; } = string.Empty;
     public long QuantityMax { get; set; }
     public long QuantityMin { get; set; }
-    public long Stock { get; set; }
+    public decimal Stock { get; set; }
 }

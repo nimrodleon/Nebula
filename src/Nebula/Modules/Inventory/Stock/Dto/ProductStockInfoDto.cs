@@ -30,7 +30,7 @@ public class ProductStockInfoDto
     /// <summary>
     /// Cantidad de Productos.
     /// </summary>
-    public long Quantity { get; set; }
+    public decimal Quantity { get; set; }
 
     /// <summary>
     /// Fecha de Vencimiento.

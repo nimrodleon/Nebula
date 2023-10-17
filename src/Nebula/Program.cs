@@ -123,7 +123,7 @@ builder.Services.AddScoped<IAjusteInventarioService, AjusteInventarioService>();
 builder.Services.AddScoped<IAjusteInventarioDetailService, AjusteInventarioDetailService>();
 
 // Validación de Stocks.
-builder.Services.AddScoped<IInventoryNotasStockValidator, InventoryNotasStockValidator>();
+builder.Services.AddScoped<INotaStockValidator, InventoryNoteToProductStockConverter>();
 builder.Services.AddScoped<IInventoryTransferenciaStockValidator, InventoryTransferenciaStockValidator>();
 builder.Services.AddScoped<IAjusteInventarioStockValidator, AjusteInventarioStockValidator>();
 builder.Services.AddScoped<IInventoryMaterialStockValidator, InventoryMaterialStockValidator>();

@@ -34,7 +34,7 @@ public class AjusteInventarioDetail : IGenericModel
     /// <summary>
     /// Cantidad Existente.
     /// </summary>
-    public long CantExistente { get; set; }
+    public decimal CantExistente { get; set; }
 
     /// <summary>
     /// Cantidad Contada.

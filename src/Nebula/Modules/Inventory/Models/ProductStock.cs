@@ -1,7 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Nebula.Common.Models;
-using Nebula.Modules.Inventory.Helpers;
 
 namespace Nebula.Modules.Inventory.Models;
 
@@ -28,17 +27,12 @@ public class ProductStock : IGenericModel
     public string ProductId { get; set; } = string.Empty;
 
     /// <summary>
-    /// Identificador del Lote del producto.
+    /// Tipo de Transacción de Inventario (Entrada o Salida).
     /// </summary>
-    public string ProductLoteId { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Tipo de Registro.
-    /// </summary>
-    public string Type { get; set; } = InventoryType.ENTRADA;
+    public string TransactionType { get; set; } = Helpers.TransactionType.ENTRADA;
 
     /// <summary>
     /// Cantidad de Productos.
     /// </summary>
-    public long Quantity { get; set; }
+    public decimal Quantity { get; set; } = decimal.Zero;
 }

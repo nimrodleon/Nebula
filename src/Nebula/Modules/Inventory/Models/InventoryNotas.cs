@@ -45,7 +45,7 @@ public class InventoryNotas : IGenericModel
     /// <summary>
     /// Tipo de Inventario. ENTRADA | SALIDA
     /// </summary>
-    public string Type { get; set; } = InventoryType.ENTRADA;
+    public string TransactionType { get; set; } = Helpers.TransactionType.ENTRADA;
 
     /// <summary>
     /// Estado del Inventario.

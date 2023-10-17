@@ -34,15 +34,15 @@ public class TransferenciaDetail : IGenericModel
     /// <summary>
     /// Cantidad Existente.
     /// </summary>
-    public long CantExistente { get; set; }
+    public decimal CantExistente { get; set; }
 
     /// <summary>
     /// Cantidad Transferido.
     /// </summary>
-    public long CantTransferido { get; set; }
+    public decimal CantTransferido { get; set; }
 
     /// <summary>
     /// Cantidad Restante.
     /// </summary>
-    public long CantRestante { get; set; }
+    public decimal CantRestante { get; set; }
 }

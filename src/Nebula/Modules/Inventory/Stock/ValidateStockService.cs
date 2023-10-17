@@ -14,14 +14,14 @@ public interface IValidateStockService
 
 public class ValidateStockService : IValidateStockService
 {
-    private readonly IInventoryNotasStockValidator _inventoryNotasStockValidator;
+    private readonly INotaStockValidator _inventoryNotasStockValidator;
     private readonly IInventoryTransferenciaStockValidator _inventoryTransferenciaStockValidator;
     private readonly IAjusteInventarioStockValidator _ajusteInventarioStockValidator;
     private readonly IInventoryMaterialStockValidator _inventoryMaterialStockValidator;
     private readonly IInvoiceSaleStockValidator _invoiceSaleStockValidator;
 
     public ValidateStockService(
-        IInventoryNotasStockValidator inventoryNotasStockValidator,
+        INotaStockValidator inventoryNotasStockValidator,
         IInventoryTransferenciaStockValidator inventoryTransferenciaStockValidator,
         IAjusteInventarioStockValidator ajusteInventarioStockValidator,
         IInventoryMaterialStockValidator inventoryMaterialStockValidator,

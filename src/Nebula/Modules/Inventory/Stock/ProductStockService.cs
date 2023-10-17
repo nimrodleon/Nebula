@@ -13,8 +13,8 @@ public interface IProductStockService : ICrudOperationService<ProductStock>
     Task<DeleteResult> DeleteAllByWarehouseAsync(string companyId, string warehouseId, string productId);
     Task<DeleteResult> DeleteAllByWarehouseAndLoteAsync(string companyId, string warehouseId, string productLoteId, string productId);
     Task<ProductStock> ChangeQuantity(string companyId, ChangeQuantityStockRequestParams requestParams);
-    Task<long> GetStockQuantityByWarehouseAsync(string companyId, string warehouseId, string productId);
-    Task<long> GetLoteStockQuantityByWarehouseAsync(string companyId, string warehouseId, string productLoteId, string productId);
+    Task<decimal> GetStockQuantityByWarehouseAsync(string companyId, string warehouseId, string productId);
+    Task<decimal> GetLoteStockQuantityByWarehouseAsync(string companyId, string warehouseId, string productLoteId, string productId);
     Task<List<ProductStock>> GetProductStockListByWarehouseAndLoteAsync(string companyId, string warehouseId, string productLoteId, string productId);
     Task<List<ProductStock>> GetProductStockListByWarehouseAsync(string companyId, string warehouseId, string productId);
     Task<List<ProductStock>> GetProductStockListByWarehousesIdsAsync(string companyId, List<string> warehouseArrId, string productId);
@@ -64,7 +64,6 @@ public class ProductStockService : CrudOperationService<ProductStock>, IProductS
         var filter = Builders<ProductStock>.Filter;
         var dbQuery = filter.And(filter.Eq(x => x.CompanyId, companyId),
             filter.Eq(x => x.WarehouseId, warehouseId),
-            filter.Eq(x => x.ProductLoteId, productLoteId),
             filter.Eq(x => x.ProductId, productId));
         return await _collection.DeleteManyAsync(dbQuery);
     }
@@ -87,8 +86,7 @@ public class ProductStockService : CrudOperationService<ProductStock>, IProductS
             CompanyId = companyId.Trim(),
             WarehouseId = requestParams.WarehouseId,
             ProductId = requestParams.ProductId,
-            ProductLoteId = requestParams.ProductLoteId,
-            Type = InventoryType.ENTRADA,
+            TransactionType = TransactionType.ENTRADA,
             Quantity = requestParams.Quantity,
         };
         productStock = await CreateAsync(productStock);
@@ -100,10 +98,10 @@ public class ProductStockService : CrudOperationService<ProductStock>, IProductS
     /// </summary>
     /// <param name="productStocks">Lista de Stocks</param>
     /// <returns>Valor Calculado</returns>
-    private long CalculateNetStockQuantity(List<ProductStock> productStocks)
+    private decimal CalculateNetStockQuantity(List<ProductStock> productStocks)
     {
-        var totalEntrada = productStocks.Where(x => x.Type == InventoryType.ENTRADA).Sum(x => x.Quantity);
-        var totalSalida = productStocks.Where(x => x.Type == InventoryType.SALIDA).Sum(x => x.Quantity);
+        var totalEntrada = productStocks.Where(x => x.TransactionType == TransactionType.ENTRADA).Sum(x => x.Quantity);
+        var totalSalida = productStocks.Where(x => x.TransactionType == TransactionType.SALIDA).Sum(x => x.Quantity);
         return totalEntrada - totalSalida;
     }
 
@@ -113,7 +111,7 @@ public class ProductStockService : CrudOperationService<ProductStock>, IProductS
     /// <param name="warehouseId">Identificador del almacén</param>
     /// <param name="productId">Identificador del producto</param>
     /// <returns>Cantidad de Existencias</returns>
-    public async Task<long> GetStockQuantityByWarehouseAsync(string companyId, string warehouseId, string productId)
+    public async Task<decimal> GetStockQuantityByWarehouseAsync(string companyId, string warehouseId, string productId)
     {
         var productStocks = await GetProductStockListByWarehouseAsync(companyId, warehouseId, productId);
         return CalculateNetStockQuantity(productStocks);
@@ -126,7 +124,7 @@ public class ProductStockService : CrudOperationService<ProductStock>, IProductS
     /// <param name="productLoteId">Identificador del lote del producto</param>
     /// <param name="productId">Identificador del producto</param>
     /// <returns>Cantidad de Existencias</returns>
-    public async Task<long> GetLoteStockQuantityByWarehouseAsync(string companyId, string warehouseId, string productLoteId, string productId)
+    public async Task<decimal> GetLoteStockQuantityByWarehouseAsync(string companyId, string warehouseId, string productLoteId, string productId)
     {
         var productStocks = await GetProductStockListByWarehouseAndLoteAsync(companyId, warehouseId, productLoteId, productId);
         return CalculateNetStockQuantity(productStocks);
@@ -144,7 +142,6 @@ public class ProductStockService : CrudOperationService<ProductStock>, IProductS
         var builder = Builders<ProductStock>.Filter;
         var filter = builder.And(builder.Eq(x => x.CompanyId, companyId),
             builder.Eq(x => x.WarehouseId, warehouseId),
-            builder.Eq(x => x.ProductLoteId, productLoteId),
             builder.Eq(x => x.ProductId, productId));
         return await _collection.Find(filter).ToListAsync();
     }
@@ -189,8 +186,8 @@ public class ProductStockService : CrudOperationService<ProductStock>, IProductS
         {
             item.Id = string.Empty;
             var products = productStocks.Where(x => x.ProductId == item.ProductId).ToList();
-            var entrada = products.Where(x => x.Type == InventoryType.ENTRADA).Sum(x => x.Quantity);
-            var salida = products.Where(x => x.Type == InventoryType.SALIDA).Sum(x => x.Quantity);
+            var entrada = products.Where(x => x.TransactionType == TransactionType.ENTRADA).Sum(x => x.Quantity);
+            var salida = products.Where(x => x.TransactionType == TransactionType.SALIDA).Sum(x => x.Quantity);
             item.CantExistente = entrada - salida;
             item.CantRestante = item.CantExistente - item.CantTransferido;
         });
@@ -207,8 +204,8 @@ public class ProductStockService : CrudOperationService<ProductStock>, IProductS
         {
             item.Id = string.Empty;
             var products = productStocks.Where(x => x.ProductId == item.ProductId).ToList();
-            var entrada = products.Where(x => x.Type == InventoryType.ENTRADA).Sum(x => x.Quantity);
-            var salida = products.Where(x => x.Type == InventoryType.SALIDA).Sum(x => x.Quantity);
+            var entrada = products.Where(x => x.TransactionType == TransactionType.ENTRADA).Sum(x => x.Quantity);
+            var salida = products.Where(x => x.TransactionType == TransactionType.SALIDA).Sum(x => x.Quantity);
             item.CantExistente = entrada - salida;
         });
         return ajusteInventarioDetails;

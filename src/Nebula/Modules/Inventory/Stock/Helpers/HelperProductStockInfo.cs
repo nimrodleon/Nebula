@@ -62,7 +62,7 @@ public class HelperProductStockInfo
     /// </summary>
     /// <param name="warehouseId">El identificador del almacén</param>
     /// <returns>La cantidad de existencia sin lotes</returns>
-    private long GetQuantityWithoutLotes(string warehouseId)
+    private decimal GetQuantityWithoutLotes(string warehouseId)
     {
         var stockList = _params.Stocks.Where(x => x.WarehouseId.Equals(warehouseId)).ToList();
         return CalcularExistenciaStock(stockList);
@@ -74,10 +74,9 @@ public class HelperProductStockInfo
     /// <param name="warehouseId">Identificador del almacén</param>
     /// <param name="loteId">Identificador del lote de productos</param>
     /// <returns>Cantidad de existencia con lote del producto</returns>
-    private long GetQuantityWithLotes(string warehouseId, string loteId)
+    private decimal GetQuantityWithLotes(string warehouseId, string loteId)
     {
-        var stockList = _params.Stocks.Where(x => x.WarehouseId.Equals(warehouseId)
-                        && x.ProductLoteId.Equals(loteId)).ToList();
+        var stockList = _params.Stocks.Where(x => x.WarehouseId.Equals(warehouseId)).ToList();
         return CalcularExistenciaStock(stockList);
     }
 
@@ -86,18 +85,18 @@ public class HelperProductStockInfo
     /// </summary>
     /// <param name="stocks">La lista de documentos de stock</param>
     /// <returns>La existencia de stock calculada</returns>
-    private long CalcularExistenciaStock(List<ProductStock> stocks)
+    private decimal CalcularExistenciaStock(List<ProductStock> stocks)
     {
-        long totalEntradas = 0;
-        long totalSalidas = 0;
+        decimal totalEntradas = 0;
+        decimal totalSalidas = 0;
 
         foreach (var stock in stocks)
         {
-            if (stock.Type.Equals(InventoryType.ENTRADA))
+            if (stock.TransactionType.Equals(TransactionType.ENTRADA))
             {
                 totalEntradas += stock.Quantity;
             }
-            else if (stock.Type.Equals(InventoryType.SALIDA))
+            else if (stock.TransactionType.Equals(TransactionType.SALIDA))
             {
                 totalSalidas += stock.Quantity;
             }

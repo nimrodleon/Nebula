@@ -34,5 +34,5 @@ public class InventoryNotasDetail : IGenericModel
     /// <summary>
     /// Cantidad Requerida.
     /// </summary>
-    public int Demanda { get; set; }
+    public decimal Demanda { get; set; }
 }
