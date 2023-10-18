@@ -7,6 +7,7 @@ using Nebula.Modules.Sales.Invoices;
 using Microsoft.AspNetCore.Authorization;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
+using MongoDB.Driver;
 
 namespace Nebula.Controllers.Contacts;
 
@@ -93,27 +94,43 @@ public class ContactController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(string companyId, [FromBody] Contact model)
     {
-        model.CompanyId = companyId.Trim();
-        model.Document = model.Document.Trim();
-        model.Name = model.Name.Trim().ToUpper();
-        model.Address = model.Address.Trim().ToUpper();
-        model.CodUbigeo = model.CodUbigeo.Trim();
-        await _contactService.CreateAsync(model);
-        return Ok(model);
+        try
+        {
+            model.CompanyId = companyId.Trim();
+            model.Document = model.Document.Trim();
+            model.Name = model.Name.Trim().ToUpper();
+            model.Address = model.Address.Trim().ToUpper();
+            model.CodUbigeo = model.CodUbigeo.Trim();
+            await _contactService.CreateAsync(model);
+            return Ok(model);
+        }
+        catch (MongoWriteException ex)
+        when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
+        {
+            return BadRequest("Ya existe un contacto con el mismo número de documento para esta empresa.");
+        }
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(string companyId, string id, [FromBody] Contact model)
     {
-        var contact = await _contactService.GetByIdAsync(companyId, id);
-        model.Id = contact.Id;
-        model.CompanyId = companyId.Trim();
-        model.Document = model.Document.Trim();
-        model.Name = model.Name.Trim().ToUpper();
-        model.Address = model.Address.Trim().ToUpper();
-        model.CodUbigeo = model.CodUbigeo.Trim();
-        contact = await _contactService.UpdateAsync(contact.Id, model);
-        return Ok(contact);
+        try
+        {
+            var contact = await _contactService.GetByIdAsync(companyId, id);
+            model.Id = contact.Id;
+            model.CompanyId = companyId.Trim();
+            model.Document = model.Document.Trim();
+            model.Name = model.Name.Trim().ToUpper();
+            model.Address = model.Address.Trim().ToUpper();
+            model.CodUbigeo = model.CodUbigeo.Trim();
+            contact = await _contactService.UpdateAsync(contact.Id, model);
+            return Ok(contact);
+        }
+        catch (MongoWriteException ex)
+        when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
+        {
+            return BadRequest("Ya existe un contacto con el mismo número de documento para esta empresa.");
+        }
     }
 
     [HttpDelete("{id}"), CustomerAuthorize(UserRole = CompanyRoles.Admin)]

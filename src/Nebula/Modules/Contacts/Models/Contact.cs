@@ -1,6 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Nebula.Common.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Nebula.Modules.Contacts.Models;
 
@@ -14,16 +15,19 @@ public class Contact : IGenericModel
     /// <summary>
     /// Identificador de la empresa al que pertenece.
     /// </summary>
+    [Required(ErrorMessage = "CompanyId es requerido.")]
     public string CompanyId { get; set; } = string.Empty;
 
     /// <summary>
     /// Documento de Identidad.
     /// </summary>
+    [Required(ErrorMessage = "Documento es requerido.")]
     public string Document { get; set; } = string.Empty;
 
     /// <summary>
     /// Tipo de documento.
     /// </summary>
+    [Required(ErrorMessage = "Tipo documento es requerido.")]
     public string DocType { get; set; } = string.Empty;
 
     /// <summary>

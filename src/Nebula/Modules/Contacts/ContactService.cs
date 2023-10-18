@@ -13,7 +13,15 @@ public interface IContactService : ICrudOperationService<Contact>
 
 public class ContactService : CrudOperationService<Contact>, IContactService
 {
-    public ContactService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
+    public ContactService(MongoDatabaseService mongoDatabase) : base(mongoDatabase)
+    {
+        var indexKeys = Builders<Contact>.IndexKeys.Combine(
+            Builders<Contact>.IndexKeys.Ascending(x => x.CompanyId),
+            Builders<Contact>.IndexKeys.Ascending(x => x.Document));
+        var indexOptions = new CreateIndexOptions { Unique = true };
+        var model = new CreateIndexModel<Contact>(indexKeys, indexOptions);
+        _collection.Indexes.CreateOne(model);
+    }
 
     public async Task<Contact> GetContactByDocumentAsync(string companyId, string document)
     {
