@@ -6,7 +6,7 @@ using Nebula.Modules.Inventory.Notas;
 using Nebula.Modules.Inventory.Stock.Converter;
 using Nebula.Modules.Inventory.Stock.Helpers;
 using Nebula.Modules.Inventory.Transferencias;
-using Nebula.Modules.Sales.Invoices;
+using Nebula.Modules.Sales.Comprobantes.Dto;
 
 namespace Nebula.Modules.Inventory.Stock;
 
@@ -16,7 +16,7 @@ public interface IValidateStockService
     Task<TransferenciaDto> ValidarTransferencia(string companyId, string transferenciaId);
     Task<AjusteInventarioDto> ValidarAjusteInventario(string companyId, string ajusteInventarioId);
     Task<MaterialDto> ValidarMaterial(string companyId, string materialId);
-    Task ValidarInvoiceSale(string companyId, string invoiceSaleId);
+    Task ValidarInvoiceSale(InvoiceSaleAndDetails model);
 }
 
 public class ValidateStockService : IValidateStockService
@@ -30,15 +30,12 @@ public class ValidateStockService : IValidateStockService
     private readonly IAjusteInventarioDetailService _ajusteInventarioDetailService;
     private readonly IMaterialService _materialService;
     private readonly IMaterialDetailService _materialDetailService;
-    private readonly IInvoiceSaleService _invoiceSaleService;
-    private readonly IInvoiceSaleDetailService _invoiceDetailService;
 
     public ValidateStockService(IProductStockService productStockService,
         IInventoryNotasService inventoryNotasService, IInventoryNotasDetailService inventoryNotasDetailService,
         ITransferenciaService transferenciaService, ITransferenciaDetailService transferenciaDetailService,
         IAjusteInventarioService ajusteInventarioService, IAjusteInventarioDetailService ajusteInventarioDetailService,
-        IMaterialService materialService, IMaterialDetailService materialDetailService,
-        IInvoiceSaleService invoiceSaleService, IInvoiceSaleDetailService invoiceSaleDetailService)
+        IMaterialService materialService, IMaterialDetailService materialDetailService)
     {
         _productStockService = productStockService;
         _inventoryNotasService = inventoryNotasService;
@@ -49,8 +46,6 @@ public class ValidateStockService : IValidateStockService
         _ajusteInventarioDetailService = ajusteInventarioDetailService;
         _materialService = materialService;
         _materialDetailService = materialDetailService;
-        _invoiceSaleService = invoiceSaleService;
-        _invoiceDetailService = invoiceSaleDetailService;
     }
 
     public async Task<InventoryNoteDto> ValidarNotas(string companyId, string InventoryNotasId)
@@ -122,11 +117,11 @@ public class ValidateStockService : IValidateStockService
         return dto;
     }
 
-    public async Task ValidarInvoiceSale(string companyId, string invoiceSaleId)
+    public async Task ValidarInvoiceSale(InvoiceSaleAndDetails model)
     {
         var dto = new InvoiceSaleStockDto();
-        dto.InvoiceSale = await _invoiceSaleService.GetByIdAsync(companyId, invoiceSaleId);
-        dto.InvoiceSaleDetails = await _invoiceDetailService.GetListAsync(companyId, dto.InvoiceSale.Id);
+        dto.InvoiceSale = model.InvoiceSale;
+        dto.InvoiceSaleDetails = model.InvoiceSaleDetails;
         var productStocks = new InvoiceSaleToProductStockConverter(dto).Convertir();
         await _productStockService.CreateManyAsync(productStocks);
     }

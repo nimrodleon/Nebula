@@ -16,6 +16,7 @@ using Nebula.Modules.Sales.Invoices;
 using Nebula.Modules.Sales.Invoices.Dto;
 using Nebula.Modules.Sales.Notes;
 using Nebula.Common;
+using Nebula.Modules.Inventory.Stock;
 
 namespace Nebula.Controllers.Sales;
 
@@ -34,6 +35,7 @@ public class InvoiceSaleController : ControllerBase
     private readonly IConsultarValidezComprobanteService _consultarValidezComprobanteService;
     private readonly IInvoiceHubService _invoiceHubService;
     private readonly ICreditNoteHubService _creditNoteHubService;
+    private readonly IValidateStockService _validateStockService;
 
     public InvoiceSaleController(
         ICacheAuthService cacheAuthService,
@@ -44,7 +46,8 @@ public class InvoiceSaleController : ControllerBase
         ICreditNoteService creditNoteService,
         IConsultarValidezComprobanteService consultarValidezComprobanteService,
         IInvoiceHubService invoiceHubService,
-        ICreditNoteHubService creditNoteHubService)
+        ICreditNoteHubService creditNoteHubService,
+        IValidateStockService validateStockService)
     {
         _cacheAuthService = cacheAuthService;
         _invoiceSerieService = invoiceSerieService;
@@ -55,6 +58,7 @@ public class InvoiceSaleController : ControllerBase
         _consultarValidezComprobanteService = consultarValidezComprobanteService;
         _invoiceHubService = invoiceHubService;
         _creditNoteHubService = creditNoteHubService;
+        _validateStockService = validateStockService;
     }
 
     [HttpGet]
@@ -76,6 +80,7 @@ public class InvoiceSaleController : ControllerBase
     {
         var company = await _cacheAuthService.GetCompanyByIdAsync(companyId);
         var comprobante = await _comprobanteService.SaveChangesAsync(company, dto);
+        await _validateStockService.ValidarInvoiceSale(comprobante);
         var invoiceRequest = InvoiceMapper.MapToInvoiceRequestHub(company.Ruc, comprobante);
         var billingResponse = await _invoiceHubService.SendInvoiceAsync(companyId, invoiceRequest);
         comprobante.InvoiceSale.BillingResponse = billingResponse;

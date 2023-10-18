@@ -62,7 +62,7 @@ public class InvoiceSaleCashierController : ControllerBase
         {
             var company = await _cacheAuthService.GetCompanyByIdAsync(companyId);
             var comprobante = await _comprobanteService.SaveChangesAsync(company, model);
-            await _validateStockService.ValidarInvoiceSale(companyId, comprobante.InvoiceSale.Id);
+            await _validateStockService.ValidarInvoiceSale(comprobante);
 
             // registrar operacion en caja.
             if (ObjectId.TryParse(model.Cabecera.CajaDiariaId, out ObjectId _))
