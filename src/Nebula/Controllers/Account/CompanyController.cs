@@ -4,6 +4,7 @@ using Nebula.Common;
 using Nebula.Modules.Account;
 using Nebula.Modules.Account.Models;
 using Nebula.Modules.Auth;
+using Nebula.Modules.Auth.Dto;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth.Models;
 
@@ -69,6 +70,12 @@ namespace Nebula.Controllers.Account
                 UserRole = CompanyRoles.Owner,
             };
             await _collaboratorService.CreateAsync(collaborator);
+            var userCompanyRole = new UserCompanyRole()
+            {
+                CompanyId = collaborator.CompanyId,
+                UserRole = collaborator.UserRole,
+            };
+            await _cacheService.SetUserAuthCompanyRolesAsync(model.UserId, new List<UserCompanyRole> { userCompanyRole });
             return Ok(model);
         }
 
