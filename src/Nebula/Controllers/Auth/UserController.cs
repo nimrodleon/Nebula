@@ -6,11 +6,10 @@ using Nebula.Modules.Auth.Dto;
 using Nebula.Common;
 using System.Security.Claims;
 using System.Data.Common;
-using Microsoft.AspNetCore.Authorization;
+using MongoDB.Driver;
 
 namespace Nebula.Controllers.Auth;
 
-[Authorize]
 [Route("api/auth/[controller]")]
 [ApiController]
 public class UserController : ControllerBase
@@ -30,44 +29,52 @@ public class UserController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Register([FromBody] UserRegister model)
     {
-        var user = new User()
+        try
         {
-            UserName = model.UserName,
-            Email = model.Email,
-            PasswordHash = PasswordHasher.HashPassword(model.Password),
-            UserType = UserTypeSystem.Customer,
-            IsEmailVerified = false,
-        };
-        user = await _userService.CreateAsync(user);
+            var user = new User()
+            {
+                UserName = model.UserName,
+                Email = model.Email,
+                PasswordHash = PasswordHasher.HashPassword(model.Password),
+                UserType = UserTypeSystem.Customer,
+                IsEmailVerified = false,
+            };
+            user = await _userService.CreateAsync(user);
 
-        var claims = new[]
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.UserName),
+            };
+            string token = _jwtService.GenerateToken(claims);
+            user.EmailValidationToken = token;
+            await _userService.UpdateAsync(user.Id, user);
+
+            // enviar correo electrónico.
+            string fromEmail = "reddrc21@gmail.com";
+            string subject = $"Confirmación de Correo Electrónico - {user.Email.Trim()}";
+            string body = $"""
+                Hola {user.UserName},
+                Gracias por registrarte en nuestro sitio web.<br>
+                Para completar tu registro, por favor haz clic en el siguiente enlace para validar tu dirección de correo electrónico:
+                <br>
+                http://localhost:5042/api/auth/User/VerifyEmail?token={token}
+                <br>
+                Si no puedes hacer clic en el enlace, cópialo y pégalo en la barra de direcciones de tu navegador web.
+                <br>
+                ¡Gracias por unirte a nosotros!
+                <br>
+                Atentamente,
+                CPEDIGITAL.NET
+                """;
+            await _emailService.SendEmailAsync(fromEmail, user.Email.Trim(), subject, body);
+            return Ok(new { ok = true, msg = "Su registro ha sido exitoso. Por favor, revise su correo electrónico para confirmar su dirección de correo." });
+        }
+        catch (MongoWriteException ex)
+        when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id),
-            new Claim(ClaimTypes.Name, user.UserName),
-        };
-        string token = _jwtService.GenerateToken(claims);
-        user.EmailValidationToken = token;
-        await _userService.UpdateAsync(user.Id, user);
-
-        // enviar correo electrónico.
-        string fromEmail = "reddrc21@gmail.com";
-        string subject = $"Confirmación de Correo Electrónico - {user.Email.Trim()}";
-        string body = $"""
-        Hola {user.UserName},
-        Gracias por registrarte en nuestro sitio web.<br>
-        Para completar tu registro, por favor haz clic en el siguiente enlace para validar tu dirección de correo electrónico:
-        <br>
-        http://localhost:5042/api/auth/User/VerifyEmail?token={token}
-        <br>
-        Si no puedes hacer clic en el enlace, cópialo y pégalo en la barra de direcciones de tu navegador web.
-        <br>
-        ¡Gracias por unirte a nosotros!
-        <br>
-        Atentamente,
-        CPEDIGITAL.NET
-        """;
-        await _emailService.SendEmailAsync(fromEmail, user.Email.Trim(), subject, body);
-        return Ok(new { ok = true, msg = "Su registro ha sido exitoso. Por favor, revise su correo electrónico para confirmar su dirección de correo." });
+            return BadRequest("Ya existe un usuario con el mismo email.");
+        }
     }
 
     [HttpGet("VerifyEmail")]

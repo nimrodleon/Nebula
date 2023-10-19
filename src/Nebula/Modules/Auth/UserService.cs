@@ -15,6 +15,10 @@ public class UserService : CrudOperationService<User>, IUserService
 {
     public UserService(MongoDatabaseService mongoDatabase) : base(mongoDatabase)
     {
+        var indexKeys = Builders<User>.IndexKeys.Ascending(x => x.Email);
+        var indexOptions = new CreateIndexOptions { Unique = true };
+        var model = new CreateIndexModel<User>(indexKeys, indexOptions);
+        _collection.Indexes.CreateOne(model);
     }
 
     public async Task<List<User>> GetListAsync(string query = "", int limit = 25)
