@@ -7,6 +7,7 @@ using Nebula.Common;
 using System.Security.Claims;
 using System.Data.Common;
 using MongoDB.Driver;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Nebula.Controllers.Auth;
 
