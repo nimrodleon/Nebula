@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Dto;
+using Nebula.Modules.Auth.Models;
 using StackExchange.Redis;
 using System.Text.Json;
 
@@ -70,7 +72,7 @@ public class CollaboratorController : ControllerBase
             Has sido invitado a unirte a {company.RznSocial} en nuestra plataforma.<br>
             Para configurar tu cuenta y empezar a gestionar la empresa, por favor haz clic en el siguiente enlace:
             <br>
-            <a href='http://tuplataforma.com/registro?uuid={uuid}'>Unirme a {company.RznSocial}</a>
+            <a href='http://localhost:4200/account/companies/{company.Id}/collaborators/validate?uuid={uuid}'>Unirme a {company.RznSocial}</a>
             <br>
             Si no puedes hacer clic en el enlace, por favor cópialo y pégalo en la barra de direcciones de tu navegador web.
             <br>
@@ -82,5 +84,84 @@ public class CollaboratorController : ControllerBase
         await _emailService.SendEmailAsync(fromEmail, model.Email.Trim(), subject, body);
         return Ok(new { ok = true, msg = "El correo ha sido enviado." });
     }
+
+    [HttpPost("Validate/{uuid}")]
+    public async Task<IActionResult> Validate(string uuid)
+    {
+        var serializedData = await _redis.StringGetAsync($"nebula_invitar_colaborador_{uuid.Trim()}");
+        if (serializedData.HasValue && !serializedData.IsNull)
+        {
+            var inviteCollaborator = JsonSerializer.Deserialize<InviteCollaborator>(serializedData,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            var user = await _userService.GetByEmailAsync(inviteCollaborator.Email.Trim());
+            if (user == null)
+            {
+                return BadRequest(new
+                {
+                    ok = false,
+                    msg = "El usuario no se encuentra registrado. Por favor, regístrese para continuar.",
+                    page = "REGISTER"
+                });
+            }
+
+            try
+            {
+                var collaborator = new Collaborator()
+                {
+                    CompanyId = inviteCollaborator.CompanyId.Trim(),
+                    UserId = user.Id,
+                    UserRole = inviteCollaborator.UserRole.Trim()
+                };
+                await _collaboratorService.CreateAsync(collaborator);
+
+                var userCompanyRole = new UserCompanyRole()
+                {
+                    CompanyId = inviteCollaborator.CompanyId.Trim(),
+                    UserRole = inviteCollaborator.UserRole.Trim(),
+                };
+
+                var userAuth = await _cacheAuthService.GetUserAuthAsync(user.Id);
+                if (userAuth == null)
+                {
+                    return Ok(new
+                    {
+                        ok = true,
+                        msg = "¡Validación exitosa! Por favor, inicie sesión.",
+                        page = "LOGIN"
+                    });
+                }
+                else
+                {
+                    var userCompanyRoles = await _cacheAuthService.GetUserAuthCompanyRolesAsync(user.Id);
+                    userCompanyRoles.Add(userCompanyRole);
+                    await _cacheAuthService.RemoveUserAuthCompanyRolesAsync(user.Id);
+                    await _cacheAuthService.SetUserAuthCompanyRolesAsync(user.Id, userCompanyRoles);
+                    return Ok(new
+                    {
+                        ok = true,
+                        msg = "Validación exitosa!, Su información ha sido verificada correctamente.",
+                        page = "ACCOUNT"
+                    });
+                }
+            }
+            catch (MongoWriteException ex) when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
+            {
+                return BadRequest(new
+                {
+                    ok = false,
+                    msg = "El usuario ya se encuentra registrado.",
+                    page = "ACCOUNT"
+                });
+            }
+        }
+        return BadRequest(new
+        {
+            ok = false,
+            msg = "Lo sentimos, ha habido un error de validación.",
+            page = "LOGIN"
+        });
+    }
+
 
 }

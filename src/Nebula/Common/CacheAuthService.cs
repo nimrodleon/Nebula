@@ -16,6 +16,7 @@ public interface ICacheAuthService
     Task<Company> GetCompanyByIdAsync(string companyId);
     Task SetUserAuthCompanyRolesAsync(string userId, List<UserCompanyRole> companyRoles);
     Task<List<UserCompanyRole>> GetUserAuthCompanyRolesAsync(string userId);
+    Task RemoveUserAuthCompanyRolesAsync(string userId);
 }
 
 public class CacheAuthService : ICacheAuthService
@@ -96,6 +97,11 @@ public class CacheAuthService : ICacheAuthService
         }
 
         return new List<UserCompanyRole>();
+    }
+
+    public async Task RemoveUserAuthCompanyRolesAsync(string userId)
+    {
+        await _database.KeyDeleteAsync($"nebula_user_company_roles_{userId}");
     }
 
 }
