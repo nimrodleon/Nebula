@@ -68,7 +68,6 @@ namespace Nebula.Controllers.Account
                 CompanyId = model.Id,
                 UserId = model.UserId,
                 UserRole = CompanyRoles.Owner,
-                IsEmailVerified = true,
             };
             await _collaboratorService.CreateAsync(collaborator);
             var userCompanyRole = new UserCompanyRole()
