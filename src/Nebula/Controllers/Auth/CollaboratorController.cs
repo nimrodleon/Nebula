@@ -1,12 +1,9 @@
-using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Common;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Dto;
-using Nebula.Modules.Auth.Models;
 using StackExchange.Redis;
-using System.Security.Claims;
 using System.Text.Json;
 
 namespace Nebula.Controllers.Auth;
@@ -17,18 +14,16 @@ namespace Nebula.Controllers.Auth;
 public class CollaboratorController : ControllerBase
 {
     private readonly IDatabase _redis;
-    private readonly IJwtService _jwtService;
     private readonly ICacheAuthService _cacheAuthService;
     private readonly IUserService _userService;
     private readonly ICollaboratorService _collaboratorService;
     private readonly IEmailService _emailService;
 
-    public CollaboratorController(IDatabase redis, IJwtService jwtService,
+    public CollaboratorController(IDatabase redis,
         ICacheAuthService cacheAuthService, IUserService userService,
         ICollaboratorService collaboratorService, IEmailService emailService)
     {
         _redis = redis;
-        _jwtService = jwtService;
         _cacheAuthService = cacheAuthService;
         _userService = userService;
         _collaboratorService = collaboratorService;
