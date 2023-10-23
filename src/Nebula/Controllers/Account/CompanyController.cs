@@ -17,14 +17,14 @@ namespace Nebula.Controllers.Account
     {
         private readonly ICompanyService _companyService;
         private readonly ICollaboratorService _collaboratorService;
-        private readonly ICacheAuthService _cacheService;
+        private readonly ICacheAuthService _cacheAuthService;
 
         public CompanyController(ICompanyService companyService,
-            ICollaboratorService collaboratorService, ICacheAuthService cacheService)
+            ICollaboratorService collaboratorService, ICacheAuthService cacheAuthService)
         {
             _companyService = companyService;
             _collaboratorService = collaboratorService;
-            _cacheService = cacheService;
+            _cacheAuthService = cacheAuthService;
         }
 
         [HttpGet]
@@ -61,8 +61,20 @@ namespace Nebula.Controllers.Account
             model.RznSocial = model.RznSocial.Trim().ToUpper();
             model.Address = model.Address.Trim().ToUpper();
             model = await _companyService.CreateAsync(model);
-            var companies = await _companyService.GetCompaniesByUserIdAsync(model.UserId);
-            await _cacheService.SetUserAuthCompaniesAsync(model.UserId, companies);
+
+            // agregar empresa en cache.
+            var companies = await _cacheAuthService.GetUserAuthCompaniesAsync(model.UserId);
+            if (companies == null)
+            {
+                await _cacheAuthService.SetUserAuthCompaniesAsync(model.UserId, new List<Company> { model });
+            }
+            else
+            {
+                companies.Add(model);
+                await _cacheAuthService.RemoveUserAuthCompaniesAsync(model.UserId);
+                await _cacheAuthService.SetUserAuthCompaniesAsync(model.UserId, companies);
+            }
+
             var collaborator = new Collaborator()
             {
                 CompanyId = model.Id,
@@ -70,12 +82,25 @@ namespace Nebula.Controllers.Account
                 UserRole = CompanyRoles.Owner,
             };
             await _collaboratorService.CreateAsync(collaborator);
+
+            // agregar rol a cache.
             var userCompanyRole = new UserCompanyRole()
             {
                 CompanyId = collaborator.CompanyId,
                 UserRole = collaborator.UserRole,
             };
-            await _cacheService.SetUserAuthCompanyRolesAsync(model.UserId, new List<UserCompanyRole> { userCompanyRole });
+            var userCompanyRoles = await _cacheAuthService.GetUserAuthCompanyRolesAsync(model.UserId);
+            if (userCompanyRoles == null)
+            {
+                await _cacheAuthService.SetUserAuthCompanyRolesAsync(model.UserId, new List<UserCompanyRole> { userCompanyRole });
+            }
+            else
+            {
+                userCompanyRoles.Add(userCompanyRole);
+                await _cacheAuthService.RemoveUserAuthCompanyRolesAsync(model.UserId);
+                await _cacheAuthService.SetUserAuthCompanyRolesAsync(model.UserId, userCompanyRoles);
+            }
+
             return Ok(model);
         }
 
@@ -88,8 +113,18 @@ namespace Nebula.Controllers.Account
             model.RznSocial = model.RznSocial.Trim().ToUpper();
             model.Address = model.Address.Trim().ToUpper();
             company = await _companyService.UpdateAsync(company.Id, model);
-            var companies = await _companyService.GetCompaniesByUserIdAsync(company.UserId);
-            await _cacheService.SetUserAuthCompaniesAsync(company.UserId, companies);
+            // actualizar empresa en cache.
+            var companies = await _cacheAuthService.GetUserAuthCompaniesAsync(model.UserId);
+            if (companies != null)
+            {
+                var index = companies.FindIndex(x => x.Id == company.Id);
+                if(index != -1)
+                {
+                    companies[index] = company;
+                    await _cacheAuthService.RemoveUserAuthCompaniesAsync(model.UserId);
+                    await _cacheAuthService.SetUserAuthCompaniesAsync(company.UserId, companies);
+                }                               
+            }
             return Ok(company);
         }
 

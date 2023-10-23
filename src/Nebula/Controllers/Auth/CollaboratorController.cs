@@ -124,6 +124,7 @@ public class CollaboratorController : ControllerBase
                 var userAuth = await _cacheAuthService.GetUserAuthAsync(user.Id);
                 if (userAuth == null)
                 {
+                    await _redis.KeyDeleteAsync($"nebula_invitar_colaborador_{uuid.Trim()}");
                     return Ok(new
                     {
                         ok = true,
@@ -137,6 +138,7 @@ public class CollaboratorController : ControllerBase
                     userCompanyRoles.Add(userCompanyRole);
                     await _cacheAuthService.RemoveUserAuthCompanyRolesAsync(user.Id);
                     await _cacheAuthService.SetUserAuthCompanyRolesAsync(user.Id, userCompanyRoles);
+                    await _redis.KeyDeleteAsync($"nebula_invitar_colaborador_{uuid.Trim()}");
                     return Ok(new
                     {
                         ok = true,
