@@ -99,7 +99,7 @@ public class CajaDiariaController : ControllerBase
         return Ok(cajaDiaria);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id}"), CustomerAuthorize(UserRole = CompanyRoles.Admin)]
     public async Task<IActionResult> Delete(string companyId, string id)
     {
         var cajaDiaria = await _cajaDiariaService.GetByIdAsync(companyId, id);

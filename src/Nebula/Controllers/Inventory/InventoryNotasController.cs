@@ -58,7 +58,7 @@ public class InventoryNotasController : ControllerBase
         return Ok(responseData);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id}"), CustomerAuthorize(UserRole = CompanyRoles.Admin)]
     public async Task<IActionResult> Delete(string companyId, string id)
     {
         var inventoryNotas = await _inventoryNotasService.GetByIdAsync(companyId, id);

@@ -56,7 +56,7 @@ public class CashierDetailController : ControllerBase
         return Ok(resumenCaja);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id}"), CustomerAuthorize(UserRole = CompanyRoles.Admin)]
     public async Task<IActionResult> Delete(string companyId, string id)
     {
         var cashierDetail = await _cashierDetailService.GetByIdAsync(companyId, id);

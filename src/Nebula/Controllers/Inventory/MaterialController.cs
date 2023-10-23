@@ -65,7 +65,7 @@ public class MaterialController : ControllerBase
         return Ok(responseData);
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id}"), CustomerAuthorize(UserRole = CompanyRoles.Admin)]
     public async Task<IActionResult> Delete(string companyId, string id)
     {
         var material = await _materialService.GetByIdAsync(companyId, id);
