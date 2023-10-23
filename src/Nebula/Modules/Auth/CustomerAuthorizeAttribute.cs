@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Nebula.Modules.Auth.Dto;
+using Nebula.Common;
 using Nebula.Modules.Auth.Helpers;
-using System.Text.Json;
+using System.Security.Claims;
 
 namespace Nebula.Modules.Auth;
 
@@ -11,22 +11,26 @@ public class CustomerAuthorizeAttribute : AuthorizeAttribute, IAuthorizationFilt
 {
     public string UserRole { get; set; } = string.Empty;
 
-    public void OnAuthorization(AuthorizationFilterContext context)
+    public async void OnAuthorization(AuthorizationFilterContext context)
     {
+        var _cacheAuthService = context.HttpContext.RequestServices
+            .GetService(typeof(ICacheAuthService)) as ICacheAuthService;
         var companyId = context.RouteData.Values["companyId"]?.ToString();
         var user = context.HttpContext.User;
 
-        var companyUserRolesJson = user.FindFirst("CompanyUserRoles")?.Value;
-        var userType = user.FindFirst("UserType")?.Value;
-        if (companyUserRolesJson != null && userType != null)
+        var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
+        if (userIdClaim != null && _cacheAuthService != null)
         {
-            if (userType == UserTypeSystem.Customer)
+            var userCompanyRoles = await _cacheAuthService.GetUserAuthCompanyRolesAsync(userIdClaim.Value);
+            var userType = user.FindFirst("UserType")?.Value;
+            if (userCompanyRoles != null && userType != null)
             {
-                var roles = UserRole.Split(":");
-                var companyUserRoles = JsonSerializer.Deserialize<List<UserCompanyRole>>(companyUserRolesJson);
-                // Verificar si el usuario tiene acceso a esta empresa con el rol adecuado
-                if (companyUserRoles != null && companyUserRoles.Any(cr =>
-                    cr.CompanyId == companyId && roles.Any(role => role == cr.UserRole))) return;
+                if (userType == UserTypeSystem.Customer)
+                {
+                    var roles = UserRole.Split(":");
+                    // Verificar si el usuario tiene acceso a esta empresa con el rol adecuado
+                    if (userCompanyRoles.Any(cr => cr.CompanyId == companyId && roles.Any(role => role == cr.UserRole))) return;
+                }
             }
         }
 

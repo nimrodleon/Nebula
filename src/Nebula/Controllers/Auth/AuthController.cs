@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Common;
@@ -94,7 +93,6 @@ public class AuthController : ControllerBase
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim("UserType", user.UserType),
-                new Claim("CompanyUserRoles", JsonSerializer.Serialize(companyUserRoles)),
             };
 
             var token = _jwtService.GenerateToken(claims, 1000);
