@@ -34,7 +34,7 @@ public class CashierDetailService : CrudOperationService<CashierDetail>, ICashie
     private decimal CalcularTotalesCaja(List<CashierDetail> detalleCaja, string formaDePago)
     {
         var filter = detalleCaja.Where(x =>
-            x.TypeOperation != TypeOperationCaja.SalidaDeDinero && x.FormaPago == formaDePago);
+            x.TypeOperation != TipoOperationCaja.SalidaDeDinero && x.FormaPago == formaDePago);
         return filter.Sum(x => x.Amount);
     }
 
@@ -43,16 +43,14 @@ public class CashierDetailService : CrudOperationService<CashierDetail>, ICashie
         var builder = Builders<CashierDetail>.Filter;
         var filter = builder.And(builder.Eq(x => x.CompanyId, companyId), builder.Eq(x => x.CajaDiariaId, cajaDiariaId));
         List<CashierDetail> detalleCaja = await _collection.Find(filter).ToListAsync();
-        decimal totalSalidas = detalleCaja.Where(x =>
-                x.TypeOperation == TypeOperationCaja.SalidaDeDinero && x.FormaPago == FormaPago.Contado)
-            .Sum(x => x.Amount);
-        decimal totalContado = CalcularTotalesCaja(detalleCaja, FormaPago.Contado);
+        decimal totalSalidas = detalleCaja.Where(x => x.TypeOperation == TipoOperationCaja.SalidaDeDinero && x.FormaPago == MetodosPago.Contado).Sum(x => x.Amount);
+        decimal totalContado = CalcularTotalesCaja(detalleCaja, MetodosPago.Contado);
         ResumenCajaDto resumenCaja = new ResumenCajaDto
         {
-            Yape = 0, // CalcularTotalesCaja(detalleCaja, FormaPago.Yape),
-            Credito = CalcularTotalesCaja(detalleCaja, FormaPago.Credito),
+            Yape = CalcularTotalesCaja(detalleCaja, MetodosPago.Yape),
+            Credito = CalcularTotalesCaja(detalleCaja, MetodosPago.Credito),
             Contado = totalContado,
-            Deposito = 0, // CalcularTotalesCaja(detalleCaja, FormaPago.Deposito),
+            Deposito = CalcularTotalesCaja(detalleCaja, MetodosPago.Deposito),
             Salida = totalSalidas,
             MontoTotal = totalContado - totalSalidas
         };

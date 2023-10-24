@@ -77,8 +77,8 @@ public class InvoiceSaleCashierController : ControllerBase
                     ContactId = comprobante.InvoiceSale.ContactId,
                     ContactName = comprobante.InvoiceSale.Cliente.RznSocial,
                     Remark = comprobante.InvoiceSale.Remark,
-                    TypeOperation = TypeOperationCaja.ComprobanteDeVenta,
-                    FormaPago = model.FormaPago.Tipo,
+                    TypeOperation = TipoOperationCaja.ComprobanteDeVenta,
+                    FormaPago = model.Cabecera.PaymentMethod,
                     Amount = comprobante.InvoiceSale.MtoImpVenta
                 };
                 await _cashierDetailService.CreateAsync(cashierDetail);

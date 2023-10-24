@@ -71,7 +71,7 @@ public class CashierSaleService : ICashierSaleService
             ContactId = invoiceSale.ContactId,
             ContactName = invoiceSale.Cliente.RznSocial,
             Remark = comprobanteDto.Cabecera.Remark,
-            TypeOperation = TypeOperationCaja.ComprobanteDeVenta,
+            TypeOperation = TipoOperationCaja.ComprobanteDeVenta,
             FormaPago = comprobanteDto.FormaPago.Tipo,
             Amount = invoiceSale.MtoImpVenta
         };

@@ -1,6 +1,6 @@
 namespace Nebula.Modules.Cashier.Helpers;
 
-public static class TypeOperationCaja
+public static class TipoOperationCaja
 {
     public const string AperturaDeCaja = "APERTURA_DE_CAJA";
     public const string EntradaDeDinero = "ENTRADA_DE_DINERO";

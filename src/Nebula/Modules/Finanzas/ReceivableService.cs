@@ -115,7 +115,7 @@ public class ReceivableService : CrudOperationService<Receivable>, IReceivableSe
         string document = abono.InvoiceSale != "-" ? abono.Document : "-";
         string remark = abono.InvoiceSale != "-" ? $"COBRANZA, {document}" : abono.Remark;
         cashierDetail.Remark = remark;
-        cashierDetail.TypeOperation = TypeOperationCaja.EntradaDeDinero;
+        cashierDetail.TypeOperation = TipoOperationCaja.EntradaDeDinero;
         cashierDetail.FormaPago = abono.FormaPago;
         cashierDetail.Amount = abono.Abono;
         cashierDetail.CajaDiariaId = abono.CajaDiaria;

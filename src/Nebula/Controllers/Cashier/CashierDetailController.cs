@@ -32,10 +32,10 @@ public class CashierDetailController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(string companyId, [FromBody] CashierDetail model)
     {
-        if (model.TypeOperation == TypeOperationCaja.EntradaDeDinero)
-            model.TypeOperation = TypeOperationCaja.EntradaDeDinero;
-        if (model.TypeOperation == TypeOperationCaja.SalidaDeDinero)
-            model.TypeOperation = TypeOperationCaja.SalidaDeDinero;
+        if (model.TypeOperation == TipoOperationCaja.EntradaDeDinero)
+            model.TypeOperation = TipoOperationCaja.EntradaDeDinero;
+        if (model.TypeOperation == TipoOperationCaja.SalidaDeDinero)
+            model.TypeOperation = TipoOperationCaja.SalidaDeDinero;
         model.FormaPago = MetodosPago.Contado;
         model.CompanyId = companyId.Trim();
         model = await _cashierDetailService.CreateAsync(model);
