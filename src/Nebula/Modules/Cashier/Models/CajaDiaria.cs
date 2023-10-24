@@ -37,11 +37,6 @@ public class CajaDiaria : IGenericModel
     public decimal TotalApertura { get; set; }
 
     /// <summary>
-    /// Monto Contabilizado durante el dia.
-    /// </summary>
-    public decimal TotalContabilizado { get; set; }
-
-    /// <summary>
     /// Monto para el dia siguiente.
     /// </summary>
     public decimal TotalCierre { get; set; }

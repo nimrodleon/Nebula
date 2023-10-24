@@ -66,7 +66,6 @@ public class CajaDiariaController : ControllerBase
             Terminal = invoiceSerie.Name,
             Status = "ABIERTO",
             TotalApertura = model.Total,
-            TotalContabilizado = 0.0M,
             TotalCierre = 0.0M,
             Turno = model.Turno
         };
@@ -92,7 +91,6 @@ public class CajaDiariaController : ControllerBase
     {
         var cajaDiaria = await _cajaDiariaService.GetByIdAsync(companyId, id);
         cajaDiaria.CompanyId = companyId.Trim();
-        cajaDiaria.TotalContabilizado = model.TotalContabilizado;
         cajaDiaria.TotalCierre = model.TotalCierre;
         cajaDiaria.Status = "CERRADO";
         await _cajaDiariaService.UpdateAsync(id, cajaDiaria);
