@@ -20,13 +20,15 @@ public interface ITallerRepairOrderService : ICrudOperationService<TallerRepairO
 /// </summary>
 public class TallerRepairOrderService : CrudOperationService<TallerRepairOrder>, ITallerRepairOrderService
 {
+    private readonly ICompanyService _companyService;
     private readonly IInvoiceSerieService _invoiceSerieService;
     private readonly ITallerItemRepairOrderService _itemRepairOrderService;
 
     public TallerRepairOrderService(MongoDatabaseService mongoDatabase,
-        ITallerItemRepairOrderService itemRepairOrderService,
+        ICompanyService companyService, ITallerItemRepairOrderService itemRepairOrderService,
         IInvoiceSerieService invoiceSerieService) : base(mongoDatabase)
     {
+        _companyService = companyService;
         _itemRepairOrderService = itemRepairOrderService;
         _invoiceSerieService = invoiceSerieService;
     }
@@ -112,9 +114,11 @@ public class TallerRepairOrderService : CrudOperationService<TallerRepairOrder>,
     public async Task<TallerRepairOrderTicket> GetTicket(string companyId, string id)
     {
         var repairOrder = await GetByIdAsync(companyId, id);
+        var company = await _companyService.GetByIdAsync(companyId);
         var itemsRepairOrder = await _itemRepairOrderService.GetItemsRepairOrder(companyId, repairOrder.Id);
         return new TallerRepairOrderTicket()
         {
+            Company = company,
             RepairOrder = repairOrder,
             ItemsRepairOrder = itemsRepairOrder
         };
