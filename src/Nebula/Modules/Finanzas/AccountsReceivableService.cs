@@ -3,46 +3,46 @@ using Nebula.Common;
 using Nebula.Modules.Cashier.Models;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Finanzas.Models;
-using Nebula.Modules.Cashier.Helpers;
 using Nebula.Modules.Finanzas.Dto;
+using Nebula.Modules.Cashier.Helpers;
 
 namespace Nebula.Modules.Finanzas;
 
-public interface IReceivableService : ICrudOperationService<Receivable>
+public interface IAccountsReceivableService : ICrudOperationService<AccountsReceivable>
 {
-    Task<List<Receivable>> GetListAsync(string companyId, ReceivableRequestParams param);
-    Task<List<Receivable>> GetAbonosAsync(string companyId, string id);
+    Task<List<AccountsReceivable>> GetListAsync(string companyId, ReceivableRequestParams param);
+    Task<List<AccountsReceivable>> GetAbonosAsync(string companyId, string id);
     Task<long> GetTotalAbonosAsync(string companyId, string id);
-    Task CreateAsync(ICashierDetailService cashierDetailService, Receivable model);
-    Task RemoveAbonoAsync(string companyId, Receivable abono);
-    Task<List<Receivable>> GetReceivablesByContactId(string companyId,
+    Task CreateAsync(ICashierDetailService cashierDetailService, AccountsReceivable model);
+    Task RemoveAbonoAsync(string companyId, AccountsReceivable abono);
+    Task<List<AccountsReceivable>> GetReceivablesByContactId(string companyId,
         string contactId, ReceivableRequestParams requestParam);
-    Task<List<Receivable>> GetReceivablesByContactId(string companyId, string contactId, string year);
+    Task<List<AccountsReceivable>> GetReceivablesByContactId(string companyId, string contactId, string year);
 }
 
-public class ReceivableService : CrudOperationService<Receivable>, IReceivableService
+public class AccountsReceivableService : CrudOperationService<AccountsReceivable>, IAccountsReceivableService
 {
-    public ReceivableService(MongoDatabaseService mongoDatabase) : base(mongoDatabase)
+    public AccountsReceivableService(MongoDatabaseService mongoDatabase) : base(mongoDatabase)
     {
     }
 
-    public async Task<List<Receivable>> GetListAsync(string companyId, ReceivableRequestParams param)
+    public async Task<List<AccountsReceivable>> GetListAsync(string companyId, ReceivableRequestParams param)
     {
-        var builder = Builders<Receivable>.Filter;
+        var builder = Builders<AccountsReceivable>.Filter;
         var filter = builder.And(builder.Eq(x => x.CompanyId, companyId),
             builder.Eq(x => x.Year, param.Year), builder.Eq(x => x.Month, param.Month),
             builder.In("Status", new List<string>() { param.Status, "-" }),
             builder.In("Type", new List<string>() { "CARGO", "ABONO" }));
         var receivables = await _collection.Find(filter).ToListAsync();
-        List<Receivable> cuentasPorCobrar = receivables.Where(x => x.Type == "CARGO").ToList();
-        List<Receivable> listaDeAbonos = receivables.Where(x => x.Type == "ABONO").ToList();
+        List<AccountsReceivable> cuentasPorCobrar = receivables.Where(x => x.Type == "CARGO").ToList();
+        List<AccountsReceivable> listaDeAbonos = receivables.Where(x => x.Type == "ABONO").ToList();
         cuentasPorCobrar.ForEach(item => { item.Saldo = CalcularSaldoCargo(listaDeAbonos, item); });
         return cuentasPorCobrar;
     }
 
-    public async Task<List<Receivable>> GetAbonosAsync(string companyId, string id)
+    public async Task<List<AccountsReceivable>> GetAbonosAsync(string companyId, string id)
     {
-        var filter = Builders<Receivable>.Filter;
+        var filter = Builders<AccountsReceivable>.Filter;
         var query = filter.And(filter.Eq(x => x.CompanyId, companyId),
             filter.Eq(x => x.ReceivableId, id), filter.Eq(x => x.Type, "ABONO"));
         return await _collection.Find(query).ToListAsync();
@@ -50,13 +50,13 @@ public class ReceivableService : CrudOperationService<Receivable>, IReceivableSe
 
     public async Task<long> GetTotalAbonosAsync(string companyId, string id)
     {
-        var filter = Builders<Receivable>.Filter;
+        var filter = Builders<AccountsReceivable>.Filter;
         var query = filter.And(filter.Eq(x => x.CompanyId, companyId),
             filter.Eq(x => x.ReceivableId, id), filter.Eq(x => x.Type, "ABONO"));
         return await _collection.Find(query).CountDocumentsAsync();
     }
 
-    public async Task CreateAsync(ICashierDetailService cashierDetailService, Receivable model)
+    public async Task CreateAsync(ICashierDetailService cashierDetailService, AccountsReceivable model)
     {
         if (model.Type.Equals("CARGO")) await CreateAsync(model);
 
@@ -89,7 +89,7 @@ public class ReceivableService : CrudOperationService<Receivable>, IReceivableSe
         }
     }
 
-    public async Task RemoveAbonoAsync(string companyId, Receivable abono)
+    public async Task RemoveAbonoAsync(string companyId, AccountsReceivable abono)
     {
         var cargo = await GetByIdAsync(companyId, abono.ReceivableId);
         var abonos = await GetAbonosAsync(companyId, cargo.Id);
@@ -106,9 +106,10 @@ public class ReceivableService : CrudOperationService<Receivable>, IReceivableSe
         }
     }
 
-    private CashierDetail GetCashierDetail(Receivable abono)
+    private CashierDetail GetCashierDetail(AccountsReceivable abono)
     {
         var cashierDetail = new CashierDetail();
+        cashierDetail.CompanyId = abono.CompanyId.Trim();
         cashierDetail.Hour = DateTime.Now.ToString("HH:mm");
         cashierDetail.ContactId = abono.ContactId;
         cashierDetail.ContactName = abono.ContactName;
@@ -125,38 +126,38 @@ public class ReceivableService : CrudOperationService<Receivable>, IReceivableSe
         return cashierDetail;
     }
 
-    private decimal CalcularSaldoCargo(List<Receivable> listaDeAbonos, Receivable cuenta)
+    private decimal CalcularSaldoCargo(List<AccountsReceivable> listaDeAbonos, AccountsReceivable cuenta)
     {
-        List<Receivable> filter = listaDeAbonos.Where(x => x.ReceivableId == cuenta.Id).ToList();
+        List<AccountsReceivable> filter = listaDeAbonos.Where(x => x.ReceivableId == cuenta.Id).ToList();
         decimal abono = filter.Sum(x => x.Abono);
         return cuenta.Cargo - abono;
     }
 
-    public async Task<List<Receivable>> GetReceivablesByContactId(string companyId,
+    public async Task<List<AccountsReceivable>> GetReceivablesByContactId(string companyId,
         string contactId, ReceivableRequestParams requestParam)
     {
-        var builder = Builders<Receivable>.Filter;
+        var builder = Builders<AccountsReceivable>.Filter;
         var filter = builder.And(builder.Eq(x => x.CompanyId, companyId), builder.Eq(x => x.ContactId, contactId),
             builder.Eq(x => x.Year, requestParam.Year), builder.Eq(x => x.Month, requestParam.Month),
             builder.In("Status", new List<string>() { requestParam.Status, "-" }),
             builder.In("Type", new List<string>() { "CARGO", "ABONO" }));
-        List<Receivable> receivables = await _collection.Find(filter).ToListAsync();
-        List<Receivable> cuentasPorCobrar = receivables.Where(x => x.Type == "CARGO").ToList();
-        List<Receivable> listaDeAbonos = receivables.Where(x => x.Type == "ABONO").ToList();
+        List<AccountsReceivable> receivables = await _collection.Find(filter).ToListAsync();
+        List<AccountsReceivable> cuentasPorCobrar = receivables.Where(x => x.Type == "CARGO").ToList();
+        List<AccountsReceivable> listaDeAbonos = receivables.Where(x => x.Type == "ABONO").ToList();
         cuentasPorCobrar.ForEach(item => { item.Saldo = CalcularSaldoCargo(listaDeAbonos, item); });
         return cuentasPorCobrar;
     }
 
-    public async Task<List<Receivable>> GetReceivablesByContactId(string companyId, string contactId, string year)
+    public async Task<List<AccountsReceivable>> GetReceivablesByContactId(string companyId, string contactId, string year)
     {
-        var builder = Builders<Receivable>.Filter;
+        var builder = Builders<AccountsReceivable>.Filter;
         var filter = builder.And(builder.Eq(x => x.CompanyId, companyId),
             builder.Eq(x => x.ContactId, contactId),
             builder.Eq(x => x.Year, year), builder.In("Status", new List<string>() { "PENDIENTE", "-" }),
             builder.In("Type", new List<string>() { "CARGO", "ABONO" }));
-        List<Receivable> receivables = await _collection.Find(filter).ToListAsync();
-        List<Receivable> cuentasPorCobrar = receivables.Where(x => x.Type == "CARGO").ToList();
-        List<Receivable> listaDeAbonos = receivables.Where(x => x.Type == "ABONO").ToList();
+        List<AccountsReceivable> receivables = await _collection.Find(filter).ToListAsync();
+        List<AccountsReceivable> cuentasPorCobrar = receivables.Where(x => x.Type == "CARGO").ToList();
+        List<AccountsReceivable> listaDeAbonos = receivables.Where(x => x.Type == "ABONO").ToList();
         cuentasPorCobrar.ForEach(item => { item.Saldo = CalcularSaldoCargo(listaDeAbonos, item); });
         return cuentasPorCobrar;
     }

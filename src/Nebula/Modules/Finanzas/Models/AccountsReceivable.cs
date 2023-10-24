@@ -8,7 +8,7 @@ namespace Nebula.Modules.Finanzas.Models;
 /// Cuentas por Cobrar.
 /// </summary>
 [BsonIgnoreExtraElements]
-public class Receivable : IGenericModel
+public class AccountsReceivable : IGenericModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

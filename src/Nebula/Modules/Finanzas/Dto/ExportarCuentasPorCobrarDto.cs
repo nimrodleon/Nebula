@@ -5,9 +5,9 @@ namespace Nebula.Modules.Finanzas.Dto;
 
 public class ExportarCuentasPorCobrarDto
 {
-    private readonly List<Receivable> _cuentasPorCobrar;
+    private readonly List<AccountsReceivable> _cuentasPorCobrar;
 
-    public ExportarCuentasPorCobrarDto(List<Receivable> cuentasPorCobrar)
+    public ExportarCuentasPorCobrarDto(List<AccountsReceivable> cuentasPorCobrar)
     {
         _cuentasPorCobrar = cuentasPorCobrar;
     }
