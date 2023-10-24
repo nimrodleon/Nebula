@@ -183,4 +183,13 @@ public class CollaboratorController : ControllerBase
         }
     }
 
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string id)
+    {
+        var collaborator = await _collaboratorService.GetByIdAsync(id);
+        if (collaborator == null) return BadRequest(new { ok = false, msg = "El colaborador no existe." });
+        await _collaboratorService.RemoveAsync(collaborator.Id);
+        return Ok(collaborator);
+    }
+
 }
