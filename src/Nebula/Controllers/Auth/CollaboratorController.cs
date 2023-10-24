@@ -173,7 +173,22 @@ public class CollaboratorController : ControllerBase
             var collaborator = await _collaboratorService.GetByIdAsync(id);
             if (collaborator == null) return BadRequest(new { ok = false, msg = "El colaborador no existe." });
             collaborator = await _collaboratorService.UpdateAsync(collaborator.Id, model);
-            // ... actualizar cache!
+            // actualizar datos de cache.
+            var user = await _cacheAuthService.GetUserAuthAsync(collaborator.UserId);
+            if (user != null)
+            {
+                var companyRoles = await _cacheAuthService.GetUserAuthCompanyRolesAsync(user.Id);
+                if (companyRoles != null)
+                {
+                    var indexItem = companyRoles.FindIndex(x => x.CompanyId == collaborator.CompanyId);
+                    if (indexItem != -1)
+                    {
+                        companyRoles[indexItem].UserRole = collaborator.UserRole;
+                        await _cacheAuthService.RemoveUserAuthCompanyRolesAsync(user.Id);
+                        await _cacheAuthService.SetUserAuthCompanyRolesAsync(user.Id, companyRoles);
+                    }
+                }
+            }
             return Ok(collaborator);
         }
         catch (MongoWriteException ex)
@@ -189,6 +204,22 @@ public class CollaboratorController : ControllerBase
         var collaborator = await _collaboratorService.GetByIdAsync(id);
         if (collaborator == null) return BadRequest(new { ok = false, msg = "El colaborador no existe." });
         await _collaboratorService.RemoveAsync(collaborator.Id);
+        // actualizar datos de cache.
+        var user = await _cacheAuthService.GetUserAuthAsync(collaborator.UserId);
+        if (user != null)
+        {
+            var companyRoles = await _cacheAuthService.GetUserAuthCompanyRolesAsync(user.Id);
+            if (companyRoles != null)
+            {
+                var indexItem = companyRoles.FindIndex(x => x.CompanyId == collaborator.CompanyId);
+                if (indexItem != -1)
+                {
+                    companyRoles.RemoveAt(indexItem);
+                    await _cacheAuthService.RemoveUserAuthCompanyRolesAsync(user.Id);
+                    await _cacheAuthService.SetUserAuthCompanyRolesAsync(user.Id, companyRoles);
+                }
+            }
+        }
         return Ok(collaborator);
     }
 
