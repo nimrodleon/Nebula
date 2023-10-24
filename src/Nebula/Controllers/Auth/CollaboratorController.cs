@@ -165,5 +165,22 @@ public class CollaboratorController : ControllerBase
         });
     }
 
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(string id, [FromBody] Collaborator model)
+    {
+        try
+        {
+            var collaborator = await _collaboratorService.GetByIdAsync(id);
+            if (collaborator == null) return BadRequest(new { ok = false, msg = "El colaborador no existe." });
+            collaborator = await _collaboratorService.UpdateAsync(collaborator.Id, model);
+            // ... actualizar cache!
+            return Ok(collaborator);
+        }
+        catch (MongoWriteException ex)
+        when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 
 }
