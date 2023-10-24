@@ -15,11 +15,11 @@ namespace Nebula.Controllers.Finanzas;
 [ApiController]
 public class ReceivableController : ControllerBase
 {
-    private readonly IReceivableService _receivableService;
+    private readonly IAccountsReceivableService _receivableService;
     private readonly ICashierDetailService _cashierDetailService;
 
     public ReceivableController(
-        IReceivableService receivableService,
+        IAccountsReceivableService receivableService,
         ICashierDetailService cashierDetailService)
     {
         _receivableService = receivableService;
@@ -50,7 +50,7 @@ public class ReceivableController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(string companyId, [FromBody] Receivable model)
+    public async Task<IActionResult> Create(string companyId, [FromBody] AccountsReceivable model)
     {
         model.CompanyId = companyId.Trim();
         await _receivableService.CreateAsync(_cashierDetailService, model);
@@ -58,7 +58,7 @@ public class ReceivableController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(string companyId, string id, [FromBody] Receivable model)
+    public async Task<IActionResult> Update(string companyId, string id, [FromBody] AccountsReceivable model)
     {
         var receivable = await _receivableService.GetByIdAsync(companyId, id);
         model.Id = receivable.Id;
@@ -96,7 +96,7 @@ public class ReceivableController : ControllerBase
     [HttpGet("ExportDeudaExcel/{contactId}")]
     public async Task<IActionResult> ExportDeudaExcel(string companyId, string contactId, [FromQuery] string year)
     {
-        List<Receivable> cuentasPorCobrar = await _receivableService.GetReceivablesByContactId(companyId, contactId, year);
+        List<AccountsReceivable> cuentasPorCobrar = await _receivableService.GetReceivablesByContactId(companyId, contactId, year);
         ExportarCuentasPorCobrarDto exportar = new ExportarCuentasPorCobrarDto(cuentasPorCobrar);
         string pathExcel = exportar.GenerarArchivoExcel();
         FileStream stream = new FileStream(pathExcel, FileMode.Open);

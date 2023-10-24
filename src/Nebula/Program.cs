@@ -102,7 +102,7 @@ builder.Services.AddScoped<IContribuyenteService, ContribuyenteService>();
 
 #region ModuleFinanzas
 
-builder.Services.AddScoped<IReceivableService, ReceivableService>();
+builder.Services.AddScoped<IAccountsReceivableService, AccountsReceivableService>();
 
 #endregion
 

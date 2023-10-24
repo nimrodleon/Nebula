@@ -24,13 +24,13 @@ public class CashierSaleService : ICashierSaleService
     private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly ICrudOperationService<InvoiceSerie> _invoiceSerieService;
     private readonly ICashierDetailService _cashierDetailService;
-    private readonly IReceivableService _receivableService;
+    private readonly IAccountsReceivableService _receivableService;
     private readonly ICajaDiariaService _cajaDiariaService;
 
     public CashierSaleService(
         IInvoiceSaleService invoiceSaleService, IInvoiceSaleDetailService invoiceSaleDetailService,
          ICrudOperationService<InvoiceSerie> invoiceSerieService,
-        ICashierDetailService cashierDetailService, IReceivableService receivableService,
+        ICashierDetailService cashierDetailService, IAccountsReceivableService receivableService,
         ICajaDiariaService cajaDiariaService)
     {
         _invoiceSaleService = invoiceSaleService;
@@ -44,7 +44,7 @@ public class CashierSaleService : ICashierSaleService
     /// <summary>
     /// Guardar comprobante de venta rápida.
     /// </summary>
-    public async Task<InvoiceSale> SaveChangesAsync( Company company, ComprobanteDto comprobanteDto, string cajaDiariaId)
+    public async Task<InvoiceSale> SaveChangesAsync(Company company, ComprobanteDto comprobanteDto, string cajaDiariaId)
     {
         var invoiceSale = comprobanteDto.GetInvoiceSale(company);
         var invoiceSerieId = comprobanteDto.Cabecera.InvoiceSerieId;
@@ -79,7 +79,7 @@ public class CashierSaleService : ICashierSaleService
 
         // registrar cargo si la operación es a crédito.
         if (comprobanteDto.FormaPago.Tipo == FormaPago.Credito)
-        {            
+        {
             var cargo = GenerarCargo(invoiceSale, cajaDiaria, company.DiasPlazo);
             await _receivableService.CreateAsync(cargo);
         }
@@ -87,9 +87,9 @@ public class CashierSaleService : ICashierSaleService
         return invoiceSale;
     }
 
-    private Receivable GenerarCargo(InvoiceSale invoiceSale, CajaDiaria cajaDiaria, int diasPlazo)
+    private AccountsReceivable GenerarCargo(InvoiceSale invoiceSale, CajaDiaria cajaDiaria, int diasPlazo)
     {
-        return new Receivable()
+        return new AccountsReceivable()
         {
             CompanyId = invoiceSale.CompanyId,
             Type = "CARGO",
