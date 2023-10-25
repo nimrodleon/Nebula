@@ -159,9 +159,10 @@ builder.Services.AddScoped<ITallerItemRepairOrderService, TallerItemRepairOrderS
 
 #region ModuleInvoiceHub
 
+builder.Services.Configure<InvoiceHubSettings>(builder.Configuration.GetSection(nameof(InvoiceHubSettings)));
 builder.Services.AddHttpClient<ICreditNoteHubService, CreditNoteHubService>();
 builder.Services.AddHttpClient<IInvoiceHubService, InvoiceHubService>();
-builder.Services.Configure<InvoiceHubSettings>(builder.Configuration.GetSection(nameof(InvoiceHubSettings)));
+builder.Services.AddHttpClient<ICertificadoUploaderService, CertificadoUploaderService>();
 
 #endregion
 

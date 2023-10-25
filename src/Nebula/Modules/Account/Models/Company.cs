@@ -1,7 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Nebula.Common.Models;
-using System.ComponentModel.DataAnnotations;
 
 namespace Nebula.Modules.Account.Models;
 
@@ -72,4 +71,29 @@ public class Company : IGenericModel
     /// #Dias para créditos automáticos.
     /// </summary>
     public int DiasPlazo { get; set; } = 0;
+
+    /// <summary>
+    /// Codigo ubigeo del domicilio fiscal.
+    /// </summary>
+    public string Ubigueo { get; set; } = string.Empty;
+
+    /// <summary>
+    /// En que departamento del perú se encuentra.
+    /// </summary>
+    public string Departamento { get; set; } = string.Empty;
+
+    /// <summary>
+    /// En que provincia se encuentra.
+    /// </summary>
+    public string Provincia { get; set; } = string.Empty;
+
+    /// <summary>
+    /// En que distrito se encuentra.
+    /// </summary>
+    public string Distrito { get; set; } = string.Empty;
+
+    /// <summary>
+    /// En que urbanización está la dirección.
+    /// </summary>
+    public string Urbanizacion { get; set; } = "";
 }
