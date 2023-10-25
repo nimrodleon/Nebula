@@ -60,6 +60,10 @@ namespace Nebula.Controllers.Account
             model.Ruc = model.Ruc.Trim();
             model.RznSocial = model.RznSocial.Trim().ToUpper();
             model.Address = model.Address.Trim().ToUpper();
+            model.Departamento = model.Departamento.Trim().ToUpper();
+            model.Provincia = model.Provincia.Trim().ToUpper();
+            model.Distrito = model.Distrito.Trim().ToUpper();
+            model.Urbanizacion = model.Urbanizacion.Trim().ToUpper();
             model = await _companyService.CreateAsync(model);
 
             // agregar empresa en cache.
@@ -112,18 +116,22 @@ namespace Nebula.Controllers.Account
             model.Ruc = model.Ruc.Trim();
             model.RznSocial = model.RznSocial.Trim().ToUpper();
             model.Address = model.Address.Trim().ToUpper();
+            model.Departamento = model.Departamento.Trim().ToUpper();
+            model.Provincia = model.Provincia.Trim().ToUpper();
+            model.Distrito = model.Distrito.Trim().ToUpper();
+            model.Urbanizacion = model.Urbanizacion.Trim().ToUpper();
             company = await _companyService.UpdateAsync(company.Id, model);
             // actualizar empresa en cache.
             var companies = await _cacheAuthService.GetUserAuthCompaniesAsync(model.UserId);
             if (companies != null)
             {
                 var index = companies.FindIndex(x => x.Id == company.Id);
-                if(index != -1)
+                if (index != -1)
                 {
                     companies[index] = company;
                     await _cacheAuthService.RemoveUserAuthCompaniesAsync(model.UserId);
                     await _cacheAuthService.SetUserAuthCompaniesAsync(company.UserId, companies);
-                }                               
+                }
             }
             return Ok(company);
         }
