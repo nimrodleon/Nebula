@@ -1,6 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Nebula.Common.Models;
+using Nebula.Modules.InvoiceHub.Helpers;
 
 namespace Nebula.Modules.Account.Models;
 
@@ -96,4 +97,14 @@ public class Company : IGenericModel
     /// En que urbanización está la dirección.
     /// </summary>
     public string Urbanizacion { get; set; } = "";
+
+    /// <summary>
+    /// Fecha vencimiento del certificado.
+    /// </summary>
+    public string FechaVencimientoCert { get; set; } = "-";
+
+    /// <summary>
+    /// Tipo de endpoint SUNAT, FE_BETA | FE_PRODUCCION
+    /// </summary>
+    public string SunatEndpoint { get; set; } = SunatEndpoints.FeBeta;
 }

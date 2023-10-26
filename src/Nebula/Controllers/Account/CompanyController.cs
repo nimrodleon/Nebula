@@ -9,6 +9,8 @@ using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth.Models;
 using Nebula.Modules.InvoiceHub;
 using Nebula.Modules.InvoiceHub.Dto;
+using Nebula.Modules.InvoiceHub.Helpers;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Nebula.Controllers.Account;
 
@@ -163,8 +165,12 @@ public class CompanyController : ControllerBase
                 await certificate.CopyToAsync(ms);
                 byte[] certificadoPfx = ms.ToArray();
                 var result = await _certificadoUploaderService.SubirCertificado(certificadoPfx, password, company.Ruc, company.Id);
+                // actualizar fecha de vencimiento.
+                company.FechaVencimientoCert = new X509Certificate2(certificadoPfx, password.Trim()).NotAfter.ToString("yyyy-MM-dd");
+                company.SunatEndpoint = SunatEndpoints.FeBeta;
+                await _companyService.UpdateAsync(company.Id, company);
                 // sincronizar datos de la empresa...
-                return Ok(new { ok = true, msg = result });
+                return Ok(company);
             }
         }
         catch (Exception ex)
