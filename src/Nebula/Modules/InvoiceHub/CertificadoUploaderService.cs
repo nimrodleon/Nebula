@@ -1,7 +1,5 @@
 using Microsoft.Extensions.Options;
-using Nebula.Modules.InvoiceHub.Helpers;
 using System.Net.Http.Headers;
-using System.Text;
 
 namespace Nebula.Modules.InvoiceHub;
 
@@ -25,13 +23,13 @@ public class CertificadoUploaderService : ICertificadoUploaderService
     {
         try
         {
-            var certificadoPem = PfxToPemConverter.ConvertPfxToPem(certificadoPfx, password.Trim());
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _settings.JwtToken);
             string url = $"{_settings.ApiBaseUrl}/api/configuration/subirCertificado";
             var formData = new MultipartFormDataContent();
             formData.Add(new StringContent(ruc), "ruc");
             formData.Add(new StringContent(companyId), "companyId");
-            formData.Add(new ByteArrayContent(Encoding.UTF8.GetBytes(certificadoPem)), "certificate", "cert.pem");
+            formData.Add(new ByteArrayContent(certificadoPfx), "certificate", "cert.pem");
+            formData.Add(new StringContent(password), "password");
             var response = await _httpClient.PostAsync(url, formData);
 
             if (response.IsSuccessStatusCode)
