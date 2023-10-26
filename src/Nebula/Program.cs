@@ -163,6 +163,7 @@ builder.Services.Configure<InvoiceHubSettings>(builder.Configuration.GetSection(
 builder.Services.AddHttpClient<ICreditNoteHubService, CreditNoteHubService>();
 builder.Services.AddHttpClient<IInvoiceHubService, InvoiceHubService>();
 builder.Services.AddHttpClient<ICertificadoUploaderService, CertificadoUploaderService>();
+builder.Services.AddHttpClient<IEmpresaHubService, EmpresaHubService>();
 
 #endregion
 

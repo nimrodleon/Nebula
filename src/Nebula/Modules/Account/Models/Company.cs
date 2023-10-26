@@ -1,6 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Nebula.Common.Models;
+using Nebula.Modules.InvoiceHub.Dto;
 using Nebula.Modules.InvoiceHub.Helpers;
 
 namespace Nebula.Modules.Account.Models;
@@ -107,4 +108,9 @@ public class Company : IGenericModel
     /// Tipo de endpoint SUNAT, FE_BETA | FE_PRODUCCION
     /// </summary>
     public string SunatEndpoint { get; set; } = SunatEndpoints.FeBeta;
+
+    /// <summary>
+    /// Configuración de la Clave SOL.
+    /// </summary>
+    public ClaveSolHub ClaveSol { get; set; } = new ClaveSolHub();
 }

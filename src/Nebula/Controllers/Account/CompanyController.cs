@@ -23,15 +23,17 @@ public class CompanyController : ControllerBase
     private readonly ICollaboratorService _collaboratorService;
     private readonly ICacheAuthService _cacheAuthService;
     private readonly ICertificadoUploaderService _certificadoUploaderService;
+    private readonly IEmpresaHubService _empresaHubService;
 
     public CompanyController(ICompanyService companyService,
         ICollaboratorService collaboratorService, ICacheAuthService cacheAuthService,
-        ICertificadoUploaderService certificadoUploaderService)
+        ICertificadoUploaderService certificadoUploaderService, IEmpresaHubService empresaHubService)
     {
         _companyService = companyService;
         _collaboratorService = collaboratorService;
         _cacheAuthService = cacheAuthService;
         _certificadoUploaderService = certificadoUploaderService;
+        _empresaHubService = empresaHubService;
     }
 
     [HttpGet]
@@ -169,7 +171,32 @@ public class CompanyController : ControllerBase
                 company.FechaVencimientoCert = new X509Certificate2(certificadoPfx, password.Trim()).NotAfter.ToString("yyyy-MM-dd");
                 company.SunatEndpoint = SunatEndpoints.FeBeta;
                 await _companyService.UpdateAsync(company.Id, company);
-                // sincronizar datos de la empresa...
+                // sincronizar datos de la empresa.
+                var empresaHub = new EmpresaHub()
+                {
+                    Ruc = company.Ruc.Trim(),
+                    CompanyId = company.Id.Trim(),
+                    RazonSocial = company.RznSocial.Trim(),
+                    NombreComercial = company.RznSocial.Trim(),
+                    SunatEndpoint = company.SunatEndpoint.Trim(),
+                    ClaveSol = new ClaveSolHub()
+                    {
+                        User = company.ClaveSol.User.Trim(),
+                        Password = company.ClaveSol.Password.Trim(),
+                    },
+                    Address = new AddressHub()
+                    {
+                        Ubigueo = company.Ubigueo.Trim(),
+                        Departamento = company.Departamento.Trim(),
+                        Provincia = company.Provincia.Trim(),
+                        Distrito = company.Distrito.Trim(),
+                        Urbanizacion = company.Urbanizacion.Trim(),
+                        Direccion = company.Address.Trim(),
+                        CodLocal = company.CodLocalEmisor.Trim(),
+                    }
+                };
+                await _empresaHubService.RegistrarEmpresa(empresaHub);
+
                 return Ok(company);
             }
         }
