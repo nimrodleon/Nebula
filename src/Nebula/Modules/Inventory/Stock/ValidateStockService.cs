@@ -123,6 +123,6 @@ public class ValidateStockService : IValidateStockService
         dto.InvoiceSale = model.InvoiceSale;
         dto.InvoiceSaleDetails = model.InvoiceSaleDetails;
         var productStocks = new InvoiceSaleToProductStockConverter(dto).Convertir();
-        await _productStockService.CreateManyAsync(productStocks);
+        if (productStocks.Count > 0) await _productStockService.CreateManyAsync(productStocks);
     }
 }
