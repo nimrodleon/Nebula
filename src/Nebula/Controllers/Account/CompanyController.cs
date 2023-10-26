@@ -9,6 +9,8 @@ using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth.Models;
 using Nebula.Modules.InvoiceHub;
 using Nebula.Modules.InvoiceHub.Dto;
+using Nebula.Modules.InvoiceHub.Helpers;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Nebula.Controllers.Account;
 
@@ -21,15 +23,17 @@ public class CompanyController : ControllerBase
     private readonly ICollaboratorService _collaboratorService;
     private readonly ICacheAuthService _cacheAuthService;
     private readonly ICertificadoUploaderService _certificadoUploaderService;
+    private readonly IEmpresaHubService _empresaHubService;
 
     public CompanyController(ICompanyService companyService,
         ICollaboratorService collaboratorService, ICacheAuthService cacheAuthService,
-        ICertificadoUploaderService certificadoUploaderService)
+        ICertificadoUploaderService certificadoUploaderService, IEmpresaHubService empresaHubService)
     {
         _companyService = companyService;
         _collaboratorService = collaboratorService;
         _cacheAuthService = cacheAuthService;
         _certificadoUploaderService = certificadoUploaderService;
+        _empresaHubService = empresaHubService;
     }
 
     [HttpGet]
@@ -163,8 +167,37 @@ public class CompanyController : ControllerBase
                 await certificate.CopyToAsync(ms);
                 byte[] certificadoPfx = ms.ToArray();
                 var result = await _certificadoUploaderService.SubirCertificado(certificadoPfx, password, company.Ruc, company.Id);
-                // sincronizar datos de la empresa...
-                return Ok(new { ok = true, msg = result });
+                // actualizar fecha de vencimiento.
+                company.FechaVencimientoCert = new X509Certificate2(certificadoPfx, password.Trim()).NotAfter.ToString("yyyy-MM-dd");
+                company.SunatEndpoint = SunatEndpoints.FeBeta;
+                await _companyService.UpdateAsync(company.Id, company);
+                // sincronizar datos de la empresa.
+                var empresaHub = new EmpresaHub()
+                {
+                    Ruc = company.Ruc.Trim(),
+                    CompanyId = company.Id.Trim(),
+                    RazonSocial = company.RznSocial.Trim(),
+                    NombreComercial = company.RznSocial.Trim(),
+                    SunatEndpoint = company.SunatEndpoint.Trim(),
+                    ClaveSol = new ClaveSolHub()
+                    {
+                        User = company.ClaveSol.User.Trim(),
+                        Password = company.ClaveSol.Password.Trim(),
+                    },
+                    Address = new AddressHub()
+                    {
+                        Ubigueo = company.Ubigueo.Trim(),
+                        Departamento = company.Departamento.Trim(),
+                        Provincia = company.Provincia.Trim(),
+                        Distrito = company.Distrito.Trim(),
+                        Urbanizacion = company.Urbanizacion.Trim(),
+                        Direccion = company.Address.Trim(),
+                        CodLocal = company.CodLocalEmisor.Trim(),
+                    }
+                };
+                await _empresaHubService.RegistrarEmpresa(empresaHub);
+
+                return Ok(company);
             }
         }
         catch (Exception ex)
@@ -172,5 +205,87 @@ public class CompanyController : ControllerBase
             // Manejar cualquier excepción que ocurra durante el procesamiento del certificado
             return BadRequest(new { ok = false, msg = $"Error al procesar el certificado: {ex.Message}" });
         }
+    }
+
+    [HttpPatch("SincronizarDatos/{companyId}")]
+    public async Task<IActionResult> SincronizarDatos(string companyId)
+    {
+        var company = await _companyService.GetByIdAsync(companyId.Trim());
+        if (company == null) return BadRequest(new { ok = false, msg = "No existe la Empresa." });
+        // sincronizar datos de la empresa.
+        var empresaHub = new EmpresaHub()
+        {
+            Ruc = company.Ruc.Trim(),
+            CompanyId = company.Id.Trim(),
+            RazonSocial = company.RznSocial.Trim(),
+            NombreComercial = company.RznSocial.Trim(),
+            SunatEndpoint = company.SunatEndpoint.Trim(),
+            ClaveSol = new ClaveSolHub()
+            {
+                User = company.ClaveSol.User.Trim(),
+                Password = company.ClaveSol.Password.Trim(),
+            },
+            Address = new AddressHub()
+            {
+                Ubigueo = company.Ubigueo.Trim(),
+                Departamento = company.Departamento.Trim(),
+                Provincia = company.Provincia.Trim(),
+                Distrito = company.Distrito.Trim(),
+                Urbanizacion = company.Urbanizacion.Trim(),
+                Direccion = company.Address.Trim(),
+                CodLocal = company.CodLocalEmisor.Trim(),
+            }
+        };
+        await _empresaHubService.RegistrarEmpresa(empresaHub);
+        return Ok(company);
+    }
+
+    [HttpPatch("QuitarCertificado/{companyId}")]
+    public async Task<IActionResult> QuitarCertificado(string companyId)
+    {
+        var company = await _companyService.GetByIdAsync(companyId.Trim());
+        if (company == null) return BadRequest(new { ok = false, msg = "No existe la Empresa." });
+        company.FechaVencimientoCert = "-";
+        company.SunatEndpoint = SunatEndpoints.FeBeta;
+        await _companyService.UpdateAsync(company.Id, company);
+        return Ok(company);
+    }
+
+    [HttpPatch("CambiarSunatEndpoint/{companyId}")]
+    public async Task<IActionResult> CambiarSunatEndpoint(string companyId)
+    {
+        var company = await _companyService.GetByIdAsync(companyId.Trim());
+        if (company == null) return BadRequest(new { ok = false, msg = "No existe la Empresa." });
+        if (company.SunatEndpoint == SunatEndpoints.FeBeta)
+            company.SunatEndpoint = SunatEndpoints.FeProduccion;
+        else if (company.SunatEndpoint == SunatEndpoints.FeProduccion)
+            company.SunatEndpoint = SunatEndpoints.FeBeta;
+        await _companyService.UpdateAsync(company.Id, company);
+        // sincronizar datos de la empresa.
+        var empresaHub = new EmpresaHub()
+        {
+            Ruc = company.Ruc.Trim(),
+            CompanyId = company.Id.Trim(),
+            RazonSocial = company.RznSocial.Trim(),
+            NombreComercial = company.RznSocial.Trim(),
+            SunatEndpoint = company.SunatEndpoint.Trim(),
+            ClaveSol = new ClaveSolHub()
+            {
+                User = company.ClaveSol.User.Trim(),
+                Password = company.ClaveSol.Password.Trim(),
+            },
+            Address = new AddressHub()
+            {
+                Ubigueo = company.Ubigueo.Trim(),
+                Departamento = company.Departamento.Trim(),
+                Provincia = company.Provincia.Trim(),
+                Distrito = company.Distrito.Trim(),
+                Urbanizacion = company.Urbanizacion.Trim(),
+                Direccion = company.Address.Trim(),
+                CodLocal = company.CodLocalEmisor.Trim(),
+            }
+        };
+        await _empresaHubService.RegistrarEmpresa(empresaHub);
+        return Ok(company);
     }
 }
