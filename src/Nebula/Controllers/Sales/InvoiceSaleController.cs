@@ -97,6 +97,20 @@ public class InvoiceSaleController : ControllerBase
         return Ok(invoiceSale);
     }
 
+    [HttpPatch("Reenviar/{id}")]
+    public async Task<IActionResult> Reenviar(string companyId, string id)
+    {
+        var company = await _cacheAuthService.GetCompanyByIdAsync(companyId.Trim());
+        var comprobante = new InvoiceSaleAndDetails();
+        comprobante.InvoiceSale = await _invoiceSaleService.GetByIdAsync(companyId, id);
+        comprobante.InvoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(companyId, comprobante.InvoiceSale.Id);
+        var invoiceRequest = InvoiceMapper.MapToInvoiceRequestHub(company.Ruc, comprobante);
+        var billingResponse = await _invoiceHubService.SendInvoiceAsync(companyId, invoiceRequest);
+        comprobante.InvoiceSale.BillingResponse = billingResponse;
+        await _invoiceSaleService.UpdateAsync(comprobante.InvoiceSale.Id, comprobante.InvoiceSale);
+        return Ok(new { Data = billingResponse, InvoiceId = comprobante.InvoiceSale.Id });
+    }
+
     [AllowAnonymous]
     [HttpGet("ExcelRegistroVentasF141")]
     public async Task<IActionResult> ExcelRegistroVentasF141(string companyId, [FromQuery] DateQuery dto)
