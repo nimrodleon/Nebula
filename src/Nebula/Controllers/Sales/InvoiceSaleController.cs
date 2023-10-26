@@ -133,13 +133,6 @@ public class InvoiceSaleController : ControllerBase
         return Ok(invoiceSales);
     }
 
-    [HttpPost("BusquedaAvanzada")]
-    public async Task<IActionResult> BusquedaAvanzada(string companyId, [FromBody] BuscarComprobanteFormDto dto)
-    {
-        var invoiceSales = await _invoiceSaleService.BusquedaAvanzadaAsync(companyId, dto);
-        return Ok(invoiceSales);
-    }
-
     [HttpPatch("AnularComprobante/{id}")]
     public async Task<IActionResult> AnularComprobante(string companyId, string id)
     {

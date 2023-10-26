@@ -16,7 +16,6 @@ public interface IInvoiceSaleService : ICrudOperationService<InvoiceSale>
     Task<List<InvoiceSale>> GetInvoiceSaleByDate(string companyId, string date);
     Task<InvoiceSale> AnularComprobante(string companyId, string invoiceSaleId);
     Task<List<InvoiceSale>> GetInvoiceSalesPendingAsync(string companyId);
-    Task<List<InvoiceSale>> BusquedaAvanzadaAsync(string companyId, BuscarComprobanteFormDto dto);
 }
 
 public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSaleService
@@ -117,24 +116,6 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSal
             builder.Not(builder.Eq(x => x.TipoDoc, "NOTA")),
             builder.Eq(x => x.BillingResponse.Success, false));
         return await _collection.Find(filter).ToListAsync();
-    }
-
-    public async Task<List<InvoiceSale>> BusquedaAvanzadaAsync(string companyId, BuscarComprobanteFormDto dto)
-    {
-        var filterBuilder = Builders<InvoiceSale>.Filter;
-        var filters = new List<FilterDefinition<InvoiceSale>>();
-
-        filters.Add(filterBuilder.Eq(x => x.CompanyId, companyId));
-        filters.Add(filterBuilder.Gte(x => x.FechaEmision, dto.FechaDesde));
-        filters.Add(filterBuilder.Lte(x => x.FechaEmision, dto.FechaHasta));
-
-        if (!string.IsNullOrEmpty(dto.ContactId))
-        {
-            filters.Add(filterBuilder.Eq(x => x.ContactId, dto.ContactId));
-        }
-
-        var query = filterBuilder.And(filters);
-        return await _collection.Find(query).ToListAsync();
     }
 
 }
