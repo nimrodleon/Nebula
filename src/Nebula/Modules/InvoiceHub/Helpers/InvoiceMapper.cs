@@ -49,7 +49,7 @@ public static class InvoiceMapper
         {
             detailList.Add(new DetailHub()
             {
-                CodProducto = item.CodProducto,
+                CodProducto = item.RecordType == "PRODUCTO" ? item.CodProducto : "-",
                 Unidad = item.Unidad.Split(":")[0].Trim(),
                 Cantidad = item.Cantidad,
                 MtoValorUnitario = item.MtoValorUnitario,
