@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Common.Dto;
 using Nebula.Common.Helpers;
-using Nebula.Modules.Account;
 using Nebula.Modules.Account.Models;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth;
@@ -27,7 +26,6 @@ namespace Nebula.Controllers.Sales;
 public class InvoiceSaleController : ControllerBase
 {
     private readonly ICacheAuthService _cacheAuthService;
-    private readonly IInvoiceSerieService _invoiceSerieService;
     private readonly IInvoiceSaleService _invoiceSaleService;
     private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly IComprobanteService _comprobanteService;
@@ -39,7 +37,6 @@ public class InvoiceSaleController : ControllerBase
 
     public InvoiceSaleController(
         ICacheAuthService cacheAuthService,
-        IInvoiceSerieService invoiceSerieService,
         IInvoiceSaleService invoiceSaleService,
         IInvoiceSaleDetailService invoiceSaleDetailService,
         IComprobanteService comprobanteService,
@@ -50,7 +47,6 @@ public class InvoiceSaleController : ControllerBase
         IValidateStockService validateStockService)
     {
         _cacheAuthService = cacheAuthService;
-        _invoiceSerieService = invoiceSerieService;
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _comprobanteService = comprobanteService;
@@ -111,34 +107,46 @@ public class InvoiceSaleController : ControllerBase
         return Ok(new { Data = billingResponse, InvoiceId = comprobante.InvoiceSale.Id });
     }
 
-    [AllowAnonymous]
-    [HttpGet("ExcelRegistroVentasF141")]
-    public async Task<IActionResult> ExcelRegistroVentasF141(string companyId, [FromQuery] DateQuery dto)
+    [HttpGet("DescargarRegistroVentas")]
+    public async Task<IActionResult> DescargarRegistroVentas(string companyId, [FromQuery] DateQuery dto)
     {
-        string[] fieldNames = new string[] { "Name" };
-        ParamExcelRegistroVentasF141 param = new ParamExcelRegistroVentasF141
-        {
-            InvoiceSeries = await _invoiceSerieService.GetFilteredAsync(companyId, fieldNames, string.Empty),
-            InvoiceSales = await _invoiceSaleService.GetListAsync(companyId, dto),
-            CreditNotes = await _creditNoteService.GetListAsync(companyId, dto),
-        };
-        // Obtener lista de comprobantes de notas de crédito.
-        List<string> seriesComprobante = new List<string>();
-        List<string> númerosComprobante = new List<string>();
-        param.CreditNotes.ForEach(item =>
-        {
-            seriesComprobante.Add(item.NumDocfectado.Split("-")[0].Trim());
-            númerosComprobante.Add(item.NumDocfectado.Split("-")[1].Trim());
-        });
-        seriesComprobante = seriesComprobante.Distinct().ToList();
-        númerosComprobante = númerosComprobante.Distinct().ToList();
-        var comprobantesDeNotas = await _invoiceSaleService.GetInvoicesByNumDocs(companyId, seriesComprobante, númerosComprobante);
-        param.ComprobantesDeNotas = comprobantesDeNotas;
-        // generar archivo excel y enviar como respuesta de solicitud.
-        string filePath = new ExcelRegistroVentasF141(param).CrearArchivo();
-        FileStream stream = new FileStream(filePath, FileMode.Open);
-        return new FileStreamResult(stream, ContentTypeFormat.Excel);
+        var invoices = await _invoiceSaleService.GetListAsync(companyId, dto);
+        var notes = await _creditNoteService.GetListAsync(companyId, dto);
+        var datosExcel = new ExcelRegistroVentas(invoices, notes).GenerarArchivo();
+        // Configuramos la respuesta HTTP.
+        var stream = new MemoryStream();
+        datosExcel.SaveAs(stream);
+        stream.Seek(0, SeekOrigin.Begin);
+        return File(stream, ContentTypeFormat.Excel, "datos.xlsx");
     }
+
+    //[HttpGet("ExcelRegistroVentasF141")]
+    //public async Task<IActionResult> ExcelRegistroVentasF141(string companyId, [FromQuery] DateQuery dto)
+    //{
+    //    string[] fieldNames = new string[] { "Name" };
+    //    ParamExcelRegistroVentasF141 param = new ParamExcelRegistroVentasF141
+    //    {
+    //        InvoiceSeries = await _invoiceSerieService.GetFilteredAsync(companyId, fieldNames, string.Empty),
+    //        InvoiceSales = await _invoiceSaleService.GetListAsync(companyId, dto),
+    //        CreditNotes = await _creditNoteService.GetListAsync(companyId, dto),
+    //    };
+    //    // Obtener lista de comprobantes de notas de crédito.
+    //    List<string> seriesComprobante = new List<string>();
+    //    List<string> númerosComprobante = new List<string>();
+    //    param.CreditNotes.ForEach(item =>
+    //    {
+    //        seriesComprobante.Add(item.NumDocfectado.Split("-")[0].Trim());
+    //        númerosComprobante.Add(item.NumDocfectado.Split("-")[1].Trim());
+    //    });
+    //    seriesComprobante = seriesComprobante.Distinct().ToList();
+    //    númerosComprobante = númerosComprobante.Distinct().ToList();
+    //    var comprobantesDeNotas = await _invoiceSaleService.GetInvoicesByNumDocs(companyId, seriesComprobante, númerosComprobante);
+    //    param.ComprobantesDeNotas = comprobantesDeNotas;
+    //    // generar archivo excel y enviar como respuesta de solicitud.
+    //    string filePath = new ExcelRegistroVentasF141(param).CrearArchivo();
+    //    FileStream stream = new FileStream(filePath, FileMode.Open);
+    //    return new FileStreamResult(stream, ContentTypeFormat.Excel);
+    //}
 
     [HttpGet("Pendientes")]
     public async Task<IActionResult> Pendientes(string companyId)
