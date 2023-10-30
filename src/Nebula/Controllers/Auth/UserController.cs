@@ -7,7 +7,6 @@ using Nebula.Common;
 using System.Security.Claims;
 using System.Data.Common;
 using MongoDB.Driver;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Nebula.Controllers.Auth;
 
@@ -59,7 +58,7 @@ public class UserController : ControllerBase
                 Gracias por registrarte en nuestro sitio web.<br>
                 Para completar tu registro, por favor haz clic en el siguiente enlace para validar tu dirección de correo electrónico:
                 <br>
-                http://localhost:5042/api/auth/User/VerifyEmail?token={token}
+                <a href='https://cloud.cpedigital.net/public/user/verify-email?token={token}'>Verificar E-Mail</a>
                 <br>
                 Si no puedes hacer clic en el enlace, cópialo y pégalo en la barra de direcciones de tu navegador web.
                 <br>
