@@ -65,14 +65,14 @@ public class CollaboratorController : ControllerBase
         await _redis.KeyExpireAsync($"nebula_invitar_colaborador_{uuid}", TimeSpan.FromMinutes(30));
         var company = await _cacheAuthService.GetCompanyByIdAsync(model.CompanyId.Trim());
         // enviar correo electrónico.
-        string fromEmail = "reddrc21@gmail.com";
+        string fromEmail = "cpedigital12@gmail.com";
         string subject = $"Invitación para unirse a, {company.Ruc} - {company.RznSocial}";
         string body = $"""
             Hola {model.Email},
             Has sido invitado a unirte a {company.RznSocial} en nuestra plataforma.<br>
             Para configurar tu cuenta y empezar a gestionar la empresa, por favor haz clic en el siguiente enlace:
             <br>
-            <a href='http://localhost:4200/account/companies/{company.Id}/collaborators/validate?uuid={uuid}'>Unirme a {company.RznSocial}</a>
+            <a href='https://cloud.cpedigital.net/public/collaborator/validate?uuid={uuid}'>Unirme a {company.RznSocial}</a>
             <br>
             Si no puedes hacer clic en el enlace, por favor cópialo y pégalo en la barra de direcciones de tu navegador web.
             <br>
