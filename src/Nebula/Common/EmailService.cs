@@ -20,6 +20,7 @@ public class EmailService : IEmailService
         _settings = settings.Value;
         _smtpClient = new SmtpClient(_settings.SmtpServer)
         {
+            Port = 587,
             UseDefaultCredentials = false,
             Credentials = new NetworkCredential(_settings.SmtpUsername, _settings.SmtpPassword),
             EnableSsl = true
