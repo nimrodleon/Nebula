@@ -5,6 +5,8 @@ using Nebula.Modules.Products.Dto;
 using Microsoft.AspNetCore.Authorization;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth;
+using Nebula.Modules.Products.Helpers;
+using Nebula.Common.Helpers;
 
 namespace Nebula.Controllers.Products;
 
@@ -89,6 +91,17 @@ public class ProductController : ControllerBase
         var product = await _productService.GetByIdAsync(companyId, id);
         await _productService.RemoveAsync(companyId, product.Id);
         return Ok(product);
+    }
+
+    [HttpGet("PlantillaExcel")]
+    public IActionResult PlantillaExcel()
+    {
+        var plantillaExcel = new ExcelPlantillaProductos().GenerarArchivo();
+        // Configuramos la respuesta HTTP.
+        var stream = new MemoryStream();
+        plantillaExcel.SaveAs(stream);
+        stream.Seek(0, SeekOrigin.Begin);
+        return File(stream, ContentTypeFormat.Excel, "plantilla.xlsx");
     }
 
 }
