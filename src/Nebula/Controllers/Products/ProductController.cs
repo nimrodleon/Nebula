@@ -17,10 +17,12 @@ namespace Nebula.Controllers.Products;
 public class ProductController : ControllerBase
 {
     private readonly IProductService _productService;
+    private readonly ICategoryService _categoryService;
 
-    public ProductController(IProductService productService)
+    public ProductController(IProductService productService, ICategoryService categoryService)
     {
         _productService = productService;
+        _categoryService = categoryService;
     }
 
     [HttpGet]
@@ -102,6 +104,33 @@ public class ProductController : ControllerBase
         plantillaExcel.SaveAs(stream);
         stream.Seek(0, SeekOrigin.Begin);
         return File(stream, ContentTypeFormat.Excel, "plantilla.xlsx");
+    }
+
+    [HttpPost("CargarProductos"), CustomerAuthorize(UserRole = CompanyRoles.Admin)]
+    public async Task<IActionResult> CargarProductosAsync(string companyId, [FromForm] IFormFile datos)
+    {
+        try
+        {
+            if (datos == null || datos.Length == 0)
+            {
+                return BadRequest("Archivo no proporcionado o vacío.");
+            }
+            var category = new Category() { CompanyId = companyId.Trim(), Name = "Sin Categoría" };
+            category = await _categoryService.CreateAsync(category);
+
+            var productos = new ExcelProductReader(datos, companyId, $"{category.Id}:{category.Name}").ReadProducts();
+            const int batchSize = 1000;
+            for (int i = 0; i < productos.Count; i += batchSize)
+            {
+                var batch = productos.GetRange(i, Math.Min(batchSize, productos.Count - i));
+                await _productService.InsertManyAsync(batch);
+            }
+            return StatusCode(StatusCodes.Status201Created);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, $"Error durante la carga de productos: {ex.Message}");
+        }
     }
 
 }
