@@ -12,7 +12,7 @@ public interface ICrudOperationService<T> where T : class, IGenericModel
     Task<T> GetByIdAsync(string id);
     Task<T> GetByIdAsync(string companyId, string id);
     Task<T> CreateAsync(T obj);
-    Task InsertManyAsync(List<T> objList);
+    Task InsertManyAsync(List<T>? objList);
     Task<T> UpdateAsync(string id, T obj);
     Task RemoveAsync(string id);
     Task RemoveAsync(string companyId, string id);
@@ -76,7 +76,7 @@ public class CrudOperationService<T> : ICrudOperationService<T> where T : class,
         return obj;
     }
 
-    public virtual async Task InsertManyAsync(List<T> objList) =>
+    public virtual async Task InsertManyAsync(List<T>? objList) =>
         await _collection.InsertManyAsync(objList);
 
     public virtual async Task<T> UpdateAsync(string id, T obj)
