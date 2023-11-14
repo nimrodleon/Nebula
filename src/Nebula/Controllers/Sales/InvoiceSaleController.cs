@@ -110,7 +110,7 @@ public class InvoiceSaleController : ControllerBase
     [HttpGet("DescargarRegistroVentas")]
     public async Task<IActionResult> DescargarRegistroVentas(string companyId, [FromQuery] DateQuery dto)
     {
-        var invoices = await _invoiceSaleService.GetListAsync(companyId, dto);
+        var invoices = await _invoiceSaleService.GetMonthlyListAsync(companyId, dto);
         var notes = await _creditNoteService.GetListAsync(companyId, dto);
         var datosExcel = new ExcelRegistroVentas(invoices, notes).GenerarArchivo();
         // Configuramos la respuesta HTTP.

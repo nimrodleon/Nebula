@@ -10,6 +10,7 @@ namespace Nebula.Modules.Sales.Invoices;
 public interface IInvoiceSaleService : ICrudOperationService<InvoiceSale>
 {
     Task<List<InvoiceSale>> GetListAsync(string companyId, DateQuery query);
+    Task<List<InvoiceSale>> GetMonthlyListAsync(string companyId, DateQuery query);
     Task<ResponseInvoiceSale> GetInvoiceSaleAsync(string companyId, string invoiceSaleId);
     Task<List<InvoiceSale>> GetByContactIdAsync(string companyId, string contactId, string month, string year);
     Task<List<InvoiceSale>> GetInvoicesByNumDocs(string companyId, List<string> series, List<string> numbers);
@@ -48,6 +49,19 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSal
 
         return await _collection.Find(filter).Sort(new SortDefinitionBuilder<InvoiceSale>()
             .Descending("$natural")).Limit(12).ToListAsync();
+    }
+
+    public async Task<List<InvoiceSale>> GetMonthlyListAsync(string companyId, DateQuery query)
+    {
+        var builder = Builders<InvoiceSale>.Filter;
+        var filter = builder.And(
+            builder.Eq(x => x.CompanyId, companyId),
+            builder.Eq(x => x.Month, query.Month),
+            builder.Eq(x => x.Year, query.Year),
+            builder.In("TipoDoc", new List<string>() { "03", "01" }));
+
+        return await _collection.Find(filter).Sort(new SortDefinitionBuilder<InvoiceSale>()
+            .Descending("$natural")).ToListAsync();
     }
 
     public async Task<ResponseInvoiceSale> GetInvoiceSaleAsync(string companyId, string invoiceSaleId)
