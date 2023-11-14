@@ -113,7 +113,7 @@ public class ComprobanteDto
                 Unidad = item.CodUnidadMedida.Trim(),
                 Cantidad = item.CtdUnidadItem,
                 CodProducto = item.ProductId.Trim(),
-                Description = item.Description.Trim(),
+                Description = item.Description.ToUpper().Trim(),
                 MtoValorUnitario = item.GetMtoValorUnitario(company),
                 MtoBaseIgv = item.GetMtoBaseIgv(company),
                 PorcentajeIgv = item.IgvSunat == TipoIGV.Gravado ? company.PorcentajeIgv : 0,

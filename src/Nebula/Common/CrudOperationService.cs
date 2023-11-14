@@ -7,8 +7,8 @@ namespace Nebula.Common;
 public interface ICrudOperationService<T> where T : class, IGenericModel
 {
     [Obsolete]
-    Task<List<T>> GetAsync(string field, string? query, int limit = 25);
-    Task<List<T>> GetFilteredAsync(string companyId, string[] fieldNames, string query = "", int limit = 25);
+    Task<List<T>> GetAsync(string field, string? query, int limit = 12);
+    Task<List<T>> GetFilteredAsync(string companyId, string[] fieldNames, string query = "", int limit = 12);
     Task<T> GetByIdAsync(string id);
     Task<T> GetByIdAsync(string companyId, string id);
     Task<T> CreateAsync(T obj);
@@ -28,7 +28,7 @@ public class CrudOperationService<T> : ICrudOperationService<T> where T : class,
     }
 
     [Obsolete]
-    public virtual async Task<List<T>> GetAsync(string field, string? query, int limit = 25)
+    public virtual async Task<List<T>> GetAsync(string field, string? query, int limit = 12)
     {
         var filter = Builders<T>.Filter.Empty;
         if (!string.IsNullOrWhiteSpace(query))
@@ -36,7 +36,7 @@ public class CrudOperationService<T> : ICrudOperationService<T> where T : class,
         return await _collection.Find(filter).Limit(limit).ToListAsync();
     }
 
-    public virtual async Task<List<T>> GetFilteredAsync(string companyId, string[] fieldNames, string query = "", int limit = 25)
+    public virtual async Task<List<T>> GetFilteredAsync(string companyId, string[] fieldNames, string query = "", int limit = 12)
     {
         var builder = Builders<T>.Filter;
         var filter = builder.Eq("CompanyId", companyId);
