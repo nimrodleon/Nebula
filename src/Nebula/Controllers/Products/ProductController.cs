@@ -115,7 +115,7 @@ public class ProductController : ControllerBase
             {
                 return BadRequest("Archivo no proporcionado o vacío.");
             }
-            var category = new Category() { CompanyId = companyId.Trim(), Name = "Sin Categoría" };
+            var category = new Category() { CompanyId = companyId.Trim(), Name = "SIN CATEGORÍA" };
             category = await _categoryService.CreateAsync(category);
 
             var productos = new ExcelProductReader(datos, companyId, $"{category.Id}:{category.Name}").ReadProducts();
