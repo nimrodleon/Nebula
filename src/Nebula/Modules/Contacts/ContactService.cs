@@ -8,7 +8,7 @@ namespace Nebula.Modules.Contacts;
 public interface IContactService : ICrudOperationService<Contact>
 {
     Task<Contact> GetContactByDocumentAsync(string companyId, string document);
-    Task<List<Contact>> GetContactsAsync(string companyId, string query = "", int limit = 25);
+    Task<List<Contact>> GetContactsAsync(string companyId, string query = "", int limit = 12);
 }
 
 public class ContactService : CrudOperationService<Contact>, IContactService
@@ -31,7 +31,7 @@ public class ContactService : CrudOperationService<Contact>, IContactService
         return await _collection.Find(filter).FirstOrDefaultAsync();
     }
 
-    public async Task<List<Contact>> GetContactsAsync(string companyId, string query = "", int limit = 25)
+    public async Task<List<Contact>> GetContactsAsync(string companyId, string query = "", int limit = 12)
     {
         var builder = Builders<Contact>.Filter;
         var filter = builder.Eq(x => x.CompanyId, companyId);
@@ -40,6 +40,7 @@ public class ContactService : CrudOperationService<Contact>, IContactService
             filter = filter & builder.Or(builder.Regex("Document", new BsonRegularExpression(query, "i")),
                 builder.Regex("Name", new BsonRegularExpression(query.ToUpper(), "i")));
         }
-        return await _collection.Find(filter).Limit(limit).ToListAsync();
+        return await _collection.Find(filter).Sort(new SortDefinitionBuilder<Contact>()
+            .Descending("$natural")).Limit(limit).ToListAsync();
     }
 }

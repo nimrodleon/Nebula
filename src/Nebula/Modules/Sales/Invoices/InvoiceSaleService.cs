@@ -3,6 +3,7 @@ using Nebula.Common;
 using Nebula.Modules.Sales.Models;
 using Nebula.Common.Dto;
 using Nebula.Modules.Sales.Invoices.Dto;
+using MongoDB.Bson;
 
 namespace Nebula.Modules.Sales.Invoices;
 
@@ -36,8 +37,17 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSal
             builder.Eq(x => x.Month, query.Month),
             builder.Eq(x => x.Year, query.Year),
             builder.In("TipoDoc", new List<string>() { "03", "01" }));
-        return await _collection.Find(filter).Sort(new SortDefinitionBuilder<InvoiceSale>().Descending("$natural"))
-            .ToListAsync();
+
+        if (!string.IsNullOrWhiteSpace(query.Query))
+        {
+            filter = filter & builder.Or(
+                builder.Regex(x => x.Serie, new BsonRegularExpression(query.Query.ToUpper(), "i")),
+                builder.Regex(x => x.Correlativo, new BsonRegularExpression(query.Query.ToUpper(), "i")),
+                builder.Regex(x => x.Cliente.RznSocial, new BsonRegularExpression(query.Query.ToUpper(), "i")));
+        }
+
+        return await _collection.Find(filter).Sort(new SortDefinitionBuilder<InvoiceSale>()
+            .Descending("$natural")).Limit(12).ToListAsync();
     }
 
     public async Task<ResponseInvoiceSale> GetInvoiceSaleAsync(string companyId, string invoiceSaleId)

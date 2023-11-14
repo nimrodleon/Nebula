@@ -33,7 +33,8 @@ public class CrudOperationService<T> : ICrudOperationService<T> where T : class,
         var filter = Builders<T>.Filter.Empty;
         if (!string.IsNullOrWhiteSpace(query))
             filter = Builders<T>.Filter.Regex(field, new BsonRegularExpression(query.ToUpper(), "i"));
-        return await _collection.Find(filter).Limit(limit).ToListAsync();
+        return await _collection.Find(filter).Sort(new SortDefinitionBuilder<T>()
+            .Descending("$natural")).Limit(limit).ToListAsync();
     }
 
     public virtual async Task<List<T>> GetFilteredAsync(string companyId, string[] fieldNames, string query = "", int limit = 12)
@@ -55,7 +56,8 @@ public class CrudOperationService<T> : ICrudOperationService<T> where T : class,
             filter &= queryFilter;
         }
 
-        return await _collection.Find(filter).Limit(limit).ToListAsync();
+        return await _collection.Find(filter).Sort(new SortDefinitionBuilder<T>()
+            .Descending("$natural")).Limit(limit).ToListAsync();
     }
 
     public virtual async Task<T> GetByIdAsync(string id) =>
