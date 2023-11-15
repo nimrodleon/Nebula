@@ -152,6 +152,8 @@ public class InvoiceSaleController : ControllerBase
     public async Task<IActionResult> Pendientes(string companyId)
     {
         var invoiceSales = await _invoiceSaleService.GetInvoiceSalesPendingAsync(companyId);
+        var creditNotes = await _creditNoteService.GetCreditNotesPendingAsync(companyId);
+
         return Ok(invoiceSales);
     }
 

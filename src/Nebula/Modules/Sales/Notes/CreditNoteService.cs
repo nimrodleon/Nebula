@@ -17,6 +17,7 @@ public interface ICreditNoteService : ICrudOperationService<CreditNote>
     Task<List<CreditNote>> GetCreditNotesByMonthAndYear(string companyId, string month, string year);
     Task<List<CreditNote>> GetCreditNotesByDate(string companyId, string date);
     Task<CreditNoteDto> GetCreditNoteDtoAsync(string companyId, string CreditNoteId);
+    Task<List<CreditNote>> GetCreditNotesPendingAsync(string companyId);
     Task<InvoiceCancellationResponse> InvoiceCancellation(string companyId, string invoiceSaleId);
     void GenerarSerieComprobante(ref InvoiceSerie invoiceSerie, ref CreditNote creditNote);
 }
@@ -92,6 +93,19 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
             CreditNote = creditNote,
             CreditNoteDetails = creditNoteDetails,
         };
+    }
+
+    public async Task<List<CreditNote>> GetCreditNotesPendingAsync(string companyId)
+    {
+        var builder = Builders<CreditNote>.Filter;
+
+        // Verifica si el campo BillingResponse no existe o BillingResponse.Success es false
+        var filter = builder.Or(
+            builder.Not(builder.Exists(x => x.BillingResponse)),
+            builder.Eq("BillingResponse.Success", false)
+        ) & builder.Eq(x => x.CompanyId, companyId);
+
+        return await _collection.Find(filter).ToListAsync();
     }
 
     public async Task<InvoiceCancellationResponse> InvoiceCancellation(string companyId, string invoiceSaleId)
