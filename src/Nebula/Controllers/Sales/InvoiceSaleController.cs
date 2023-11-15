@@ -151,10 +151,37 @@ public class InvoiceSaleController : ControllerBase
     [HttpGet("Pendientes")]
     public async Task<IActionResult> Pendientes(string companyId)
     {
+        var pendientes = new List<ComprobantesPendientes>();
         var invoiceSales = await _invoiceSaleService.GetInvoiceSalesPendingAsync(companyId);
+        invoiceSales.ForEach(item =>
+        {
+            pendientes.Add(new ComprobantesPendientes()
+            {
+                ComprobanteId = item.Id,
+                TipoDoc = item.TipoDoc,
+                Serie = item.Serie,
+                Correlativo = item.Correlativo,
+                FechaEmision = item.FechaEmision,
+                MtoImpVenta = item.MtoImpVenta,
+                CdrDescription = item.BillingResponse.CdrDescription,
+            });
+        });
         var creditNotes = await _creditNoteService.GetCreditNotesPendingAsync(companyId);
+        creditNotes.ForEach(item =>
+        {
+            pendientes.Add(new ComprobantesPendientes()
+            {
+                ComprobanteId = item.Id,
+                TipoDoc = item.TipoDoc,
+                Serie = item.Serie,
+                Correlativo = item.Correlativo,
+                FechaEmision = item.FechaEmision,
+                MtoImpVenta = item.MtoImpVenta,
+                CdrDescription = item.BillingResponse.CdrDescription,
+            });
+        });
 
-        return Ok(invoiceSales);
+        return Ok(pendientes);
     }
 
     [HttpPatch("AnularComprobante/{id}")]
