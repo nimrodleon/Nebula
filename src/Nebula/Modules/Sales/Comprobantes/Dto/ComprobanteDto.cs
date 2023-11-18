@@ -37,11 +37,14 @@ public class ComprobanteDto
             if (item.IgvSunat == TipoIGV.Gravado) _mtoOperGravadas += item.GetMtoBaseIgv(company);
             if (item.IgvSunat == TipoIGV.Exonerado) _mtoOperExoneradas += item.GetMtoBaseIgv(company);
             if (item.IgvSunat == TipoIGV.Inafecto) _mtoOperInafectas += item.GetMtoBaseIgv(company);
-            _mtoIGV += item.GetIgv(company);
-            _totalImpuestos += item.GetIgv(company); // IGV + ICBPER + ...
-            _valorVenta += item.GetMtoValorVenta(company);
-            _subTotal = (item.GetMtoValorVenta(company) + item.GetIgv(company)) + _subTotal;
-            _mtoImpVenta = (item.GetMtoValorVenta(company) + _totalImpuestos) + _mtoImpVenta;
+            var mtoIGV = item.GetIgv(company);
+            var totalImpuestos = mtoIGV; // IGV + ICBPER + ...
+            var valorVenta = item.GetMtoValorVenta(company);
+            _mtoIGV += mtoIGV;
+            _totalImpuestos += totalImpuestos;
+            _valorVenta += valorVenta;
+            _subTotal = (valorVenta + mtoIGV) + _subTotal;
+            _mtoImpVenta = (valorVenta + totalImpuestos) + _mtoImpVenta;
         });
     }
 
