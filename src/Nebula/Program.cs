@@ -11,20 +11,12 @@ using Nebula.Modules.Auth;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Contacts;
 using Nebula.Modules.Finanzas;
-using Nebula.Modules.Inventory.Ajustes;
-using Nebula.Modules.Inventory.Locations;
-using Nebula.Modules.Inventory.Materiales;
-using Nebula.Modules.Inventory.Notas;
-using Nebula.Modules.Inventory.Stock;
-using Nebula.Modules.Inventory.Transferencias;
+using Nebula.Modules.Inventory;
 using Nebula.Modules.InvoiceHub;
 using Nebula.Modules.Products;
 using Nebula.Modules.Purchases;
 using Nebula.Modules.Sales;
-using Nebula.Modules.Sales.Comprobantes;
-using Nebula.Modules.Sales.Invoices;
-using Nebula.Modules.Sales.Notes;
-using Nebula.Modules.Taller.Services;
+using Nebula.Modules.Taller;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -67,105 +59,18 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration.GetValue<string>("Redis") ?? string.Empty));
 builder.Services.AddSingleton(provider => provider.GetRequiredService<IConnectionMultiplexer>().GetDatabase());
 builder.Services.AddScoped<ICacheAuthService, CacheAuthService>();
-
-#region ModuleAuth
-
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<ICollaboratorService, CollaboratorService>();
-builder.Services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();
-builder.Services.AddScoped<IJwtService, JwtService>();
-
-#endregion
-
-#region ModuleAccount
-
-builder.Services.AddScoped<ICompanyService, CompanyService>();
-builder.Services.AddScoped<IWarehouseService, WarehouseService>();
-builder.Services.AddScoped<IInvoiceSerieService, InvoiceSerieService>();
-
-#endregion
-
-#region ModuleCashier
-
-builder.Services.AddScoped<ICajaDiariaService, CajaDiariaService>();
-builder.Services.AddScoped<ICashierDetailService, CashierDetailService>();
-builder.Services.AddScoped<ICashierSaleService, CashierSaleService>();
-
-#endregion
-
-#region ModuleContacts
-
-builder.Services.AddScoped<IContactService, ContactService>();
-builder.Services.AddScoped<IContribuyenteService, ContribuyenteService>();
-
-#endregion
-
-#region ModuleFinanzas
-
-builder.Services.AddScoped<IAccountsReceivableService, AccountsReceivableService>();
-
-#endregion
-
-#region ModuleInventory
-
-builder.Services.AddScoped<IProductStockService, ProductStockService>();
-builder.Services.AddScoped<IHelperCalculateProductStockService, HelperCalculateProductStockService>();
-builder.Services.AddScoped<ILocationService, LocationService>();
-builder.Services.AddScoped<ILocationDetailService, LocationDetailService>();
-builder.Services.AddScoped<IMaterialService, MaterialService>();
-builder.Services.AddScoped<IMaterialDetailService, MaterialDetailService>();
-builder.Services.AddScoped<IInventoryNotasService, InventoryNotasService>();
-builder.Services.AddScoped<IInventoryNotasDetailService, InventoryNotasDetailService>();
-builder.Services.AddScoped<ITransferenciaService, TransferenciaService>();
-builder.Services.AddScoped<ITransferenciaDetailService, TransferenciaDetailService>();
-builder.Services.AddScoped<IAjusteInventarioService, AjusteInventarioService>();
-builder.Services.AddScoped<IAjusteInventarioDetailService, AjusteInventarioDetailService>();
-builder.Services.AddScoped<IValidateStockService, ValidateStockService>();
-
-#endregion
-
-#region ModuleProductos
-
-builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
-
-#endregion
-
-#region ModulePurchases
-
-builder.Services.AddScoped<IPurchaseInvoiceService, PurchaseInvoiceService>();
-builder.Services.AddScoped<IPurchaseInvoiceDetailService, PurchaseInvoiceDetailService>();
-builder.Services.AddScoped<IConsultarValidezCompraService, ConsultarValidezCompraService>();
-
-#endregion
-
-#region ModuleSales
-
-builder.Services.AddScoped<IInvoiceSaleService, InvoiceSaleService>();
-builder.Services.AddScoped<IInvoiceSaleDetailService, InvoiceSaleDetailService>();
-builder.Services.AddScoped<IComprobanteService, ComprobanteService>();
-builder.Services.AddScoped<ICreditNoteService, CreditNoteService>();
-builder.Services.AddScoped<ICreditNoteDetailService, CreditNoteDetailService>();
-builder.Services.AddScoped<IConsultarValidezComprobanteService, ConsultarValidezComprobanteService>();
-
-#endregion
-
-#region ModuleTaller
-
-builder.Services.AddScoped<ITallerRepairOrderService, TallerRepairOrderService>();
-builder.Services.AddScoped<ITallerItemRepairOrderService, TallerItemRepairOrderService>();
-
-#endregion
-
-#region ModuleInvoiceHub
-
+builder.Services.AddModuleAuthServices();
+builder.Services.AddModuleAccountServices();
+builder.Services.AddModuleCashierServices();
+builder.Services.AddModuleContactsServices();
+builder.Services.AddModuleFinanzasServices();
+builder.Services.AddModuleInventoryServices();
+builder.Services.AddModuleProductsServices();
+builder.Services.AddModulePurchasesServices();
+builder.Services.AddModuleSalesServices();
+builder.Services.AddModuleTallerServices();
 builder.Services.Configure<InvoiceHubSettings>(builder.Configuration.GetSection(nameof(InvoiceHubSettings)));
-builder.Services.AddHttpClient<ICreditNoteHubService, CreditNoteHubService>();
-builder.Services.AddHttpClient<IInvoiceHubService, InvoiceHubService>();
-builder.Services.AddHttpClient<ICertificadoUploaderService, CertificadoUploaderService>();
-builder.Services.AddHttpClient<IEmpresaHubService, EmpresaHubService>();
-
-#endregion
+builder.Services.AddModuleInvoiceHubServices();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -227,8 +132,13 @@ app.UseStaticFiles(new StaticFileOptions()
 string applicationUrl = $"http://localhost:{applicationPort}";
 
 app.UseRouting();
+
 app.UseCors("MyPolicy");
+
 app.UseAuthentication();
+
 app.UseAuthorization();
+
 app.MapControllers();
+
 app.Run(applicationUrl);
