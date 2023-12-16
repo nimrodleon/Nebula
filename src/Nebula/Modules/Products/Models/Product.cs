@@ -51,14 +51,4 @@ public class Product : IGenericModel
     /// Unidad de Medida.
     /// </summary>
     public string UndMedida { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Lote de Producción.
-    /// </summary>
-    public string Lote { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Fecha de Vencimiento del producto.
-    /// </summary>
-    public string FecVencimiento { get; set; } = string.Empty;
 }

@@ -59,8 +59,6 @@ public class ProductController : ControllerBase
                 PrecioVentaUnitario = item.PrecioVentaUnitario,
                 Type = item.Type,
                 UndMedida = item.UndMedida,
-                Lote = item.Lote,
-                FecVencimiento = item.FecVencimiento,
                 Text = $"{item.Description} | {Convert.ToDecimal(item.PrecioVentaUnitario):N2}"
             };
             data.Add(itemSelect2);
