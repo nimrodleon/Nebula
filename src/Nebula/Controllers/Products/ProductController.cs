@@ -44,7 +44,7 @@ public class ProductController : ControllerBase
     public async Task<IActionResult> Select2(string companyId, [FromQuery] string term = "")
     {
         string[] fieldNames = new string[] { "Barcode", "Description" };
-        var products = await _productService.GetFilteredAsync(companyId, fieldNames, term, 10);
+        var products = await _productService.GetFilteredAsync(companyId, fieldNames, term, 6);
         var data = new List<ProductSelect>();
         products.ForEach(item =>
         {

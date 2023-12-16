@@ -71,7 +71,7 @@ public class ContactController : ControllerBase
     public async Task<IActionResult> Select2(string companyId, [FromQuery] string? term)
     {
         if (term == null) term = string.Empty;
-        var responseData = await _contactService.GetContactsAsync(companyId, term, 10);
+        var responseData = await _contactService.GetContactsAsync(companyId, term, 6);
         var data = new List<ContactSelect>();
         responseData.ForEach(item =>
         {
