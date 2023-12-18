@@ -6,6 +6,7 @@ using Nebula.Modules.Cashier;
 using Nebula.Modules.Finanzas;
 using Nebula.Modules.Finanzas.Dto;
 using Nebula.Modules.Finanzas.Models;
+using Nebula.Modules.Finanzas.Schemas;
 
 namespace Nebula.Controllers.Finanzas;
 
@@ -27,7 +28,7 @@ public class ReceivableController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(string companyId, [FromQuery] ReceivableRequestParams requestParam)
+    public async Task<IActionResult> Index(string companyId, [FromQuery] CuentaPorCobrarMensualParamSchema requestParam)
     {
         var responseData = await _receivableService.GetListAsync(companyId, requestParam);
         return Ok(responseData);
@@ -43,9 +44,17 @@ public class ReceivableController : ControllerBase
     [HttpGet("GetReceivablesByContactId/{contactId}")]
     public async Task<IActionResult> GetReceivablesByContactId(
         string companyId, string contactId,
-        [FromQuery] ReceivableRequestParams requestParam)
+        [FromQuery] CuentaPorCobrarMensualParamSchema requestParam)
     {
         var receivable = await _receivableService.GetReceivablesByContactId(companyId, contactId, requestParam);
+        return Ok(receivable);
+    }
+
+    [HttpGet("GetCargosCliente")]
+    public async Task<IActionResult> GetCargosCliente(string companyId,
+        [FromQuery] CuentaPorCobrarClienteAnualParamSchema @params)
+    {
+        var receivable = await _receivableService.GetCargosClienteAnual(companyId, @params);
         return Ok(receivable);
     }
 
