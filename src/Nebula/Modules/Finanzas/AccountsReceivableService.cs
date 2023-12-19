@@ -19,6 +19,7 @@ public interface IAccountsReceivableService : ICrudOperationService<AccountsRece
     Task<List<AccountsReceivable>> GetReceivablesByContactId(string companyId,
         string contactId, CuentaPorCobrarMensualParamSchema requestParam);
     Task<List<AccountsReceivable>> GetReceivablesByContactId(string companyId, string contactId, string year);
+    Task<List<AccountsReceivable>> GetPendientesPorCobrar(string companyId);
 }
 
 public class AccountsReceivableService : CrudOperationService<AccountsReceivable>, IAccountsReceivableService
@@ -171,6 +172,19 @@ public class AccountsReceivableService : CrudOperationService<AccountsReceivable
         var filter = builder.And(builder.Eq(x => x.CompanyId, companyId),
             builder.Eq(x => x.ContactId, contactId),
             builder.Eq(x => x.Year, year), builder.In("Status", new List<string>() { "PENDIENTE", "-" }),
+            builder.In("Type", new List<string>() { "CARGO", "ABONO" }));
+        List<AccountsReceivable> receivables = await _collection.Find(filter).ToListAsync();
+        List<AccountsReceivable> cuentasPorCobrar = receivables.Where(x => x.Type == "CARGO").ToList();
+        List<AccountsReceivable> listaDeAbonos = receivables.Where(x => x.Type == "ABONO").ToList();
+        cuentasPorCobrar.ForEach(item => { item.Saldo = CalcularSaldoCargo(listaDeAbonos, item); });
+        return cuentasPorCobrar;
+    }
+
+    public async Task<List<AccountsReceivable>> GetPendientesPorCobrar(string companyId)
+    {
+        var builder = Builders<AccountsReceivable>.Filter;
+        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId),
+             builder.In("Status", new List<string>() { "PENDIENTE", "-" }),
             builder.In("Type", new List<string>() { "CARGO", "ABONO" }));
         List<AccountsReceivable> receivables = await _collection.Find(filter).ToListAsync();
         List<AccountsReceivable> cuentasPorCobrar = receivables.Where(x => x.Type == "CARGO").ToList();

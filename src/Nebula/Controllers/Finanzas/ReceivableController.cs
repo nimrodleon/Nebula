@@ -111,4 +111,31 @@ public class ReceivableController : ControllerBase
         FileStream stream = new FileStream(pathExcel, FileMode.Open);
         return new FileStreamResult(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
     }
+
+    [HttpGet("PendientesPorCobrar")]
+    public async Task<IActionResult> PendientesPorCobrar(string companyId)
+    {
+        var cuentasPorCobrar = await _receivableService.GetPendientesPorCobrar(companyId);
+
+        // calcular el total a cobrar.
+        decimal totalPorCobrar = cuentasPorCobrar.Sum(x => x.Saldo);
+
+        // agrupar por cliente y calcular la deuda total por cliente.
+        var deudasPorCliente = cuentasPorCobrar.GroupBy(x => x.ContactId)
+            .Select(group => new ClienteDeudaSchema
+            {
+                ContactId = group.Key,
+                ContactName = group.First().ContactName,
+                DeudaTotal = group.Sum(x => x.Saldo),
+                Receivables = group.ToList()
+            }).ToList();
+
+        var resumen = new ResumenDeudaSchema
+        {
+            TotalPorCobrar = totalPorCobrar,
+            DeudasPorCliente = deudasPorCliente
+        };
+
+        return Ok(resumen);
+    }
 }
