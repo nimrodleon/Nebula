@@ -122,7 +122,7 @@ public class ReceivableController : ControllerBase
 
         // agrupar por cliente y calcular la deuda total por cliente.
         var deudasPorCliente = cuentasPorCobrar.GroupBy(x => x.ContactId)
-            .Select(group => new ClienteDeudaSchema
+            .Select(group => new DeudaClienteSchema
             {
                 ContactId = group.Key,
                 ContactName = group.First().ContactName,
