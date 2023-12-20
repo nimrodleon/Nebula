@@ -16,6 +16,7 @@ using Nebula.Modules.Sales.Invoices.Dto;
 using Nebula.Modules.Sales.Notes;
 using Nebula.Common;
 using Nebula.Modules.Inventory.Stock;
+using Nebula.Modules.Account;
 
 namespace Nebula.Controllers.Sales;
 
@@ -25,6 +26,7 @@ namespace Nebula.Controllers.Sales;
 [ApiController]
 public class InvoiceSaleController : ControllerBase
 {
+    private readonly ICompanyService _companyService;
     private readonly ICacheAuthService _cacheAuthService;
     private readonly IInvoiceSaleService _invoiceSaleService;
     private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
@@ -34,8 +36,10 @@ public class InvoiceSaleController : ControllerBase
     private readonly IInvoiceHubService _invoiceHubService;
     private readonly ICreditNoteHubService _creditNoteHubService;
     private readonly IValidateStockService _validateStockService;
+    private readonly IInvoiceSaleFileService _invoiceSaleFileService;
 
     public InvoiceSaleController(
+        ICompanyService companyService,
         ICacheAuthService cacheAuthService,
         IInvoiceSaleService invoiceSaleService,
         IInvoiceSaleDetailService invoiceSaleDetailService,
@@ -44,8 +48,10 @@ public class InvoiceSaleController : ControllerBase
         IConsultarValidezComprobanteService consultarValidezComprobanteService,
         IInvoiceHubService invoiceHubService,
         ICreditNoteHubService creditNoteHubService,
-        IValidateStockService validateStockService)
+        IValidateStockService validateStockService,
+        IInvoiceSaleFileService invoiceSaleFileService)
     {
+        _companyService = companyService;
         _cacheAuthService = cacheAuthService;
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
@@ -55,6 +61,7 @@ public class InvoiceSaleController : ControllerBase
         _invoiceHubService = invoiceHubService;
         _creditNoteHubService = creditNoteHubService;
         _validateStockService = validateStockService;
+        _invoiceSaleFileService = invoiceSaleFileService;
     }
 
     [HttpGet]
@@ -215,10 +222,20 @@ public class InvoiceSaleController : ControllerBase
 
     [AllowAnonymous]
     [HttpGet("ConsultarValidez")]
-    public async Task<IActionResult> ConsultarValidez(string companyId, [FromQuery] QueryConsultarValidezComprobante query)
+    public async Task<IActionResult> ConsultarValidez(string companyId,
+        [FromQuery] QueryConsultarValidezComprobante query)
     {
         string pathArchivoZip = await _consultarValidezComprobanteService.CrearArchivosDeValidación(new Company(), query);
         FileStream stream = new FileStream(pathArchivoZip, FileMode.Open);
         return new FileStreamResult(stream, "application/zip");
+    }
+
+    [HttpGet("GetXml/{invoiceId}")]
+    public async Task<IActionResult> GetXml(string companyId, string invoiceId)
+    {
+        var company = await _companyService.GetByIdAsync(companyId);
+        var invoice = await _invoiceSaleService.GetByIdAsync(companyId, invoiceId);
+        var xml = _invoiceSaleFileService.GetXml(company, invoice);
+        return new FileStreamResult(xml, "application/xml");
     }
 }

@@ -14,6 +14,7 @@ public static class ModuleSales
         services.AddScoped<ICreditNoteService, CreditNoteService>();
         services.AddScoped<ICreditNoteDetailService, CreditNoteDetailService>();
         services.AddScoped<IConsultarValidezComprobanteService, ConsultarValidezComprobanteService>();
+        services.AddScoped<IInvoiceSaleFileService, InvoiceSaleFileService>();
 
         return services;
     }
