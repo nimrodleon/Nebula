@@ -41,14 +41,14 @@ public class ContactController : ControllerBase
         var contacts = await _contactService.GetContactosAsync(companyId, query, page, pageSize);
         var totalContacts = await _contactService.GetTotalContactosAsync(companyId, query);
         var totalPages = (int)Math.Ceiling((double)totalContacts / pageSize);
-        string urlController = $"api/contacts/{companyId}/Contact";
-
+        
         var paginationInfo = new PaginationInfo
         {
             CurrentPage = page,
             TotalPages = totalPages
         };
 
+        string urlController = $"api/contacts/{companyId}/Contact";
         paginationInfo.GeneratePageLinks(maxVisiblePages: 6, urlController);
 
         var result = new PaginationResult<Contact>
