@@ -22,6 +22,9 @@ public class PaginationInfo
         Pages = Enumerable.Range(startPage, endPage - startPage + 1)
             .Select(p => new PaginationLink { Url = $"{urlController}?page={p}", Label = p.ToString() })
             .ToList();
+
+        PreviousPage = CurrentPage > 1 ? new PaginationLink { Url = $"{urlController}?page={CurrentPage - 1}", Label = "Anterior" } : null;
+        NextPage = CurrentPage < TotalPages ? new PaginationLink { Url = $"{urlController}?page={CurrentPage + 1}", Label = "Siguiente" } : null;
     }
 }
 

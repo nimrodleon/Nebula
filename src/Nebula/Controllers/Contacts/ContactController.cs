@@ -46,9 +46,7 @@ public class ContactController : ControllerBase
         var paginationInfo = new PaginationInfo
         {
             CurrentPage = page,
-            TotalPages = totalPages,
-            PreviousPage = page > 1 ? new PaginationLink { Url = $"{urlController}?page={page - 1}", Label = "Anterior" } : null,
-            NextPage = page < totalPages ? new PaginationLink { Url = $"{urlController}?page={page + 1}", Label = "Siguiente" } : null
+            TotalPages = totalPages
         };
 
         paginationInfo.GeneratePageLinks(maxVisiblePages: 6, urlController);
