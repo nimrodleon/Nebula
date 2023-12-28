@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
 using MongoDB.Driver;
+using Nebula.Common.Helpers;
 
 namespace Nebula.Controllers.Contacts;
 
@@ -34,10 +35,31 @@ public class ContactController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(string companyId, [FromQuery] string query = "")
+    public async Task<IActionResult> Index(string companyId, [FromQuery] string query = "", [FromQuery] int page = 1)
     {
-        var contacts = await _contactService.GetContactsAsync(companyId, query);
-        return Ok(contacts);
+        int pageSize = 12;
+        var contacts = await _contactService.GetContactosAsync(companyId, query, page, pageSize);
+        var totalContacts = await _contactService.GetTotalContactosAsync(companyId, query);
+        var totalPages = (int)Math.Ceiling((double)totalContacts / pageSize);
+        string urlController = $"api/contacts/{companyId}/Contact";
+
+        var paginationInfo = new PaginationInfo
+        {
+            CurrentPage = page,
+            TotalPages = totalPages,
+            PreviousPage = page > 1 ? new PaginationLink { Url = $"{urlController}?page={page - 1}", Label = "Anterior" } : null,
+            NextPage = page < totalPages ? new PaginationLink { Url = $"{urlController}?page={page + 1}", Label = "Siguiente" } : null
+        };
+
+        paginationInfo.GeneratePageLinks(maxVisiblePages: 6, urlController);
+
+        var result = new PaginationResult<Contact>
+        {
+            Pagination = paginationInfo,
+            Data = contacts
+        };
+
+        return Ok(result);
     }
 
     [HttpGet("{id}")]
@@ -71,7 +93,7 @@ public class ContactController : ControllerBase
     public async Task<IActionResult> Select2(string companyId, [FromQuery] string? term)
     {
         if (term == null) term = string.Empty;
-        var responseData = await _contactService.GetContactsAsync(companyId, term, 6);
+        var responseData = await _contactService.GetContactosAsync(companyId, term, 6);
         var data = new List<ContactSelect>();
         responseData.ForEach(item =>
         {
