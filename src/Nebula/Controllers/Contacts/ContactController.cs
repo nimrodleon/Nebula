@@ -37,7 +37,7 @@ public class ContactController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> Index(string companyId, [FromQuery] string query = "", [FromQuery] int page = 1)
     {
-        int pageSize = 12;
+        int pageSize = 2;
         var contacts = await _contactService.GetContactosAsync(companyId, query, page, pageSize);
         var totalContacts = await _contactService.GetTotalContactosAsync(companyId, query);
         var totalPages = (int)Math.Ceiling((double)totalContacts / pageSize);
@@ -48,8 +48,7 @@ public class ContactController : ControllerBase
             TotalPages = totalPages
         };
 
-        string urlController = $"api/contacts/{companyId}/Contact";
-        paginationInfo.GeneratePageLinks(maxVisiblePages: 6, urlController);
+        paginationInfo.GeneratePageLinks();
 
         var result = new PaginationResult<Contact>
         {
