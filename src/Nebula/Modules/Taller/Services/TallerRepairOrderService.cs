@@ -10,8 +10,10 @@ namespace Nebula.Modules.Taller.Services;
 public interface ITallerRepairOrderService : ICrudOperationService<TallerRepairOrder>
 {
     Task<TallerRepairOrder> CreateRepairOrderAsync(string companyId, TallerRepairOrder obj);
-    Task<List<TallerRepairOrder>> GetRepairOrders(string companyId, string query = "", int limit = 25);
-    Task<List<TallerRepairOrder>> GetRepairOrdersMonthly(string companyId, DateQuery dto, int limit = 25);
+    Task<List<TallerRepairOrder>> GetRepairOrders(string companyId, string query = "", int page = 1, int pageSize = 12);
+    Task<long> GetTotalRepairOrders(string companyId, string query = "");
+    Task<List<TallerRepairOrder>> GetRepairOrdersMonthly(string companyId, DateQuery dto, int page = 1, int pageSize = 12);
+    Task<long> GetTotalRepairOrdersMonthly(string companyId, DateQuery dto);
     Task<TallerRepairOrderTicket> GetTicket(string companyId, string id);
 }
 
@@ -54,8 +56,10 @@ public class TallerRepairOrderService : CrudOperationService<TallerRepairOrder>,
     /// <param name="query">Nombre del Cliente</param>
     /// <param name="limit">Cantidad de registros</param>
     /// <returns>Lista de Ordenes de Servicio</returns>
-    public async Task<List<TallerRepairOrder>> GetRepairOrders(string companyId, string query = "", int limit = 25)
+    public async Task<List<TallerRepairOrder>> GetRepairOrders(string companyId, string query = "", int page = 1, int pageSize = 12)
     {
+        var skip = (page - 1) * pageSize;
+
         var filter = Builders<TallerRepairOrder>.Filter.In("Status", new List<string>
         {
             TallerRepairOrderStatus.Pendiente, TallerRepairOrderStatus.EnProceso, TallerRepairOrderStatus.Finalizado
@@ -72,7 +76,27 @@ public class TallerRepairOrderService : CrudOperationService<TallerRepairOrder>,
 
         var result = await _collection.Find(filter)
             .Sort(new SortDefinitionBuilder<TallerRepairOrder>().Descending("$natural"))
-            .Limit(limit).ToListAsync();
+            .Skip(skip).Limit(pageSize).ToListAsync();
+        return result;
+    }
+
+    public async Task<long> GetTotalRepairOrders(string companyId, string query = "")
+    {
+        var filter = Builders<TallerRepairOrder>.Filter.In("Status", new List<string>
+        {
+            TallerRepairOrderStatus.Pendiente, TallerRepairOrderStatus.EnProceso, TallerRepairOrderStatus.Finalizado
+        });
+
+        filter = filter & Builders<TallerRepairOrder>.Filter.Eq(x => x.CompanyId, companyId);
+
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            filter = filter &
+                     Builders<TallerRepairOrder>.Filter.Regex("NombreCliente",
+                         new BsonRegularExpression(query.ToUpper(), "i"));
+        }
+
+        var result = await _collection.Find(filter).CountDocumentsAsync();
         return result;
     }
 
@@ -82,8 +106,10 @@ public class TallerRepairOrderService : CrudOperationService<TallerRepairOrder>,
     /// <param name="dto">Mes, Año y texto de consulta</param>
     /// <param name="limit">Cantidad de Registros</param>
     /// <returns>Lista de Ordenes de Servicio</returns>
-    public async Task<List<TallerRepairOrder>> GetRepairOrdersMonthly(string companyId, DateQuery dto, int limit = 25)
+    public async Task<List<TallerRepairOrder>> GetRepairOrdersMonthly(string companyId, DateQuery dto, int page = 1, int pageSize = 12)
     {
+        var skip = (page - 1) * pageSize;
+
         var filterDate = Builders<TallerRepairOrder>.Filter.And(
             Builders<TallerRepairOrder>.Filter.Eq(x => x.CompanyId, companyId),
             Builders<TallerRepairOrder>.Filter.Eq(x => x.Month, dto.Month),
@@ -102,7 +128,29 @@ public class TallerRepairOrderService : CrudOperationService<TallerRepairOrder>,
 
         var result = await _collection.Find(filter)
             .Sort(new SortDefinitionBuilder<TallerRepairOrder>().Descending("$natural"))
-            .Limit(limit).ToListAsync();
+            .Skip(skip).Limit(pageSize).ToListAsync();
+        return result;
+    }
+
+    public async Task<long> GetTotalRepairOrdersMonthly(string companyId, DateQuery dto)
+    {
+        var filterDate = Builders<TallerRepairOrder>.Filter.And(
+            Builders<TallerRepairOrder>.Filter.Eq(x => x.CompanyId, companyId),
+            Builders<TallerRepairOrder>.Filter.Eq(x => x.Month, dto.Month),
+            Builders<TallerRepairOrder>.Filter.Eq(x => x.Year, dto.Year));
+        var filterStatus = Builders<TallerRepairOrder>.Filter.In("Status", new List<string>
+        {
+            TallerRepairOrderStatus.Entregado, TallerRepairOrderStatus.Archivado
+        });
+        var filter = filterDate & filterStatus;
+        if (!string.IsNullOrWhiteSpace(dto.Query))
+        {
+            var filterQuery = Builders<TallerRepairOrder>.Filter.Regex("NombreCliente",
+                new BsonRegularExpression(dto.Query.ToUpper(), "i"));
+            filter = filter & filterQuery;
+        }
+
+        var result = await _collection.Find(filter).CountDocumentsAsync();
         return result;
     }
 

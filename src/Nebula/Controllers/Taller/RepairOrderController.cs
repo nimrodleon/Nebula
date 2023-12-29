@@ -5,6 +5,7 @@ using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Taller.Models;
 using Nebula.Modules.Taller.Services;
+using Nebula.Common.Helpers;
 
 namespace Nebula.Controllers.Taller;
 
@@ -22,17 +23,53 @@ public class RepairOrderController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(string companyId, [FromQuery] string query = "")
+    public async Task<IActionResult> Index(string companyId, [FromQuery] string query = "", [FromQuery] int page = 1)
     {
-        var repairOrders = await _repairOrderService.GetRepairOrders(companyId, query);
-        return Ok(repairOrders);
+        int pageSize = 12;
+        var reparaciones = await _repairOrderService.GetRepairOrders(companyId, query, page, pageSize);
+        var totalReparaciones = await _repairOrderService.GetTotalRepairOrders(companyId, query);
+        var totalPages = (int)Math.Ceiling((double)totalReparaciones / pageSize);
+
+        var paginationInfo = new PaginationInfo
+        {
+            CurrentPage = page,
+            TotalPages = totalPages
+        };
+
+        paginationInfo.GeneratePageLinks();
+
+        var result = new PaginationResult<TallerRepairOrder>
+        {
+            Pagination = paginationInfo,
+            Data = reparaciones
+        };
+
+        return Ok(result);
     }
 
     [HttpGet("GetMonthlyReport")]
-    public async Task<IActionResult> GetMonthlyReport(string companyId, [FromQuery] DateQuery dto)
+    public async Task<IActionResult> GetMonthlyReport(string companyId, [FromQuery] DateQuery dto, [FromQuery] int page = 1)
     {
-        var repairOrders = await _repairOrderService.GetRepairOrdersMonthly(companyId, dto);
-        return Ok(repairOrders);
+        int pageSize = 12;
+        var reparaciones = await _repairOrderService.GetRepairOrdersMonthly(companyId, dto, page, pageSize);
+        var totalReparaciones = await _repairOrderService.GetTotalRepairOrdersMonthly(companyId, dto);
+        var totalPages = (int)Math.Ceiling((double)totalReparaciones / pageSize);
+
+        var paginationInfo = new PaginationInfo
+        {
+            CurrentPage = page,
+            TotalPages = totalPages
+        };
+
+        paginationInfo.GeneratePageLinks();
+
+        var result = new PaginationResult<TallerRepairOrder>
+        {
+            Pagination = paginationInfo,
+            Data = reparaciones
+        };
+
+        return Ok(result);
     }
 
     [HttpGet("{id}")]
