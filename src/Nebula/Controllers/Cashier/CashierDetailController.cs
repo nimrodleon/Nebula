@@ -5,6 +5,7 @@ using Nebula.Modules.Auth;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Cashier.Helpers;
 using Nebula.Modules.Cashier.Models;
+using Nebula.Common.Helpers;
 
 namespace Nebula.Controllers.Cashier;
 
@@ -22,11 +23,28 @@ public class CashierDetailController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Index(string companyId, string id, [FromQuery] string query = "")
+    public async Task<IActionResult> Index(string companyId, string id, [FromQuery] string query = "", [FromQuery] int page = 1)
     {
-        if (string.IsNullOrEmpty(query)) query = string.Empty;
-        var responseData = await _cashierDetailService.GetListAsync(companyId, id, query);
-        return Ok(responseData);
+        int pageSize = 12;
+        var detallesCaja = await _cashierDetailService.GetDetalleCajaDiariaAsync(companyId, id, query, page, pageSize);
+        var totalDetallesCaja = await _cashierDetailService.GetTotalDetalleCajaDiariaAsync(companyId, id, query);
+        var totalPages = (int)Math.Ceiling((double)totalDetallesCaja / pageSize);
+
+        var paginationInfo = new PaginationInfo
+        {
+            CurrentPage = page,
+            TotalPages = totalPages
+        };
+
+        paginationInfo.GeneratePageLinks();
+
+        var result = new PaginationResult<CashierDetail>
+        {
+            Pagination = paginationInfo,
+            Data = detallesCaja
+        };
+
+        return Ok(result);
     }
 
     [HttpPost]

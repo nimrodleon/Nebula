@@ -41,7 +41,7 @@ public class ContactController : ControllerBase
         var contacts = await _contactService.GetContactosAsync(companyId, query, page, pageSize);
         var totalContacts = await _contactService.GetTotalContactosAsync(companyId, query);
         var totalPages = (int)Math.Ceiling((double)totalContacts / pageSize);
-        
+
         var paginationInfo = new PaginationInfo
         {
             CurrentPage = page,
@@ -90,7 +90,8 @@ public class ContactController : ControllerBase
     public async Task<IActionResult> Select2(string companyId, [FromQuery] string? term)
     {
         if (term == null) term = string.Empty;
-        var responseData = await _contactService.GetContactosAsync(companyId, term, 6);
+        var fieldNames = new string[] { "Document", "Name" };
+        var responseData = await _contactService.GetFilteredAsync(companyId, fieldNames, term, 6);
         var data = new List<ContactSelect>();
         responseData.ForEach(item =>
         {

@@ -11,7 +11,7 @@ public interface ICajaDiariaService : ICrudOperationService<CajaDiaria>
     Task<List<CajaDiaria>> GetListAsync(string companyId, DateQuery query);
     Task<List<CajaDiaria>> GetCajasAbiertasAsync(string companyId);
     Task<List<CajaDiaria>> GetCajasDiariasAsync(string companyId, DateQuery query, int page = 1, int pageSize = 12);
-    Task<long> GetTotalCajasDiariasAsync(string companyId, DateQuery query, int page = 1, int pageSize = 12);
+    Task<long> GetTotalCajasDiariasAsync(string companyId, DateQuery query);
 }
 
 public class CajaDiariaService : CrudOperationService<CajaDiaria>, ICajaDiariaService
@@ -45,9 +45,8 @@ public class CajaDiariaService : CrudOperationService<CajaDiaria>, ICajaDiariaSe
             .Descending("$natural")).Skip(skip).Limit(pageSize).ToListAsync();
     }
 
-    public async Task<long> GetTotalCajasDiariasAsync(string companyId, DateQuery query, int page = 1, int pageSize = 12)
+    public async Task<long> GetTotalCajasDiariasAsync(string companyId, DateQuery query)
     {
-        var skip = (page - 1) * pageSize;
         var filter = Builders<CajaDiaria>.Filter.And(
             Builders<CajaDiaria>.Filter.Eq(x => x.CompanyId, companyId),
             Builders<CajaDiaria>.Filter.Eq(x => x.Month, query.Month),
