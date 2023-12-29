@@ -26,11 +26,28 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(string companyId, [FromQuery] string query = "")
+    public async Task<IActionResult> Index(string companyId, [FromQuery] string query = "", [FromQuery] int page = 1)
     {
-        string[] fieldNames = new string[] { "Barcode", "Description" };
-        var products = await _productService.GetFilteredAsync(companyId, fieldNames, query);
-        return Ok(products);
+        int pageSize = 12;
+        var productos = await _productService.GetProductosAsync(companyId, query, page, pageSize);
+        var totalProductos = await _productService.GetTotalProductosAsync(companyId, query);
+        var totalPages = (int)Math.Ceiling((double)totalProductos / pageSize);
+
+        var paginationInfo = new PaginationInfo
+        {
+            CurrentPage = page,
+            TotalPages = totalPages
+        };
+
+        paginationInfo.GeneratePageLinks();
+
+        var result = new PaginationResult<Product>
+        {
+            Pagination = paginationInfo,
+            Data = productos
+        };
+
+        return Ok(result);
     }
 
     [HttpGet("{id}")]
@@ -38,6 +55,13 @@ public class ProductController : ControllerBase
     {
         var product = await _productService.GetByIdAsync(companyId, id);
         return Ok(product);
+    }
+
+    [HttpGet("Lista")]
+    public async Task<IActionResult> Lista(string companyId, [FromQuery] string query = "")
+    {
+        var productos = await _productService.GetListAsync(companyId, query);
+        return Ok(productos);
     }
 
     [HttpGet("Select2")]

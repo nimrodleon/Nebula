@@ -7,14 +7,16 @@ namespace Nebula.Modules.Products;
 
 public interface IProductService : ICrudOperationService<Product>
 {
-    Task<List<Product>> GetListAsync(string companyId, string query = "", int limit = 24);
+    Task<List<Product>> GetListAsync(string companyId, string query = "", int limit = 10);
+    Task<List<Product>> GetProductosAsync(string companyId, string query = "", int page = 1, int pageSize = 12);
+    Task<long> GetTotalProductosAsync(string companyId, string query = "");
 }
 
 public class ProductService : CrudOperationService<Product>, IProductService
 {
     public ProductService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
 
-    public async Task<List<Product>> GetListAsync(string companyId, string query = "", int limit = 25)
+    public async Task<List<Product>> GetListAsync(string companyId, string query = "", int limit = 10)
     {
         var filter = Builders<Product>.Filter.Eq(x => x.CompanyId, companyId);
 
@@ -35,6 +37,41 @@ public class ProductService : CrudOperationService<Product>, IProductService
     {
         var product = await _collection.Find(x => x.CompanyId == companyId && x.Id == id).FirstOrDefaultAsync();
         return product;
+    }
+
+    public async Task<List<Product>> GetProductosAsync(string companyId, string query = "", int page = 1, int pageSize = 12)
+    {
+        var skip = (page - 1) * pageSize;
+
+        var builder = Builders<Product>.Filter;
+        var filter = builder.Eq(x => x.CompanyId, companyId);
+
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            filter = filter & builder.Or(
+                builder.Regex("Barcode", new BsonRegularExpression(query, "i")),
+                builder.Regex("Description", new BsonRegularExpression(query.ToUpper(), "i"))
+            );
+        }
+
+        return await _collection.Find(filter).Sort(new SortDefinitionBuilder<Product>()
+            .Descending("$natural")).Skip(skip).Limit(pageSize).ToListAsync();
+    }
+
+    public async Task<long> GetTotalProductosAsync(string companyId, string query = "")
+    {
+        var builder = Builders<Product>.Filter;
+        var filter = builder.Eq(x => x.CompanyId, companyId);
+
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            filter = filter & builder.Or(
+                builder.Regex("Barcode", new BsonRegularExpression(query, "i")),
+                builder.Regex("Description", new BsonRegularExpression(query.ToUpper(), "i"))
+            );
+        }
+
+        return await _collection.Find(filter).CountDocumentsAsync();
     }
 
 }
