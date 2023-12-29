@@ -17,6 +17,7 @@ using Nebula.Modules.Sales.Notes;
 using Nebula.Common;
 using Nebula.Modules.Inventory.Stock;
 using Nebula.Modules.Account;
+using Nebula.Modules.Sales.Models;
 
 namespace Nebula.Controllers.Sales;
 
@@ -65,10 +66,28 @@ public class InvoiceSaleController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(string companyId, [FromQuery] DateQuery model)
+    public async Task<IActionResult> Index(string companyId, [FromQuery] DateQuery model, [FromQuery] int page = 1)
     {
-        var invoiceSales = await _invoiceSaleService.GetListAsync(companyId, model);
-        return Ok(invoiceSales);
+        int pageSize = 12;
+        var comprobantes = await _invoiceSaleService.GetComprobantesAsync(companyId, model, page, pageSize);
+        var totalProductos = await _invoiceSaleService.GetTotalComprobantesAsync(companyId, model);
+        var totalPages = (int)Math.Ceiling((double)totalProductos / pageSize);
+
+        var paginationInfo = new PaginationInfo
+        {
+            CurrentPage = page,
+            TotalPages = totalPages
+        };
+
+        paginationInfo.GeneratePageLinks();
+
+        var result = new PaginationResult<InvoiceSale>
+        {
+            Pagination = paginationInfo,
+            Data = comprobantes
+        };
+
+        return Ok(result);
     }
 
     [HttpGet("{id}")]
