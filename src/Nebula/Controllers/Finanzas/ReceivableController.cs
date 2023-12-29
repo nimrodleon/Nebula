@@ -7,6 +7,7 @@ using Nebula.Modules.Finanzas;
 using Nebula.Modules.Finanzas.Dto;
 using Nebula.Modules.Finanzas.Models;
 using Nebula.Modules.Finanzas.Schemas;
+using Nebula.Common.Helpers;
 
 namespace Nebula.Controllers.Finanzas;
 
@@ -28,10 +29,28 @@ public class ReceivableController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(string companyId, [FromQuery] CuentaPorCobrarMensualParamSchema requestParam)
+    public async Task<IActionResult> Index(string companyId, [FromQuery] CuentaPorCobrarMensualParamSchema requestParam, [FromQuery] int page = 1)
     {
-        var responseData = await _receivableService.GetListAsync(companyId, requestParam);
-        return Ok(responseData);
+        int pageSize = 12;
+        var cuentasPorCobrar = await _receivableService.GetListAsync(companyId, requestParam, page, pageSize);
+        var totalCuentasPorCobrar = await _receivableService.GetTotalCargosAsync(companyId, requestParam);
+        var totalPages = (int)Math.Ceiling((double)totalCuentasPorCobrar / pageSize);
+
+        var paginationInfo = new PaginationInfo
+        {
+            CurrentPage = page,
+            TotalPages = totalPages
+        };
+
+        paginationInfo.GeneratePageLinks();
+
+        var result = new PaginationResult<AccountsReceivable>
+        {
+            Pagination = paginationInfo,
+            Data = cuentasPorCobrar
+        };
+
+        return Ok(result);
     }
 
     [HttpGet("{id}")]
