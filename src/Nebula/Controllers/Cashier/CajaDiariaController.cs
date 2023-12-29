@@ -10,6 +10,7 @@ using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth;
 using Nebula.Common;
 using Nebula.Modules.Contacts;
+using Nebula.Common.Helpers;
 
 namespace Nebula.Controllers.Cashier;
 
@@ -40,10 +41,28 @@ public class CajaDiariaController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(string companyId, [FromQuery] DateQuery model)
+    public async Task<IActionResult> Index(string companyId, [FromQuery] DateQuery model, [FromQuery] int page = 1)
     {
-        var cajaDiarias = await _cajaDiariaService.GetListAsync(companyId, model);
-        return Ok(cajaDiarias);
+        int pageSize = 12;
+        var cajasDiarias = await _cajaDiariaService.GetCajasDiariasAsync(companyId, model, page, pageSize);
+        var totalCajasDiarias = await _cajaDiariaService.GetTotalCajasDiariasAsync(companyId, model);
+        var totalPages = (int)Math.Ceiling((double)totalCajasDiarias / pageSize);
+
+        var paginationInfo = new PaginationInfo
+        {
+            CurrentPage = page,
+            TotalPages = totalPages
+        };
+
+        paginationInfo.GeneratePageLinks();
+
+        var result = new PaginationResult<CajaDiaria>
+        {
+            Pagination = paginationInfo,
+            Data = cajasDiarias
+        };
+
+        return Ok(result);
     }
 
     [HttpGet("{id}")]
