@@ -55,7 +55,7 @@ public class AuthController : ControllerBase
         }
         catch (Exception)
         {
-            return BadRequest(new { ok = false, msg = "Error al recuperar los datos del usuario autenticado." });
+            return Unauthorized(new { ok = false, msg = "Error al recuperar los datos del usuario autenticado." });
         }
     }
 
