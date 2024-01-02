@@ -7,7 +7,8 @@ namespace Nebula.Modules.Auth;
 
 public interface IUserService : ICrudOperationService<User>
 {
-    Task<List<User>> GetListAsync(string query, int limit = 25);
+    Task<List<User>> GetListAsync(string query = "", int page = 1, int pageSize = 12);
+    Task<long> GetTotalListAsync(string query = "");
     Task<List<User>> GetUsersByUserIds(List<string> userIds);
     Task<User> GetByEmailAsync(string email);
 }
@@ -22,12 +23,22 @@ public class UserService : CrudOperationService<User>, IUserService
         _collection.Indexes.CreateOne(model);
     }
 
-    public async Task<List<User>> GetListAsync(string query = "", int limit = 25)
+    public async Task<List<User>> GetListAsync(string query = "", int page = 1, int pageSize = 12)
+    {
+        var skip = (page - 1) * pageSize;
+        var filter = Builders<User>.Filter.Empty;
+        if (!string.IsNullOrEmpty(query))
+            filter = Builders<User>.Filter.Regex("UserName", new BsonRegularExpression(query.ToUpper(), "i"));
+        return await _collection.Find(filter).Sort(new SortDefinitionBuilder<User>()
+            .Descending("$natural")).Skip(skip).Limit(pageSize).ToListAsync();
+    }
+
+    public async Task<long> GetTotalListAsync(string query = "")
     {
         var filter = Builders<User>.Filter.Empty;
         if (!string.IsNullOrEmpty(query))
             filter = Builders<User>.Filter.Regex("UserName", new BsonRegularExpression(query.ToUpper(), "i"));
-        return await _collection.Find(filter).Limit(limit).ToListAsync();
+        return await _collection.Find(filter).CountDocumentsAsync();
     }
 
     public async Task<List<User>> GetUsersByUserIds(List<string> userIds)

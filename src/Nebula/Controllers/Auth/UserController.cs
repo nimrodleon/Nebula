@@ -7,6 +7,7 @@ using Nebula.Common;
 using System.Security.Claims;
 using System.Data.Common;
 using MongoDB.Driver;
+using Nebula.Common.Helpers;
 
 namespace Nebula.Controllers.Auth;
 
@@ -24,6 +25,31 @@ public class UserController : ControllerBase
         _jwtService = jwtService;
         _userService = userService;
         _emailService = emailService;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Index([FromQuery] string query = "", [FromQuery] int page = 1)
+    {
+        int pageSize = 12;
+        var usuarios = await _userService.GetListAsync(query, page, pageSize);
+        var totalUsuarios = await _userService.GetTotalListAsync(query);
+        var totalPages = (int)Math.Ceiling((double)totalUsuarios / pageSize);
+
+        var paginationInfo = new PaginationInfo
+        {
+            CurrentPage = page,
+            TotalPages = totalPages
+        };
+
+        paginationInfo.GeneratePageLinks();
+
+        var result = new PaginationResult<User>
+        {
+            Pagination = paginationInfo,
+            Data = usuarios
+        };
+
+        return Ok(result);
     }
 
     [HttpPost]
