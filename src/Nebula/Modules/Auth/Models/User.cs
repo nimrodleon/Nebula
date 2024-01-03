@@ -22,4 +22,5 @@ public class User : IGenericModel
     public string EmailValidationToken { get; set; } = string.Empty;
     [JsonIgnore]
     public string ResetPasswordToken { get; set; } = string.Empty;
+    public bool Disabled { get; set; } = false;
 }
