@@ -28,7 +28,9 @@ public class UserService : CrudOperationService<User>, IUserService
         var skip = (page - 1) * pageSize;
         var filter = Builders<User>.Filter.Empty;
         if (!string.IsNullOrEmpty(query))
-            filter = Builders<User>.Filter.Regex("UserName", new BsonRegularExpression(query.ToUpper(), "i"));
+            filter = Builders<User>.Filter.Or(
+                Builders<User>.Filter.Regex("UserName", new BsonRegularExpression(query.ToUpper(), "i")),
+                Builders<User>.Filter.Regex("Email", new BsonRegularExpression(query.ToUpper(), "i")));
         return await _collection.Find(filter).Sort(new SortDefinitionBuilder<User>()
             .Descending("$natural")).Skip(skip).Limit(pageSize).ToListAsync();
     }
