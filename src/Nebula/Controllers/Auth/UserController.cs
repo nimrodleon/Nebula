@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.Data.Common;
 using MongoDB.Driver;
 using Nebula.Common.Helpers;
+using Nebula.Modules.Account;
 
 namespace Nebula.Controllers.Auth;
 
@@ -18,13 +19,16 @@ public class UserController : ControllerBase
     private readonly IUserService _userService;
     private readonly IEmailService _emailService;
     private readonly IJwtService _jwtService;
+    private readonly ICompanyService _companyService;
 
     public UserController(IJwtService jwtService,
-        IUserService userService, IEmailService emailService)
+        IUserService userService, IEmailService emailService,
+        ICompanyService companyService)
     {
         _jwtService = jwtService;
         _userService = userService;
         _emailService = emailService;
+        _companyService = companyService;
     }
 
     [HttpGet]
@@ -50,6 +54,20 @@ public class UserController : ControllerBase
         };
 
         return Ok(result);
+    }
+
+    [HttpGet("{userId}/Show")]
+    public async Task<IActionResult> Show(string userId)
+    {
+        var user = await _userService.GetByIdAsync(userId);
+        return Ok(user);
+    }
+
+    [HttpGet("{userId}/Companies")]
+    public async Task<IActionResult> Companies(string userId)
+    {
+        var companies = await _companyService.GetCompaniesByUserIdAsync(userId);
+        return Ok(companies);
     }
 
     [HttpPost]
