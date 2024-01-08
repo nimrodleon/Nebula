@@ -96,7 +96,7 @@ public class AuthController : ControllerBase
             };
 
             var token = _jwtService.GenerateToken(claims, 1000);
-            return Ok(new { token });
+            return Ok(new { token, userType = user.UserType });
         }
         catch (Exception)
         {
