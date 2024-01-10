@@ -113,4 +113,24 @@ public class Company : IGenericModel
     /// Configuración de la Clave SOL.
     /// </summary>
     public ClaveSolHub ClaveSol { get; set; } = new ClaveSolHub();
+
+    /// <summary>
+    /// Módulo comprobantes.
+    /// </summary>
+    public bool ModComprobantes { get; set; } = false;
+
+    /// <summary>
+    /// Módulo cuentas por cobrar.
+    /// </summary>
+    public bool ModCuentaPorCobrar { get; set; } = false;
+
+    /// <summary>
+    /// Módulo reparaciones.
+    /// </summary>
+    public bool ModReparaciones { get; set; } = false;
+
+    /// <summary>
+    /// Módulo cajas diaria.
+    /// </summary>
+    public bool ModCajasDiaria { get; set; } = false;
 }
