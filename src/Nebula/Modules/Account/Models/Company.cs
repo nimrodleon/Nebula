@@ -115,6 +115,11 @@ public class Company : IGenericModel
     public ClaveSolHub ClaveSol { get; set; } = new ClaveSolHub();
 
     /// <summary>
+    /// Módulo de inventarios.
+    /// </summary>
+    public bool ModInventarios { get; set; } = false;
+
+    /// <summary>
     /// Módulo comprobantes.
     /// </summary>
     public bool ModComprobantes { get; set; } = false;
