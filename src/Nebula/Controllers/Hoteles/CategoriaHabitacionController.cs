@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth;
 using Nebula.Common.Dto;
-using Nebula.Modules.Hoteles;
 using Nebula.Modules.Hoteles.Models;
+using Nebula.Modules.Hoteles;
 
 namespace Nebula.Controllers.Hoteles;
 
@@ -12,28 +12,28 @@ namespace Nebula.Controllers.Hoteles;
 [CustomerAuthorize(UserRole = CompanyRoles.User)]
 [Route("api/hoteles/{companyId}/[controller]")]
 [ApiController]
-public class PisoHotelController : ControllerBase
+public class CategoriaHabitacionController : ControllerBase
 {
-    private readonly IPisoHotelService _pisoHotelService;
+    private readonly ICategoriaHabitacionService _categoriaHabitacionService;
 
-    public PisoHotelController(IPisoHotelService pisoHotelService)
+    public CategoriaHabitacionController(ICategoriaHabitacionService categoriaHabitacionService)
     {
-        _pisoHotelService = pisoHotelService;
+        _categoriaHabitacionService = categoriaHabitacionService;
     }
 
     [HttpGet]
     public async Task<IActionResult> Index(string companyId, [FromQuery] string query = "")
     {
         string[] fieldNames = new string[] { "Nombre" };
-        var pisosHotel = await _pisoHotelService.GetFilteredAsync(companyId, fieldNames, query);
-        return Ok(pisosHotel);
+        var categories = await _categoriaHabitacionService.GetFilteredAsync(companyId, fieldNames, query);
+        return Ok(categories);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> Show(string companyId, string id)
     {
-        var pisoHotel = await _pisoHotelService.GetByIdAsync(companyId, id);
-        return Ok(pisoHotel);
+        var category = await _categoriaHabitacionService.GetByIdAsync(companyId, id);
+        return Ok(category);
     }
 
     [HttpGet("Select2")]
@@ -41,7 +41,7 @@ public class PisoHotelController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(term)) term = string.Empty;
         string[] fieldNames = new string[] { "Nombre" };
-        var responseData = await _pisoHotelService.GetFilteredAsync(companyId, fieldNames, term, 10);
+        var responseData = await _categoriaHabitacionService.GetFilteredAsync(companyId, fieldNames, term, 10);
         var data = new List<InputSelect2>();
         responseData.ForEach(item =>
         {
@@ -55,31 +55,31 @@ public class PisoHotelController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(string companyId, [FromBody] PisoHotel model)
+    public async Task<IActionResult> Create(string companyId, [FromBody] CategoriaHabitacion model)
     {
         model.CompanyId = companyId.Trim();
         model.Nombre = model.Nombre.ToUpper();
-        await _pisoHotelService.CreateAsync(model);
+        await _categoriaHabitacionService.CreateAsync(model);
         return Ok(model);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(string companyId, string id, [FromBody] PisoHotel model)
+    public async Task<IActionResult> Update(string companyId, string id, [FromBody] CategoriaHabitacion model)
     {
-        var pisoHotel = await _pisoHotelService.GetByIdAsync(id);
+        var pisoHotel = await _categoriaHabitacionService.GetByIdAsync(id);
 
         model.Id = pisoHotel.Id;
         model.CompanyId = companyId.Trim();
         model.Nombre = model.Nombre.ToUpper();
-        model = await _pisoHotelService.UpdateAsync(id, model);
+        model = await _categoriaHabitacionService.UpdateAsync(id, model);
         return Ok(model);
     }
 
     [HttpDelete("{id}"), CustomerAuthorize(UserRole = CompanyRoles.Admin)]
     public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var pisoHotel = await _pisoHotelService.GetByIdAsync(companyId, id);
-        await _pisoHotelService.RemoveAsync(companyId, pisoHotel.Id);
-        return Ok(pisoHotel);
+        var categoriaHabitacion = await _categoriaHabitacionService.GetByIdAsync(companyId, id);
+        await _categoriaHabitacionService.RemoveAsync(companyId, categoriaHabitacion.Id);
+        return Ok(categoriaHabitacion);
     }
 }
