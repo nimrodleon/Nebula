@@ -19,5 +19,6 @@ public class HabitacionHotel : IGenericModel
     public string CategoriaHabitacionId { get; set; } = string.Empty;
     public decimal Precio { get; set; }
     public int TarifaHoras { get; set; }
+    public string Estado { get; set; } = string.Empty;
     public string Remark { get; set; } = string.Empty;
 }
