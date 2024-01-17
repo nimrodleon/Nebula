@@ -18,6 +18,7 @@ public class PagoSuscripcion : IGenericModel
     public string FechaHasta { get; set; } = string.Empty;
     public decimal Monto { get; set; } = decimal.Zero;
     public string Remark { get; set; } = string.Empty;
+    public string CreatedAt { get; set; } = DateTime.Now.ToString("yyyy-MM-dd");
     public string Year { get; set; } = DateTime.Now.ToString("yyyy");
     public string Month { get; set; } = DateTime.Now.ToString("MM");
 }
