@@ -169,7 +169,7 @@ public class UserController : ControllerBase
                 CPEDIGITAL.NET
                 """;
             await _emailService.SendEmailAsync(fromEmail, user.Email.Trim(), subject, body);
-            return Ok(new { ok = true, msg = "Su registro ha sido exitoso. Por favor, revise su correo electrónico para confirmar su dirección de correo." });
+            return Ok(user);
         }
         catch (MongoWriteException ex)
         when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
@@ -187,12 +187,12 @@ public class UserController : ControllerBase
             if (user == null) return BadRequest();
 
             user.UserName = model.UserName;
-            user.Email = model.Email;
+            if (user.Email != model.Email) user.Email = model.Email;
             user.UserType = model.UserType;
             user.Disabled = model.Disabled;
 
             await _userService.UpdateAsync(user.Id, user);
-            return Ok(new { ok = true, msg = "Actualización completada." });
+            return Ok(user);
         }
         catch (MongoWriteException ex)
         when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
