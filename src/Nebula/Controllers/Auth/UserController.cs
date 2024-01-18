@@ -95,7 +95,7 @@ public class UserController : ControllerBase
             await _userService.UpdateAsync(user.Id, user);
 
             // enviar correo electrónico.
-            string fromEmail = "reddrc21@gmail.com";
+            string fromEmail = "cpedigital12@gmail.com";
             string subject = $"Confirmación de Correo Electrónico - {user.Email.Trim()}";
             string body = $"""
                 Hola {user.UserName},
@@ -113,6 +113,86 @@ public class UserController : ControllerBase
                 """;
             await _emailService.SendEmailAsync(fromEmail, user.Email.Trim(), subject, body);
             return Ok(new { ok = true, msg = "Su registro ha sido exitoso. Por favor, revise su correo electrónico para confirmar su dirección de correo." });
+        }
+        catch (MongoWriteException ex)
+        when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
+        {
+            return BadRequest("Ya existe un usuario con el mismo email.");
+        }
+    }
+
+    [HttpPost("RegisterFromAdmin")]
+    public async Task<IActionResult> RegisterFromAdmin([FromBody] UserRegisterFromAdmin model)
+    {
+        try
+        {
+            var password = Guid.NewGuid().ToString();
+            var user = new User()
+            {
+                UserName = model.UserName,
+                Email = model.Email,
+                PasswordHash = PasswordHasher.HashPassword(password),
+                UserType = model.UserType,
+                IsEmailVerified = false,
+                Disabled = model.Disabled,
+            };
+            user = await _userService.CreateAsync(user);
+
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.UserName),
+            };
+            string token = _jwtService.GenerateToken(claims);
+            user.EmailValidationToken = token;
+            await _userService.UpdateAsync(user.Id, user);
+
+            // enviar correo electrónico.
+            string fromEmail = "cpedigital12@gmail.com";
+            string subject = $"Confirmación de Correo Electrónico - {user.Email.Trim()}";
+            string body = $"""
+                Hola {user.UserName},
+                Gracias por registrarte en nuestro sitio web.<br>
+                Para completar tu registro, por favor haz clic en el siguiente enlace para validar tu dirección de correo electrónico:
+                <br>
+                <a href='https://cloud.cpedigital.net/public/user/verify-email?token={token}'>Verificar E-Mail</a>
+                <br>
+                user: {user.Email}
+                <br>
+                password: {password}
+                <br>
+                Si no puedes hacer clic en el enlace, cópialo y pégalo en la barra de direcciones de tu navegador web.
+                <br>
+                ¡Gracias por unirte a nosotros!
+                <br>
+                Atentamente,
+                CPEDIGITAL.NET
+                """;
+            await _emailService.SendEmailAsync(fromEmail, user.Email.Trim(), subject, body);
+            return Ok(new { ok = true, msg = "Su registro ha sido exitoso. Por favor, revise su correo electrónico para confirmar su dirección de correo." });
+        }
+        catch (MongoWriteException ex)
+        when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
+        {
+            return BadRequest("Ya existe un usuario con el mismo email.");
+        }
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateFromAdmin(string id, [FromBody] UserRegisterFromAdmin model)
+    {
+        try
+        {
+            var user = await _userService.GetByIdAsync(id);
+            if (user == null) return BadRequest();
+
+            user.UserName = model.UserName;
+            user.Email = model.Email;
+            user.UserType = model.UserType;
+            user.Disabled = model.Disabled;
+
+            await _userService.UpdateAsync(user.Id, user);
+            return Ok(new { ok = true, msg = "Actualización completada." });
         }
         catch (MongoWriteException ex)
         when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
