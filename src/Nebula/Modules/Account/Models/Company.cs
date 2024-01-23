@@ -138,4 +138,10 @@ public class Company : IGenericModel
     /// Módulo cajas diaria.
     /// </summary>
     public bool ModCajasDiaria { get; set; } = false;
+
+    /// <summary>
+    /// Configura la emisión de comprobantes para,
+    /// Las empresas del regimen único simplificado.
+    /// </summary>
+    public bool EmitirModoRus { get; set; } = false;
 }
