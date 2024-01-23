@@ -65,7 +65,7 @@ public class ComprobanteDto
                 RznSocial = Cabecera.RznSocialUsuario.Trim(),
             },
             TipoMoneda = company.TipMoneda.Trim(),
-            TipoOperacion = "0101",
+            TipoOperacion = company.EmitirModoRus ? "0113" : "0101",
             FecVencimiento = Cabecera.FecVencimiento.Trim(),
             PaymentMethod = Cabecera.PaymentMethod.Trim(),
             FormaPago = FormaPago,
