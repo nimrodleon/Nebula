@@ -14,10 +14,14 @@ namespace Nebula.Controllers.Account;
 [ApiController]
 public class PagoSuscripcionController : ControllerBase
 {
+    private readonly ICompanyService _companyService;
     private readonly IPagoSuscripcionService _pagoSuscripcionService;
 
-    public PagoSuscripcionController(IPagoSuscripcionService pagoSuscripcionService)
+    public PagoSuscripcionController(
+        ICompanyService companyService,
+        IPagoSuscripcionService pagoSuscripcionService)
     {
+        _companyService = companyService;
         _pagoSuscripcionService = pagoSuscripcionService;
     }
 
@@ -55,6 +59,12 @@ public class PagoSuscripcionController : ControllerBase
     public async Task<IActionResult> Create([FromBody] PagoSuscripcion model)
     {
         await _pagoSuscripcionService.CreateAsync(model);
+        var company = await _companyService.GetByIdAsync(model.CompanyId);
+        if (company != null)
+        {
+            company.PagoSuscripcionId = model.Id;
+            await _companyService.UpdateAsync(company.Id, company);
+        }
         return Ok(model);
     }
 

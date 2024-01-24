@@ -144,4 +144,9 @@ public class Company : IGenericModel
     /// Las empresas del regimen único simplificado.
     /// </summary>
     public bool EmitirModoRus { get; set; } = false;
+
+    /// <summary>
+    /// Registrar aqui el último pago realizado.
+    /// </summary>
+    public string PagoSuscripcionId { get; set; } = string.Empty;
 }
