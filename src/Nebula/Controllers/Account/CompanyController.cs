@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Common;
+using Nebula.Common.Helpers;
 using Nebula.Modules.Account;
 using Nebula.Modules.Account.Models;
 using Nebula.Modules.Auth;
@@ -41,6 +42,31 @@ public class CompanyController : ControllerBase
     {
         var companies = await _companyService.GetAsync("RznSocial", query);
         return Ok(companies);
+    }
+
+    [HttpGet("Index")]
+    public async Task<IActionResult> Index([FromQuery] string query = "", [FromQuery] int page = 1)
+    {
+        int pageSize = 12;
+        var companies = await _companyService.GetCompaniesAsync(query, page, pageSize);
+        var totalCompanies = await _companyService.GetTotalCompaniesAsync(query);
+        var totalPages = (int)Math.Ceiling((double)totalCompanies / pageSize);
+
+        var paginationInfo = new PaginationInfo
+        {
+            CurrentPage = page,
+            TotalPages = totalPages
+        };
+
+        paginationInfo.GeneratePageLinks();
+
+        var result = new PaginationResult<Company>
+        {
+            Pagination = paginationInfo,
+            Data = companies
+        };
+
+        return Ok(result);
     }
 
     [HttpGet("{id}")]
