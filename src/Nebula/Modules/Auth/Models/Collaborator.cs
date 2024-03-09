@@ -1,17 +1,24 @@
-using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
 using Nebula.Modules.Auth.Helpers;
-using Nebula.Common.Models;
+using System.ComponentModel.DataAnnotations;
+using Nebula.Modules.Account.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Nebula.Modules.Auth.Models;
 
-[BsonIgnoreExtraElements]
-public class Collaborator : IGenericModel
+public class Collaborator
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; } = string.Empty;
-    public string CompanyId { get; set; } = string.Empty;
-    public string UserId { get; set; } = string.Empty;
+    [Key]
+    public Guid Id { get; set; } = Guid.NewGuid();
+
+    public Guid? CompanyId { get; set; } = null;
+
+    [ForeignKey(nameof(CompanyId))]
+    public Company Company { get; set; } = new Company();
+
+    public Guid? UserId { get; set; } = null;
+
+    [ForeignKey(nameof(UserId))]
+    public User User { get; set; } = new User();
+
     public string UserRole { get; set; } = CompanyRoles.User;
 }

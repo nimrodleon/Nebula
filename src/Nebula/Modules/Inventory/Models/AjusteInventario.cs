@@ -1,21 +1,22 @@
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using Nebula.Common.Models;
+using Nebula.Modules.Account.Models;
 using Nebula.Modules.Inventory.Helpers;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Nebula.Modules.Inventory.Models;
 
-[BsonIgnoreExtraElements]
-public class AjusteInventario : IGenericModel
+public class AjusteInventario
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; } = string.Empty;
+    [Key]
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <summary>
     /// Identificador de la empresa al que pertenece.
     /// </summary>
-    public string CompanyId { get; set; } = string.Empty;
+    public Guid? CompanyId { get; set; } = null;
+
+    [ForeignKey(nameof(CompanyId))]
+    public Company Company { get; set; } = new Company();
 
     /// <summary>
     /// Nombre del Usuario.
@@ -25,7 +26,10 @@ public class AjusteInventario : IGenericModel
     /// <summary>
     /// Identificador del Almacén.
     /// </summary>
-    public string WarehouseId { get; set; } = string.Empty;
+    public Guid? WarehouseId { get; set; } = null;
+
+    [ForeignKey(nameof(WarehouseId))]
+    public Warehouse Warehouse { get; set; } = new Warehouse();
 
     /// <summary>
     /// Nombre del Almacén.
@@ -35,7 +39,10 @@ public class AjusteInventario : IGenericModel
     /// <summary>
     /// Identificador de la Ubicación.
     /// </summary>
-    public string LocationId { get; set; } = string.Empty;
+    public Guid? LocationId { get; set; } = null;
+
+    [ForeignKey(nameof(LocationId))]
+    public Location Location { get; set; } = new Location();
 
     /// <summary>
     /// Nombre de la Ubicación.

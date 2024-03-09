@@ -17,11 +17,11 @@ namespace Nebula.Controllers.Finanzas;
 [ApiController]
 public class ReceivableController : ControllerBase
 {
-    private readonly IAccountsReceivableService _receivableService;
+    private readonly IFinancialAccountService _receivableService;
     private readonly ICashierDetailService _cashierDetailService;
 
     public ReceivableController(
-        IAccountsReceivableService receivableService,
+        IFinancialAccountService receivableService,
         ICashierDetailService cashierDetailService)
     {
         _receivableService = receivableService;
@@ -44,7 +44,7 @@ public class ReceivableController : ControllerBase
 
         paginationInfo.GeneratePageLinks();
 
-        var result = new PaginationResult<AccountsReceivable>
+        var result = new PaginationResult<FinancialAccount>
         {
             Pagination = paginationInfo,
             Data = cuentasPorCobrar
@@ -78,7 +78,7 @@ public class ReceivableController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(string companyId, [FromBody] AccountsReceivable model)
+    public async Task<IActionResult> Create(string companyId, [FromBody] FinancialAccount model)
     {
         model.CompanyId = companyId.Trim();
         await _receivableService.CreateAsync(_cashierDetailService, model);
@@ -86,7 +86,7 @@ public class ReceivableController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(string companyId, string id, [FromBody] AccountsReceivable model)
+    public async Task<IActionResult> Update(string companyId, string id, [FromBody] FinancialAccount model)
     {
         var receivable = await _receivableService.GetByIdAsync(companyId, id);
         model.Id = receivable.Id;
@@ -124,7 +124,7 @@ public class ReceivableController : ControllerBase
     [HttpGet("ExportDeudaExcel/{contactId}")]
     public async Task<IActionResult> ExportDeudaExcel(string companyId, string contactId, [FromQuery] string year)
     {
-        List<AccountsReceivable> cuentasPorCobrar = await _receivableService.GetReceivablesByContactId(companyId, contactId, year);
+        List<FinancialAccount> cuentasPorCobrar = await _receivableService.GetReceivablesByContactId(companyId, contactId, year);
         ExportarCuentasPorCobrarDto exportar = new ExportarCuentasPorCobrarDto(cuentasPorCobrar);
         string pathExcel = exportar.GenerarArchivoExcel();
         FileStream stream = new FileStream(pathExcel, FileMode.Open);

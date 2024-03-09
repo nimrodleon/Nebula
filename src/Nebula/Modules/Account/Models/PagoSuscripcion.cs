@@ -1,19 +1,24 @@
-using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
-using Nebula.Common.Models;
+using Nebula.Modules.Auth.Models;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Nebula.Modules.Account.Models;
 
-[BsonIgnoreExtraElements]
-public class PagoSuscripcion : IGenericModel
+public class PagoSuscripcion
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; } = string.Empty;
+    [Key]
+    public Guid Id { get; set; } = Guid.NewGuid();
 
-    public string UserId { get; set; } = string.Empty;
-    public string CompanyId { get; set; } = string.Empty;
-    public string CompanyName { get; set; } = string.Empty;
+    public Guid? UserId { get; set; } = null;
+
+    [ForeignKey(nameof(UserId))]
+    public User User { get; set; } = new User();
+
+    public Guid? CompanyId { get; set; } = null;
+
+    [ForeignKey(nameof(CompanyId))]
+    public Company Company { get; set; } = new Company();
+
     public string FechaDesde { get; set; } = string.Empty;
     public string FechaHasta { get; set; } = string.Empty;
     public decimal Monto { get; set; } = decimal.Zero;

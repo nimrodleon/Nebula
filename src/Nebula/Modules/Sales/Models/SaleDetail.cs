@@ -1,16 +1,16 @@
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using Nebula.Common.Models;
+using Nebula.Modules.Account.Models;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Nebula.Modules.Sales.Models;
 
-[BsonIgnoreExtraElements]
-public abstract class SaleDetail : IGenericModel
+public abstract class SaleDetail
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; } = string.Empty;
-    public string CompanyId { get; set; } = string.Empty;
+    [Key]
+    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid? CompanyId { get; set; } = null;
+    [ForeignKey(nameof(CompanyId))]
+    public Company Company { get; set; } = new Company();
     public string WarehouseId { get; set; } = string.Empty;
     public string TipoItem { get; set; } = "BIEN";
     public string Unidad { get; set; } = string.Empty;

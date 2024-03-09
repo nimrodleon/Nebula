@@ -1,17 +1,17 @@
-using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
-using Nebula.Common.Models;
 using Nebula.Modules.InvoiceHub.Dto;
+using System.ComponentModel.DataAnnotations;
+using Nebula.Modules.Account.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Nebula.Modules.Sales.Models;
 
-[BsonIgnoreExtraElements]
-public abstract class BaseSale : IGenericModel
+public abstract class BaseSale
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; } = string.Empty;
-    public string CompanyId { get; set; } = string.Empty;
+    [Key]
+    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid? CompanyId { get; set; } = null;
+    [ForeignKey(nameof(CompanyId))]
+    public Company Company { get; set; } = new Company();
     public string InvoiceSerieId { get; set; } = string.Empty;
     public string TipoDoc { get; set; } = "03";
     public string Serie { get; set; } = string.Empty;

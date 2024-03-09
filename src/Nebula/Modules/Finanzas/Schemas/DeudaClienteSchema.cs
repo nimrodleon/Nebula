@@ -7,5 +7,5 @@ public class DeudaClienteSchema
     public string ContactId { get; set; } = string.Empty;
     public string ContactName { get; set; } = string.Empty;
     public decimal DeudaTotal { get; set; }
-    public List<AccountsReceivable> Receivables { get; set; } = new List<AccountsReceivable>();
+    public List<FinancialAccount> Receivables { get; set; } = new List<FinancialAccount>();
 }

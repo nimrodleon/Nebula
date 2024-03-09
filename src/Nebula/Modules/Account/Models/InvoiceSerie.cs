@@ -1,23 +1,23 @@
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using Nebula.Common.Models;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Nebula.Modules.Account.Models;
 
 /// <summary>
 /// Series de facturación.
 /// </summary>
-[BsonIgnoreExtraElements]
-public class InvoiceSerie : IGenericModel
+public class InvoiceSerie
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; } = string.Empty;
+    [Key]
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <summary>
     /// Identificador de la empresa al que pertenece.
     /// </summary>
-    public string CompanyId { get; set; } = string.Empty;
+    public Guid? CompanyId { get; set; } = null;
+
+    [ForeignKey(nameof(CompanyId))]
+    public Company Company { get; set; } = new Company();
 
     /// <summary>
     /// Identificador Serie.
@@ -27,12 +27,10 @@ public class InvoiceSerie : IGenericModel
     /// <summary>
     /// Identificador del Almacén.
     /// </summary>
-    public string WarehouseId { get; set; } = string.Empty;
+    public Guid? WarehouseId { get; set; } = null;
 
-    /// <summary>
-    /// Nombre del Almacén.
-    /// </summary>
-    public string WarehouseName { get; set; } = string.Empty;
+    [ForeignKey(nameof(WarehouseId))]
+    public Warehouse Warehouse { get; set; } = new Warehouse();
 
     /// <summary>
     /// Serie Nota de Venta.

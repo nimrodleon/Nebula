@@ -24,13 +24,13 @@ public class CashierSaleService : ICashierSaleService
     private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly ICrudOperationService<InvoiceSerie> _invoiceSerieService;
     private readonly ICashierDetailService _cashierDetailService;
-    private readonly IAccountsReceivableService _receivableService;
+    private readonly IFinancialAccountService _receivableService;
     private readonly ICajaDiariaService _cajaDiariaService;
 
     public CashierSaleService(
         IInvoiceSaleService invoiceSaleService, IInvoiceSaleDetailService invoiceSaleDetailService,
          ICrudOperationService<InvoiceSerie> invoiceSerieService,
-        ICashierDetailService cashierDetailService, IAccountsReceivableService receivableService,
+        ICashierDetailService cashierDetailService, IFinancialAccountService receivableService,
         ICajaDiariaService cajaDiariaService)
     {
         _invoiceSaleService = invoiceSaleService;
@@ -87,9 +87,9 @@ public class CashierSaleService : ICashierSaleService
         return invoiceSale;
     }
 
-    private AccountsReceivable GenerarCargo(InvoiceSale invoiceSale, CajaDiaria cajaDiaria, int diasPlazo)
+    private FinancialAccount GenerarCargo(InvoiceSale invoiceSale, CajaDiaria cajaDiaria, int diasPlazo)
     {
-        return new AccountsReceivable()
+        return new FinancialAccount()
         {
             CompanyId = invoiceSale.CompanyId,
             Type = "CARGO",

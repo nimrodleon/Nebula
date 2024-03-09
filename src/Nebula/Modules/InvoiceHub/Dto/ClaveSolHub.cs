@@ -1,7 +1,9 @@
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
 namespace Nebula.Modules.InvoiceHub.Dto;
 
+[Owned]
 public class ClaveSolHub
 {
     [JsonPropertyName("user")]

@@ -1,25 +1,29 @@
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using Nebula.Common.Models;
+using Nebula.Modules.Account.Models;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Nebula.Modules.Cashier.Models;
 
-[BsonIgnoreExtraElements]
-public class CajaDiaria : IGenericModel
+public class CajaDiaria
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; } = string.Empty;
+    [Key]
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <summary>
     /// Identificador de la empresa al que pertenece.
     /// </summary>
-    public string CompanyId { get; set; } = string.Empty;
+    public Guid? CompanyId { get; set; } = null;
+
+    [ForeignKey(nameof(CompanyId))]
+    public Company Company { get; set; } = new Company();
 
     /// <summary>
     /// ID Serie de facturación.
     /// </summary>
-    public string InvoiceSerieId { get; set; } = string.Empty;
+    public Guid? InvoiceSerieId { get; set; } = null;
+
+    [ForeignKey(nameof(InvoiceSerieId))]
+    public InvoiceSerie InvoiceSerie { get; set; } = new InvoiceSerie();
 
     /// <summary>
     /// Series de facturación.
@@ -65,6 +69,8 @@ public class CajaDiaria : IGenericModel
     /// Identificador del Almacén.
     /// Esta propiedad se usa solo para mostrar datos.
     /// </summary>
-    [BsonIgnore]
-    public string WarehouseId { get; set; } = string.Empty;
+    public Guid? WarehouseId { get; set; } = null;
+
+    [ForeignKey(nameof(WarehouseId))]
+    public Warehouse Warehouse { get; set; } = new Warehouse();
 }

@@ -1,30 +1,38 @@
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using Nebula.Common.Models;
+using Nebula.Modules.Account.Models;
+using Nebula.Modules.Products.Models;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Nebula.Modules.Inventory.Models;
 
-[BsonIgnoreExtraElements]
-public class LocationDetail : IGenericModel
+public class LocationDetail
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; } = string.Empty;
+    [Key]
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <summary>
     /// Identificador de la empresa al que pertenece.
     /// </summary>
-    public string CompanyId { get; set; } = string.Empty;
+    public Guid? CompanyId { get; set; } = null;
+
+    [ForeignKey(nameof(CompanyId))]
+    public Company Company { get; set; } = new Company();
 
     /// <summary>
     /// Identificador de Ubicación.
     /// </summary>
-    public string LocationId { get; set; } = string.Empty;
+    public Guid? LocationId { get; set; } = null;
+
+    [ForeignKey(nameof(LocationId))]
+    public Location Location { get; set; } = new Location();
 
     /// <summary>
     /// Identificador del Producto.
     /// </summary>
-    public string ProductId { get; set; } = string.Empty;
+    public Guid? ProductId { get; set; } = null;
+
+    [ForeignKey(nameof(ProductId))]
+    public Product Product { get; set; } = new Product();
 
     /// <summary>
     /// Nombre del Producto.

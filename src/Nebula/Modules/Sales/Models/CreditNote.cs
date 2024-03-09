@@ -1,8 +1,5 @@
-using MongoDB.Bson.Serialization.Attributes;
-
 namespace Nebula.Modules.Sales.Models;
 
-[BsonIgnoreExtraElements]
 public class CreditNote : BaseSale
 {
     public string InvoiceSaleId { get; set; } = string.Empty;

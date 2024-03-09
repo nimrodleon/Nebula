@@ -1,23 +1,28 @@
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using Nebula.Common.Models;
+using Nebula.Modules.Account.Models;
+using Nebula.Modules.Cashier.Models;
+using Nebula.Modules.Contacts.Models;
+using Nebula.Modules.Sales.Models;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Nebula.Modules.Finanzas.Models;
 
 /// <summary>
 /// Cuentas por Cobrar.
 /// </summary>
-[BsonIgnoreExtraElements]
-public class AccountsReceivable : IGenericModel
+public class FinancialAccount
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; } = string.Empty;
+    [Key]
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <summary>
     /// Identificador de la empresa al que pertenece.
     /// </summary>
-    public string CompanyId { get; set; } = string.Empty;
+    public Guid? CompanyId { get; set; } = null;
+
+    [ForeignKey(nameof(CompanyId))]
+    public Company Company { get; set; } = new Company();
 
     /// <summary>
     /// Tipo Operación: 'CARGO' | 'ABONO'
@@ -27,7 +32,10 @@ public class AccountsReceivable : IGenericModel
     /// <summary>
     /// Identificador del Contacto.
     /// </summary>
-    public string ContactId { get; set; } = string.Empty;
+    public Guid? ContactId { get; set; } = null;
+
+    [ForeignKey(nameof(ContactId))]
+    public Contact Contact { get; set; } = new Contact();
 
     /// <summary>
     /// Nombre de Contacto.
@@ -42,7 +50,10 @@ public class AccountsReceivable : IGenericModel
     /// <summary>
     /// Clave foránea comprobante de venta.
     /// </summary>
-    public string InvoiceSale { get; set; } = "-";
+    public Guid? InvoiceSaleId { get; set; } = null;
+
+    [ForeignKey(nameof(InvoiceSaleId))]
+    public InvoiceSale InvoiceSale { get; set; } = new InvoiceSale();
 
     /// <summary>
     /// Configura el Tipo de comprobante.
@@ -83,7 +94,10 @@ public class AccountsReceivable : IGenericModel
     /// <summary>
     /// Identificador del Terminal de Venta.
     /// </summary>
-    public string CajaDiaria { get; set; } = "-";
+    public Guid? CajaDiariaId { get; set; } = null;
+
+    [ForeignKey(nameof(CajaDiariaId))]
+    public CajaDiaria CajaDiaria { get; set; } = new CajaDiaria();
 
     /// <summary>
     /// Nombre del Terminal de Venta.
@@ -93,7 +107,7 @@ public class AccountsReceivable : IGenericModel
     /// <summary>
     /// Identificador del Cargo.
     /// </summary>
-    public string ReceivableId { get; set; } = "-";
+    public Guid? FinancialAccountId { get; set; } = null;
 
     /// <summary>
     /// Fecha de Operación.

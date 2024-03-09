@@ -1,30 +1,38 @@
-using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
-using Nebula.Common.Models;
+using System.ComponentModel.DataAnnotations;
+using Nebula.Modules.Account.Models;
+using System.ComponentModel.DataAnnotations.Schema;
+using Nebula.Modules.Products.Models;
 
 namespace Nebula.Modules.Inventory.Models;
 
-[BsonIgnoreExtraElements]
-public class MaterialDetail : IGenericModel
+public class MaterialDetail
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; } = string.Empty;
+    [Key]
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <summary>
     /// Identificador de la empresa al que pertenece.
     /// </summary>
-    public string CompanyId { get; set; } = string.Empty;
+    public Guid? CompanyId { get; set; } = null;
+
+    [ForeignKey(nameof(CompanyId))]
+    public Company Company { get; set; } = new Company();
 
     /// <summary>
     /// Clave Foranea del Material.
     /// </summary>
-    public string MaterialId { get; set; } = string.Empty;
+    public Guid? MaterialId { get; set; } = null;
+
+    [ForeignKey(nameof(MaterialId))]
+    public Material Material { get; set; } = new Material();
 
     /// <summary>
     /// Identificador del Almacén.
     /// </summary>
-    public string WarehouseId { get; set; } = string.Empty;
+    public Guid? WarehouseId { get; set; } = null;
+
+    [ForeignKey(nameof(WarehouseId))]
+    public Warehouse Warehouse { get; set; } = new Warehouse();
 
     /// <summary>
     /// Nombre del Almacén.
@@ -39,7 +47,10 @@ public class MaterialDetail : IGenericModel
     /// <summary>
     /// Identificador del Producto.
     /// </summary>
-    public string ProductId { get; set; } = string.Empty;
+    public Guid? ProductId { get; set; } = null;
+
+    [ForeignKey(nameof(ProductId))]
+    public Product Product { get; set; } = new Product();
 
     /// <summary>
     /// Nombre del Producto.

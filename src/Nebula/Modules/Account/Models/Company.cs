@@ -1,22 +1,24 @@
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using Nebula.Common.Models;
+using Nebula.Modules.Auth.Models;
+using Nebula.Modules.Contacts.Models;
 using Nebula.Modules.InvoiceHub.Dto;
 using Nebula.Modules.InvoiceHub.Helpers;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Nebula.Modules.Account.Models;
 
-[BsonIgnoreExtraElements]
-public class Company : IGenericModel
+public class Company
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; } = string.Empty;
+    [Key]
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <summary>
     /// Identificador del dueño de la empresa.
     /// </summary>
-    public string UserId { get; set; } = string.Empty;
+    public Guid? UserId { get; set; } = null;
+
+    [ForeignKey(nameof(UserId))]
+    public User User { get; set; } = new User();
 
     /// <summary>
     /// R.U.C. Empresa.
@@ -67,7 +69,10 @@ public class Company : IGenericModel
     /// Contacto por defecto para operaciones
     /// menores a 700 soles con boleta.
     /// </summary>
-    public string ContactId { get; set; } = string.Empty;
+    public Guid? ContactId { get; set; } = null;
+
+    [ForeignKey(nameof(ContactId))]
+    public Contact Contact { get; set; } = new Contact();
 
     /// <summary>
     /// #Dias para créditos automáticos.

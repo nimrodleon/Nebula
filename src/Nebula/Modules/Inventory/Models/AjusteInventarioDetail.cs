@@ -1,30 +1,38 @@
-using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
-using Nebula.Common.Models;
+using System.ComponentModel.DataAnnotations;
+using Nebula.Modules.Account.Models;
+using System.ComponentModel.DataAnnotations.Schema;
+using Nebula.Modules.Products.Models;
 
 namespace Nebula.Modules.Inventory.Models;
 
-[BsonIgnoreExtraElements]
-public class AjusteInventarioDetail : IGenericModel
+public class AjusteInventarioDetail
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; } = string.Empty;
+    [Key]
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <summary>
     /// Identificador de la empresa al que pertenece.
     /// </summary>
-    public string CompanyId { get; set; } = string.Empty;
+    public Guid? CompanyId { get; set; } = null;
+
+    [ForeignKey(nameof(CompanyId))]
+    public Company Company { get; set; } = new Company();
 
     /// <summary>
     /// Clave foranea Ajuste Inventario.
     /// </summary>
-    public string AjusteInventarioId { get; set; } = string.Empty;
+    public Guid? AjusteInventarioId { get; set; } = null;
+
+    [ForeignKey(nameof(AjusteInventarioId))]
+    public AjusteInventario AjusteInventario { get; set; } = new AjusteInventario();
 
     /// <summary>
     /// Identificador del Producto.
     /// </summary>
-    public string ProductId { get; set; } = string.Empty;
+    public Guid? ProductId { get; set; } = null;
+
+    [ForeignKey(nameof(ProductId))]
+    public Product Product { get; set; } = new Product();
 
     /// <summary>
     /// Nombre del Producto.

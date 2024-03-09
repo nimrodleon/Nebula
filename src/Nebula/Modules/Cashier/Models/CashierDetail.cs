@@ -1,33 +1,42 @@
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using Nebula.Common.Models;
+using Nebula.Modules.Account.Models;
+using Nebula.Modules.Contacts.Models;
+using Nebula.Modules.Sales.Models;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Nebula.Modules.Cashier.Models;
 
 /// <summary>
 /// Detalle de caja diaria.
 /// </summary>
-[BsonIgnoreExtraElements]
-public class CashierDetail : IGenericModel
+public class CashierDetail
 {
-    [BsonId]
-    [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; } = string.Empty;
+    [Key]
+    public Guid Id { get; set; } = Guid.NewGuid();
 
     /// <summary>
     /// Identificador de la empresa al que pertenece.
     /// </summary>
-    public string CompanyId { get; set; } = string.Empty;
+    public Guid? CompanyId { get; set; } = null;
+
+    [ForeignKey(nameof(CompanyId))]
+    public Company Company { get; set; } = new Company();
 
     /// <summary>
     /// Identificador CajaDiaria.
     /// </summary>
-    public string CajaDiariaId { get; set; } = string.Empty;
+    public Guid? CajaDiariaId { get; set; } = null;
+
+    [ForeignKey(nameof(CajaDiariaId))]
+    public CajaDiaria CajaDiaria { get; set; } = new CajaDiaria();
 
     /// <summary>
     /// Clave foránea comprobante de venta.
     /// </summary>
-    public string InvoiceSaleId { get; set; } = "-";
+    public Guid? InvoiceSaleId { get; set; } = null;
+
+    [ForeignKey(nameof(InvoiceSaleId))]
+    public InvoiceSale InvoiceSale { get; set; } = new InvoiceSale();
 
     /// <summary>
     /// Configura el Tipo de comprobante.
@@ -42,7 +51,10 @@ public class CashierDetail : IGenericModel
     /// <summary>
     /// Identificador de Contacto.
     /// </summary>
-    public string ContactId { get; set; } = "-";
+    public Guid? ContactId { get; set; } = null;
+
+    [ForeignKey(nameof(ContactId))]
+    public Contact Contact { get; set; } = new Contact();
 
     /// <summary>
     /// Nombre de Contacto.

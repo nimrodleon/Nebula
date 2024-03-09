@@ -19,11 +19,11 @@ public class ComprobanteService : IComprobanteService
     private readonly IInvoiceSaleService _invoiceSaleService;
     private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly IInvoiceSerieService _invoiceSerieService;
-    private readonly IAccountsReceivableService _receivableService;
+    private readonly IFinancialAccountService _receivableService;
 
     public ComprobanteService(IInvoiceSaleService invoiceSaleService,
         IInvoiceSaleDetailService invoiceSaleDetailService,
-        IInvoiceSerieService invoiceSerieService, IAccountsReceivableService receivableService)
+        IInvoiceSerieService invoiceSerieService, IFinancialAccountService receivableService)
     {
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
@@ -56,7 +56,7 @@ public class ComprobanteService : IComprobanteService
         if (comprobante.FormaPago.Tipo == FormaPago.Credito)
         {
             // registrar cargo.
-            AccountsReceivable cargo = GenerarCargo(invoiceSale);
+            FinancialAccount cargo = GenerarCargo(invoiceSale);
             await _receivableService.CreateAsync(cargo);
         }
 
@@ -74,14 +74,14 @@ public class ComprobanteService : IComprobanteService
     /// </summary>
     /// <param name="invoiceSale">InvoiceSale</param>
     /// <returns>Receivable</returns>
-    private AccountsReceivable GenerarCargo(InvoiceSale invoiceSale)
+    private FinancialAccount GenerarCargo(InvoiceSale invoiceSale)
     {
         string tipoDoc = string.Empty;
         if (invoiceSale.TipoDoc == "01") tipoDoc = "FACTURA";
         if (invoiceSale.TipoDoc == "03") tipoDoc = "BOLETA";
         if (invoiceSale.TipoDoc == "NOTA") tipoDoc = "NOTA";
 
-        return new AccountsReceivable()
+        return new FinancialAccount()
         {
             Type = "CARGO",
             CompanyId = invoiceSale.CompanyId,
