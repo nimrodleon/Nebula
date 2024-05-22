@@ -1,0 +1,133 @@
+<app-sales-container>
+  <div class="bg-white">
+    <div class="d-flex justify-content-center my-2 pt-2 d-print-none">
+      <button type="button" (click)="print()" class="text-uppercase">Imprimir</button>
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-8">
+          <div class="text-uppercase">
+            <span class="d-block fw-bold">{{ printCreditNoteDto.company.rznSocial }}</span>
+            <span class="d-block fw-bold">{{ printCreditNoteDto.company.address }}</span>
+            <span class="d-block fw-bold">Whatsapp: {{ printCreditNoteDto.company.phoneNumber }}</span>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="text-center py-2" style="border: 2px solid #000;">
+            <span class="d-block fw-bold">NOTA DE CRÉDITO ELECTRÓNICA</span>
+            <span class="d-block fw-bold">RUC: {{ printCreditNoteDto.company.ruc }}</span>
+            <span class="d-block fw-bold">
+              {{ printCreditNoteDto.creditNote.serie }}-{{ printCreditNoteDto.creditNote.correlativo }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- #Contenido_de_la_Factura -->
+    <div class="container-fluid">
+      <table class="w-auto">
+        <tbody>
+        <tr>
+          <td>Fecha Emisión:</td>
+          <td>{{ printCreditNoteDto.creditNote.fechaEmision }}</td>
+        </tr>
+        <tr>
+          <th>Señor(es):</th>
+          <td>{{ printCreditNoteDto.creditNote.cliente.rznSocial }}</td>
+        </tr>
+        <tr>
+          <th>{{ printCreditNoteDto.creditNote.cliente.tipoDoc|catalogo6 }}:</th>
+          <td>{{ printCreditNoteDto.creditNote.cliente.numDoc }}</td>
+        </tr>
+        <!--<tr>
+          <th>Dirección Cliente:</th>
+          <td class="text-uppercase">{{printCreditNoteDto.creditNote.desDireccionCliente}}</td>
+        </tr>-->
+        <tr>
+          <td>Tipo Moneda:</td>
+          <td>{{ printCreditNoteDto.creditNote.tipoMoneda|tipoMoneda }}</td>
+        </tr>
+        <tr>
+          <td>Doc. Afectado:</td>
+          <td>
+            <span class="me-1">{{ printCreditNoteDto.creditNote.tipDocAfectado|getInvoiceType }}</span>
+            <span class="fw-bold">{{ printCreditNoteDto.creditNote.numDocfectado }}</span>
+          </td>
+        </tr>
+        <tr>
+          <td>Motivo:</td>
+          <td>{{ printCreditNoteDto.creditNote.desMotivo }}</td>
+        </tr>
+        </tbody>
+      </table>
+      <table class="table table-striped">
+        <thead class="table-dark">
+        <tr class="text-uppercase">
+          <th>Cant.</th>
+          <th>Uni Med</th>
+          <th>Descripción</th>
+          <th style="width: 110px;">P. Unitario</th>
+          <th style="width: 74px;">V. Item</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let item of printCreditNoteDto.creditNoteDetails">
+          <td>{{ item.cantidad }}</td>
+          <td>{{ item.unidad.split(':')[1] }}</td>
+          <td>{{ item.description }}</td>
+          <td>{{ item.mtoPrecioUnitario.toFixed(4)|currency }}</td>
+          <td>{{ item.mtoValorVenta.toFixed(4)|currency }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- #Sub_Totales -->
+    <div class="container-fluid">
+      <div class="d-flex mb-2">
+        <div class="w-100 me-2" style="border: 2px solid #000;">
+          <div class="m-2">
+            <span class="fw-bold">Son:&nbsp;</span>{{ printCreditNoteDto.creditNote.totalEnLetras }}
+          </div>
+        </div>
+        <div class="w-100 d-flex justify-content-end ms-2" style="border: 2px solid #000;">
+          <table class="m-2">
+            <tbody>
+            <tr>
+              <td colspan="5" class="text-uppercase text-end border-bottom-0">Total valor de venta:</td>
+              <td class="border-bottom-0">
+                <span class="ms-4">{{ printCreditNoteDto.creditNote.valorVenta.toFixed(4)|currency }}</span>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="5" class="border-bottom-0 text-end">IGV ({{ printCreditNoteDto.company.porcentajeIgv }}%):
+              </td>
+              <td class="border-bottom-0">
+                <span class="ms-4">{{ getMtoIgvTotal().toFixed(4)|currency }}</span>
+              </td>
+            </tr>
+            <tr>
+              <th colspan="5" class="border-bottom-0 text-uppercase text-end">Importe Total:</th>
+              <td class="border-bottom-0 fw-bold">
+                <span class="ms-4">{{ printCreditNoteDto.creditNote.mtoImpVenta.toFixed(4)|currency }}</span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- #Pie_de_Página_Codigo_QR -->
+    <div class="d-flex justify-content-center flex-column">
+      <qrcode [qrdata]="qrCodeText"
+              [width]="128" [errorCorrectionLevel]="'Q'"
+              [allowEmptyString]="true" class="text-center"></qrcode>
+      <p class="text-center mb-0">{{ printCreditNoteDto.creditNote.billingResponse.hash }}</p>
+      <p class="text-center mb-0">{{ printCreditNoteDto.creditNote.billingResponse.cdrDescription }}</p>
+      <p class="text-center my-2 mx-5" style="border: 2px solid #000;">
+        Representación impresa de la <span class="fw-bold">NOTA DE CRÉDITO ELECTRÓNICA</span> generada
+        desde el sistema del Contribuyente. Puede verificarla utilizando su clave SOL
+      </p>
+    </div>
+  </div>
+</app-sales-container>
+

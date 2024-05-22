@@ -1,0 +1,71 @@
+<div class="modal fade" id="contact-modal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-uppercase">{{ contactDataModal.title }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pt-1">
+        <form [formGroup]="contactForm">
+          <div class="row">
+            <div class="col-6 mb-1">
+              <label class="col-form-label-sm text-uppercase">Tipo documento</label>
+              <select formControlName="docType" class="form-select"
+                      [ngClass]="{'is-invalid': inputIsInvalid('docType')}">
+                <option value="0:SIN DEFINIR">0 - SIN DEFINIR</option>
+                <option value="1:D.N.I">1 - D.N.I</option>
+                <option value="6:R.U.C">6 - R.U.C</option>
+                <option value="7:PASAPORTE">7 - PASAPORTE</option>
+              </select>
+            </div>
+            <div class="col-6 pb-1">
+              <label class="col-form-label-sm text-uppercase">Número (D.N.I/R.U.C)</label>
+              <div class="input-group">
+                <input type="text" formControlName="document" class="form-control"
+                       [ngClass]="{'is-invalid': inputIsInvalid('document')}">
+                <button type="button" (click)="buscarContactoEnPadronContribuyentes()" class="btn btn-success"
+                        title="BUSCAR">
+                  <fa-icon [icon]="faSearch" class="mx-1"></fa-icon>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="pb-1">
+            <label class="col-form-label-sm text-uppercase">Razón social o nombre completo</label>
+            <input type="text" formControlName="name" class="form-control"
+                   [ngClass]="{'is-invalid': inputIsInvalid('name')}">
+          </div>
+          <div class="pb-1">
+            <label class="col-form-label-sm text-uppercase">Dirección completa</label>
+            <input type="text" formControlName="address" class="form-control"
+                   [ngClass]="{'is-invalid': inputIsInvalid('address')}">
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <label class="col-form-label-sm">
+                <span class="text-uppercase me-1">Código de ubigeo</span>
+                <a href="https://www.reniec.gob.pe/Adherentes/jsp/ListaUbigeos.jsp" class="text-uppercase"
+                   target="_blank">reniec</a>
+              </label>
+              <input type="text" formControlName="codUbigeo" class="form-control"
+                     [ngClass]="{'is-invalid': inputIsInvalid('codUbigeo')}">
+            </div>
+            <div class="col-6">
+              <label class="col-form-label-sm text-uppercase">Teléfono</label>
+              <input type="text" formControlName="phoneNumber" class="form-control"
+                     [ngClass]="{'is-invalid': inputIsInvalid('phoneNumber')}">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">
+          <span class="text-uppercase">Cerrar</span>
+        </button>
+        <button type="button" (click)="saveChanges()" class="btn btn-primary btn-lg">
+          <span class="text-uppercase">Guardar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

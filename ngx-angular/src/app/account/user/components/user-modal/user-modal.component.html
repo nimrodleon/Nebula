@@ -1,0 +1,54 @@
+<div class="modal fade" id="userModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title text-uppercase fs-5">{{data.title}}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="userForm">
+          <div class="row mb-3">
+            <label class="col-3 col-form-label text-end">Usuario</label>
+            <div class="col-6">
+              <input type="text" formControlName="userName" class="form-control">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-3 col-form-label text-end">E-Mail</label>
+            <div class="col-8">
+              <input type="email" formControlName="email" class="form-control">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-3 col-form-label text-end">Tipo Usuario</label>
+            <div class="col-6">
+              <select formControlName="userType" class="form-select">
+                <option value="customer">CLIENTE</option>
+                <option value="distributor">DISTRIBUIDOR</option>
+                <option value="support">SOPORTE</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <span class="col-3"></span>
+            <div class="col-6">
+              <div class="form-check form-switch">
+                <input class="form-check-input" formControlName="disabled" type="checkbox" role="switch"
+                  id="flexSwitchCheckDefault">
+                <label class="form-check-label" for="flexSwitchCheckDefault" class="text-uppercase">Deshabilitar</label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">
+          <span class="text-uppercase">Cerrar</span>
+        </button>
+        <button type="button" (click)="saveChanges()" class="btn btn-primary btn-lg">
+          <span class="text-uppercase">Guardar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

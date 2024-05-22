@@ -1,0 +1,50 @@
+<div class="modal fade" id="addProductModalSales" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form [formGroup]="itemComprobanteForm">
+          <div class="mb-3">
+            <label class="form-label">
+              <fa-icon [icon]="faBox" class="me-1"></fa-icon>
+              <span class="fw-bold">Selecciona tu producto/Servicio!</span>
+            </label>
+            <select id="producto" class="form-select" [ngClass]="{'is-invalid': inputIsInvalid('productId')}">
+            </select>
+          </div>
+          <div class="row mb-0">
+            <div class="col-12 col-md-6">
+              <label class="form-label">
+                <fa-icon [icon]="faBasketShopping" class="me-1"></fa-icon>
+                <span class="fw-bold">Ingrese la Cantidad</span>
+              </label>
+              <input type="number" formControlName="ctdUnidadItem"
+                     [ngClass]="{'is-invalid': inputIsInvalid('ctdUnidadItem')}" class="form-control">
+            </div>
+            <div class="col-12 col-md-6">
+              <label class="form-label">
+                <fa-icon [icon]="faSignOutAlt" class="me-1"></fa-icon>
+                <span class="fw-bold">Almacén Salida</span>
+              </label>
+              <select formControlName="warehouseId" class="form-select"
+                      [ngClass]="{'is-invalid': inputIsInvalid('warehouseId')}">
+                <option *ngFor="let item of warehouses" [value]="item.id">{{ item.name }}</option>
+              </select>
+            </div>
+          </div>
+        </form>
+        <!-- ## DEBUG -->
+        <!--<pre>{{itemComprobanteForm.value|json}}</pre>
+        <pre>{{itemComprobanteModal|json}}</pre>-->
+        <!-- ## END -->
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">
+          <span class="text-uppercase">Cerrar</span>
+        </button>
+        <button type="button" (click)="saveChanges()" class="btn btn-primary btn-lg">
+          <span class="text-uppercase">Agregar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

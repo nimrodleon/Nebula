@@ -1,0 +1,72 @@
+<app-inventory-detail-container>
+  <form (submit)="submit($event)" class="row row-cols-auto g-2 mb-2">
+    <div class="col-auto">
+      <label class="col-form-label fw-bold">Filtrar por:</label>
+    </div>
+    <div class="col-12 col-md-auto">
+      <div class="input-group">
+            <span class="input-group-text">
+              <fa-icon [icon]="faFilter"></fa-icon>
+            </span>
+        <input type="search" [formControl]="query" class="form-control" placeholder="UBICACIONES">
+      </div>
+    </div>
+    <div class="col-6 col-md-auto">
+      <button type="submit" class="btn btn-success w-100">
+        <fa-icon [icon]="faSearch"></fa-icon>
+        <span class="text-uppercase ms-1">Buscar</span>
+      </button>
+    </div>
+    <div class="col-6 col-md-auto">
+      <button type="button" class="btn btn-primary w-100"
+              [routerLink]="['/',companyId,'inventories','location','add']">
+        <fa-icon [icon]="faPlus"></fa-icon>
+        <span class="text-uppercase ms-1">Agregar</span>
+      </button>
+    </div>
+    <div class="col-12 col-md-auto">
+      <button type="submit" (click)="reponerProductos()" class="btn btn-secondary w-100">
+        <fa-icon [icon]="faChartBar" class="me-1"></fa-icon>
+        <span class="text-uppercase">Reponer</span>
+      </button>
+    </div>
+  </form>
+  <div class="table-responsive">
+    <table class="table table-striped mb-0">
+      <thead class="text-uppercase">
+      <tr class="table-primary">
+        <th></th>
+        <th>Almacén</th>
+        <th>Ubicación</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody class="table-group-divider">
+      <tr *ngFor="let item of locations">
+        <td style="width: 35px;">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" [value]="item.id"
+                   (change)="changeCheckbox($event.target)">
+          </div>
+        </td>
+        <td>{{item.warehouseName}}</td>
+        <td>
+          <a class="text-decoration-none"
+             [routerLink]="['/', companyId, 'inventories', 'location', 'detail', item.id]">{{item.description}}</a>
+        </td>
+        <td>
+          <div class="tblBtn ms-auto">
+            <button type="button" [routerLink]="['/', companyId, 'inventories', 'location', 'edit', item.id]"
+                    class="btn btn-secondary btn-sm me-2">
+              <fa-icon [icon]="faEdit"></fa-icon>
+            </button>
+            <button type="button" (click)="deleteLocation(item.id)" class="btn btn-danger btn-sm">
+              <fa-icon [icon]="faTrashAlt"></fa-icon>
+            </button>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</app-inventory-detail-container>

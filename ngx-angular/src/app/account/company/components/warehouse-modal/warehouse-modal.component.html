@@ -1,0 +1,32 @@
+<div class="modal fade" id="warehouse-modal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-uppercase">{{ warehouseDataModal.title }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="warehouseForm">
+          <div class="mb-3">
+            <label class="form-label text-uppercase">Nombre</label>
+            <input type="text" formControlName="name" class="form-control"
+                   [ngClass]="{'is-invalid': inputIsInvalid('name')}">
+          </div>
+          <div class="mb-0">
+            <label class="form-label text-uppercase">Observación</label>
+            <textarea formControlName="remark" class="form-control"
+                      [ngClass]="{'is-invalid': inputIsInvalid('remark')}"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">
+          <span class="text-uppercase">Cerrar</span>
+        </button>
+        <button type="button" (click)="saveChanges()" class="btn btn-primary btn-lg">
+          <span class="text-uppercase">Guardar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

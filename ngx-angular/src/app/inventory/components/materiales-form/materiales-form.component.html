@@ -1,0 +1,104 @@
+<div class="row px-2">
+  <div class="col-12 bg-white my-2 py-3">
+    <h5 class="text-danger mb-1">
+      <fa-icon [icon]="faRightFromBracket" class="me-1"></fa-icon>
+      <span class="text-uppercase">Salida de Material</span>
+    </h5>
+    <form id="materialForm" [formGroup]="materialForm" (ngSubmit)="saveChange()" class="table-group-divider">
+      <div class="row my-3">
+        <label class="col-12 col-md-2 col-form-label text-start text-md-end">CONTACTO</label>
+        <div class="col-12 col-md-3">
+          <select id="contactId" class="form-select" [ngClass]="{'is-invalid': inputIsInvalid('contactId')}">
+          </select>
+        </div>
+        <label class="col-12 col-md-1 col-form-label text-start text-md-end">TRABAJADOR</label>
+        <div class="col-12 col-md-3">
+          <select id="employeeId" class="form-select" [ngClass]="{'is-invalid': inputIsInvalid('employeeId')}">
+          </select>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <label class="col-12 col-md-2 col-form-label text-start text-md-end">OBSERVACIÓN</label>
+        <div class="col-12 col-md-7">
+          <div class="input-group">
+            <span class="input-group-text">
+              <fa-icon [icon]="faMessage" class="mx-1"></fa-icon>
+            </span>
+            <input type="text" formControlName="remark" class="form-control"
+                   [ngClass]="{'is-invalid': inputIsInvalid('remark')}">
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="table-responsive">
+      <table class="table table-striped mb-2">
+        <thead class="table-primary">
+        <tr class="text-uppercase">
+          <th>Fecha</th>
+          <th>Almacén</th>
+          <th>Cant. Salida</th>
+          <th>Descripción</th>
+          <th>Cant. Retorno</th>
+          <th>Cant. Usado</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let item of materialDetails">
+          <td>{{ item.createdAt|date }}</td>
+          <td>{{ item.warehouseName }}</td>
+          <td>{{ item.cantSalida }}</td>
+          <td>{{ item.productName }}</td>
+          <td>
+            <div class="d-flex justify-content-between">
+              {{ item.cantRetorno }}
+              <button type="button" (click)="cambiarCantidadRetorno(item)" class="btn btn-primary btn-sm"
+                      [disabled]="invalidEditItem()">
+                <fa-icon [icon]="faCalculator"></fa-icon>
+              </button>
+            </div>
+          </td>
+          <td>{{ item.cantUsado }}</td>
+          <td>
+            <div class="tblBtn ms-auto">
+              <button type="button" (click)="editMaterialModal(item)" [disabled]="invalidEditItem()"
+                      class="btn btn-secondary btn-sm me-2">
+                <fa-icon [icon]="faEdit"></fa-icon>
+              </button>
+              <button type="button" (click)="deleteDetail(item.id)" class="btn btn-danger btn-sm">
+                <fa-icon [icon]="faTrashAlt"></fa-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <button class="btn bg-success border-0" (click)="showMaterialModal()" [disabled]="invalidEditItem()">
+        <fa-icon [icon]="faPlus" class="text-white me-1"></fa-icon>
+        <span class="text-uppercase text-white">Agregar Material</span>
+      </button>
+    </div>
+  </div>
+  <div class="col-12 bg-white mb-2 py-3">
+    <div class="d-flex justify-content-center">
+      <button type="button" (click)="back()" class="btn btn-secondary btn-lg me-2">
+        <fa-icon [icon]="faCircleLeft" class="me-1"></fa-icon>
+        <span class="text-uppercase">Cancelar</span>
+      </button>
+      <button type="submit" form="materialForm" class="btn btn-primary btn-lg">
+        <fa-icon [icon]="faSave" class="me-1"></fa-icon>
+        <span class="text-uppercase">Guardar</span>
+      </button>
+      <button type="button" (click)="validar()" *ngIf="validButton()" [disabled]="materialDetails.length <= 0"
+              class="btn btn-warning btn-lg ms-2">
+        <fa-icon [icon]="faCircleCheck" class="me-1"></fa-icon>
+        <span class="text-uppercase">Validar</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<app-material-modal
+  [dataModal]="dataModal"
+  (responseData)="saveChangeDetail($event)">
+</app-material-modal>

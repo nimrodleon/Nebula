@@ -1,0 +1,73 @@
+<app-account-container>
+  @if (isUserTypeCustomer) {
+  <div class="accordion accordion-flush" id="accordionFlushExample">
+    <div *ngFor="let item of companies; let isFirst = first" class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button" [ngClass]="{'collapsed': !isFirst}" type="button" data-bs-toggle="collapse"
+          [attr.data-bs-target]="'#flush-collapse'+item.id">
+          <strong class="text-uppercase">{{ item.ruc }} - {{ item.rznSocial }}</strong>
+        </button>
+      </h2>
+      <div [attr.id]="'flush-collapse'+item.id" class="accordion-collapse collapse" [ngClass]="{'show': isFirst}"
+        data-bs-parent="#accordionFlushExample">
+        <div class="accordion-body">
+          <div class="d-flex flex-wrap justify-content-center">
+            <a [routerLink]="['/',item.id, 'contacts']" class="btn btn-outline-success m-1">
+              <div class="d-flex flex-column">
+                <fa-icon [icon]="faAddressBook" class="fs-3"></fa-icon>
+                <span class="text-uppercase fw-bold">Contactos</span>
+              </div>
+            </a>
+            <a [routerLink]="['/',item.id, 'products']" class="btn btn-outline-success m-1">
+              <div class="d-flex flex-column">
+                <fa-icon [icon]="faBox" class="fs-3"></fa-icon>
+                <span class="text-uppercase fw-bold">Productos</span>
+              </div>
+            </a>
+            <a *ngIf="item.modInventarios" [routerLink]="['/',item.id, 'inventories', 'notas']"
+              class="btn btn-outline-success m-1">
+              <div class="d-flex flex-column">
+                <fa-icon [icon]="faCartFlatbed" class="fs-3"></fa-icon>
+                <span class="text-uppercase fw-bold">Inventarios</span>
+              </div>
+            </a>
+            <a *ngIf="item.modComprobantes" [routerLink]="['/',item.id, 'sales']" class="btn btn-outline-success m-1">
+              <div class="d-flex flex-column">
+                <fa-icon [icon]="faFolderOpen" class="fs-3"></fa-icon>
+                <span class="text-uppercase fw-bold">Comprobantes</span>
+              </div>
+            </a>
+            <a *ngIf="item.modCuentaPorCobrar" [routerLink]="['/', item.id, 'receivables']"
+              class="btn btn-outline-success m-1">
+              <div class="d-flex flex-column">
+                <fa-icon [icon]="faCoins" class="fs-3"></fa-icon>
+                <span class="text-uppercase fw-bold">Cuentas por Cobrar</span>
+              </div>
+            </a>
+            <a *ngIf="item.modReparaciones" [routerLink]="['/', item.id, 'taller-reparaciones']"
+              class="btn btn-outline-success m-1">
+              <div class="d-flex flex-column">
+                <fa-icon [icon]="faScrewdriverWrench" class="fs-3"></fa-icon>
+                <span class="text-uppercase fw-bold">Reparaciones</span>
+              </div>
+            </a>
+            <a *ngIf="item.modCajasDiaria" [routerLink]="['/', item.id, 'cashier']" class="btn btn-outline-success m-1">
+              <div class="d-flex flex-column">
+                <fa-icon [icon]="faWallet" class="fs-3"></fa-icon>
+                <span class="text-uppercase fw-bold">Caja Diaria</span>
+              </div>
+            </a>
+            <!-- <a [routerLink]="['/', item.id, 'hoteles', 'recepcion', 'habitaciones-disponible']"
+              class="btn btn-outline-success m-1">
+              <div class="d-flex flex-column">
+                <fa-icon [icon]="faCheckToSlot" class="fs-3"></fa-icon>
+                <span class="text-uppercase fw-bold">Recepción</span>
+              </div>
+            </a> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</app-account-container>

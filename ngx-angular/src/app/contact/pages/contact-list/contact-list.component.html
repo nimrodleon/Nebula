@@ -1,0 +1,92 @@
+<app-contact-container>
+  <div class="row px-2">
+    <div class="col-12 bg-white my-2 py-3">
+      <form (submit)="submitSearch($event)" class="row row-cols-auto g-2">
+        <div class="col-auto">
+          <label class="col-form-label fw-bold">Filtrar por:</label>
+        </div>
+        <div class="col-12 col-md-4 col-lg-auto">
+          <div class="input-group">
+            <span class="input-group-text">
+              <fa-icon [icon]="faFilter"></fa-icon>
+            </span>
+            <input type="search" [formControl]="query" class="form-control" placeholder="CONTACTO">
+          </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg-auto">
+          <button type="submit" class="btn btn-success w-100">
+            <fa-icon [icon]="faSearch"></fa-icon>
+            <span class="text-uppercase ms-1">Buscar</span>
+          </button>
+        </div>
+        <div class="col-6 col-md-3 col-lg-auto">
+          <button type="button" (click)="addContactModal()" class="btn btn-primary w-100">
+            <fa-icon [icon]="faPlus"></fa-icon>
+            <span class="text-uppercase ms-1">Agregar</span>
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="col-12 bg-white py-2 mb-2">
+      <div class="table-responsive">
+        <table class="table table-striped mb-2">
+          <thead>
+            <tr>
+              <th colspan="5" class="text-uppercase">
+                <span class="text-danger-emphasis">{{ companyName }} | Lista de Contactos</span>
+              </th>
+            </tr>
+            <tr class="table-primary text-uppercase">
+              <th>Tipo</th>
+              <th>Documento</th>
+              <th>Nombres</th>
+              <th>Teléfono</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            <tr *ngFor="let item of contactos.data">
+              <td>{{ item.docType|split }}</td>
+              <td>{{ item.document }}</td>
+              <td class="text-uppercase">
+                <a class="text-decoration-none"
+                  [routerLink]="['/', companyId, 'contacts', 'detail', item.id, 'receivable']">{{ item.name }}</a>
+              </td>
+              <td>{{ item.phoneNumber }}</td>
+              <td>
+                <div class="tblBtn ms-auto">
+                  <button type="button" (click)="editContactModal(item)" class="btn btn-secondary btn-sm me-2">
+                    <fa-icon [icon]="faEdit"></fa-icon>
+                  </button>
+                  <button type="button" (click)="deleteContact(item.id)" class="btn btn-danger btn-sm">
+                    <fa-icon [icon]="faTrashAlt"></fa-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <nav class="d-flex justify-content-center mb-1">
+          <ul class="pagination fw-bold mb-0">
+            <li class="page-item" [ngClass]="{'disabled': contactos.pagination.previousPage === null}">
+              <a class="page-link" [routerLink]="['/', companyId, 'contacts']"
+                [queryParams]="{page: contactos.pagination.previousPage}">Anterior</a>
+            </li>
+            <li *ngFor="let item of contactos.pagination.pages" class="page-item"
+              [ngClass]="{'active': contactos.pagination.currentPage === item.page}">
+              <a class="page-link" [routerLink]="['/', companyId, 'contacts']"
+                [queryParams]="{page: item.page}">{{item.page}}</a>
+            </li>
+            <li class="page-item" [ngClass]="{'disabled': contactos.pagination.nextPage === null}">
+              <a class="page-link" [routerLink]="['/', companyId, 'contacts']"
+                [queryParams]="{page: contactos.pagination.nextPage}">Siguiente</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</app-contact-container>
+
+<app-contact-modal [contactDataModal]="contactDataModal" (responseData)="saveChangesDetail($event)">
+</app-contact-modal>

@@ -1,0 +1,112 @@
+<app-taller-container>
+  <div class="row px-2">
+    <!-- #region Buscador -->
+    <div class="col-12 bg-white my-2 py-3">
+      <form (submit)="submitForm($event)" class="row row-cols-auto g-2">
+        <div class="col-auto">
+          <label class="col-form-label fw-bold">Filtrar por:</label>
+        </div>
+        <div class="col-12 col-lg-auto">
+          <div class="input-group">
+            <span class="input-group-text">
+              <fa-icon [icon]="faFilter" class="mx-1"></fa-icon>
+            </span>
+            <input type="search" [formControl]="query" class="form-control" placeholder="CONTACTO">
+          </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-auto">
+          <button type="submit" class="btn btn-success w-100">
+            <fa-icon [icon]="faSearch"></fa-icon>
+            <span class="text-uppercase ms-1">Buscar</span>
+          </button>
+        </div>
+        <div class="col-6 col-md-4 col-lg-auto">
+          <button type="button" [routerLink]="['/', companyId, 'taller-reparaciones', 'orden-reparacion', 'add']"
+            class="btn btn-primary w-100">
+            <fa-icon [icon]="faPlus"></fa-icon>
+            <span class="text-uppercase ms-1"><span class="d-none d-lg-inline">Ingresar</span> Orden</span>
+          </button>
+        </div>
+        <div class="col-12 col-md-4 col-lg-auto">
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
+              <fa-icon [icon]="faList" class="me-1"></fa-icon>
+              <span class="text-uppercase">Opciones</span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item text-uppercase"
+                  [routerLink]="['/', companyId, 'taller-reparaciones', 'monthly-report']">
+                  Reporte Mensual</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </form>
+    </div>
+    <!-- #endregion -->
+    <!-- #region ListaDeReparaciones -->
+    <div class="col-12 bg-white py-2">
+      <div class="table-responsive">
+        <table class="table table-striped mb-2">
+          <thead class="text-uppercase">
+            <tr>
+              <th colspan="5">
+                <span class="text-danger-emphasis">{{companyName}} | Lista de Reparaciones</span>
+              </th>
+            </tr>
+            <tr class="table-primary">
+              <th>Número</th>
+              <th>Fecha</th>
+              <th>Cliente</th>
+              <th>Almacén</th>
+              <th>Equipo</th>
+              <th>Estado</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            <tr *ngFor="let item of repairOrders.data" class="bg-gradient bg-opacity-50">
+              <td>{{item.serie}}-{{item.number}}</td>
+              <td>{{item.createdAt|date}}</td>
+              <td>
+                <a class="text-decoration-none"
+                  [routerLink]="['/', companyId, 'taller-reparaciones', 'orden-reparacion', 'edit', item.id]">{{item.nombreCliente}}</a>
+              </td>
+              <td>{{item.warehouseName}}</td>
+              <td>{{item.datosEquipo}}</td>
+              <td>{{item.status}}</td>
+              <td>
+                <div class="tblBtn ms-auto">
+                  <button type="button" (click)="goToEditForm(item)" class="btn btn-secondary btn-sm me-2">
+                    <fa-icon [icon]="faEdit"></fa-icon>
+                  </button>
+                  <button type="button" (click)="deleteItem(item.id)" class="btn btn-danger btn-sm">
+                    <fa-icon [icon]="faTrashAlt"></fa-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <nav class="d-flex justify-content-center mb-1">
+          <ul class="pagination fw-bold mb-0">
+            <li class="page-item" [ngClass]="{'disabled': repairOrders.pagination.previousPage === null}">
+              <a class="page-link" [routerLink]="['/', companyId, 'taller-reparaciones']"
+                [queryParams]="{page: repairOrders.pagination.previousPage}">Anterior</a>
+            </li>
+            <li *ngFor="let item of repairOrders.pagination.pages" class="page-item"
+              [ngClass]="{'active': repairOrders.pagination.currentPage === item.page}">
+              <a class="page-link" [routerLink]="['/', companyId, 'taller-reparaciones']"
+                [queryParams]="{page: item.page}">{{item.page}}</a>
+            </li>
+            <li class="page-item" [ngClass]="{'disabled': repairOrders.pagination.nextPage === null}">
+              <a class="page-link" [routerLink]="['/', companyId, 'taller-reparaciones']"
+                [queryParams]="{page: repairOrders.pagination.nextPage}">Siguiente</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+    <!-- #endregion -->
+  </div>
+</app-taller-container>

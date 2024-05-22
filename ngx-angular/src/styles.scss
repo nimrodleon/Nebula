@@ -1,0 +1,44 @@
+@import "bootstrap/scss/bootstrap";
+// ============================================================
+@import "select2/dist/css/select2.css";
+@import "select2-bootstrap-5-theme/dist/select2-bootstrap-5-theme.css";
+
+body {
+  background-color: #e5e7eb;
+}
+
+.tblBtn {
+  width: 75px;
+}
+
+.title-section {
+  padding: 8px 15px;
+  color: white;
+  background-color: #1f8cc0;
+}
+
+.cardImage {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+}
+
+@media print {
+  body {
+    background-color: #ffffff;
+  }
+}
+
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) {
+  .cardImage {
+    width: 128px;
+    height: 128px;
+    object-fit: cover;
+  }
+}
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) {
+  // ...
+}

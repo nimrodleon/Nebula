@@ -1,0 +1,95 @@
+<div class="modal fade"
+     data-bs-backdrop="static"
+     data-bs-keyboard="false"
+     id="cobrarModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-uppercase">Cobrar Venta</h5>
+        <button type="button" class="btn-close" (click)="cerrar()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body position-relative">
+        <div *ngIf="showLoadingProgress" class="progress-sale">
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <h5 class="mt-2">{{ loadingText }}</h5>
+        </div>
+        <form [formGroup]="cobrarForm">
+          <ng-container *ngIf="showFormCobrar else completeTpl">
+            <div class="row mb-3">
+              <label class="col-4 col-form-label text-uppercase text-end">Forma de Pago</label>
+              <div class="col-6">
+                <select formControlName="formaPago" class="form-select text-uppercase"
+                        (change)="changeFormaDePago($event.target)"
+                        [ngClass]="{'is-invalid': inputIsInvalid('formaPago')}">
+                  <option value="Contado:Yape">Yape</option>
+                  <option value="Credito:Crédito">Crédito</option>
+                  <option value="Contado:Contado">Contado</option>
+                  <option value="Contado:Depósito">Depósito</option>
+                </select>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-4 col-form-label text-uppercase text-end">Comprobante</label>
+              <div class="col-6">
+                <select formControlName="tipoDoc" class="form-select"
+                        [ngClass]="{'is-invalid': inputIsInvalid('tipoDoc')}">
+                  <option *ngIf="showFormaDePagoBoleta" value="03">BOLETA</option>
+                  <option *ngIf="showOptionFactura()" value="01">FACTURA</option>
+                  <option value="NOTA">NOTA DE VENTA</option>
+                </select>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <label class="col-4 col-form-label text-uppercase text-end">Monto Recibido</label>
+              <div class="col-6">
+                <input type="number" formControlName="montoRecibido" step="0.1" class="form-control"
+                       [ngClass]="{'is-invalid': inputIsInvalid('montoRecibido')}">
+              </div>
+            </div>
+            <label for="remark" class="form-label text-uppercase">Observaciones</label>
+            <textarea class="form-control" formControlName="remark" id="remark" rows="2"
+                      placeholder="ESCRIBE AQUÍ TU COMENTARIO"></textarea>
+          </ng-container>
+          <ng-template #completeTpl>
+            <div class="div-success">
+              <fa-icon [icon]="faCheckSquare"></fa-icon>
+              <span *ngIf="responseCobrarModal.billingResponse"
+                    class="d-block text-uppercase text-primary-emphasis">{{ responseCobrarModal.billingResponse.cdrDescription }}</span>
+              <span class="d-block">TOTAL: {{ comprobanteDto.getTotalCobrar().toFixed(4)|currency }}</span>
+              <span class="d-block text-danger">VUELTO: {{ vuelto().toFixed(4)|currency }}</span>
+            </div>
+            <div class="sendEmail">
+              <label class="form-label fw-bold">ENVIAR POR CORREO ELECTRÓNICO</label>
+              <div class="input-group">
+                <input type="text" [formControl]="email"
+                       form="emailForm" class="form-control">
+                <button class="btn btn-success" type="submit" form="emailForm">
+                  <fa-icon [icon]="faEnvelope"></fa-icon>
+                  <span class="text-uppercase ms-1">Enviar</span>
+                </button>
+              </div>
+            </div>
+          </ng-template>
+        </form>
+        <form id="emailForm" (submit)="enviarCorreo($event)"></form>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary btn-lg" (click)="cerrar()" [disabled]="showLoadingProgress">
+          <span class="text-uppercase">Cerrar</span>
+        </button>
+        <ng-container *ngIf="showFormCobrar else printTpl">
+          <button type="button" (click)="cobrarVenta()" class="btn btn-primary btn-lg" [disabled]="showLoadingProgress">
+            <span class="text-uppercase">Cobrar</span>
+          </button>
+        </ng-container>
+        <ng-template #printTpl>
+          <button type="button" (click)="print()" class="btn btn-primary btn-lg">
+            <span class="text-uppercase">Imprimir</span>
+          </button>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

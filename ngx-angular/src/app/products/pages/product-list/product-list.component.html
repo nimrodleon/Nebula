@@ -1,0 +1,124 @@
+<app-product-container>
+  <div class="row px-2">
+    <div class="col-12 bg-white my-2 py-3">
+      <form (submit)="submitSearch($event)" class="row row-cols-auto g-2">
+        <div class="col-auto">
+          <label class="col-form-label fw-bold">Filtrar por:</label>
+        </div>
+        <div class="col-12 col-md-4 col-lg-auto">
+          <div class="input-group">
+            <span class="input-group-text">
+              <fa-icon [icon]="faFilter"></fa-icon>
+            </span>
+            <input type="search" [formControl]="query" class="form-control" placeholder="BIEN/SERVICIO">
+          </div>
+        </div>
+        <div class="col-6 col-md-3 col-lg-auto">
+          <button type="submit" class="btn btn-success w-100">
+            <fa-icon [icon]="faSearch"></fa-icon>
+            <span class="text-uppercase ms-1">Buscar</span>
+          </button>
+        </div>
+        <div class="col-6 col-md-3 col-lg-auto">
+          <button type="button" (click)="addProductModal()" class="btn btn-primary w-100">
+            <fa-icon [icon]="faPlus"></fa-icon>
+            <span class="text-uppercase ms-1">Agregar</span>
+          </button>
+        </div>
+        <div class="col-6 col-md-3 col-lg-auto">
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown">
+              <fa-icon [icon]="faList" class="me-1"></fa-icon>
+              <span class="text-uppercase">Opciones</span>
+            </button>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item text-uppercase"
+                  [routerLink]="['/', companyId, 'products', 'category']">Listado de Categorías</a>
+              </li>
+              <li *ngIf="hasPermission">
+                <a href="#" (click)="showCargaMasivaProductos($event)" class="dropdown-item text-uppercase">Carga masiva
+                  de productos</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="col-12 bg-white py-2 mb-2">
+      <div class="table-responsive">
+        <table class="table table-striped mb-2">
+          <thead class="text-uppercase">
+            <tr>
+              <th colspan="4">
+                <span class="text-danger-emphasis">{{ companyName }} | Lista de Productos</span>
+              </th>
+            </tr>
+            <tr class="table-primary">
+              <th>EAN-13</th>
+              <th>Descripción</th>
+              <th>Categoría</th>
+              <th>Stock</th>
+              <th>Precio</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of products.data">
+              <td>{{ item.barcode }}</td>
+              <td>
+                <a class="text-decoration-none" [routerLink]="['/', companyId, 'products','detail', item.id, 'stock']">
+                  <span>{{ item.description }}</span>
+                </a>
+              </td>
+              <td>{{ item.category|split }}</td>
+              <td>
+                <button (click)="showProductStock(item.id)" class="btn btn-info btn-sm">
+                  <fa-icon [icon]="faSearch"></fa-icon>
+                </button>
+              </td>
+              <td>{{ item.precioVentaUnitario.toFixed(4)|currency }}</td>
+              <td>
+                <div class="tblBtn ms-auto">
+                  <button type="button" (click)="editProductModal(item)" class="btn btn-secondary btn-sm me-2">
+                    <fa-icon [icon]="faEdit"></fa-icon>
+                  </button>
+                  <button type="button" (click)="deleteProduct(item.id)" class="btn btn-danger btn-sm">
+                    <fa-icon [icon]="faTrashAlt"></fa-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <nav class="d-flex justify-content-center mb-1">
+          <ul class="pagination fw-bold mb-0">
+            <li class="page-item" [ngClass]="{'disabled': products.pagination.previousPage === null}">
+              <a class="page-link" [routerLink]="['/', companyId, 'products']"
+                [queryParams]="{page: products.pagination.previousPage}">Anterior</a>
+            </li>
+            <li *ngFor="let item of products.pagination.pages" class="page-item"
+              [ngClass]="{'active': products.pagination.currentPage === item.page}">
+              <a class="page-link" [routerLink]="['/', companyId, 'products']"
+                [queryParams]="{page: item.page}">{{item.page}}</a>
+            </li>
+            <li class="page-item" [ngClass]="{'disabled': products.pagination.nextPage === null}">
+              <a class="page-link" [routerLink]="['/', companyId, 'products']"
+                [queryParams]="{page: products.pagination.nextPage}">Siguiente</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</app-product-container>
+
+<app-loader [loading]="loading"></app-loader>
+
+<app-product-modal [company]="company" [productDataModal]="productDataModal" (responseData)="saveChangesDetail($event)">
+</app-product-modal>
+
+<app-product-stock-modal [productStockInfos]="productStockInfos">
+</app-product-stock-modal>
+
+<app-carga-masiva-productos (loading)="changeLoading($event)" (success)="statusCargaMasivaProductos($event)">
+</app-carga-masiva-productos>
