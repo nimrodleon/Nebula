@@ -1,0 +1,57 @@
+<app-company-detail-container>
+  <form (submit)="submitSearch($event)" class="row row-cols-auto g-2 mb-2">
+    <div class="col-auto">
+      <label class="col-form-label fw-bold">Filtrar por:</label>
+    </div>
+    <div class="col-12 col-md-4 col-lg-auto">
+      <div class="input-group">
+        <span class="input-group-text">
+          <fa-icon [icon]="faFilter"></fa-icon>
+        </span>
+        <input type="search" [formControl]="query" class="form-control" placeholder="Piso">
+      </div>
+    </div>
+    <div class="col-6 col-md-3 col-lg-auto">
+      <button type="submit" class="btn btn-success w-100">
+        <fa-icon [icon]="faSearch"></fa-icon>
+        <span class="text-uppercase ms-1">Buscar</span>
+      </button>
+    </div>
+    <div class="col-6 col-md-3 col-lg-auto">
+      <button type="button" (click)="agregarPisoHotelModal()" class="btn btn-primary w-100">
+        <fa-icon [icon]="faPlus"></fa-icon>
+        <span class="text-uppercase ms-1">Agregar</span>
+      </button>
+    </div>
+  </form>
+  <div class="table-responsive">
+    <table class="table table-striped mb-0">
+      <thead>
+        <tr class="table-primary text-uppercase">
+          <th>Nombre</th>
+          <th>Estado</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody class="table-group-divider">
+        <tr *ngFor="let item of pisosHotel">
+          <td>{{ item.nombre }}</td>
+          <td>{{ item.estado }}</td>
+          <td>
+            <div class="tblBtn ms-auto">
+              <button type="button" (click)="editarPisoHotelModal(item)" class="btn btn-secondary btn-sm me-2">
+                <fa-icon [icon]="faEdit"></fa-icon>
+              </button>
+              <button type="button" (click)="deletePisoItem(item.id)" class="btn btn-danger btn-sm">
+                <fa-icon [icon]="faTrashAlt"></fa-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</app-company-detail-container>
+
+<app-piso-hotel-modal [data]="pisoHotelDataModal" (responseData)="responseModal($event)">
+</app-piso-hotel-modal>

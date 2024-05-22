@@ -1,0 +1,51 @@
+<div class="modal fade" id="cargo-modal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-uppercase">{{ cargoDataModal.title }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="cargoForm" [formGroup]="cargoForm" (ngSubmit)="saveChanges()">
+          <div class="row mb-3">
+            <label class="col-3 col-form-label text-uppercase text-end">Vence</label>
+            <div class="col-6">
+              <input type="date" formControlName="endDate" class="form-control"
+                     [ngClass]="{'is-invalid': validarCampo('endDate')}">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-3 col-form-label text-uppercase text-end">Contacto</label>
+            <div class="col-9">
+              <select id="contact" class="form-select"
+                      [ngClass]="{'is-invalid': validarCampo('contactId')}">
+              </select>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-3 col-form-label text-uppercase text-end">Monto</label>
+            <div class="col-6">
+              <input type="number" formControlName="cargo" step="0.1" class="form-control"
+                     [ngClass]="{'is-invalid': validarCampo('cargo')}">
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-3 col-form-label text-uppercase text-end">Comentario</label>
+            <div class="col-9">
+              <textarea class="form-control" formControlName="remark" placeholder="ESCRIBE AQUÍ TU COMENTARIO"
+                        [ngClass]="{'is-invalid': validarCampo('remark')}"></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">
+          <span class="text-uppercase">Cerrar</span>
+        </button>
+        <button type="submit" form="cargoForm" class="btn btn-primary btn-lg">
+          <span class="text-uppercase">Guardar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

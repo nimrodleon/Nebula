@@ -1,0 +1,129 @@
+<app-sales-container>
+  <div class="bg-white">
+    <div class="d-flex justify-content-center my-2 pt-2 d-print-none">
+      <button type="button" (click)="print()" class="text-uppercase">Imprimir</button>
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-8">
+          <div class="text-uppercase">
+            <span class="d-block fw-bold">{{ticketDto.company.rznSocial}}</span>
+            <span class="d-block fw-bold">{{ticketDto.company.address}}</span>
+            <span class="d-block fw-bold">Whatsapp: {{ticketDto.company.phoneNumber}}</span>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="text-center py-2" style="border: 2px solid #000;">
+            <span class="d-block fw-bold">{{ticketDto.invoiceSale.tipoDoc|invoiceType}}</span>
+            <span class="d-block fw-bold">RUC: {{ticketDto.company.ruc}}</span>
+            <span class="d-block fw-bold">{{ticketDto.invoiceSale.serie}}-{{ticketDto.invoiceSale.correlativo}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- #Contenido_de_la_Factura -->
+    <div class="container-fluid">
+      <table class="w-auto">
+        <tbody>
+        <tr>
+          <td>Fecha Vencimiento:</td>
+          <td>{{ticketDto.invoiceSale.fecVencimiento === '-'
+            ? '-' : ticketDto.invoiceSale.fecVencimiento|date}}
+          </td>
+        </tr>
+        <tr>
+          <td>Fecha Emisión:</td>
+          <td>{{ticketDto.invoiceSale.fechaEmision|date}}</td>
+        </tr>
+        <tr>
+          <th>Señor(es):</th>
+          <td>{{ticketDto.invoiceSale.cliente.rznSocial}}</td>
+        </tr>
+        <tr>
+          <th>{{ticketDto.invoiceSale.cliente.tipoDoc|catalogo6}}:</th>
+          <td>{{ticketDto.invoiceSale.cliente.numDoc}}</td>
+        </tr>
+        <!--<tr>
+          <th>Dirección Cliente:</th>
+          <td class="text-uppercase">{{ticketDto.invoiceSale.desDireccionCliente}}</td>
+        </tr>-->
+        <tr>
+          <td>Tipo Moneda:</td>
+          <td>{{ticketDto.invoiceSale.tipoMoneda|tipoMoneda}}</td>
+        </tr>
+        <tr *ngIf="ticketDto.invoiceSale.remark.length">
+          <td>Observación:</td>
+          <td>{{ticketDto.invoiceSale.remark}}</td>
+        </tr>
+        </tbody>
+      </table>
+      <table class="table table-striped">
+        <thead class="table-dark">
+        <tr class="text-uppercase">
+          <th>Cant.</th>
+          <th>Uni Med</th>
+          <th>Descripción</th>
+          <th style="width: 110px;">P. Unitario</th>
+          <th style="width: 74px;">V. Item</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let item of ticketDto.invoiceSaleDetails">
+          <td>{{item.cantidad}}</td>
+          <td>{{item.unidad.split(':')[1]}}</td>
+          <td>{{item.description}}</td>
+          <td>{{item.mtoPrecioUnitario.toFixed(4)|currency}}</td>
+          <td>{{item.mtoValorVenta.toFixed(4)|currency}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- #Sub_Totales -->
+    <div class="container-fluid">
+      <div class="d-flex mb-2">
+        <div class="w-100 me-2" style="border: 2px solid #000;">
+          <div class="m-2">
+            <span class="fw-bold">Son:&nbsp;</span>{{ticketDto.invoiceSale.totalEnLetras}}
+          </div>
+        </div>
+        <div class="w-100 d-flex justify-content-end ms-2" style="border: 2px solid #000;">
+          <table class="m-2">
+            <tbody>
+            <tr>
+              <td colspan="5" class="text-uppercase text-end border-bottom-0">Total valor de venta:</td>
+              <td class="border-bottom-0">
+                <span class="ms-4">{{ticketDto.invoiceSale.valorVenta.toFixed(4)|currency}}</span>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="5" class="border-bottom-0 text-end">IGV ({{ticketDto.company.porcentajeIgv}}%):
+              </td>
+              <td class="border-bottom-0">
+                <span class="ms-4">{{getMtoIgvTotal().toFixed(4)|currency}}</span>
+              </td>
+            </tr>
+            <tr>
+              <th colspan="5" class="border-bottom-0 text-uppercase text-end">Importe Total:</th>
+              <td class="border-bottom-0 fw-bold">
+                <span class="ms-4">{{ticketDto.invoiceSale.mtoImpVenta.toFixed(4)|currency}}</span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- #Pie_de_Página_Codigo_QR -->
+    <div class="d-flex justify-content-center flex-column" *ngIf="ticketDto.invoiceSale.tipoDoc !== 'NOTA'">
+      <qrcode [qrdata]="qrCodeText" [width]="128" [errorCorrectionLevel]="'Q'" [allowEmptyString]="true"
+              class="text-center"></qrcode>
+      <p class="text-center mb-0">{{ticketDto.invoiceSale.billingResponse.hash}}</p>
+      <p class="text-uppercase text-center mb-0">{{ticketDto.invoiceSale.billingResponse.cdrDescription}}</p>
+      <p class="text-center my-2 mx-5" style="border: 2px solid #000;">
+        Representación impresa de la <span class="fw-bold">{{ticketDto.invoiceSale.tipoDoc|invoiceType}}</span> generada
+        desde el sistema del Contribuyente. Puede verificarla utilizando su clave SOL
+      </p>
+    </div>
+  </div>
+</app-sales-container>
+

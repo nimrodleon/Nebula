@@ -1,0 +1,36 @@
+<div class="WrapValidate">
+  <div *ngIf="currentStep === 0">
+    <span class="d-block text-success text-center fs-3">Validar Invitación de Colaboración</span>
+    <div class="d-flex justify-content-center">
+      <div class="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="currentStep === 1" class="d-flex flex-column align-items-center">
+    <fa-icon [icon]="faThumbsUp" class="text-success" style="font-size: 78px;"></fa-icon>
+    <span class="fs-4 d-block text-uppercase text-center text-primary-emphasis">{{ msgText }}</span>
+    <button *ngIf="page === 'ACCOUNT'" routerLink="/account" class="btn btn-outline-primary btn-lg">
+      <span class="text-uppercase">Volver a la página principal</span>
+    </button>
+    <button *ngIf="page === 'LOGIN'" routerLink="/login" class="btn btn-outline-primary btn-lg">
+      <span class="text-uppercase">Ir a la página de Login</span>
+    </button>
+  </div>
+  <div *ngIf="currentStep === 2" class="d-flex flex-column align-items-center">
+    <fa-icon [icon]="faSadTear" class="text-danger" style="font-size: 78px;"></fa-icon>
+    <span class="fs-4 d-block text-uppercase text-primary-emphasis">{{ msgText }}</span>
+    <button *ngIf="page === 'ACCOUNT'" routerLink="/account" class="btn btn-outline-primary btn-lg">
+      <span class="text-uppercase">Volver a la página principal</span>
+    </button>
+    <button *ngIf="page === 'LOGIN'" routerLink="/login" class="btn btn-outline-primary btn-lg">
+      <span class="text-uppercase">Ir a la página de Login</span>
+    </button>
+    <button *ngIf="page === 'REGISTER'" routerLink="/public/user/register" class="btn btn-outline-primary btn-lg">
+      <span class="text-uppercase">Crear cuenta de usuario</span>
+    </button>
+  </div>
+</div>

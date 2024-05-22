@@ -1,0 +1,61 @@
+<app-recepcion-container>
+  <div class="row px-2">
+    <div class="col-12 bg-white my-2 py-3">
+      <app-estados-recepcion [companyId]="companyId"></app-estados-recepcion>
+      <form (submit)="submitSearch($event)" class="d-flex justify-content-center">
+        <div class="input-group input-group-lg mb-2 w-50">
+          <span class="input-group-text">FILTRAR</span>
+          <input type="text" class="form-control" [formControl]="query" placeholder="Buscar...">
+          <button class="btn btn-dark" type="submit">
+            <fa-icon [icon]="faMagnifyingGlass" class="mx-2"></fa-icon>
+          </button>
+        </div>
+      </form>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead class="table-primary fs-5">
+            <tr class="text-uppercase">
+              <th>Habitación</th>
+              <th>Piso</th>
+              <th>Categoría</th>
+              <th>Precio</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            <tr *ngFor="let item of habitacionesDisponibles.data" class="fs-4">
+              <td>{{ item.nombre }}</td>
+              <td>{{ item.piso|split }}</td>
+              <td>{{ item.categoria|split }}</td>
+              <td>{{ item.precio.toFixed(4)|currency }}</td>
+              <td class="d-flex justify-content-end">
+                <a [routerLink]="['/', companyId, 'hoteles', 'recepcion', 'procesar-habitacion', item.habitacionId]"
+                  class="btn btn-success btn-lg">
+                  <fa-icon [icon]="faRightToBracket" class="me-1"></fa-icon>
+                  <span>Check-in</span>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <nav class="d-flex justify-content-center mb-1">
+          <ul class="pagination pagination-lg fw-bold mb-0">
+            <li class="page-item" [ngClass]="{'disabled': habitacionesDisponibles.pagination.previousPage === null}">
+              <a class="page-link" [routerLink]="['/', companyId, 'contacts']"
+                [queryParams]="{page: habitacionesDisponibles.pagination.previousPage}">Anterior</a>
+            </li>
+            <li *ngFor="let item of habitacionesDisponibles.pagination.pages" class="page-item"
+              [ngClass]="{'active': habitacionesDisponibles.pagination.currentPage === item.page}">
+              <a class="page-link" [routerLink]="['/', companyId, 'hoteles', 'recepcion', 'habitaciones-disponible']"
+                [queryParams]="{page: item.page}">{{item.page}}</a>
+            </li>
+            <li class="page-item" [ngClass]="{'disabled': habitacionesDisponibles.pagination.nextPage === null}">
+              <a class="page-link" [routerLink]="['/', companyId, 'hoteles', 'recepcion', 'habitaciones-disponible']"
+                [queryParams]="{page: habitacionesDisponibles.pagination.nextPage}">Siguiente</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</app-recepcion-container>

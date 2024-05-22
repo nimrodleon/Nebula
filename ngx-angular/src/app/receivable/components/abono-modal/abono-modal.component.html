@@ -1,0 +1,58 @@
+<div class="modal fade" id="abono-modal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-uppercase">Agregar Abono</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="abonoForm" [formGroup]="abonoForm" (ngSubmit)="saveChanges()">
+          <div class="row mb-3">
+            <label class="col-3 col-form-label text-uppercase text-end">Terminal</label>
+            <div class="col-6">
+              <select formControlName="cajaDiaria" class="form-select">
+                <option value="-">___SELECCIONAR___</option>
+                <option *ngFor="let item of cajaDiarias" [value]="item.id">{{ item.createdAt }}
+                  | {{ item.terminal }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-3 col-form-label text-uppercase text-end">F.Pago</label>
+            <div class="col-6">
+              <select formControlName="formaPago" class="form-select text-uppercase"
+                      [ngClass]="{'is-invalid': validarCampo('formaPago')}">
+                <option value="Contado:Yape">Yape</option>
+                <option value="Contado:Contado">Contado</option>
+                <option value="Contado:Depósito">Depósito</option>
+              </select>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-3 col-form-label text-uppercase text-end">Monto</label>
+            <div class="col-6">
+              <input type="number" formControlName="abono" step="0.1" class="form-control"
+                     [ngClass]="{'is-invalid': validarCampo('abono')}">
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-3 col-form-label text-uppercase text-end">Comentario</label>
+            <div class="col-9">
+              <textarea class="form-control" formControlName="remark" placeholder="ESCRIBE AQUÍ TU COMENTARIO"
+                        [ngClass]="{'is-invalid': validarCampo('remark')}"></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">
+          <span class="text-uppercase">Cerrar</span>
+        </button>
+        <button type="submit" form="abonoForm" class="btn btn-primary btn-lg">
+          <span class="text-uppercase">Guardar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+<div class="modal fade" id="consultarValidezDiaria" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content">
+      <div class="modal-body">
+        <input type="date" [formControl]="fecha" class="form-control">
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" (click)="saveChanges()" class="btn btn-success w-100">
+          <fa-icon [icon]="faCircleDown" class="me-1"></fa-icon>
+          <span class="text-uppercase">Descargar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

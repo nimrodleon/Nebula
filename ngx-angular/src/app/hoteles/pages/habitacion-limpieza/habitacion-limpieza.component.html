@@ -1,0 +1,43 @@
+<app-recepcion-container>
+  <div class="row px-2">
+    <div class="col-12 bg-white my-2 py-3">
+      <app-estados-recepcion [companyId]="companyId"></app-estados-recepcion>
+      <div class="d-flex justify-content-center">
+        <div class="input-group input-group-lg mb-2 w-50">
+          <span class="input-group-text">FILTRAR</span>
+          <input type="text" class="form-control" placeholder="Buscar...">
+          <button class="btn btn-dark" type="button">
+            <fa-icon [icon]="faMagnifyingGlass" class="mx-2"></fa-icon>
+          </button>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-striped mb-0">
+          <thead class="table-primary fs-5">
+            <tr class="text-uppercase">
+              <th>Habitación</th>
+              <th>Nivel</th>
+              <th>Estado</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            <tr class="fs-4">
+              <td>200</td>
+              <td>Piso 2</td>
+              <td>Pendiente</td>
+              <td class="d-flex justify-content-end">
+                <button (click)="cambiarEstadoModal()" class="btn btn-warning btn-lg">
+                  <fa-icon [icon]="faRetweet" class="me-1"></fa-icon>
+                  <span>Cambiar Estado</span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</app-recepcion-container>
+
+<app-cambiar-estado-habitacion></app-cambiar-estado-habitacion>

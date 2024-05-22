@@ -1,0 +1,22 @@
+.WrapLogin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  height: 100vh;
+  // Formulario de Login.
+  .FormLogin {
+    max-width: 450px;
+    margin: 15px;
+  }
+
+  .registerLink {
+    color: green;
+    font-weight: bold;
+    text-decoration: none;
+    text-transform: uppercase;
+    position: absolute;
+    right: 20px;
+    top: 10px;
+  }
+}

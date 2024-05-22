@@ -1,0 +1,44 @@
+<app-product-detail-container>
+  <div class="table-responsive">
+    <table class="table table-striped mb-0">
+      <thead>
+      <tr class="text-uppercase">
+        <th>Almacén</th>
+        <th>Cantidad</th>
+        <th></th>
+      </tr>
+      </thead>
+      <tbody class="table-group-divider">
+      <tr *ngFor="let item of productStockInfos">
+        <td>{{ item.warehouseName }}</td>
+        <td>{{ item.quantity }}</td>
+        <td style="width: 40px;">
+          <button type="button" (click)="showChangeQtyModal(item)" class="btn btn-secondary btn-sm">
+            <fa-icon [icon]="faEdit"></fa-icon>
+          </button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- ### MODAL CAMBIAR CANTIDAD -->
+  <div class="modal fade" id="changeQtyModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form (ngSubmit)="saveChange()" [formGroup]="quantityForm" id="quantityForm">
+            <label class="form-label">
+              <span class="text-uppercase fw-bold">Cambiar Cantidad</span>
+            </label>
+            <input type="number" formControlName="quantity" class="form-control"
+                   [ngClass]="{'is-invalid': inputIsInvalid('quantity')}">
+          </form>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" form="quantityForm" class="btn btn-warning btn-lg">Sí, Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-product-detail-container>

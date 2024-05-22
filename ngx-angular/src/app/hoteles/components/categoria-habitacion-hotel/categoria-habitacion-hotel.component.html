@@ -1,0 +1,38 @@
+<div class="modal fade" id="categoriaHabitacionModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5 text-uppercase">{{data.title}}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="categoriaHabitacionForm">
+          <div class="row mb-3">
+            <label class="col-form-label col-3 text-end">Nombre</label>
+            <div class="col-6">
+              <input type="email" class="form-control" formControlName="nombre"
+                [ngClass]="{'is-invalid': inputIsInvalid('nombre')}">
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-form-label col-3 text-end">Estado</label>
+            <div class="col-6">
+              <select class="form-select" formControlName="estado" [ngClass]="{'is-invalid': inputIsInvalid('estado')}">
+                <option value="ACTIVO">ACTIVO</option>
+                <option value="INACTIVO">INACTIVO</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">
+          <span class="text-uppercase">Cerrar</span>
+        </button>
+        <button type="button" (click)="saveChanges()" class="btn btn-primary btn-lg">
+          <span class="text-uppercase">Guardar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

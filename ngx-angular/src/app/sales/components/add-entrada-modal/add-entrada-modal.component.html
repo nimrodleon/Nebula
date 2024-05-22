@@ -1,0 +1,120 @@
+<div class="modal fade" id="addEntradaModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form [formGroup]="itemComprobanteForm">
+          <div class="d-flex justify-content-center border p-2 rounded-2 mb-3">
+            <div class="form-check me-2">
+              <input class="form-check-input" type="radio" formControlName="tipoItem" id="tipo1" value="BIEN">
+              <label class="form-check-label fw-bold" for="tipo1">Bien</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" formControlName="tipoItem" id="tipo2" value="SERVICIO">
+              <label class="form-check-label fw-bold" for="tipo2">Servicio</label>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-12 col-md-4 col-form-label text-start text-md-end">Cantidad</label>
+            <div class="col-12 col-md-5">
+              <input type="number" formControlName="ctdUnidadItem" class="form-control"
+                     (change)="cambiarCantidadItem($event.target)"
+                     [ngClass]="{'is-invalid': inputIsInvalid('ctdUnidadItem')}">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-12 col-md-4 col-form-label text-start text-md-end">Unidad de Medida</label>
+            <div class="col-12 col-md-7">
+              <select formControlName="codUnidadMedida" class="form-select"
+                      [ngClass]="{'is-invalid': inputIsInvalid('codUnidadMedida')}">
+                <option value="4A:BOBINAS">BOBINAS</option>
+                <option value="BJ:BALDE">BALDE</option>
+                <option value="BLL:BARRILES">BARRILES</option>
+                <option value="BG:BOLSA">BOLSA</option>
+                <option value="BO:BOTELLAS">BOTELLAS</option>
+                <option value="BX:CAJA">CAJA</option>
+                <option value="CT:CARTONES">CARTONES</option>
+                <option value="CY:CILINDRO">CILINDRO</option>
+                <option value="CJ:CONOS">CONOS</option>
+                <option value="DZN:DOCENA">DOCENA</option>
+                <option value="BE:FARDO">FARDO</option>
+                <option value="GLI:GALÓN INGLES (4,545956L)">GALÓN INGLES (4,545956L)</option>
+                <option value="GRM:GRAMO">GRAMO</option>
+                <option value="LEF:HOJA">HOJA</option>
+                <option value="SET:JUEGO">JUEGO</option>
+                <option value="KGM:KILOGRAMO">KILOGRAMO</option>
+                <option value="KT:KIT">KIT</option>
+                <option value="CA:LATAS">LATAS</option>
+                <option value="LBR:LIBRAS">LIBRAS</option>
+                <option value="LTR:LITRO">LITRO</option>
+                <option value="MTR:METRO">METRO</option>
+                <option value="MGM:MILIGRAMOS">MILIGRAMOS</option>
+                <option value="MLT:MILILITRO">MILILITRO</option>
+                <option value="MMT:MILIMETRO">MILIMETRO</option>
+                <option value="MIL:MILLARES">MILLARES</option>
+                <option value="ONZ:ONZAS">ONZAS</option>
+                <option value="PF:PALETAS">PALETAS</option>
+                <option value="PK:PAQUETE">PAQUETE</option>
+                <option value="PR:PAR">PAR</option>
+                <option value="C62:PIEZAS">PIEZAS</option>
+                <option value="PG:PLACAS">PLACAS</option>
+                <option value="ST:PLIEGO">PLIEGO</option>
+                <option value="INH:PULGADAS">PULGADAS</option>
+                <option value="TU:TUBOS">TUBOS</option>
+                <option value="NIU:UNIDAD (BIENES)">UNIDAD (BIENES)</option>
+                <option value="ZZ:UNIDAD (SERVICIOS)">UNIDAD (SERVICIOS)</option>
+                <option value="GLL:US GALON (3,7843 L)">US GALON (3,7843 L)</option>
+                <option value="YRD:YARDA">YARDA</option>
+                <option value="YDK:YARDA CUADRADA">YARDA CUADRADA</option>
+              </select>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-12 col-md-4 col-form-label text-start text-md-end">Descripción</label>
+            <div class="col-12 col-md-8">
+              <textarea formControlName="description" class="form-control"
+                        [ngClass]="{'is-invalid': inputIsInvalid('description')}">
+              </textarea>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-12 col-md-4 col-form-label text-start text-md-end">Valor Item</label>
+            <div class="col-12 col-md-5">
+              <input type="number" formControlName="mtoValorVentaItem" class="form-control bg-light"
+                     [ngClass]="{'is-invalid': inputIsInvalid('mtoValorVentaItem')}" readonly>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-md-4 col-form-label text-start text-md-end">Impuestos</label>
+            <div class="col-12 col-md-8">
+              <select formControlName="igvSunat" class="form-select" (change)="cambiarTipoDeOperacion($event.target)"
+                      [ngClass]="{'is-invalid': inputIsInvalid('igvSunat')}">
+                <option value="GRAVADO">GRAVADO {{ company.porcentajeIgv|number }}% IGV</option>
+                <option value="EXONERADO">EXONERADO</option>
+                <option value="INAFECTO">INAFECTO</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <label class="col-12 col-md-4 col-form-label text-start text-md-end">Importe Item</label>
+            <div class="col-12 col-md-5">
+              <input type="number" formControlName="mtoTotalItem" (change)="cambiarMtoTotalItem($event.target)"
+                     step="0.1" class="form-control" [ngClass]="{'is-invalid': inputIsInvalid('mtoTotalItem')}">
+            </div>
+          </div>
+        </form>
+        <!-- ## DEBUG -->
+        <!--<pre>{{itemComprobanteModal|json}}</pre>
+        <pre>{{itemComprobanteForm.value|json}}</pre>-->
+        <!-- ## END -->
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">
+          <span class="text-uppercase">Cerrar</span>
+        </button>
+        <button type="button" (click)="saveChanges()" class="btn btn-primary btn-lg">
+          <span class="text-uppercase">Agregar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

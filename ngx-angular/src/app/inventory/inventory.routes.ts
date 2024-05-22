@@ -1,0 +1,39 @@
+import {Routes} from "@angular/router";
+import {LocationListComponent} from "./pages/location-list/location-list.component";
+import {LocationAddComponent} from "./pages/location-add/location-add.component";
+import {LocationEditComponent} from "./pages/location-edit/location-edit.component";
+import {LocationDetailComponent} from "./pages/location-detail/location-detail.component";
+import {LocationReponerComponent} from "./pages/location-reponer/location-reponer.component";
+import {MaterialesListComponent} from "./pages/materiales-list/materiales-list.component";
+import {MaterialesAddComponent} from "./pages/materiales-add/materiales-add.component";
+import {MaterialesEditComponent} from "./pages/materiales-edit/materiales-edit.component";
+import {AjustesListComponent} from "./pages/ajustes-list/ajustes-list.component";
+import {AjustesAddComponent} from "./pages/ajustes-add/ajustes-add.component";
+import {AjustesEditComponent} from "./pages/ajustes-edit/ajustes-edit.component";
+import {TransferenciasListComponent} from "./pages/transferencias-list/transferencias-list.component";
+import {TransferenciasAddComponent} from "./pages/transferencias-add/transferencias-add.component";
+import {TransferenciasEditComponent} from "./pages/transferencias-edit/transferencias-edit.component";
+import {NotasListComponent} from "./pages/notas-list/notas-list.component";
+import {NotasAddComponent} from "./pages/notas-add/notas-add.component";
+import {NotasEditComponent} from "./pages/notas-edit/notas-edit.component";
+
+export const routes: Routes = [
+  {path: "location", component: LocationListComponent},
+  {path: "location/add", component: LocationAddComponent},
+  {path: "location/edit/:id", component: LocationEditComponent},
+  {path: "location/detail/:id", component: LocationDetailComponent},
+  {path: "location/reponer/:arrId", component: LocationReponerComponent},
+  {path: "materiales", component: MaterialesListComponent},
+  {path: "materiales/add", component: MaterialesAddComponent},
+  {path: "materiales/edit/:id", component: MaterialesEditComponent},
+  {path: "ajustes", component: AjustesListComponent},
+  {path: "ajustes/add", component: AjustesAddComponent},
+  {path: "ajustes/edit/:id", component: AjustesEditComponent},
+  {path: "transferencias", component: TransferenciasListComponent},
+  {path: "transferencias/add", component: TransferenciasAddComponent},
+  {path: "transferencias/edit/:id", component: TransferenciasEditComponent},
+  {path: "notas", component: NotasListComponent},
+  {path: "notas/add", component: NotasAddComponent},
+  {path: "notas/edit/:id", component: NotasEditComponent},
+  {path: "**", redirectTo: ""}
+];
