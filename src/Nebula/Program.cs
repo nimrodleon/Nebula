@@ -17,7 +17,6 @@ using Nebula.Modules.Products;
 using Nebula.Modules.Purchases;
 using Nebula.Modules.Sales;
 using Nebula.Modules.Taller;
-using Nebula.Modules.Hoteles;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -70,7 +69,6 @@ builder.Services.AddModuleProductsServices();
 builder.Services.AddModulePurchasesServices();
 builder.Services.AddModuleSalesServices();
 builder.Services.AddModuleTallerServices();
-builder.Services.AddModuleHotelesServices();
 builder.Services.Configure<InvoiceHubSettings>(builder.Configuration.GetSection(nameof(InvoiceHubSettings)));
 builder.Services.AddModuleInvoiceHubServices();
 
