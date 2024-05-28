@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Nebula.Common;
-using Nebula.Modules.Auth.Helpers;
 using System.Security.Claims;
 
 namespace Nebula.Modules.Auth;

@@ -1,13 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Common;
 using Nebula.Common.Helpers;
 using Nebula.Modules.Account;
 using Nebula.Modules.Account.Models;
-using Nebula.Modules.Auth;
-using Nebula.Modules.Auth.Dto;
-using Nebula.Modules.Auth.Helpers;
-using Nebula.Modules.Auth.Models;
 using Nebula.Modules.InvoiceHub;
 using Nebula.Modules.InvoiceHub.Dto;
 using Nebula.Modules.InvoiceHub.Helpers;
