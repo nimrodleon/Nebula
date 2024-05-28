@@ -8,7 +8,7 @@ using Nebula.Modules.Auth;
 namespace Nebula.Controllers.Account;
 
 [Authorize]
-[CustomerAuthorize(UserRole = CompanyRoles.User)]
+[CustomerAuthorize(UserRole = UserRoleHelper.User)]
 [Route("api/account/{companyId}/[controller]")]
 [ApiController]
 public class InvoiceSerieController : ControllerBase

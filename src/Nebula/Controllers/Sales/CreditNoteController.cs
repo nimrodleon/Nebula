@@ -4,7 +4,7 @@ using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Sales.Notes;
 using Nebula.Modules.Sales.Notes.Dto;
-using Nebula.Common;
+using Nebula.Modules.Account;
 using Nebula.Modules.Sales.Invoices;
 using Nebula.Modules.Sales.Comprobantes.Dto;
 using Nebula.Modules.InvoiceHub.Helpers;
@@ -13,22 +13,25 @@ using Nebula.Modules.InvoiceHub;
 namespace Nebula.Controllers.Sales;
 
 [Authorize]
-[CustomerAuthorize(UserRole = CompanyRoles.User)]
+[CustomerAuthorize(UserRole = UserRoleHelper.User)]
 [Route("api/sales/{companyId}/[controller]")]
 [ApiController]
 public class CreditNoteController : ControllerBase
 {
-    private readonly ICacheAuthService _cacheAuthService;
+    private readonly ICompanyService _companyService;
     private readonly IInvoiceSaleService _invoiceSaleService;
     private readonly ICreditNoteService _creditNoteService;
     private readonly ICreditNoteDetailService _creditNoteDetailService;
     private readonly ICreditNoteHubService _creditNoteHubService;
 
-    public CreditNoteController(ICacheAuthService cacheAuthService,
-        IInvoiceSaleService invoiceSaleService, ICreditNoteService creditNoteService,
-        ICreditNoteDetailService creditNoteDetailService, ICreditNoteHubService creditNoteHubService)
+    public CreditNoteController(
+        ICompanyService companyService,
+        IInvoiceSaleService invoiceSaleService,
+        ICreditNoteService creditNoteService,
+        ICreditNoteDetailService creditNoteDetailService,
+        ICreditNoteHubService creditNoteHubService)
     {
-        _cacheAuthService = cacheAuthService;
+        _companyService = companyService;
         _invoiceSaleService = invoiceSaleService;
         _creditNoteService = creditNoteService;
         _creditNoteDetailService = creditNoteDetailService;
@@ -50,7 +53,7 @@ public class CreditNoteController : ControllerBase
     [HttpGet("Print/{creditNoteId}")]
     public async Task<IActionResult> Print(string companyId, string creditNoteId)
     {
-        var company = await _cacheAuthService.GetCompanyByIdAsync(companyId);
+        var company = await _companyService.GetByIdAsync(companyId.Trim());
         var creditNoteDto = await _creditNoteService.GetCreditNoteDtoAsync(companyId, creditNoteId);
         var printCreditNote = new PrintCreditNoteDto()
         {
@@ -64,7 +67,7 @@ public class CreditNoteController : ControllerBase
     [HttpPatch("Reenviar/{creditNoteId}")]
     public async Task<IActionResult> Reenviar(string companyId, string creditNoteId)
     {
-        var company = await _cacheAuthService.GetCompanyByIdAsync(companyId);
+        var company = await _companyService.GetByIdAsync(companyId.Trim());
         var cancellationResponse = new InvoiceCancellationResponse();
         cancellationResponse.CreditNote = await _creditNoteService.GetByIdAsync(companyId, creditNoteId);
         cancellationResponse.CreditNoteDetail = await _creditNoteDetailService.GetListAsync(companyId, creditNoteId);

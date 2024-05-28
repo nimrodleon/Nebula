@@ -15,25 +15,25 @@ using Nebula.Common.Helpers;
 namespace Nebula.Controllers.Cashier;
 
 [Authorize]
-[CustomerAuthorize(UserRole = CompanyRoles.User)]
+[CustomerAuthorize(UserRole = UserRoleHelper.User)]
 [Route("api/cashier/{companyId}/[controller]")]
 [ApiController]
 public class CajaDiariaController : ControllerBase
 {
-    private readonly ICacheAuthService _cacheAuthService;
+    private readonly ICompanyService _companyService;
     private readonly ICajaDiariaService _cajaDiariaService;
     private readonly IInvoiceSerieService _invoiceSerieService;
     private readonly ICashierDetailService _cashierDetailService;
     private readonly IContactService _contactService;
 
     public CajaDiariaController(
-        ICacheAuthService cacheAuthService,
+        ICompanyService companyService,
         ICajaDiariaService cajaDiariaService,
         IInvoiceSerieService invoiceSerieService,
         ICashierDetailService cashierDetailService,
         IContactService contactService)
     {
-        _cacheAuthService = cacheAuthService;
+        _companyService = companyService;
         _cajaDiariaService = cajaDiariaService;
         _invoiceSerieService = invoiceSerieService;
         _cashierDetailService = cashierDetailService;
@@ -116,7 +116,7 @@ public class CajaDiariaController : ControllerBase
         return Ok(cajaDiaria);
     }
 
-    [HttpDelete("{id}"), CustomerAuthorize(UserRole = CompanyRoles.Admin)]
+    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRoleHelper.Admin)]
     public async Task<IActionResult> Delete(string companyId, string id)
     {
         var cajaDiaria = await _cajaDiariaService.GetByIdAsync(companyId, id);
@@ -139,7 +139,7 @@ public class CajaDiariaController : ControllerBase
     [HttpGet("GetQuickSaleConfig/{id}")]
     public async Task<IActionResult> GetQuickSaleConfig(string companyId, string id)
     {
-        var company = await _cacheAuthService.GetCompanyByIdAsync(companyId);
+        var company = await _companyService.GetByIdAsync(companyId.Trim());
         var cajaDiaria = await _cajaDiariaService.GetByIdAsync(companyId, id);
         var invoiceSerie = await _invoiceSerieService.GetByIdAsync(companyId, cajaDiaria.InvoiceSerieId);
         cajaDiaria.WarehouseId = invoiceSerie.WarehouseId;

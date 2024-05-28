@@ -16,18 +16,15 @@ namespace Nebula.Controllers.Account;
 public class CompanyController : ControllerBase
 {
     private readonly ICompanyService _companyService;
-    private readonly ICollaboratorService _collaboratorService;
-    private readonly ICacheAuthService _cacheAuthService;
     private readonly ICertificadoUploaderService _certificadoUploaderService;
     private readonly IEmpresaHubService _empresaHubService;
 
-    public CompanyController(ICompanyService companyService,
-        ICollaboratorService collaboratorService, ICacheAuthService cacheAuthService,
-        ICertificadoUploaderService certificadoUploaderService, IEmpresaHubService empresaHubService)
+    public CompanyController(
+        ICompanyService companyService,
+        ICertificadoUploaderService certificadoUploaderService,
+        IEmpresaHubService empresaHubService)
     {
         _companyService = companyService;
-        _collaboratorService = collaboratorService;
-        _cacheAuthService = cacheAuthService;
         _certificadoUploaderService = certificadoUploaderService;
         _empresaHubService = empresaHubService;
     }
@@ -97,45 +94,46 @@ public class CompanyController : ControllerBase
         model = await _companyService.CreateAsync(model);
 
         // agregar empresa en cache.
-        var companies = await _cacheAuthService.GetUserAuthCompaniesAsync(model.UserId);
-        if (companies == null)
-        {
-            await _cacheAuthService.SetUserAuthCompaniesAsync(model.UserId, new List<Company> { model });
-        }
-        else
-        {
-            companies.Add(model);
-            await _cacheAuthService.RemoveUserAuthCompaniesAsync(model.UserId);
-            await _cacheAuthService.SetUserAuthCompaniesAsync(model.UserId, companies);
-        }
-
-        var collaborator = new Collaborator()
-        {
-            CompanyId = model.Id,
-            UserId = model.UserId,
-            UserRole = CompanyRoles.Owner,
-        };
-        await _collaboratorService.CreateAsync(collaborator);
-
-        // agregar rol a cache.
-        var userCompanyRole = new UserCompanyRole()
-        {
-            CompanyId = collaborator.CompanyId,
-            UserRole = collaborator.UserRole,
-        };
-        var userCompanyRoles = await _cacheAuthService.GetUserAuthCompanyRolesAsync(model.UserId);
-        if (userCompanyRoles == null)
-        {
-            await _cacheAuthService.SetUserAuthCompanyRolesAsync(model.UserId, new List<UserCompanyRole> { userCompanyRole });
-        }
-        else
-        {
-            userCompanyRoles.Add(userCompanyRole);
-            await _cacheAuthService.RemoveUserAuthCompanyRolesAsync(model.UserId);
-            await _cacheAuthService.SetUserAuthCompanyRolesAsync(model.UserId, userCompanyRoles);
-        }
-
-        return Ok(model);
+        // var companies = await _cacheAuthService.GetUserAuthCompaniesAsync(model.UserId);
+        // if (companies == null)
+        // {
+        //     await _cacheAuthService.SetUserAuthCompaniesAsync(model.UserId, new List<Company> { model });
+        // }
+        // else
+        // {
+        //     companies.Add(model);
+        //     await _cacheAuthService.RemoveUserAuthCompaniesAsync(model.UserId);
+        //     await _cacheAuthService.SetUserAuthCompaniesAsync(model.UserId, companies);
+        // }
+        //
+        // var collaborator = new Collaborator()
+        // {
+        //     CompanyId = model.Id,
+        //     UserId = model.UserId,
+        //     UserRole = CompanyRoles.Owner,
+        // };
+        // await _collaboratorService.CreateAsync(collaborator);
+        //
+        // // agregar rol a cache.
+        // var userCompanyRole = new UserCompanyRole()
+        // {
+        //     CompanyId = collaborator.CompanyId,
+        //     UserRole = collaborator.UserRole,
+        // };
+        // var userCompanyRoles = await _cacheAuthService.GetUserAuthCompanyRolesAsync(model.UserId);
+        // if (userCompanyRoles == null)
+        // {
+        //     await _cacheAuthService.SetUserAuthCompanyRolesAsync(model.UserId, new List<UserCompanyRole> { userCompanyRole });
+        // }
+        // else
+        // {
+        //     userCompanyRoles.Add(userCompanyRole);
+        //     await _cacheAuthService.RemoveUserAuthCompanyRolesAsync(model.UserId);
+        //     await _cacheAuthService.SetUserAuthCompanyRolesAsync(model.UserId, userCompanyRoles);
+        // }
+        //
+        // return Ok(model);
+        return Ok(new { });
     }
 
     [HttpPut("{id}")]
@@ -152,18 +150,19 @@ public class CompanyController : ControllerBase
         model.Urbanizacion = model.Urbanizacion.Trim().ToUpper();
         company = await _companyService.UpdateAsync(company.Id, model);
         // actualizar empresa en cache.
-        var companies = await _cacheAuthService.GetUserAuthCompaniesAsync(model.UserId);
-        if (companies != null)
-        {
-            var index = companies.FindIndex(x => x.Id == company.Id);
-            if (index != -1)
-            {
-                companies[index] = company;
-                await _cacheAuthService.RemoveUserAuthCompaniesAsync(model.UserId);
-                await _cacheAuthService.SetUserAuthCompaniesAsync(company.UserId, companies);
-            }
-        }
-        return Ok(company);
+        // var companies = await _cacheAuthService.GetUserAuthCompaniesAsync(model.UserId);
+        // if (companies != null)
+        // {
+        //     var index = companies.FindIndex(x => x.Id == company.Id);
+        //     if (index != -1)
+        //     {
+        //         companies[index] = company;
+        //         await _cacheAuthService.RemoveUserAuthCompaniesAsync(model.UserId);
+        //         await _cacheAuthService.SetUserAuthCompaniesAsync(company.UserId, companies);
+        //     }
+        // }
+        // return Ok(company);
+        return Ok(new { });
     }
 
     [HttpDelete("{id}")]

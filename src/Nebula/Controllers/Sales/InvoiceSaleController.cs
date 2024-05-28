@@ -14,7 +14,6 @@ using Nebula.Modules.Sales.Helpers;
 using Nebula.Modules.Sales.Invoices;
 using Nebula.Modules.Sales.Invoices.Dto;
 using Nebula.Modules.Sales.Notes;
-using Nebula.Common;
 using Nebula.Modules.Inventory.Stock;
 using Nebula.Modules.Account;
 using Nebula.Modules.Sales.Models;
@@ -22,13 +21,12 @@ using Nebula.Modules.Sales.Models;
 namespace Nebula.Controllers.Sales;
 
 [Authorize]
-[CustomerAuthorize(UserRole = CompanyRoles.User)]
+[CustomerAuthorize(UserRole = UserRoleHelper.User)]
 [Route("api/sales/{companyId}/[controller]")]
 [ApiController]
 public class InvoiceSaleController : ControllerBase
 {
     private readonly ICompanyService _companyService;
-    private readonly ICacheAuthService _cacheAuthService;
     private readonly IInvoiceSaleService _invoiceSaleService;
     private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly IComprobanteService _comprobanteService;
@@ -41,7 +39,6 @@ public class InvoiceSaleController : ControllerBase
 
     public InvoiceSaleController(
         ICompanyService companyService,
-        ICacheAuthService cacheAuthService,
         IInvoiceSaleService invoiceSaleService,
         IInvoiceSaleDetailService invoiceSaleDetailService,
         IComprobanteService comprobanteService,
@@ -53,7 +50,6 @@ public class InvoiceSaleController : ControllerBase
         IInvoiceSaleFileService invoiceSaleFileService)
     {
         _companyService = companyService;
-        _cacheAuthService = cacheAuthService;
         _invoiceSaleService = invoiceSaleService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _comprobanteService = comprobanteService;
@@ -100,7 +96,7 @@ public class InvoiceSaleController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(string companyId, [FromBody] ComprobanteDto dto)
     {
-        var company = await _cacheAuthService.GetCompanyByIdAsync(companyId);
+        var company = await _companyService.GetByIdAsync(companyId);
         var comprobante = await _comprobanteService.SaveChangesAsync(company, dto);
         await _validateStockService.ValidarInvoiceSale(comprobante);
         var invoiceRequest = InvoiceMapper.MapToInvoiceRequestHub(company.Ruc, comprobante);
@@ -122,7 +118,7 @@ public class InvoiceSaleController : ControllerBase
     [HttpPatch("Reenviar/{id}")]
     public async Task<IActionResult> Reenviar(string companyId, string id)
     {
-        var company = await _cacheAuthService.GetCompanyByIdAsync(companyId.Trim());
+        var company = await _companyService.GetByIdAsync(companyId.Trim());
         var comprobante = new InvoiceSaleAndDetails();
         comprobante.InvoiceSale = await _invoiceSaleService.GetByIdAsync(companyId, id);
         comprobante.InvoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(companyId, comprobante.InvoiceSale.Id);
@@ -213,7 +209,7 @@ public class InvoiceSaleController : ControllerBase
     [HttpPatch("AnularComprobante/{id}")]
     public async Task<IActionResult> AnularComprobante(string companyId, string id)
     {
-        var company = await _cacheAuthService.GetCompanyByIdAsync(companyId);
+        var company = await _companyService.GetByIdAsync(companyId.Trim());
         var invoiceCancellationResponse = await _creditNoteService.InvoiceCancellation(companyId, id);
         var creditNoteRequest = CreditNoteMapper.MapToCreditNoteRequestHub(company.Ruc, invoiceCancellationResponse);
         var billingResponse = await _creditNoteHubService.SendCreditNoteAsync(companyId, creditNoteRequest);
@@ -232,7 +228,7 @@ public class InvoiceSaleController : ControllerBase
         var responseInvoice = await _invoiceSaleService.GetInvoiceSaleAsync(companyId, id);
         var ticket = new TicketDto()
         {
-            Company = await _cacheAuthService.GetCompanyByIdAsync(companyId),
+            Company = await _companyService.GetByIdAsync(companyId.Trim()),
             InvoiceSale = responseInvoice.InvoiceSale,
             InvoiceSaleDetails = responseInvoice.InvoiceSaleDetails,
         };
