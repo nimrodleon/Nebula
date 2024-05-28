@@ -16,7 +16,6 @@ using Nebula.Modules.InvoiceHub;
 using Nebula.Modules.Products;
 using Nebula.Modules.Sales;
 using Nebula.Modules.Taller;
-using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 string keygen = "5dc7a849f2668157c3a7c4f037dcafa62c6ba82e5d9b31b56edbcc6731f8c9c8";
@@ -55,8 +54,6 @@ builder.Services.AddScoped<MongoDatabaseService>();
 builder.Services.AddScoped(typeof(ICrudOperationService<>), typeof(CrudOperationService<>));
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddSingleton<IConnectionMultiplexer>(ConnectionMultiplexer.Connect(builder.Configuration.GetValue<string>("Redis") ?? string.Empty));
-builder.Services.AddSingleton(provider => provider.GetRequiredService<IConnectionMultiplexer>().GetDatabase());
 builder.Services.AddModuleAuthServices();
 builder.Services.AddModuleAccountServices();
 builder.Services.AddModuleCashierServices();
