@@ -174,7 +174,8 @@ public class CompanyController : ControllerBase
     }
 
     [HttpPost("SubirCertificado/{companyId}")]
-    public async Task<IActionResult> SubirCertificado(string companyId, [FromForm] IFormFile certificate, [FromForm] string password, [FromForm] string extension)
+    public async Task<IActionResult> SubirCertificado(string companyId, [FromForm] string password,
+        [FromForm] string extension, IFormFile certificate)
     {
         try
         {
@@ -186,9 +187,11 @@ public class CompanyController : ControllerBase
             {
                 await certificate.CopyToAsync(ms);
                 byte[] certificado = ms.ToArray();
-                var result = await _certificadoUploaderService.SubirCertificado(certificado, password, company.Id, extension);
+                var result =
+                    await _certificadoUploaderService.SubirCertificado(certificado, password, company.Id, extension);
                 // actualizar fecha de vencimiento.
-                company.FechaVencimientoCert = new X509Certificate2(certificado, password.Trim()).NotAfter.ToString("yyyy-MM-dd");
+                company.FechaVencimientoCert =
+                    new X509Certificate2(certificado, password.Trim()).NotAfter.ToString("yyyy-MM-dd");
                 company.SunatEndpoint = SunatEndpoints.FeBeta;
                 await _companyService.UpdateAsync(company.Id, company);
                 // sincronizar datos de la empresa.

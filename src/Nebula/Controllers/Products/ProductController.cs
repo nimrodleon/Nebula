@@ -129,7 +129,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpPost("CargarProductos"), CustomerAuthorize(UserRole = UserRoleHelper.Admin)]
-    public async Task<IActionResult> CargarProductosAsync(string companyId, [FromForm] IFormFile datos)
+    public async Task<IActionResult> CargarProductosAsync(string companyId, IFormFile datos)
     {
         try
         {
@@ -137,6 +137,7 @@ public class ProductController : ControllerBase
             {
                 return BadRequest("Archivo no proporcionado o vacío.");
             }
+
             var category = new Category() { CompanyId = companyId.Trim(), Name = "SIN CATEGORÍA" };
             category = await _categoryService.CreateAsync(category);
 
@@ -147,12 +148,13 @@ public class ProductController : ControllerBase
                 var batch = productos.GetRange(i, Math.Min(batchSize, productos.Count - i));
                 await _productService.InsertManyAsync(batch);
             }
+
             return StatusCode(StatusCodes.Status201Created);
         }
         catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, $"Error durante la carga de productos: {ex.Message}");
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                $"Error durante la carga de productos: {ex.Message}");
         }
     }
-
 }
