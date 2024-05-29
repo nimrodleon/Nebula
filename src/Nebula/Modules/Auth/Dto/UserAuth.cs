@@ -1,10 +1,12 @@
-using Nebula.Modules.Account.Models;
-using Nebula.Modules.Auth.Models;
+using Nebula.Modules.Auth.Helpers;
 
 namespace Nebula.Modules.Auth.Dto;
 
 public class UserAuth
 {
-    public User User { get; set; } = new User();
-    public List<Company> Companies { get; set; } = new List<Company>();
+    public string UserId { get; set; } = string.Empty;
+    public string UserName { get; set; } = string.Empty;
+    public string AccountType { get; set; } = AccountTypeHelper.Personal;
+    public string UserRole { get; set; } = UserRoleHelper.User;
+    public string DefaultCompanyId { get; set; } = string.Empty;
 }
