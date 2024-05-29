@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Nebula.Common.Dto;
 using Nebula.Common.Helpers;
 using Nebula.Modules.Account.Models;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth;
 using Nebula.Modules.InvoiceHub;
 using Nebula.Modules.InvoiceHub.Helpers;
@@ -21,7 +20,7 @@ using Nebula.Modules.Sales.Models;
 namespace Nebula.Controllers.Sales;
 
 [Authorize]
-[CustomerAuthorize(UserRole = UserRoleHelper.User)]
+[CustomerAuthorize(UserRole = UserRole.User)]
 [Route("api/sales/[controller]")]
 [ApiController]
 public class InvoiceSaleController(

@@ -1,14 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Auth;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Taller.Models;
 using Nebula.Modules.Taller.Services;
 
 namespace Nebula.Controllers.Taller;
 
 [Authorize]
-[CustomerAuthorize(UserRole = UserRoleHelper.User)]
+[CustomerAuthorize(UserRole = UserRole.User)]
 [Route("api/taller/[controller]")]
 [ApiController]
 public class ItemRepairOrderController(

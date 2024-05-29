@@ -1,14 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Auth;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Inventory.Models;
 using Nebula.Modules.Inventory.Notas;
 
 namespace Nebula.Controllers.Inventory;
 
 [Authorize]
-[CustomerAuthorize(UserRole = UserRoleHelper.User)]
+[CustomerAuthorize(UserRole = UserRole.User)]
 [Route("api/inventory/[controller]")]
 [ApiController]
 public class InventoryNotasDetailController(

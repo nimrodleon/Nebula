@@ -6,14 +6,13 @@ using Nebula.Modules.Contacts.Dto;
 using Nebula.Modules.Sales.Invoices;
 using Microsoft.AspNetCore.Authorization;
 using Nebula.Modules.Auth;
-using Nebula.Modules.Auth.Helpers;
 using MongoDB.Driver;
 using Nebula.Common.Helpers;
 
 namespace Nebula.Controllers.Contacts;
 
 [Authorize]
-[CustomerAuthorize(UserRole = UserRoleHelper.User)]
+[CustomerAuthorize(UserRole = UserRole.User)]
 [Route("api/contacts/[controller]")]
 [ApiController]
 public class ContactController(
@@ -145,7 +144,7 @@ public class ContactController(
         }
     }
 
-    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRoleHelper.Admin)]
+    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRole.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
         var contact = await contactService.GetByIdAsync(_companyId, id);

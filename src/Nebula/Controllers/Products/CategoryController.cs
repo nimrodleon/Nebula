@@ -3,18 +3,18 @@ using Nebula.Modules.Products.Models;
 using Nebula.Common.Dto;
 using Nebula.Modules.Products;
 using Microsoft.AspNetCore.Authorization;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth;
 
 namespace Nebula.Controllers.Products;
 
 [Authorize]
-[CustomerAuthorize(UserRole = UserRoleHelper.User)]
+[CustomerAuthorize(UserRole = UserRole.User)]
 [Route("api/products/[controller]")]
 [ApiController]
 public class CategoryController(
     IUserAuthenticationService userAuthenticationService,
-    ICategoryService categoryService)
+    ICategoryService categoryService,
+    ILogger<CategoryController> logger)
     : ControllerBase
 {
     private readonly string _companyId = userAuthenticationService.GetDefaultCompanyId();
@@ -22,6 +22,7 @@ public class CategoryController(
     [HttpGet]
     public async Task<IActionResult> Index([FromQuery] string query = "")
     {
+        logger.Log(LogLevel.Information, "Get all categories");
         string[] fieldNames = new string[] { "Name" };
         var categories = await categoryService.GetFilteredAsync(_companyId, fieldNames, query);
         return Ok(categories);
@@ -73,7 +74,7 @@ public class CategoryController(
         return Ok(model);
     }
 
-    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRoleHelper.Admin)]
+    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRole.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
         var category = await categoryService.GetByIdAsync(_companyId, id);

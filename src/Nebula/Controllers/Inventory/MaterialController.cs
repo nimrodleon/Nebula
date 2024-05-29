@@ -4,13 +4,12 @@ using Nebula.Modules.Inventory.Models;
 using Nebula.Modules.Inventory.Materiales;
 using Nebula.Common.Dto;
 using Microsoft.AspNetCore.Authorization;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth;
 
 namespace Nebula.Controllers.Inventory;
 
 [Authorize]
-[CustomerAuthorize(UserRole = UserRoleHelper.User)]
+[CustomerAuthorize(UserRole = UserRole.User)]
 [Route("api/inventory/[controller]")]
 [ApiController]
 public class MaterialController(
@@ -60,7 +59,7 @@ public class MaterialController(
         return Ok(responseData);
     }
 
-    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRoleHelper.Admin)]
+    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRole.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
         var material = await materialService.GetByIdAsync(_companyId, id);

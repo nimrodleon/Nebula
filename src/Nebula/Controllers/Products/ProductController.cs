@@ -3,7 +3,6 @@ using Nebula.Modules.Products.Models;
 using Nebula.Modules.Products;
 using Nebula.Modules.Products.Dto;
 using Microsoft.AspNetCore.Authorization;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Products.Helpers;
 using Nebula.Common.Helpers;
@@ -11,7 +10,7 @@ using Nebula.Common.Helpers;
 namespace Nebula.Controllers.Products;
 
 [Authorize]
-[CustomerAuthorize(UserRole = UserRoleHelper.User)]
+[CustomerAuthorize(UserRole = UserRole.User)]
 [Route("api/products/[controller]")]
 [ApiController]
 public class ProductController(
@@ -106,7 +105,7 @@ public class ProductController(
         return Ok(product);
     }
 
-    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRoleHelper.Admin)]
+    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRole.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
         var product = await productService.GetByIdAsync(_companyId, id);
@@ -125,7 +124,7 @@ public class ProductController(
         return File(stream, ContentTypeFormat.Excel, "plantilla.xlsx");
     }
 
-    [HttpPost("CargarProductos"), CustomerAuthorize(UserRole = UserRoleHelper.Admin)]
+    [HttpPost("CargarProductos"), CustomerAuthorize(UserRole = UserRole.Admin)]
     public async Task<IActionResult> CargarProductosAsync(IFormFile datos)
     {
         try

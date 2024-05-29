@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Common.Dto;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Taller.Models;
 using Nebula.Modules.Taller.Services;
@@ -10,7 +9,7 @@ using Nebula.Common.Helpers;
 namespace Nebula.Controllers.Taller;
 
 [Authorize]
-[CustomerAuthorize(UserRole = UserRoleHelper.User)]
+[CustomerAuthorize(UserRole = UserRole.User)]
 [Route("api/taller/[controller]")]
 [ApiController]
 public class RepairOrderController(
@@ -108,7 +107,7 @@ public class RepairOrderController(
         return Ok(repairOrder);
     }
 
-    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRoleHelper.Admin)]
+    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRole.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
         var repairOrder = await repairOrderService.GetByIdAsync(_companyId, id);

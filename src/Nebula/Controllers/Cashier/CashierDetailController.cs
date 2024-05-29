@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Cashier.Helpers;
@@ -10,7 +9,7 @@ using Nebula.Common.Helpers;
 namespace Nebula.Controllers.Cashier;
 
 [Authorize]
-[CustomerAuthorize(UserRole = UserRoleHelper.User)]
+[CustomerAuthorize(UserRole = UserRole.User)]
 [Route("api/cashier/[controller]")]
 [ApiController]
 public class CashierDetailController(
@@ -71,7 +70,7 @@ public class CashierDetailController(
         return Ok(resumenCaja);
     }
 
-    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRoleHelper.Admin)]
+    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRole.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
         var cashierDetail = await cashierDetailService.GetByIdAsync(_companyId, id);

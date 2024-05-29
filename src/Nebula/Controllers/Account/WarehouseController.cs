@@ -2,13 +2,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Account;
 using Nebula.Modules.Account.Models;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth;
 
 namespace Nebula.Controllers.Account;
 
 [Authorize]
-[CustomerAuthorize(UserRole = UserRoleHelper.User)]
+[CustomerAuthorize(UserRole = UserRole.User)]
 [Route("api/account/[controller]")]
 [ApiController]
 public class WarehouseController(

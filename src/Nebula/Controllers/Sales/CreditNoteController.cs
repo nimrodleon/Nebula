@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Sales.Notes;
 using Nebula.Modules.Sales.Notes.Dto;
@@ -13,7 +12,7 @@ using Nebula.Modules.InvoiceHub;
 namespace Nebula.Controllers.Sales;
 
 [Authorize]
-[CustomerAuthorize(UserRole = UserRoleHelper.User)]
+[CustomerAuthorize(UserRole = UserRole.User)]
 [Route("api/sales/[controller]")]
 [ApiController]
 public class CreditNoteController(
