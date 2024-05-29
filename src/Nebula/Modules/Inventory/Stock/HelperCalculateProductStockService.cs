@@ -10,22 +10,12 @@ public interface IHelperCalculateProductStockService
     Task<List<ProductStockInfoDto>> GetProductStockInfos(string companyId, string productId);
 }
 
-public class HelperCalculateProductStockService : IHelperCalculateProductStockService
+public class HelperCalculateProductStockService(
+    IProductService productService,
+    IProductStockService productStockService,
+    IWarehouseService warehouseService)
+    : IHelperCalculateProductStockService
 {
-    private readonly IProductService _productService;
-    private readonly IProductStockService _productStockService;
-    private readonly IWarehouseService _warehouseService;
-
-    public HelperCalculateProductStockService(
-        IProductService productService,
-        IProductStockService productStockService,
-        IWarehouseService warehouseService)
-    {
-        _productService = productService;
-        _productStockService = productStockService;
-        _warehouseService = warehouseService;
-    }
-
     /// <summary>
     /// Recupera la información de stock de un producto específico en diferentes almacenes y lotes
     /// </summary>
@@ -34,11 +24,11 @@ public class HelperCalculateProductStockService : IHelperCalculateProductStockSe
     public async Task<List<ProductStockInfoDto>> GetProductStockInfos(string companyId, string productId)
     {
         var requestParams = new StockListRequestParams();
-        requestParams.Product = await _productService.GetByIdAsync(companyId, productId);
-        requestParams.Warehouses = await _warehouseService.GetAllAsync(companyId);
+        requestParams.Product = await productService.GetByIdAsync(companyId, productId);
+        requestParams.Warehouses = await warehouseService.GetAllAsync(companyId);
         var warehouseArrId = new List<string>();
         requestParams.Warehouses.ForEach(item => warehouseArrId.Add(item.Id));
-        requestParams.Stocks = await _productStockService.GetProductStocksByWarehousesIdsAsync(companyId, warehouseArrId, requestParams.Product.Id);
+        requestParams.Stocks = await productStockService.GetProductStocksByWarehousesIdsAsync(companyId, warehouseArrId, requestParams.Product.Id);
         var result = new HelperProductStockInfo(requestParams).GetStockInfo();
         return result;
     }

@@ -10,10 +10,9 @@ public interface ITransferenciaService : ICrudOperationService<Transferencia>
     Task<List<Transferencia>> GetListAsync(string companyId, DateQuery query);
 }
 
-public class TransferenciaService : CrudOperationService<Transferencia>, ITransferenciaService
+public class TransferenciaService(MongoDatabaseService mongoDatabase)
+    : CrudOperationService<Transferencia>(mongoDatabase), ITransferenciaService
 {
-    public TransferenciaService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
-
     public async Task<List<Transferencia>> GetListAsync(string companyId, DateQuery query)
     {
         var filter = Builders<Transferencia>.Filter;

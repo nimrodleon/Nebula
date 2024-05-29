@@ -10,19 +10,19 @@ namespace Nebula.Modules.Cashier;
 public interface ICashierDetailService : ICrudOperationService<CashierDetail>
 {
     Task<List<CashierDetail>> GetListAsync(string companyId, string id, string query);
-    Task<List<CashierDetail>> GetDetalleCajaDiariaAsync(string companyId, string id, string query = "", int page = 1, int pageSize = 12);
+
+    Task<List<CashierDetail>> GetDetalleCajaDiariaAsync(string companyId, string id, string query = "", int page = 1,
+        int pageSize = 12);
+
     Task<long> GetTotalDetalleCajaDiariaAsync(string companyId, string id, string query = "");
     Task<ResumenCajaDto> GetResumenCaja(string companyId, string cajaDiariaId);
     Task<long> CountDocumentsAsync(string companyId, string id);
     Task<List<CashierDetail>> GetEntradaSalidaAsync(string companyId, string contactId, string month, string year);
 }
 
-public class CashierDetailService : CrudOperationService<CashierDetail>, ICashierDetailService
+public class CashierDetailService(MongoDatabaseService mongoDatabase)
+    : CrudOperationService<CashierDetail>(mongoDatabase), ICashierDetailService
 {
-    public CashierDetailService(MongoDatabaseService mongoDatabase) : base(mongoDatabase)
-    {
-    }
-
     public async Task<List<CashierDetail>> GetListAsync(string companyId, string id, string query)
     {
         var builder = Builders<CashierDetail>.Filter;
@@ -33,7 +33,8 @@ public class CashierDetailService : CrudOperationService<CashierDetail>, ICashie
         return await _collection.Find(filter).ToListAsync();
     }
 
-    public async Task<List<CashierDetail>> GetDetalleCajaDiariaAsync(string companyId, string id, string query = "", int page = 1, int pageSize = 12)
+    public async Task<List<CashierDetail>> GetDetalleCajaDiariaAsync(string companyId, string id, string query = "",
+        int page = 1, int pageSize = 12)
     {
         var skip = (page - 1) * pageSize;
         var builder = Builders<CashierDetail>.Filter;
@@ -65,9 +66,12 @@ public class CashierDetailService : CrudOperationService<CashierDetail>, ICashie
     public async Task<ResumenCajaDto> GetResumenCaja(string companyId, string cajaDiariaId)
     {
         var builder = Builders<CashierDetail>.Filter;
-        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId), builder.Eq(x => x.CajaDiariaId, cajaDiariaId));
+        var filter = builder.And(builder.Eq(x => x.CompanyId, companyId),
+            builder.Eq(x => x.CajaDiariaId, cajaDiariaId));
         List<CashierDetail> detalleCaja = await _collection.Find(filter).ToListAsync();
-        decimal totalSalidas = detalleCaja.Where(x => x.TypeOperation == TipoOperationCaja.SalidaDeDinero && x.FormaPago == MetodosPago.Contado).Sum(x => x.Amount);
+        decimal totalSalidas = detalleCaja
+            .Where(x => x.TypeOperation == TipoOperationCaja.SalidaDeDinero && x.FormaPago == MetodosPago.Contado)
+            .Sum(x => x.Amount);
         decimal totalContado = CalcularTotalesCaja(detalleCaja, MetodosPago.Contado);
         ResumenCajaDto resumenCaja = new ResumenCajaDto
         {
@@ -84,7 +88,8 @@ public class CashierDetailService : CrudOperationService<CashierDetail>, ICashie
     public async Task<long> CountDocumentsAsync(string companyId, string id) =>
         await _collection.CountDocumentsAsync(x => x.CompanyId == companyId && x.CajaDiariaId == id);
 
-    public async Task<List<CashierDetail>> GetEntradaSalidaAsync(string companyId, string contactId, string month, string year)
+    public async Task<List<CashierDetail>> GetEntradaSalidaAsync(string companyId, string contactId, string month,
+        string year)
     {
         var builder = Builders<CashierDetail>.Filter;
         var filter = builder.And(builder.Eq(x => x.CompanyId, companyId),

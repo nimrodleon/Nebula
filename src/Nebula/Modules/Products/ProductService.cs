@@ -12,10 +12,9 @@ public interface IProductService : ICrudOperationService<Product>
     Task<long> GetTotalProductosAsync(string companyId, string query = "");
 }
 
-public class ProductService : CrudOperationService<Product>, IProductService
+public class ProductService(MongoDatabaseService mongoDatabase)
+    : CrudOperationService<Product>(mongoDatabase), IProductService
 {
-    public ProductService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
-
     public async Task<List<Product>> GetListAsync(string companyId, string query = "", int limit = 10)
     {
         var filter = Builders<Product>.Filter.Eq(x => x.CompanyId, companyId);

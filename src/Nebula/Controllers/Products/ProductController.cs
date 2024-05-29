@@ -14,23 +14,15 @@ namespace Nebula.Controllers.Products;
 [CustomerAuthorize(UserRole = UserRoleHelper.User)]
 [Route("api/products/{companyId}/[controller]")]
 [ApiController]
-public class ProductController : ControllerBase
+public class ProductController(IProductService productService, ICategoryService categoryService)
+    : ControllerBase
 {
-    private readonly IProductService _productService;
-    private readonly ICategoryService _categoryService;
-
-    public ProductController(IProductService productService, ICategoryService categoryService)
-    {
-        _productService = productService;
-        _categoryService = categoryService;
-    }
-
     [HttpGet]
     public async Task<IActionResult> Index(string companyId, [FromQuery] string query = "", [FromQuery] int page = 1)
     {
         int pageSize = 12;
-        var productos = await _productService.GetProductosAsync(companyId, query, page, pageSize);
-        var totalProductos = await _productService.GetTotalProductosAsync(companyId, query);
+        var productos = await productService.GetProductosAsync(companyId, query, page, pageSize);
+        var totalProductos = await productService.GetTotalProductosAsync(companyId, query);
         var totalPages = (int)Math.Ceiling((double)totalProductos / pageSize);
 
         var paginationInfo = new PaginationInfo
@@ -53,14 +45,14 @@ public class ProductController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> Show(string companyId, string id)
     {
-        var product = await _productService.GetByIdAsync(companyId, id);
+        var product = await productService.GetByIdAsync(companyId, id);
         return Ok(product);
     }
 
     [HttpGet("Lista")]
     public async Task<IActionResult> Lista(string companyId, [FromQuery] string query = "")
     {
-        var productos = await _productService.GetListAsync(companyId, query);
+        var productos = await productService.GetListAsync(companyId, query);
         return Ok(productos);
     }
 
@@ -68,7 +60,7 @@ public class ProductController : ControllerBase
     public async Task<IActionResult> Select2(string companyId, [FromQuery] string term = "")
     {
         string[] fieldNames = new string[] { "Barcode", "Description" };
-        var products = await _productService.GetFilteredAsync(companyId, fieldNames, term, 6);
+        var products = await productService.GetFilteredAsync(companyId, fieldNames, term, 6);
         var data = new List<ProductSelect>();
         products.ForEach(item =>
         {
@@ -95,25 +87,25 @@ public class ProductController : ControllerBase
     {
         model.CompanyId = companyId.Trim();
         model.Description = model.Description.ToUpper();
-        model = await _productService.CreateAsync(model);
+        model = await productService.InsertOneAsync(model);
         return Ok(model);
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(string companyId, string id, [FromBody] Product model)
     {
-        var product = await _productService.GetByIdAsync(companyId, id);
+        var product = await productService.GetByIdAsync(companyId, id);
         if (product == null) return BadRequest();
         model.Description = model.Description.ToUpper();
-        product = await _productService.UpdateAsync(product.Id, model);
+        product = await productService.ReplaceOneAsync(product.Id, model);
         return Ok(product);
     }
 
     [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRoleHelper.Admin)]
     public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var product = await _productService.GetByIdAsync(companyId, id);
-        await _productService.RemoveAsync(companyId, product.Id);
+        var product = await productService.GetByIdAsync(companyId, id);
+        await productService.DeleteOneAsync(companyId, product.Id);
         return Ok(product);
     }
 
@@ -139,14 +131,14 @@ public class ProductController : ControllerBase
             }
 
             var category = new Category() { CompanyId = companyId.Trim(), Name = "SIN CATEGORÍA" };
-            category = await _categoryService.CreateAsync(category);
+            category = await categoryService.InsertOneAsync(category);
 
             var productos = new ExcelProductReader(datos, companyId, $"{category.Id}:{category.Name}").ReadProducts();
             const int batchSize = 1000;
             for (int i = 0; i < productos.Count; i += batchSize)
             {
                 var batch = productos.GetRange(i, Math.Min(batchSize, productos.Count - i));
-                await _productService.InsertManyAsync(batch);
+                await productService.InsertManyAsync(batch);
             }
 
             return StatusCode(StatusCodes.Status201Created);

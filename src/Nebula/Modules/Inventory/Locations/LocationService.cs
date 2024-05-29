@@ -12,19 +12,12 @@ public interface ILocationService : ICrudOperationService<Location>
     Task<RespLocationDetailStock> GetLocationDetailStocksAsync(string companyId, string id, bool reponer = false);
 }
 
-public class LocationService : CrudOperationService<Location>, ILocationService
+public class LocationService(
+    MongoDatabaseService mongoDatabase,
+    IProductStockService productStockService,
+    ILocationDetailService locationDetailService)
+    : CrudOperationService<Location>(mongoDatabase), ILocationService
 {
-    private readonly IProductStockService _productStockService;
-    private readonly ILocationDetailService _locationDetailService;
-
-    public LocationService(MongoDatabaseService mongoDatabase,
-        IProductStockService productStockService,
-        ILocationDetailService locationDetailService) : base(mongoDatabase)
-    {
-        _productStockService = productStockService;
-        _locationDetailService = locationDetailService;
-    }
-
     public async Task<List<Location>> GetByWarehouseIdAsync(string companyId, string id)
     {
         var builder = Builders<Location>.Filter;
@@ -36,11 +29,11 @@ public class LocationService : CrudOperationService<Location>, ILocationService
     public async Task<RespLocationDetailStock> GetLocationDetailStocksAsync(string companyId, string id, bool reponer = false)
     {
         var location = await GetByIdAsync(companyId, id);
-        var locationDetails = await _locationDetailService.GetListAsync(companyId, location.Id);
+        var locationDetails = await locationDetailService.GetListAsync(companyId, location.Id);
         var productArrId = new List<string>();
         // obtener lista de identificadores.
         locationDetails.ForEach(item => productArrId.Add(item.ProductId));
-        var productStocks = await _productStockService.GetProductStockByProductIdsAsync(companyId, location.WarehouseId, productArrId);
+        var productStocks = await productStockService.GetProductStockByProductIdsAsync(companyId, location.WarehouseId, productArrId);
         var locationDetailStocks = new List<LocationItemStockDto>();
         locationDetails.ForEach(item =>
         {

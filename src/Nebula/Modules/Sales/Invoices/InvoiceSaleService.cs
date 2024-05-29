@@ -22,16 +22,11 @@ public interface IInvoiceSaleService : ICrudOperationService<InvoiceSale>
     Task<List<InvoiceSale>> GetInvoiceSalesPendingAsync(string companyId);
 }
 
-public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSaleService
+public class InvoiceSaleService(
+    MongoDatabaseService mongoDatabase,
+    IInvoiceSaleDetailService invoiceSaleDetailService)
+    : CrudOperationService<InvoiceSale>(mongoDatabase), IInvoiceSaleService
 {
-    private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
-
-    public InvoiceSaleService(MongoDatabaseService mongoDatabase,
-        IInvoiceSaleDetailService invoiceSaleDetailService) : base(mongoDatabase)
-    {
-        _invoiceSaleDetailService = invoiceSaleDetailService;
-    }
-
     public async Task<List<InvoiceSale>> GetListAsync(string companyId, DateQuery query)
     {
         var builder = Builders<InvoiceSale>.Filter;
@@ -112,7 +107,7 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSal
     public async Task<ResponseInvoiceSale> GetInvoiceSaleAsync(string companyId, string invoiceSaleId)
     {
         var invoiceSale = await GetByIdAsync(companyId, invoiceSaleId);
-        var invoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(companyId, invoiceSale.Id);
+        var invoiceSaleDetails = await invoiceSaleDetailService.GetListAsync(companyId, invoiceSale.Id);
         return new ResponseInvoiceSale()
         {
             InvoiceSale = invoiceSale,
@@ -174,7 +169,7 @@ public class InvoiceSaleService : CrudOperationService<InvoiceSale>, IInvoiceSal
     {
         var invoiceSale = await GetByIdAsync(companyId, invoiceSaleId);
         invoiceSale.Anulada = true;
-        invoiceSale = await UpdateAsync(invoiceSale.Id, invoiceSale);
+        invoiceSale = await ReplaceOneAsync(invoiceSale.Id, invoiceSale);
         return invoiceSale;
     }
 

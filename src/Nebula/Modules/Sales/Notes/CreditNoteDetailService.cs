@@ -9,10 +9,9 @@ public interface ICreditNoteDetailService : ICrudOperationService<CreditNoteDeta
     Task<List<CreditNoteDetail>> GetListAsync(string companyId, string creditNoteId);
 }
 
-public class CreditNoteDetailService : CrudOperationService<CreditNoteDetail>, ICreditNoteDetailService
+public class CreditNoteDetailService(MongoDatabaseService mongoDatabase)
+    : CrudOperationService<CreditNoteDetail>(mongoDatabase), ICreditNoteDetailService
 {
-    public CreditNoteDetailService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
-
     public async Task<List<CreditNoteDetail>> GetListAsync(string companyId, string creditNoteId) =>
        await _collection.Find(x => x.CompanyId == companyId && x.CreditNoteId == creditNoteId).ToListAsync();
 }

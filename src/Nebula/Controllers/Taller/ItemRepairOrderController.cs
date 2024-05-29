@@ -11,19 +11,12 @@ namespace Nebula.Controllers.Taller;
 [CustomerAuthorize(UserRole = UserRoleHelper.User)]
 [Route("api/taller/{companyId}/[controller]")]
 [ApiController]
-public class ItemRepairOrderController : ControllerBase
+public class ItemRepairOrderController(ITallerItemRepairOrderService itemRepairOrderService) : ControllerBase
 {
-    private readonly ITallerItemRepairOrderService _itemRepairOrderService;
-
-    public ItemRepairOrderController(ITallerItemRepairOrderService itemRepairOrderService)
-    {
-        _itemRepairOrderService = itemRepairOrderService;
-    }
-
     [HttpGet("{id}")]
     public async Task<IActionResult> Index(string companyId, string id)
     {
-        var itemsRepairOrder = await _itemRepairOrderService.GetItemsRepairOrder(companyId, id);
+        var itemsRepairOrder = await itemRepairOrderService.GetItemsRepairOrder(companyId, id);
         return Ok(itemsRepairOrder);
     }
 
@@ -31,25 +24,25 @@ public class ItemRepairOrderController : ControllerBase
     public async Task<IActionResult> Create(string companyId, [FromBody] TallerItemRepairOrder model)
     {
         model.CompanyId = companyId.Trim();
-        model = await _itemRepairOrderService.CreateAsync(model);
+        model = await itemRepairOrderService.InsertOneAsync(model);
         return Ok(model);
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(string companyId, string id, [FromBody] TallerItemRepairOrder model)
     {
-        var itemRepairOrder = await _itemRepairOrderService.GetByIdAsync(companyId, id);
+        var itemRepairOrder = await itemRepairOrderService.GetByIdAsync(companyId, id);
         model.Id = itemRepairOrder.Id;
         model.CompanyId = companyId.Trim();
-        itemRepairOrder = await _itemRepairOrderService.UpdateAsync(itemRepairOrder.Id, model);
+        itemRepairOrder = await itemRepairOrderService.ReplaceOneAsync(itemRepairOrder.Id, model);
         return Ok(itemRepairOrder);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var itemRepairOrder = await _itemRepairOrderService.GetByIdAsync(companyId, id);
-        await _itemRepairOrderService.RemoveAsync(companyId, itemRepairOrder.Id);
+        var itemRepairOrder = await itemRepairOrderService.GetByIdAsync(companyId, id);
+        await itemRepairOrderService.DeleteOneAsync(companyId, itemRepairOrder.Id);
         return Ok(itemRepairOrder);
     }
 }

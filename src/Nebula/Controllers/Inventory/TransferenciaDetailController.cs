@@ -11,26 +11,19 @@ namespace Nebula.Controllers.Inventory;
 [CustomerAuthorize(UserRole = UserRoleHelper.User)]
 [Route("api/inventory/{companyId}/[controller]")]
 [ApiController]
-public class TransferenciaDetailController : ControllerBase
+public class TransferenciaDetailController(ITransferenciaDetailService transferenciaDetailService) : ControllerBase
 {
-    private readonly ITransferenciaDetailService _transferenciaDetailService;
-
-    public TransferenciaDetailController(ITransferenciaDetailService transferenciaDetailService)
-    {
-        _transferenciaDetailService = transferenciaDetailService;
-    }
-
     [HttpGet("{id}")]
     public async Task<IActionResult> Index(string companyId, string id)
     {
-        var responseData = await _transferenciaDetailService.GetListAsync(companyId, id);
+        var responseData = await transferenciaDetailService.GetListAsync(companyId, id);
         return Ok(responseData);
     }
 
     [HttpGet("Show/{id}")]
     public async Task<IActionResult> Show(string companyId, string id)
     {
-        var transferenciaDetail = await _transferenciaDetailService.GetByIdAsync(companyId, id);
+        var transferenciaDetail = await transferenciaDetailService.GetByIdAsync(companyId, id);
         return Ok(transferenciaDetail);
     }
 
@@ -38,32 +31,32 @@ public class TransferenciaDetailController : ControllerBase
     public async Task<IActionResult> Create(string companyId, [FromBody] TransferenciaDetail model)
     {
         model.CompanyId = companyId.Trim();
-        var transferenciaDetail = await _transferenciaDetailService.CreateAsync(model);
+        var transferenciaDetail = await transferenciaDetailService.InsertOneAsync(model);
         return Ok(transferenciaDetail);
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(string companyId, string id, [FromBody] TransferenciaDetail model)
     {
-        var transferenciaDetail = await _transferenciaDetailService.GetByIdAsync(companyId, id);
+        var transferenciaDetail = await transferenciaDetailService.GetByIdAsync(companyId, id);
         model.Id = transferenciaDetail.Id;
         model.CompanyId = companyId.Trim();
-        var responseData = await _transferenciaDetailService.UpdateAsync(id, model);
+        var responseData = await transferenciaDetailService.ReplaceOneAsync(id, model);
         return Ok(responseData);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var transferenciaDetail = await _transferenciaDetailService.GetByIdAsync(companyId, id);
-        await _transferenciaDetailService.RemoveAsync(companyId, transferenciaDetail.Id);
+        var transferenciaDetail = await transferenciaDetailService.GetByIdAsync(companyId, id);
+        await transferenciaDetailService.DeleteOneAsync(companyId, transferenciaDetail.Id);
         return Ok(transferenciaDetail);
     }
 
     [HttpGet("CountDocuments/{id}")]
     public async Task<IActionResult> CountDocuments(string companyId, string id)
     {
-        var countDocuments = await _transferenciaDetailService.CountDocumentsAsync(companyId, id);
+        var countDocuments = await transferenciaDetailService.CountDocumentsAsync(companyId, id);
         return Ok(countDocuments);
     }
 }

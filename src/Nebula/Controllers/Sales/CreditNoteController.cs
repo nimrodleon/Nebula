@@ -16,32 +16,18 @@ namespace Nebula.Controllers.Sales;
 [CustomerAuthorize(UserRole = UserRoleHelper.User)]
 [Route("api/sales/{companyId}/[controller]")]
 [ApiController]
-public class CreditNoteController : ControllerBase
+public class CreditNoteController(
+    ICompanyService companyService,
+    IInvoiceSaleService invoiceSaleService,
+    ICreditNoteService creditNoteService,
+    ICreditNoteDetailService creditNoteDetailService,
+    ICreditNoteHubService creditNoteHubService)
+    : ControllerBase
 {
-    private readonly ICompanyService _companyService;
-    private readonly IInvoiceSaleService _invoiceSaleService;
-    private readonly ICreditNoteService _creditNoteService;
-    private readonly ICreditNoteDetailService _creditNoteDetailService;
-    private readonly ICreditNoteHubService _creditNoteHubService;
-
-    public CreditNoteController(
-        ICompanyService companyService,
-        IInvoiceSaleService invoiceSaleService,
-        ICreditNoteService creditNoteService,
-        ICreditNoteDetailService creditNoteDetailService,
-        ICreditNoteHubService creditNoteHubService)
-    {
-        _companyService = companyService;
-        _invoiceSaleService = invoiceSaleService;
-        _creditNoteService = creditNoteService;
-        _creditNoteDetailService = creditNoteDetailService;
-        _creditNoteHubService = creditNoteHubService;
-    }
-
     [HttpGet("{id}")]
     public async Task<IActionResult> Show(string companyId, string id)
     {
-        var creditNote = await _creditNoteService.GetCreditNoteByInvoiceSaleIdAsync(companyId, id);
+        var creditNote = await creditNoteService.GetCreditNoteByInvoiceSaleIdAsync(companyId, id);
         return Ok(creditNote);
     }
 
@@ -53,8 +39,8 @@ public class CreditNoteController : ControllerBase
     [HttpGet("Print/{creditNoteId}")]
     public async Task<IActionResult> Print(string companyId, string creditNoteId)
     {
-        var company = await _companyService.GetByIdAsync(companyId.Trim());
-        var creditNoteDto = await _creditNoteService.GetCreditNoteDtoAsync(companyId, creditNoteId);
+        var company = await companyService.GetByIdAsync(companyId.Trim());
+        var creditNoteDto = await creditNoteService.GetCreditNoteDtoAsync(companyId, creditNoteId);
         var printCreditNote = new PrintCreditNoteDto()
         {
             Company = company,
@@ -67,19 +53,19 @@ public class CreditNoteController : ControllerBase
     [HttpPatch("Reenviar/{creditNoteId}")]
     public async Task<IActionResult> Reenviar(string companyId, string creditNoteId)
     {
-        var company = await _companyService.GetByIdAsync(companyId.Trim());
+        var company = await companyService.GetByIdAsync(companyId.Trim());
         var cancellationResponse = new InvoiceCancellationResponse();
-        cancellationResponse.CreditNote = await _creditNoteService.GetByIdAsync(companyId, creditNoteId);
-        cancellationResponse.CreditNoteDetail = await _creditNoteDetailService.GetListAsync(companyId, creditNoteId);
-        cancellationResponse.InvoiceSale = await _invoiceSaleService.GetByIdAsync(companyId, cancellationResponse.CreditNote.InvoiceSaleId);
+        cancellationResponse.CreditNote = await creditNoteService.GetByIdAsync(companyId, creditNoteId);
+        cancellationResponse.CreditNoteDetail = await creditNoteDetailService.GetListAsync(companyId, creditNoteId);
+        cancellationResponse.InvoiceSale = await invoiceSaleService.GetByIdAsync(companyId, cancellationResponse.CreditNote.InvoiceSaleId);
         var creditNoteRequest = CreditNoteMapper.MapToCreditNoteRequestHub(company.Ruc, cancellationResponse);
-        var billingResponse = await _creditNoteHubService.SendCreditNoteAsync(companyId, creditNoteRequest);
+        var billingResponse = await creditNoteHubService.SendCreditNoteAsync(companyId, creditNoteRequest);
         var creditNote = cancellationResponse.CreditNote;
         creditNote.BillingResponse = billingResponse;
-        await _creditNoteService.UpdateAsync(creditNote.Id, creditNote);
+        await creditNoteService.ReplaceOneAsync(creditNote.Id, creditNote);
         var invoice = cancellationResponse.InvoiceSale;
         invoice.Anulada = billingResponse.Success;
-        await _invoiceSaleService.UpdateAsync(invoice.Id, invoice);
+        await invoiceSaleService.ReplaceOneAsync(invoice.Id, invoice);
         return Ok(new { billingResponse, creditNote });
     }
 

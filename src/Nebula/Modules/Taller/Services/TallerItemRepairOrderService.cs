@@ -12,12 +12,9 @@ public interface ITallerItemRepairOrderService : ICrudOperationService<TallerIte
 /// <summary>
 /// Servicio Item de la Orden de Reparación.
 /// </summary>
-public class TallerItemRepairOrderService : CrudOperationService<TallerItemRepairOrder>, ITallerItemRepairOrderService
+public class TallerItemRepairOrderService(MongoDatabaseService mongoDatabase)
+    : CrudOperationService<TallerItemRepairOrder>(mongoDatabase), ITallerItemRepairOrderService
 {
-    public TallerItemRepairOrderService(MongoDatabaseService mongoDatabase) : base(mongoDatabase)
-    {
-    }
-
     /// <summary>
     /// Obtener lista de Items de la orden de reparación.
     /// </summary>

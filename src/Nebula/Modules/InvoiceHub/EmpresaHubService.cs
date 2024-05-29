@@ -11,16 +11,11 @@ public interface IEmpresaHubService
     Task<string> RegistrarEmpresa(EmpresaHub empresa);
 }
 
-public class EmpresaHubService : IEmpresaHubService
+public class EmpresaHubService(HttpClient httpClient, IOptions<InvoiceHubSettings> settings)
+    : IEmpresaHubService
 {
-    private readonly HttpClient _httpClient;
-    private readonly InvoiceHubSettings _settings;
-
-    public EmpresaHubService(HttpClient httpClient, IOptions<InvoiceHubSettings> settings)
-    {
-        _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-        _settings = settings?.Value ?? throw new ArgumentNullException(nameof(settings));
-    }
+    private readonly HttpClient _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+    private readonly InvoiceHubSettings _settings = settings?.Value ?? throw new ArgumentNullException(nameof(settings));
 
     public async Task<string> RegistrarEmpresa(EmpresaHub empresa)
     {

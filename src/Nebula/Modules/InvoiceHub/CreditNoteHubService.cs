@@ -11,19 +11,14 @@ public interface ICreditNoteHubService
     Task<BillingResponse> SendCreditNoteAsync(string companyId, CreditNoteRequestHub creditNoteRequest);
 }
 
-public class CreditNoteHubService : ICreditNoteHubService
+public class CreditNoteHubService(
+    HttpClient httpClient,
+    IOptions<InvoiceHubSettings> settings,
+    ILogger<CreditNoteHubService> logger)
+    : ICreditNoteHubService
 {
-    private readonly HttpClient _httpClient;
-    private readonly InvoiceHubSettings _settings;
-    private readonly ILogger<CreditNoteHubService> _logger;
-
-    public CreditNoteHubService(HttpClient httpClient,
-        IOptions<InvoiceHubSettings> settings, ILogger<CreditNoteHubService> logger)
-    {
-        _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-        _settings = settings?.Value ?? throw new ArgumentNullException(nameof(settings));
-        _logger = logger;
-    }
+    private readonly HttpClient _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+    private readonly InvoiceHubSettings _settings = settings?.Value ?? throw new ArgumentNullException(nameof(settings));
 
     public async Task<BillingResponse> SendCreditNoteAsync(string companyId, CreditNoteRequestHub creditNoteRequest)
     {
@@ -32,7 +27,7 @@ public class CreditNoteHubService : ICreditNoteHubService
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _settings.JwtToken);
             string jsonCreditNoteRequest = JsonSerializer.Serialize(creditNoteRequest);
             HttpContent content = new StringContent(jsonCreditNoteRequest, Encoding.UTF8, "application/json");
-            _logger.LogInformation(jsonCreditNoteRequest.ToString());
+            logger.LogInformation(jsonCreditNoteRequest.ToString());
             var response = await _httpClient.PostAsync($"{_settings.ApiBaseUrl}/api/creditNote/send/{companyId}", content);
 
             if (response.IsSuccessStatusCode)

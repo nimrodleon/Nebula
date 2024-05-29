@@ -8,9 +8,5 @@ public interface ICategoryService : ICrudOperationService<Category>
 
 }
 
-public class CategoryService : CrudOperationService<Category>, ICategoryService
-{
-    public CategoryService(MongoDatabaseService mongoDatabase) : base(mongoDatabase)
-    {
-    }
-}
+public class CategoryService(MongoDatabaseService mongoDatabase)
+    : CrudOperationService<Category>(mongoDatabase), ICategoryService;

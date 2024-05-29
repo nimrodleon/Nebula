@@ -53,8 +53,8 @@ public class CashierSaleService : ICashierSaleService
         invoiceSale.InvoiceSerieId = invoiceSerie.Id;
 
         // agregar Información del comprobante.
-        await _invoiceSerieService.UpdateAsync(invoiceSerie.Id, invoiceSerie);
-        await _invoiceSaleService.CreateAsync(invoiceSale);
+        await _invoiceSerieService.ReplaceOneAsync(invoiceSerie.Id, invoiceSerie);
+        await _invoiceSaleService.InsertOneAsync(invoiceSale);
 
         // agregar detalles del comprobante.
         var invoiceSaleDetails = comprobanteDto.GetInvoiceSaleDetails(company, invoiceSale.Id);
@@ -75,13 +75,13 @@ public class CashierSaleService : ICashierSaleService
             FormaPago = comprobanteDto.FormaPago.Tipo,
             Amount = invoiceSale.MtoImpVenta
         };
-        await _cashierDetailService.CreateAsync(cashierDetail);
+        await _cashierDetailService.InsertOneAsync(cashierDetail);
 
         // registrar cargo si la operación es a crédito.
         if (comprobanteDto.FormaPago.Tipo == FormaPago.Credito)
         {
             var cargo = GenerarCargo(invoiceSale, cajaDiaria, company.DiasPlazo);
-            await _receivableService.CreateAsync(cargo);
+            await _receivableService.InsertOneAsync(cargo);
         }
 
         return invoiceSale;

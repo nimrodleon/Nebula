@@ -11,18 +11,14 @@ public interface IInvoiceHubService
     Task<BillingResponse> SendInvoiceAsync(string companyId, InvoiceRequestHub invoiceRequest);
 }
 
-public class InvoiceHubService : IInvoiceHubService
+public class InvoiceHubService(
+    HttpClient httpClient,
+    IOptions<InvoiceHubSettings> settings,
+    ILogger<InvoiceHubService> logger)
+    : IInvoiceHubService
 {
-    private readonly HttpClient _httpClient;
-    private readonly InvoiceHubSettings _settings;
-    private readonly ILogger<InvoiceHubService> _logger;
-
-    public InvoiceHubService(HttpClient httpClient, IOptions<InvoiceHubSettings> settings, ILogger<InvoiceHubService> logger)
-    {
-        _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-        _settings = settings?.Value ?? throw new ArgumentNullException(nameof(settings));
-        _logger = logger;
-    }
+    private readonly HttpClient _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+    private readonly InvoiceHubSettings _settings = settings?.Value ?? throw new ArgumentNullException(nameof(settings));
 
     public async Task<BillingResponse> SendInvoiceAsync(string companyId, InvoiceRequestHub invoiceRequest)
     {
@@ -32,8 +28,8 @@ public class InvoiceHubService : IInvoiceHubService
             string url = $"{_settings.ApiBaseUrl}/api/invoice/send/{companyId.Trim()}";
             string jsonInvoiceRequest = JsonSerializer.Serialize(invoiceRequest);
             HttpContent content = new StringContent(jsonInvoiceRequest, Encoding.UTF8, "application/json");
-            _logger.LogInformation("Remote URL Invoice: " + url);
-            _logger.LogInformation(jsonInvoiceRequest.ToString());
+            logger.LogInformation("Remote URL Invoice: " + url);
+            logger.LogInformation(jsonInvoiceRequest.ToString());
             var response = await _httpClient.PostAsync(url, content);
 
             if (response.IsSuccessStatusCode)

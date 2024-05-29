@@ -14,29 +14,19 @@ namespace Nebula.Controllers.Auth;
 
 [Route("api/auth/[controller]")]
 [ApiController]
-public class UserController : ControllerBase
+public class UserController(
+    IJwtService jwtService,
+    IUserService userService,
+    IEmailService emailService,
+    ICompanyService companyService)
+    : ControllerBase
 {
-    private readonly IUserService _userService;
-    private readonly IEmailService _emailService;
-    private readonly IJwtService _jwtService;
-    private readonly ICompanyService _companyService;
-
-    public UserController(IJwtService jwtService,
-        IUserService userService, IEmailService emailService,
-        ICompanyService companyService)
-    {
-        _jwtService = jwtService;
-        _userService = userService;
-        _emailService = emailService;
-        _companyService = companyService;
-    }
-
     [HttpGet]
     public async Task<IActionResult> Index([FromQuery] string query = "", [FromQuery] int page = 1)
     {
         int pageSize = 12;
-        var usuarios = await _userService.GetListAsync(query, page, pageSize);
-        var totalUsuarios = await _userService.GetTotalListAsync(query);
+        var usuarios = await userService.GetListAsync(query, page, pageSize);
+        var totalUsuarios = await userService.GetTotalListAsync(query);
         var totalPages = (int)Math.Ceiling((double)totalUsuarios / pageSize);
 
         var paginationInfo = new PaginationInfo
@@ -59,14 +49,14 @@ public class UserController : ControllerBase
     [HttpGet("{userId}/Show")]
     public async Task<IActionResult> Show(string userId)
     {
-        var user = await _userService.GetByIdAsync(userId);
+        var user = await userService.GetByIdAsync(userId);
         return Ok(user);
     }
 
     [HttpGet("{userId}/Companies")]
     public async Task<IActionResult> Companies(string userId)
     {
-        var companies = await _companyService.GetCompaniesByUserIdAsync(userId);
+        var companies = await companyService.GetCompaniesByUserIdAsync(userId);
         return Ok(companies);
     }
 
@@ -83,16 +73,16 @@ public class UserController : ControllerBase
                 // UserType = UserTypeSystem.Customer,
                 // IsEmailVerified = false,
             };
-            user = await _userService.CreateAsync(user);
+            user = await userService.InsertOneAsync(user);
 
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Name, user.UserName),
             };
-            string token = _jwtService.GenerateToken(claims);
+            string token = jwtService.GenerateToken(claims);
             // user.EmailValidationToken = token;
-            await _userService.UpdateAsync(user.Id, user);
+            await userService.ReplaceOneAsync(user.Id, user);
 
             // enviar correo electrónico.
             string fromEmail = "cpedigital12@gmail.com";
@@ -111,7 +101,7 @@ public class UserController : ControllerBase
                 Atentamente,
                 CPEDIGITAL.NET
                 """;
-            await _emailService.SendEmailAsync(fromEmail, user.Email.Trim(), subject, body);
+            await emailService.SendEmailAsync(fromEmail, user.Email.Trim(), subject, body);
             return Ok(new { ok = true, msg = "Su registro ha sido exitoso. Por favor, revise su correo electrónico para confirmar su dirección de correo." });
         }
         catch (MongoWriteException ex)
@@ -136,16 +126,16 @@ public class UserController : ControllerBase
                 // IsEmailVerified = false,
                 // Disabled = model.Disabled,
             };
-            user = await _userService.CreateAsync(user);
+            user = await userService.InsertOneAsync(user);
 
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Name, user.UserName),
             };
-            string token = _jwtService.GenerateToken(claims);
+            string token = jwtService.GenerateToken(claims);
             // user.EmailValidationToken = token;
-            await _userService.UpdateAsync(user.Id, user);
+            await userService.ReplaceOneAsync(user.Id, user);
 
             // enviar correo electrónico.
             string fromEmail = "cpedigital12@gmail.com";
@@ -168,7 +158,7 @@ public class UserController : ControllerBase
                 Atentamente,
                 CPEDIGITAL.NET
                 """;
-            await _emailService.SendEmailAsync(fromEmail, user.Email.Trim(), subject, body);
+            await emailService.SendEmailAsync(fromEmail, user.Email.Trim(), subject, body);
             return Ok(user);
         }
         catch (MongoWriteException ex)
@@ -183,7 +173,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            var user = await _userService.GetByIdAsync(id);
+            var user = await userService.GetByIdAsync(id);
             if (user == null) return BadRequest();
 
             user.UserName = model.UserName;
@@ -191,7 +181,7 @@ public class UserController : ControllerBase
             // user.UserType = model.UserType;
             // user.Disabled = model.Disabled;
 
-            await _userService.UpdateAsync(user.Id, user);
+            await userService.ReplaceOneAsync(user.Id, user);
             return Ok(user);
         }
         catch (MongoWriteException ex)
@@ -207,7 +197,7 @@ public class UserController : ControllerBase
         try
         {
             // Validar el token usando el servicio JWT
-            var claimsPrincipal = _jwtService.ValidateToken(token);
+            var claimsPrincipal = jwtService.ValidateToken(token);
             if (claimsPrincipal == null)
             {
                 return BadRequest(new
@@ -219,7 +209,7 @@ public class UserController : ControllerBase
 
             // Obtener el ID del usuario desde el token
             string userId = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
-            var user = await _userService.GetByIdAsync(userId);
+            var user = await userService.GetByIdAsync(userId);
             if (user == null)
                 return BadRequest(new
                 {
@@ -238,7 +228,7 @@ public class UserController : ControllerBase
             // user.EmailValidationToken = string.Empty;
 
             // Actualizar el usuario en la base de datos
-            await _userService.UpdateAsync(userId, user);
+            await userService.ReplaceOneAsync(userId, user);
 
             return Ok(new
             {
@@ -272,7 +262,7 @@ public class UserController : ControllerBase
         try
         {
             // Verificar si el correo electrónico está asociado a una cuenta de usuario
-            var user = await _userService.GetByEmailAsync(model.Email);
+            var user = await userService.GetByEmailAsync(model.Email);
             if (user == null)
             {
                 return BadRequest(new { ok = false, msg = "Correo electrónico no registrado." });
@@ -284,16 +274,16 @@ public class UserController : ControllerBase
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Name, user.UserName),
             };
-            string resetToken = _jwtService.GenerateToken(claims);
+            string resetToken = jwtService.GenerateToken(claims);
             // user.ResetPasswordToken = resetToken;
-            await _userService.UpdateAsync(user.Id, user);
+            await userService.ReplaceOneAsync(user.Id, user);
 
             // Enviar correo electrónico con el enlace para restablecer la contraseña
             string resetPasswordLink = $"http://localhost:5042/api/auth/User/ResetPassword?token={resetToken}";
             string emailSubject = "Restablecimiento de Contraseña";
             string emailBody = $"Haz clic en el siguiente enlace para restablecer tu contraseña: {resetPasswordLink}";
 
-            await _emailService.SendEmailAsync("reddrc21@gmail.com", user.Email, emailSubject, emailBody);
+            await emailService.SendEmailAsync("reddrc21@gmail.com", user.Email, emailSubject, emailBody);
 
             return Ok(new { ok = true, msg = "Correo electrónico de restablecimiento de contraseña enviado." });
         }
@@ -309,12 +299,12 @@ public class UserController : ControllerBase
         try
         {
             // Validar el token usando el servicio JWT
-            var claimsPrincipal = _jwtService.ValidateToken(model.Token.Trim());
+            var claimsPrincipal = jwtService.ValidateToken(model.Token.Trim());
             if (claimsPrincipal == null) return BadRequest(new { ok = false, msg = "Token inválido." });
 
             // Obtener el ID del usuario desde el token
             string userId = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
-            var user = await _userService.GetByIdAsync(userId);
+            var user = await userService.GetByIdAsync(userId);
             if (user == null) return BadRequest(new { ok = false, msg = "Usuario no encontrado." });
             // if (user.ResetPasswordToken != model.Token.Trim()) return BadRequest(new { ok = false, msg = "Token no coincide con el usuario." });
 
@@ -325,7 +315,7 @@ public class UserController : ControllerBase
             // user.ResetPasswordToken = string.Empty;
 
             // Guardar la contraseña actualizada y limpiar el token en la base de datos
-            await _userService.UpdateAsync(user.Id, user);
+            await userService.ReplaceOneAsync(user.Id, user);
 
             return Ok(new { ok = true, msg = "Contraseña restablecida correctamente." });
         }

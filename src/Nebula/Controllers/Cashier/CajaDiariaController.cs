@@ -18,34 +18,20 @@ namespace Nebula.Controllers.Cashier;
 [CustomerAuthorize(UserRole = UserRoleHelper.User)]
 [Route("api/cashier/{companyId}/[controller]")]
 [ApiController]
-public class CajaDiariaController : ControllerBase
+public class CajaDiariaController(
+    ICompanyService companyService,
+    ICajaDiariaService cajaDiariaService,
+    IInvoiceSerieService invoiceSerieService,
+    ICashierDetailService cashierDetailService,
+    IContactService contactService)
+    : ControllerBase
 {
-    private readonly ICompanyService _companyService;
-    private readonly ICajaDiariaService _cajaDiariaService;
-    private readonly IInvoiceSerieService _invoiceSerieService;
-    private readonly ICashierDetailService _cashierDetailService;
-    private readonly IContactService _contactService;
-
-    public CajaDiariaController(
-        ICompanyService companyService,
-        ICajaDiariaService cajaDiariaService,
-        IInvoiceSerieService invoiceSerieService,
-        ICashierDetailService cashierDetailService,
-        IContactService contactService)
-    {
-        _companyService = companyService;
-        _cajaDiariaService = cajaDiariaService;
-        _invoiceSerieService = invoiceSerieService;
-        _cashierDetailService = cashierDetailService;
-        _contactService = contactService;
-    }
-
     [HttpGet]
     public async Task<IActionResult> Index(string companyId, [FromQuery] DateQuery model, [FromQuery] int page = 1)
     {
         int pageSize = 12;
-        var cajasDiarias = await _cajaDiariaService.GetCajasDiariasAsync(companyId, model, page, pageSize);
-        var totalCajasDiarias = await _cajaDiariaService.GetTotalCajasDiariasAsync(companyId, model);
+        var cajasDiarias = await cajaDiariaService.GetCajasDiariasAsync(companyId, model, page, pageSize);
+        var totalCajasDiarias = await cajaDiariaService.GetTotalCajasDiariasAsync(companyId, model);
         var totalPages = (int)Math.Ceiling((double)totalCajasDiarias / pageSize);
 
         var paginationInfo = new PaginationInfo
@@ -68,8 +54,8 @@ public class CajaDiariaController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> Show(string companyId, string id)
     {
-        var cajaDiaria = await _cajaDiariaService.GetByIdAsync(companyId, id);
-        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(companyId, cajaDiaria.InvoiceSerieId);
+        var cajaDiaria = await cajaDiariaService.GetByIdAsync(companyId, id);
+        var invoiceSerie = await invoiceSerieService.GetByIdAsync(companyId, cajaDiaria.InvoiceSerieId);
         cajaDiaria.WarehouseId = invoiceSerie.WarehouseId;
         return Ok(cajaDiaria);
     }
@@ -77,7 +63,7 @@ public class CajaDiariaController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(string companyId, [FromBody] AperturaCaja model)
     {
-        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(companyId, model.InvoiceSerie);
+        var invoiceSerie = await invoiceSerieService.GetByIdAsync(companyId, model.InvoiceSerie);
         var cajaDiaria = new CajaDiaria()
         {
             CompanyId = companyId.Trim(),
@@ -88,7 +74,7 @@ public class CajaDiariaController : ControllerBase
             TotalCierre = 0.0M,
             Turno = model.Turno
         };
-        await _cajaDiariaService.CreateAsync(cajaDiaria);
+        await cajaDiariaService.InsertOneAsync(cajaDiaria);
 
         // registrar apertura de caja.
         var detalleCaja = new CashierDetail()
@@ -100,7 +86,7 @@ public class CajaDiariaController : ControllerBase
             FormaPago = MetodosPago.Contado,
             Amount = model.Total
         };
-        await _cashierDetailService.CreateAsync(detalleCaja);
+        await cashierDetailService.InsertOneAsync(detalleCaja);
 
         return Ok(cajaDiaria);
     }
@@ -108,26 +94,26 @@ public class CajaDiariaController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(string companyId, string id, [FromBody] CerrarCaja model)
     {
-        var cajaDiaria = await _cajaDiariaService.GetByIdAsync(companyId, id);
+        var cajaDiaria = await cajaDiariaService.GetByIdAsync(companyId, id);
         cajaDiaria.CompanyId = companyId.Trim();
         cajaDiaria.TotalCierre = model.TotalCierre;
         cajaDiaria.Status = "CERRADO";
-        await _cajaDiariaService.UpdateAsync(id, cajaDiaria);
+        await cajaDiariaService.ReplaceOneAsync(id, cajaDiaria);
         return Ok(cajaDiaria);
     }
 
     [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRoleHelper.Admin)]
     public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var cajaDiaria = await _cajaDiariaService.GetByIdAsync(companyId, id);
-        await _cajaDiariaService.RemoveAsync(companyId, cajaDiaria.Id);
+        var cajaDiaria = await cajaDiariaService.GetByIdAsync(companyId, id);
+        await cajaDiariaService.DeleteOneAsync(companyId, cajaDiaria.Id);
         return Ok(cajaDiaria);
     }
 
     [HttpGet("CajasAbiertas")]
     public async Task<IActionResult> CajasAbiertas(string companyId)
     {
-        return Ok(await _cajaDiariaService.GetCajasAbiertasAsync(companyId));
+        return Ok(await cajaDiariaService.GetCajasAbiertasAsync(companyId));
     }
 
     /// <summary>
@@ -139,11 +125,11 @@ public class CajaDiariaController : ControllerBase
     [HttpGet("GetQuickSaleConfig/{id}")]
     public async Task<IActionResult> GetQuickSaleConfig(string companyId, string id)
     {
-        var company = await _companyService.GetByIdAsync(companyId.Trim());
-        var cajaDiaria = await _cajaDiariaService.GetByIdAsync(companyId, id);
-        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(companyId, cajaDiaria.InvoiceSerieId);
+        var company = await companyService.GetByIdAsync(companyId.Trim());
+        var cajaDiaria = await cajaDiariaService.GetByIdAsync(companyId, id);
+        var invoiceSerie = await invoiceSerieService.GetByIdAsync(companyId, cajaDiaria.InvoiceSerieId);
         cajaDiaria.WarehouseId = invoiceSerie.WarehouseId;
-        var contact = await _contactService.GetByIdAsync(companyId, company.ContactId);
+        var contact = await contactService.GetByIdAsync(companyId, company.ContactId);
 
         var quickSaleConfig = new QuickSaleConfig()
         {

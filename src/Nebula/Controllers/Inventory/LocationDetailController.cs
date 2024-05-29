@@ -11,26 +11,19 @@ namespace Nebula.Controllers.Inventory;
 [CustomerAuthorize(UserRole = UserRoleHelper.User)]
 [Route("api/inventory/{companyId}/[controller]")]
 [ApiController]
-public class LocationDetailController : ControllerBase
+public class LocationDetailController(ILocationDetailService locationDetailService) : ControllerBase
 {
-    private readonly ILocationDetailService _locationDetailService;
-
-    public LocationDetailController(ILocationDetailService locationDetailService)
-    {
-        _locationDetailService = locationDetailService;
-    }
-
     [HttpGet("{id}")]
     public async Task<IActionResult> Index(string companyId, string id)
     {
-        var responseData = await _locationDetailService.GetListAsync(companyId, id);
+        var responseData = await locationDetailService.GetListAsync(companyId, id);
         return Ok(responseData);
     }
 
     [HttpGet("Show/{id}")]
     public async Task<IActionResult> Show(string companyId, string id)
     {
-        var locationDetail = await _locationDetailService.GetByIdAsync(companyId, id);
+        var locationDetail = await locationDetailService.GetByIdAsync(companyId, id);
         return Ok(locationDetail);
     }
 
@@ -38,32 +31,32 @@ public class LocationDetailController : ControllerBase
     public async Task<IActionResult> Create(string companyId, [FromBody] LocationDetail model)
     {
         model.CompanyId = companyId.Trim();
-        var locationDetail = await _locationDetailService.CreateAsync(model);
+        var locationDetail = await locationDetailService.InsertOneAsync(model);
         return Ok(locationDetail);
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(string companyId, string id, [FromBody] LocationDetail model)
     {
-        var locationDetail = await _locationDetailService.GetByIdAsync(companyId, id);
+        var locationDetail = await locationDetailService.GetByIdAsync(companyId, id);
         model.Id = locationDetail.Id;
         model.CompanyId = companyId.Trim();
-        var responseData = await _locationDetailService.UpdateAsync(id, model);
+        var responseData = await locationDetailService.ReplaceOneAsync(id, model);
         return Ok(responseData);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var locationDetail = await _locationDetailService.GetByIdAsync(companyId, id);
-        await _locationDetailService.RemoveAsync(companyId, locationDetail.Id);
+        var locationDetail = await locationDetailService.GetByIdAsync(companyId, id);
+        await locationDetailService.DeleteOneAsync(companyId, locationDetail.Id);
         return Ok(locationDetail);
     }
 
     [HttpGet("CountDocuments/{id}")]
     public async Task<IActionResult> CountDocuments(string companyId, string id)
     {
-        var countDocuments = await _locationDetailService.CountDocumentsAsync(companyId, id);
+        var countDocuments = await locationDetailService.CountDocumentsAsync(companyId, id);
         return Ok(countDocuments);
     }
 }

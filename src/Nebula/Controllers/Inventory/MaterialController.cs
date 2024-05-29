@@ -13,37 +13,29 @@ namespace Nebula.Controllers.Inventory;
 [CustomerAuthorize(UserRole = UserRoleHelper.User)]
 [Route("api/inventory/{companyId}/[controller]")]
 [ApiController]
-public class MaterialController : ControllerBase
+public class MaterialController(
+    IMaterialService materialService,
+    IValidateStockService validateStockService)
+    : ControllerBase
 {
-    private readonly IMaterialService _materialService;
-    private readonly IValidateStockService _validateStockService;
-
-    public MaterialController(
-        IMaterialService materialService,
-        IValidateStockService validateStockService)
-    {
-        _materialService = materialService;
-        _validateStockService = validateStockService;
-    }
-
     [HttpGet]
     public async Task<IActionResult> Index(string companyId, [FromQuery] DateQuery model)
     {
-        var responseData = await _materialService.GetListAsync(companyId, model);
+        var responseData = await materialService.GetListAsync(companyId, model);
         return Ok(responseData);
     }
 
     [HttpGet("Contact/{id}")]
     public async Task<IActionResult> Index(string companyId, [FromQuery] DateQuery model, string id)
     {
-        var responseData = await _materialService.GetListByContactIdAsync(companyId, model, id);
+        var responseData = await materialService.GetListByContactIdAsync(companyId, model, id);
         return Ok(responseData);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> Show(string companyId, string id)
     {
-        var location = await _materialService.GetByIdAsync(companyId, id);
+        var location = await materialService.GetByIdAsync(companyId, id);
         return Ok(location);
     }
 
@@ -51,32 +43,32 @@ public class MaterialController : ControllerBase
     public async Task<IActionResult> Create(string companyId, [FromBody] Material model)
     {
         model.CompanyId = companyId.Trim();
-        var location = await _materialService.CreateAsync(model);
+        var location = await materialService.InsertOneAsync(model);
         return Ok(location);
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(string companyId, string id, [FromBody] Material model)
     {
-        var material = await _materialService.GetByIdAsync(id);
+        var material = await materialService.GetByIdAsync(id);
         model.Id = material.Id;
         model.CompanyId = companyId.Trim();
-        var responseData = await _materialService.UpdateAsync(id, model);
+        var responseData = await materialService.ReplaceOneAsync(id, model);
         return Ok(responseData);
     }
 
     [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRoleHelper.Admin)]
     public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var material = await _materialService.GetByIdAsync(companyId, id);
-        await _materialService.RemoveAsync(companyId, material.Id);
+        var material = await materialService.GetByIdAsync(companyId, id);
+        await materialService.DeleteOneAsync(companyId, material.Id);
         return Ok(material);
     }
 
     [HttpGet("Validate/{id}")]
     public async Task<IActionResult> Validate(string companyId, string id)
     {
-        var material = await _validateStockService.ValidarMaterial(companyId, id);
+        var material = await validateStockService.ValidarMaterial(companyId, id);
         return Ok(material);
     }
 }

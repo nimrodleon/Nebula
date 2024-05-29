@@ -9,19 +9,14 @@ public interface ICertificadoUploaderService
     Task<string> SubirCertificado(byte[] certificadoPfx, string password, string companyId, string extension);
 }
 
-public class CertificadoUploaderService : ICertificadoUploaderService
+public class CertificadoUploaderService(
+    HttpClient httpClient,
+    IOptions<InvoiceHubSettings> settings,
+    ILogger<CertificadoUploaderService> logger)
+    : ICertificadoUploaderService
 {
-    private readonly HttpClient _httpClient;
-    private readonly InvoiceHubSettings _settings;
-    private readonly ILogger<CertificadoUploaderService> _logger;
-
-    public CertificadoUploaderService(HttpClient httpClient,
-        IOptions<InvoiceHubSettings> settings, ILogger<CertificadoUploaderService> logger)
-    {
-        _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-        _settings = settings?.Value ?? throw new ArgumentNullException(nameof(settings));
-        _logger = logger;
-    }
+    private readonly HttpClient _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+    private readonly InvoiceHubSettings _settings = settings?.Value ?? throw new ArgumentNullException(nameof(settings));
 
     public async Task<string> SubirCertificado(byte[] certificado, string password, string companyId, string extension)
     {
@@ -66,7 +61,7 @@ public class CertificadoUploaderService : ICertificadoUploaderService
         }
         catch (Exception ex)
         {
-            _logger.LogInformation(ex.Message);
+            logger.LogInformation(ex.Message);
             return null;
         }
     }

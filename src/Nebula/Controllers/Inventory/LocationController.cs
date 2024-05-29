@@ -12,34 +12,27 @@ namespace Nebula.Controllers.Inventory;
 [CustomerAuthorize(UserRole = UserRoleHelper.User)]
 [Route("api/inventory/{companyId}/[controller]")]
 [ApiController]
-public class LocationController : ControllerBase
+public class LocationController(ILocationService locationService) : ControllerBase
 {
-    private readonly ILocationService _locationService;
-
-    public LocationController(ILocationService locationService)
-    {
-        _locationService = locationService;
-    }
-
     [HttpGet]
     public async Task<IActionResult> Index(string companyId, [FromQuery] string query = "")
     {
         string[] fieldNames = new string[] { "Description" };
-        var locations = await _locationService.GetFilteredAsync(companyId, fieldNames, query);
+        var locations = await locationService.GetFilteredAsync(companyId, fieldNames, query);
         return Ok(locations);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> Show(string companyId, string id)
     {
-        var location = await _locationService.GetByIdAsync(companyId, id);
+        var location = await locationService.GetByIdAsync(companyId, id);
         return Ok(location);
     }
 
     [HttpGet("Stock/{id}")]
     public async Task<IActionResult> Stock(string companyId, string id)
     {
-        var respLocationDetailStock = await _locationService.GetLocationDetailStocksAsync(companyId, id);
+        var respLocationDetailStock = await locationService.GetLocationDetailStocksAsync(companyId, id);
         return Ok(respLocationDetailStock.LocationDetailStocks);
     }
 
@@ -49,7 +42,7 @@ public class LocationController : ControllerBase
         var respLocationDetailStocks = new List<RespLocationDetailStock>();
         foreach (string id in ids.Split(","))
         {
-            var respItem = await _locationService.GetLocationDetailStocksAsync(companyId, id, true);
+            var respItem = await locationService.GetLocationDetailStocksAsync(companyId, id, true);
             respLocationDetailStocks.Add(respItem);
         }
         return Ok(respLocationDetailStocks);
@@ -60,33 +53,33 @@ public class LocationController : ControllerBase
     {
         model.CompanyId = companyId.Trim();
         model.Description = model.Description.ToUpper();
-        var location = await _locationService.CreateAsync(model);
+        var location = await locationService.InsertOneAsync(model);
         return Ok(location);
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(string companyId, string id, [FromBody] Location model)
     {
-        var location = await _locationService.GetByIdAsync(companyId, id);
+        var location = await locationService.GetByIdAsync(companyId, id);
         model.Id = location.Id;
         model.CompanyId = companyId.Trim();
         model.Description = model.Description.ToUpper();
-        var responseData = await _locationService.UpdateAsync(id, model);
+        var responseData = await locationService.ReplaceOneAsync(id, model);
         return Ok(responseData);
     }
 
     [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRoleHelper.Admin)]
     public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var location = await _locationService.GetByIdAsync(companyId, id);
-        await _locationService.RemoveAsync(companyId, location.Id);
+        var location = await locationService.GetByIdAsync(companyId, id);
+        await locationService.DeleteOneAsync(companyId, location.Id);
         return Ok(location);
     }
 
     [HttpGet("Warehouse/{id}")]
     public async Task<IActionResult> Warehouse(string companyId, string id)
     {
-        var locations = await _locationService.GetByWarehouseIdAsync(companyId, id);
+        var locations = await locationService.GetByWarehouseIdAsync(companyId, id);
         return Ok(locations);
     }
 }

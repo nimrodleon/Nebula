@@ -11,25 +11,20 @@ namespace Nebula.Controllers.Account;
 [CustomerAuthorize(UserRole = UserRoleHelper.User)]
 [Route("api/account/{companyId}/[controller]")]
 [ApiController]
-public class WarehouseController : ControllerBase
+public class WarehouseController(IWarehouseService warehouseService) : ControllerBase
 {
-    private readonly IWarehouseService _warehouseService;
-
-    public WarehouseController(IWarehouseService warehouseService) =>
-        _warehouseService = warehouseService;
-
     [HttpGet]
     public async Task<IActionResult> Index(string companyId, [FromQuery] string query = "")
     {
         string[] fieldNames = new string[] { "Name" };
-        var warehouses = await _warehouseService.GetFilteredAsync(companyId, fieldNames, query);
+        var warehouses = await warehouseService.GetFilteredAsync(companyId, fieldNames, query);
         return Ok(warehouses);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> Show(string companyId, string id)
     {
-        var warehouse = await _warehouseService.GetByIdAsync(companyId, id);
+        var warehouse = await warehouseService.GetByIdAsync(companyId, id);
         return Ok(warehouse);
     }
 
@@ -38,27 +33,27 @@ public class WarehouseController : ControllerBase
     {
         model.CompanyId = companyId.Trim();
         model.Name = model.Name.ToUpper();
-        await _warehouseService.CreateAsync(model);
+        await warehouseService.InsertOneAsync(model);
         return Ok(model);
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(string companyId, string id, [FromBody] Warehouse model)
     {
-        var warehouse = await _warehouseService.GetByIdAsync(companyId, id);
+        var warehouse = await warehouseService.GetByIdAsync(companyId, id);
 
         model.Id = warehouse.Id;
         model.CompanyId = companyId.Trim();
         model.Name = model.Name.ToUpper();
-        model = await _warehouseService.UpdateAsync(id, model);
+        model = await warehouseService.ReplaceOneAsync(id, model);
         return Ok(model);
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string companyId, string id)
     {
-        var warehouse = await _warehouseService.GetByIdAsync(companyId, id);
-        await _warehouseService.RemoveAsync(companyId, id);
+        var warehouse = await warehouseService.GetByIdAsync(companyId, id);
+        await warehouseService.DeleteOneAsync(companyId, id);
         return Ok(warehouse);
     }
 }

@@ -21,34 +21,16 @@ namespace Nebula.Controllers.Cashier;
 [CustomerAuthorize(UserRole = UserRoleHelper.User)]
 [Route("api/cashier/{companyId}/[controller]")]
 [ApiController]
-public class InvoiceSaleCashierController : ControllerBase
+public class InvoiceSaleCashierController(
+    ICompanyService companyService,
+    IInvoiceSaleDetailService invoiceSaleDetailService,
+    IValidateStockService validateStockService,
+    IComprobanteService comprobanteService,
+    IInvoiceHubService invoiceHubService,
+    IInvoiceSaleService invoiceSaleService,
+    ICashierDetailService cashierDetailService)
+    : ControllerBase
 {
-    private readonly ICompanyService _companyService;
-    private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
-    private readonly IValidateStockService _validateStockService;
-    private readonly IComprobanteService _comprobanteService;
-    private readonly IInvoiceHubService _invoiceHubService;
-    private readonly IInvoiceSaleService _invoiceSaleService;
-    private readonly ICashierDetailService _cashierDetailService;
-
-    public InvoiceSaleCashierController(
-        ICompanyService companyService,
-        IInvoiceSaleDetailService invoiceSaleDetailService,
-        IValidateStockService validateStockService,
-        IComprobanteService comprobanteService,
-        IInvoiceHubService invoiceHubService,
-        IInvoiceSaleService invoiceSaleService,
-        ICashierDetailService cashierDetailService)
-    {
-        _companyService = companyService;
-        _invoiceSaleDetailService = invoiceSaleDetailService;
-        _validateStockService = validateStockService;
-        _comprobanteService = comprobanteService;
-        _invoiceHubService = invoiceHubService;
-        _invoiceSaleService = invoiceSaleService;
-        _cashierDetailService = cashierDetailService;
-    }
-
     /// <summary>
     /// registrar venta rápida.
     /// </summary>
@@ -60,9 +42,9 @@ public class InvoiceSaleCashierController : ControllerBase
     {
         try
         {
-            var company = await _companyService.GetByIdAsync(companyId.Trim());
-            var comprobante = await _comprobanteService.SaveChangesAsync(company, model);
-            await _validateStockService.ValidarInvoiceSale(comprobante);
+            var company = await companyService.GetByIdAsync(companyId.Trim());
+            var comprobante = await comprobanteService.SaveChangesAsync(company, model);
+            await validateStockService.ValidarInvoiceSale(comprobante);
 
             // registrar operacion en caja.
             if (ObjectId.TryParse(model.Cabecera.CajaDiariaId, out ObjectId _))
@@ -81,15 +63,15 @@ public class InvoiceSaleCashierController : ControllerBase
                     FormaPago = model.Cabecera.PaymentMethod,
                     Amount = comprobante.InvoiceSale.MtoImpVenta
                 };
-                await _cashierDetailService.CreateAsync(cashierDetail);
+                await cashierDetailService.InsertOneAsync(cashierDetail);
             }
 
             if (comprobante.InvoiceSale.TipoDoc != "NOTA")
             {
                 var invoiceRequest = InvoiceMapper.MapToInvoiceRequestHub(company.Ruc, comprobante);
-                var billingResponse = await _invoiceHubService.SendInvoiceAsync(companyId, invoiceRequest);
+                var billingResponse = await invoiceHubService.SendInvoiceAsync(companyId, invoiceRequest);
                 comprobante.InvoiceSale.BillingResponse = billingResponse;
-                await _invoiceSaleService.UpdateAsync(comprobante.InvoiceSale.Id, comprobante.InvoiceSale);
+                await invoiceSaleService.ReplaceOneAsync(comprobante.InvoiceSale.Id, comprobante.InvoiceSale);
                 return Ok(new { invoiceSaleId = comprobante.InvoiceSale.Id, billingResponse });
             }
             return Ok(new { invoiceSaleId = comprobante.InvoiceSale.Id });
@@ -108,7 +90,7 @@ public class InvoiceSaleCashierController : ControllerBase
     [HttpGet("ProductReport/{id}")]
     public async Task<IActionResult> ProductReport(string companyId, string id)
     {
-        List<InvoiceSaleDetail> invoiceSaleDetails = await _invoiceSaleDetailService.GetItemsByCajaDiaria(companyId, id);
+        List<InvoiceSaleDetail> invoiceSaleDetails = await invoiceSaleDetailService.GetItemsByCajaDiaria(companyId, id);
         return Ok(invoiceSaleDetails);
     }
 }
