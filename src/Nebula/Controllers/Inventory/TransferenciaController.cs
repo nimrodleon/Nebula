@@ -4,72 +4,66 @@ using Nebula.Modules.Inventory.Models;
 using Nebula.Modules.Inventory.Transferencias;
 using Nebula.Common.Dto;
 using Microsoft.AspNetCore.Authorization;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth;
 
 namespace Nebula.Controllers.Inventory;
 
 [Authorize]
-[CustomerAuthorize(UserRole = UserRoleHelper.User)]
-[Route("api/inventory/{companyId}/[controller]")]
+[CustomerAuthorize(UserRole = UserRole.User)]
+[Route("api/inventory/[controller]")]
 [ApiController]
-public class TransferenciaController : ControllerBase
+public class TransferenciaController(
+    IUserAuthenticationService userAuthenticationService,
+    ITransferenciaService transferenciaService,
+    IValidateStockService validateStockService)
+    : ControllerBase
 {
-    private readonly ITransferenciaService _transferenciaService;
-    private readonly IValidateStockService _validateStockService;
-
-    public TransferenciaController(
-        ITransferenciaService transferenciaService,
-        IValidateStockService validateStockService)
-    {
-        _transferenciaService = transferenciaService;
-        _validateStockService = validateStockService;
-    }
+    private readonly string _companyId = userAuthenticationService.GetDefaultCompanyId();
 
     [HttpGet]
-    public async Task<IActionResult> Index(string companyId, [FromQuery] DateQuery model)
+    public async Task<IActionResult> Index([FromQuery] DateQuery model)
     {
-        var responseData = await _transferenciaService.GetListAsync(companyId, model);
+        var responseData = await transferenciaService.GetListAsync(_companyId, model);
         return Ok(responseData);
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Show(string companyId, string id)
+    public async Task<IActionResult> Show(string id)
     {
-        var transferencia = await _transferenciaService.GetByIdAsync(companyId, id);
+        var transferencia = await transferenciaService.GetByIdAsync(_companyId, id);
         return Ok(transferencia);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(string companyId, [FromBody] Transferencia model)
+    public async Task<IActionResult> Create([FromBody] Transferencia model)
     {
-        model.CompanyId = companyId.Trim();
-        var transferencia = await _transferenciaService.CreateAsync(model);
+        model.CompanyId = _companyId.Trim();
+        var transferencia = await transferenciaService.InsertOneAsync(model);
         return Ok(transferencia);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(string companyId, string id, [FromBody] Transferencia model)
+    public async Task<IActionResult> Update(string id, [FromBody] Transferencia model)
     {
-        var transferencia = await _transferenciaService.GetByIdAsync(companyId, id);
+        var transferencia = await transferenciaService.GetByIdAsync(_companyId, id);
         model.Id = transferencia.Id;
-        model.CompanyId = companyId.Trim();
-        var responseData = await _transferenciaService.UpdateAsync(id, model);
+        model.CompanyId = _companyId.Trim();
+        var responseData = await transferenciaService.ReplaceOneAsync(id, model);
         return Ok(responseData);
     }
 
-    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRoleHelper.Admin)]
-    public async Task<IActionResult> Delete(string companyId, string id)
+    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRole.Admin)]
+    public async Task<IActionResult> Delete(string id)
     {
-        var transferencia = await _transferenciaService.GetByIdAsync(companyId, id);
-        await _transferenciaService.RemoveAsync(companyId, transferencia.Id);
+        var transferencia = await transferenciaService.GetByIdAsync(_companyId, id);
+        await transferenciaService.DeleteOneAsync(_companyId, transferencia.Id);
         return Ok(transferencia);
     }
 
     [HttpGet("Validate/{id}")]
-    public async Task<IActionResult> Validate(string companyId, string id)
+    public async Task<IActionResult> Validate(string id)
     {
-        var transferencia = await _validateStockService.ValidarTransferencia(companyId, id);
+        var transferencia = await validateStockService.ValidarTransferencia(_companyId, id);
         return Ok(transferencia);
     }
 }

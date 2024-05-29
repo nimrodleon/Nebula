@@ -12,7 +12,10 @@ public interface ITallerRepairOrderService : ICrudOperationService<TallerRepairO
     Task<TallerRepairOrder> CreateRepairOrderAsync(string companyId, TallerRepairOrder obj);
     Task<List<TallerRepairOrder>> GetRepairOrders(string companyId, string query = "", int page = 1, int pageSize = 12);
     Task<long> GetTotalRepairOrders(string companyId, string query = "");
-    Task<List<TallerRepairOrder>> GetRepairOrdersMonthly(string companyId, DateQuery dto, int page = 1, int pageSize = 12);
+
+    Task<List<TallerRepairOrder>> GetRepairOrdersMonthly(string companyId, DateQuery dto, int page = 1,
+        int pageSize = 12);
+
     Task<long> GetTotalRepairOrdersMonthly(string companyId, DateQuery dto);
     Task<TallerRepairOrderTicket> GetTicket(string companyId, string id);
 }
@@ -20,32 +23,24 @@ public interface ITallerRepairOrderService : ICrudOperationService<TallerRepairO
 /// <summary>
 /// Servicio Orden de Reparación.
 /// </summary>
-public class TallerRepairOrderService : CrudOperationService<TallerRepairOrder>, ITallerRepairOrderService
+public class TallerRepairOrderService(
+    MongoDatabaseService mongoDatabase,
+    ICompanyService companyService,
+    ITallerItemRepairOrderService itemRepairOrderService,
+    IInvoiceSerieService invoiceSerieService)
+    : CrudOperationService<TallerRepairOrder>(mongoDatabase), ITallerRepairOrderService
 {
-    private readonly ICompanyService _companyService;
-    private readonly IInvoiceSerieService _invoiceSerieService;
-    private readonly ITallerItemRepairOrderService _itemRepairOrderService;
-
-    public TallerRepairOrderService(MongoDatabaseService mongoDatabase,
-        ICompanyService companyService, ITallerItemRepairOrderService itemRepairOrderService,
-        IInvoiceSerieService invoiceSerieService) : base(mongoDatabase)
-    {
-        _companyService = companyService;
-        _itemRepairOrderService = itemRepairOrderService;
-        _invoiceSerieService = invoiceSerieService;
-    }
-
     public async Task<TallerRepairOrder> CreateRepairOrderAsync(string companyId, TallerRepairOrder obj)
     {
         obj.Id = string.Empty;
         obj.CompanyId = companyId.Trim();
-        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(companyId, obj.InvoiceSerieId);
+        var invoiceSerie = await invoiceSerieService.GetByIdAsync(companyId, obj.InvoiceSerieId);
         obj.Serie = invoiceSerie.NotaDeVenta;
         int numComprobante = invoiceSerie.CounterNotaDeVenta + 1;
         obj.Number = numComprobante.ToString();
         // actualizar serie de facturación.
         invoiceSerie.CounterNotaDeVenta = numComprobante;
-        await _invoiceSerieService.UpdateAsync(invoiceSerie.Id, invoiceSerie);
+        await invoiceSerieService.ReplaceOneAsync(invoiceSerie.Id, invoiceSerie);
         await _collection.InsertOneAsync(obj);
         return obj;
     }
@@ -56,7 +51,8 @@ public class TallerRepairOrderService : CrudOperationService<TallerRepairOrder>,
     /// <param name="query">Nombre del Cliente</param>
     /// <param name="limit">Cantidad de registros</param>
     /// <returns>Lista de Ordenes de Servicio</returns>
-    public async Task<List<TallerRepairOrder>> GetRepairOrders(string companyId, string query = "", int page = 1, int pageSize = 12)
+    public async Task<List<TallerRepairOrder>> GetRepairOrders(string companyId, string query = "", int page = 1,
+        int pageSize = 12)
     {
         var skip = (page - 1) * pageSize;
 
@@ -106,7 +102,8 @@ public class TallerRepairOrderService : CrudOperationService<TallerRepairOrder>,
     /// <param name="dto">Mes, Año y texto de consulta</param>
     /// <param name="limit">Cantidad de Registros</param>
     /// <returns>Lista de Ordenes de Servicio</returns>
-    public async Task<List<TallerRepairOrder>> GetRepairOrdersMonthly(string companyId, DateQuery dto, int page = 1, int pageSize = 12)
+    public async Task<List<TallerRepairOrder>> GetRepairOrdersMonthly(string companyId, DateQuery dto, int page = 1,
+        int pageSize = 12)
     {
         var skip = (page - 1) * pageSize;
 
@@ -162,8 +159,8 @@ public class TallerRepairOrderService : CrudOperationService<TallerRepairOrder>,
     public async Task<TallerRepairOrderTicket> GetTicket(string companyId, string id)
     {
         var repairOrder = await GetByIdAsync(companyId, id);
-        var company = await _companyService.GetByIdAsync(companyId);
-        var itemsRepairOrder = await _itemRepairOrderService.GetItemsRepairOrder(companyId, repairOrder.Id);
+        var company = await companyService.GetByIdAsync(companyId);
+        var itemsRepairOrder = await itemRepairOrderService.GetItemsRepairOrder(companyId, repairOrder.Id);
         return new TallerRepairOrderTicket()
         {
             Company = company,

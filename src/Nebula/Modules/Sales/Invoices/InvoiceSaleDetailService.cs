@@ -12,10 +12,9 @@ public interface IInvoiceSaleDetailService : ICrudOperationService<InvoiceSaleDe
     Task RemoveManyAsync(string companyId, string invoiceSaleId);
 }
 
-public class InvoiceSaleDetailService : CrudOperationService<InvoiceSaleDetail>, IInvoiceSaleDetailService
+public class InvoiceSaleDetailService(MongoDatabaseService mongoDatabase)
+    : CrudOperationService<InvoiceSaleDetail>(mongoDatabase), IInvoiceSaleDetailService
 {
-    public InvoiceSaleDetailService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
-
     public async Task<List<InvoiceSaleDetail>> GetListAsync(string companyId, string invoiceSaleId) =>
         await _collection.Find(x => x.CompanyId == companyId && x.InvoiceSaleId == invoiceSaleId).ToListAsync();
 

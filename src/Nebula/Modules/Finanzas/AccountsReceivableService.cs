@@ -24,12 +24,9 @@ public interface IAccountsReceivableService : ICrudOperationService<AccountsRece
     Task<List<AccountsReceivable>> GetPendientesPorCobrar(string companyId);
 }
 
-public class AccountsReceivableService : CrudOperationService<AccountsReceivable>, IAccountsReceivableService
+public class AccountsReceivableService(MongoDatabaseService mongoDatabase)
+    : CrudOperationService<AccountsReceivable>(mongoDatabase), IAccountsReceivableService
 {
-    public AccountsReceivableService(MongoDatabaseService mongoDatabase) : base(mongoDatabase)
-    {
-    }
-
     public async Task<List<AccountsReceivable>> GetListAsync(string companyId, CuentaPorCobrarMensualParamSchema param, int page = 1, int pageSize = 12)
     {
         var skip = (page - 1) * pageSize;
@@ -74,7 +71,7 @@ public class AccountsReceivableService : CrudOperationService<AccountsReceivable
 
     public async Task CreateAsync(ICashierDetailService cashierDetailService, AccountsReceivable model)
     {
-        if (model.Type.Equals("CARGO")) await CreateAsync(model);
+        if (model.Type.Equals("CARGO")) await InsertOneAsync(model);
 
         if (model.Type.Equals("ABONO"))
         {
@@ -90,17 +87,17 @@ public class AccountsReceivableService : CrudOperationService<AccountsReceivable
             var totalAbonos = abonos.Sum(x => x.Abono) + model.Abono;
             if (cargo.Cargo - totalAbonos > 0)
             {
-                await CreateAsync(model);
+                await InsertOneAsync(model);
                 if (model.CajaDiaria != "-")
-                    await cashierDetailService.CreateAsync(GetCashierDetail(model));
+                    await cashierDetailService.InsertOneAsync(GetCashierDetail(model));
             }
             else
             {
-                await CreateAsync(model);
+                await InsertOneAsync(model);
                 if (model.CajaDiaria != "-")
-                    await cashierDetailService.CreateAsync(GetCashierDetail(model));
+                    await cashierDetailService.InsertOneAsync(GetCashierDetail(model));
                 cargo.Status = "COBRADO";
-                await UpdateAsync(cargo.Id, cargo);
+                await ReplaceOneAsync(cargo.Id, cargo);
             }
         }
     }
@@ -112,13 +109,13 @@ public class AccountsReceivableService : CrudOperationService<AccountsReceivable
         var totalAbonos = abonos.Sum(x => x.Abono) - abono.Abono;
         if (cargo.Cargo - totalAbonos > 0)
         {
-            await RemoveAsync(companyId, abono.Id);
+            await DeleteOneAsync(companyId, abono.Id);
             cargo.Status = "PENDIENTE";
-            await UpdateAsync(cargo.Id, cargo);
+            await ReplaceOneAsync(cargo.Id, cargo);
         }
         else
         {
-            await RemoveAsync(companyId, abono.Id);
+            await DeleteOneAsync(companyId, abono.Id);
         }
     }
 

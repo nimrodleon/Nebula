@@ -11,10 +11,9 @@ public interface IMaterialService : ICrudOperationService<Material>
     Task<List<Material>> GetListByContactIdAsync(string companyId, DateQuery query, string contactId);
 }
 
-public class MaterialService : CrudOperationService<Material>, IMaterialService
+public class MaterialService(MongoDatabaseService mongoDatabase)
+    : CrudOperationService<Material>(mongoDatabase), IMaterialService
 {
-    public MaterialService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
-
     public async Task<List<Material>> GetListAsync(string companyId, DateQuery query)
     {
         var filter = Builders<Material>.Filter;

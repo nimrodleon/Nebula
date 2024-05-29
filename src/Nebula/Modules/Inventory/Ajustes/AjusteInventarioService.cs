@@ -10,10 +10,9 @@ public interface IAjusteInventarioService : ICrudOperationService<AjusteInventar
     Task<List<AjusteInventario>> GetListAsync(string companyId, DateQuery query);
 }
 
-public class AjusteInventarioService : CrudOperationService<AjusteInventario>, IAjusteInventarioService
+public class AjusteInventarioService(MongoDatabaseService mongoDatabase)
+    : CrudOperationService<AjusteInventario>(mongoDatabase), IAjusteInventarioService
 {
-    public AjusteInventarioService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
-
     public async Task<List<AjusteInventario>> GetListAsync(string companyId, DateQuery query)
     {
         var builder = Builders<AjusteInventario>.Filter;

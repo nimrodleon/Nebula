@@ -10,10 +10,9 @@ public interface IMaterialDetailService : ICrudOperationService<MaterialDetail>
     Task<long> CountDocumentsAsync(string companyId, string id);
 }
 
-public class MaterialDetailService : CrudOperationService<MaterialDetail>, IMaterialDetailService
+public class MaterialDetailService(MongoDatabaseService mongoDatabase)
+    : CrudOperationService<MaterialDetail>(mongoDatabase), IMaterialDetailService
 {
-    public MaterialDetailService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
-
     public async Task<List<MaterialDetail>> GetListAsync(string companyId, string materialId)
     {
         var filter = Builders<MaterialDetail>.Filter;

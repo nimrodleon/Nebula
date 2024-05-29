@@ -11,10 +11,9 @@ public interface ITransferenciaDetailService : ICrudOperationService<Transferenc
     Task<DeleteResult> DeleteManyAsync(string companyId, string transferenciaId);
 }
 
-public class TransferenciaDetailService : CrudOperationService<TransferenciaDetail>, ITransferenciaDetailService
+public class TransferenciaDetailService(MongoDatabaseService mongoDatabase)
+    : CrudOperationService<TransferenciaDetail>(mongoDatabase), ITransferenciaDetailService
 {
-    public TransferenciaDetailService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
-
     public async Task<List<TransferenciaDetail>> GetListAsync(string companyId, string transferenciaId)
     {
         var filter = Builders<TransferenciaDetail>.Filter;

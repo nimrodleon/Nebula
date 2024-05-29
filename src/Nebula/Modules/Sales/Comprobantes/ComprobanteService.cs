@@ -14,23 +14,13 @@ public interface IComprobanteService
     Task<InvoiceSaleAndDetails> SaveChangesAsync(Company company, ComprobanteDto comprobante);
 }
 
-public class ComprobanteService : IComprobanteService
+public class ComprobanteService(
+    IInvoiceSaleService invoiceSaleService,
+    IInvoiceSaleDetailService invoiceSaleDetailService,
+    IInvoiceSerieService invoiceSerieService,
+    IAccountsReceivableService receivableService)
+    : IComprobanteService
 {
-    private readonly IInvoiceSaleService _invoiceSaleService;
-    private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
-    private readonly IInvoiceSerieService _invoiceSerieService;
-    private readonly IAccountsReceivableService _receivableService;
-
-    public ComprobanteService(IInvoiceSaleService invoiceSaleService,
-        IInvoiceSaleDetailService invoiceSaleDetailService,
-        IInvoiceSerieService invoiceSerieService, IAccountsReceivableService receivableService)
-    {
-        _invoiceSaleService = invoiceSaleService;
-        _invoiceSaleDetailService = invoiceSaleDetailService;
-        _invoiceSerieService = invoiceSerieService;
-        _receivableService = receivableService;
-    }
-
     /// <summary>
     /// Guarda el registro del comprobante en la base de datos.
     /// </summary>
@@ -40,24 +30,24 @@ public class ComprobanteService : IComprobanteService
     {
         var invoiceSale = comprobante.GetInvoiceSale(company);
         var invoiceSerieId = comprobante.Cabecera.InvoiceSerieId;
-        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(company.Id, invoiceSerieId);
+        var invoiceSerie = await invoiceSerieService.GetByIdAsync(company.Id, invoiceSerieId);
         comprobante.GenerarSerieComprobante(ref invoiceSerie, ref invoiceSale);
         invoiceSale.InvoiceSerieId = invoiceSerie.Id;
 
         // agregar Información del comprobante.
-        await _invoiceSerieService.UpdateAsync(invoiceSerie.Id, invoiceSerie);
-        await _invoiceSaleService.CreateAsync(invoiceSale);
+        await invoiceSerieService.ReplaceOneAsync(invoiceSerie.Id, invoiceSerie);
+        await invoiceSaleService.InsertOneAsync(invoiceSale);
 
         // agregar detalles del comprobante.
         var invoiceSaleDetails = comprobante.GetInvoiceSaleDetails(company, invoiceSale.Id);
-        await _invoiceSaleDetailService.CreateManyAsync(invoiceSaleDetails);
+        await invoiceSaleDetailService.CreateManyAsync(invoiceSaleDetails);
 
         // registrar cargo si la operación es a crédito.
         if (comprobante.FormaPago.Tipo == FormaPago.Credito)
         {
             // registrar cargo.
             AccountsReceivable cargo = GenerarCargo(invoiceSale);
-            await _receivableService.CreateAsync(cargo);
+            await receivableService.InsertOneAsync(cargo);
         }
 
         var result = new InvoiceSaleAndDetails()

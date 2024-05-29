@@ -22,25 +22,14 @@ public interface ICreditNoteService : ICrudOperationService<CreditNote>
     void GenerarSerieComprobante(ref InvoiceSerie invoiceSerie, ref CreditNote creditNote);
 }
 
-public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteService
+public class CreditNoteService(
+    MongoDatabaseService mongoDatabase,
+    IInvoiceSaleService invoiceSaleService,
+    IInvoiceSaleDetailService invoiceSaleDetailService,
+    IInvoiceSerieService invoiceSerieService,
+    ICreditNoteDetailService creditNoteDetailService)
+    : CrudOperationService<CreditNote>(mongoDatabase), ICreditNoteService
 {
-    private readonly IInvoiceSaleService _invoiceSaleService;
-    private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
-    private readonly IInvoiceSerieService _invoiceSerieService;
-    private readonly ICreditNoteDetailService _creditNoteDetailService;
-
-    public CreditNoteService(MongoDatabaseService mongoDatabase,
-        IInvoiceSaleService invoiceSaleService,
-        IInvoiceSaleDetailService invoiceSaleDetailService,
-        IInvoiceSerieService invoiceSerieService,
-        ICreditNoteDetailService creditNoteDetailService) : base(mongoDatabase)
-    {
-        _invoiceSaleService = invoiceSaleService;
-        _invoiceSaleDetailService = invoiceSaleDetailService;
-        _invoiceSerieService = invoiceSerieService;
-        _creditNoteDetailService = creditNoteDetailService;
-    }
-
     public async Task<List<CreditNote>> GetListAsync(string companyId, DateQuery query)
     {
         var builder = Builders<CreditNote>.Filter;
@@ -87,7 +76,7 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
     public async Task<CreditNoteDto> GetCreditNoteDtoAsync(string companyId, string CreditNoteId)
     {
         var creditNote = await GetByIdAsync(companyId, CreditNoteId);
-        var creditNoteDetails = await _creditNoteDetailService.GetListAsync(companyId, creditNote.Id);
+        var creditNoteDetails = await creditNoteDetailService.GetListAsync(companyId, creditNote.Id);
         return new CreditNoteDto()
         {
             CreditNote = creditNote,
@@ -110,18 +99,18 @@ public class CreditNoteService : CrudOperationService<CreditNote>, ICreditNoteSe
 
     public async Task<InvoiceCancellationResponse> InvoiceCancellation(string companyId, string invoiceSaleId)
     {
-        var invoiceSale = await _invoiceSaleService.GetByIdAsync(companyId, invoiceSaleId);
-        var invoiceSaleDetails = await _invoiceSaleDetailService.GetListAsync(companyId, invoiceSale.Id);
-        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(companyId, invoiceSale.InvoiceSerieId);
+        var invoiceSale = await invoiceSaleService.GetByIdAsync(companyId, invoiceSaleId);
+        var invoiceSaleDetails = await invoiceSaleDetailService.GetListAsync(companyId, invoiceSale.Id);
+        var invoiceSerie = await invoiceSerieService.GetByIdAsync(companyId, invoiceSale.InvoiceSerieId);
         var creditNote = GetCreditNote(invoiceSale);
         GenerarSerieComprobante(ref invoiceSerie, ref creditNote);
 
-        await _invoiceSerieService.UpdateAsync(invoiceSerie.Id, invoiceSerie);
+        await invoiceSerieService.ReplaceOneAsync(invoiceSerie.Id, invoiceSerie);
         creditNote.InvoiceSerieId = invoiceSerie.Id;
-        await CreateAsync(creditNote);
+        await InsertOneAsync(creditNote);
 
         var creditNoteDetails = GetCreditNoteDetails(creditNote.Id, invoiceSaleDetails);
-        await _creditNoteDetailService.InsertManyAsync(creditNoteDetails);
+        await creditNoteDetailService.InsertManyAsync(creditNoteDetails);
 
         return new InvoiceCancellationResponse()
         {

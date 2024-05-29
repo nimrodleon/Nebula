@@ -15,16 +15,11 @@ public interface ICompanyService : ICrudOperationService<Company>
     Task<List<Company>> GetCompaniesAsync(string query = "", int page = 1, int pageSize = 12);
 }
 
-public class CompanyService : CrudOperationService<Company>, ICompanyService
+public class CompanyService(
+    MongoDatabaseService mongoDatabase,
+    IUserAuthenticationService userAuthenticationService)
+    : CrudOperationService<Company>(mongoDatabase), ICompanyService
 {
-    private readonly IUserAuthenticationService _userAuthenticationService;
-
-    public CompanyService(MongoDatabaseService mongoDatabase,
-        IUserAuthenticationService userAuthenticationService) : base(mongoDatabase)
-    {
-        _userAuthenticationService = userAuthenticationService;
-    }
-
     public async Task<List<Company>> GetCompaniesAsync(string query = "", int page = 1, int pageSize = 12)
     {
         var skip = (page - 1) * pageSize;
@@ -74,14 +69,14 @@ public class CompanyService : CrudOperationService<Company>, ICompanyService
 
     public override async Task<List<Company>> GetAsync(string field, string query = "", int limit = 25)
     {
-        var userId = _userAuthenticationService.GetUserId();
+        var userId = userAuthenticationService.GetUserId();
         var filter = Builders<Company>.Filter.Eq(x => x.UserId, userId);
         if (!string.IsNullOrWhiteSpace(query))
         {
             var queryFilter = Builders<Company>.Filter.Regex(field, new BsonRegularExpression(query.ToUpper(), "i"));
             filter = Builders<Company>.Filter.And(filter, queryFilter);
-
         }
+
         return await _collection.Find(filter).Limit(limit).ToListAsync();
     }
 
@@ -91,15 +86,15 @@ public class CompanyService : CrudOperationService<Company>, ICompanyService
         return await _collection.Find(filter).ToListAsync();
     }
 
-    public override async Task<Company> CreateAsync(Company obj)
+    public override async Task<Company> InsertOneAsync(Company obj)
     {
-        obj.UserId = _userAuthenticationService.GetUserId();
-        return await base.CreateAsync(obj);
+        obj.UserId = userAuthenticationService.GetUserId();
+        return await base.InsertOneAsync(obj);
     }
 
-    public override async Task<Company> UpdateAsync(string id, Company obj)
+    public override async Task<Company> ReplaceOneAsync(string id, Company obj)
     {
-        obj.UserId = _userAuthenticationService.GetUserId();
-        return await base.UpdateAsync(id, obj);
+        obj.UserId = userAuthenticationService.GetUserId();
+        return await base.ReplaceOneAsync(id, obj);
     }
 }

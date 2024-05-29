@@ -9,28 +9,19 @@ public class CustomerAuthorizeAttribute : AuthorizeAttribute, IAuthorizationFilt
 {
     public string UserRole { get; set; } = string.Empty;
 
-    public async void OnAuthorization(AuthorizationFilterContext context)
+    public void OnAuthorization(AuthorizationFilterContext context)
     {
-        // var _cacheAuthService = context.HttpContext.RequestServices
-        //     .GetService(typeof(ICacheAuthService)) as ICacheAuthService;
-        var companyId = context.RouteData.Values["companyId"]?.ToString();
         var user = context.HttpContext.User;
 
-        var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier);
-        // if (userIdClaim != null && _cacheAuthService != null)
-        // {
-        //     var userCompanyRoles = await _cacheAuthService.GetUserAuthCompanyRolesAsync(userIdClaim.Value);
-        //     var userType = user.FindFirst("UserType")?.Value;
-        //     if (userCompanyRoles != null && userType != null)
-        //     {
-        //         if (userType == UserTypeSystem.Customer)
-        //         {
-        //             var roles = UserRole.Split(":");
-        //             // Verificar si el usuario tiene acceso a esta empresa con el rol adecuado
-        //             if (userCompanyRoles.Any(cr => cr.CompanyId == companyId && roles.Any(role => role == cr.UserRole))) return;
-        //         }
-        //     }
-        // }
+        var userIdClaim = user.FindFirstValue(ClaimTypes.NameIdentifier);
+        var rolesClaim = user.FindFirstValue("UserRole");
+        var companyIdClaim = user.FindFirstValue("DefaultCompanyId");
+
+        if (userIdClaim != null && rolesClaim != null && companyIdClaim != null)
+        {
+            var roles = rolesClaim.Split(":");
+            if (roles.Any(role => role == UserRole)) return;
+        }
 
         // El usuario no tiene acceso a esta empresa o no tiene el rol adecuado
         context.Result = new ForbidResult();

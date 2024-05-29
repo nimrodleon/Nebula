@@ -8,9 +8,5 @@ public interface IInvoiceSerieService : ICrudOperationService<InvoiceSerie>
 
 }
 
-public class InvoiceSerieService : CrudOperationService<InvoiceSerie>, IInvoiceSerieService
-{
-    public InvoiceSerieService(MongoDatabaseService mongoDatabase) : base(mongoDatabase)
-    {
-    }
-}
+public class InvoiceSerieService(MongoDatabaseService mongoDatabase)
+    : CrudOperationService<InvoiceSerie>(mongoDatabase), IInvoiceSerieService;

@@ -17,7 +17,7 @@ public class User : IGenericModel
     [JsonIgnore] public string PasswordHash { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string AccountType { get; set; } = AccountTypeHelper.Personal;
-    public string UserRole { get; set; } = UserRoleHelper.User;
+    public string UserRole { get; set; } = UserRoleDbHelper.User;
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;

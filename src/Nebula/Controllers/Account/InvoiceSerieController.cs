@@ -2,62 +2,60 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Account;
 using Nebula.Modules.Account.Models;
-using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Auth;
 
 namespace Nebula.Controllers.Account;
 
 [Authorize]
-[CustomerAuthorize(UserRole = UserRoleHelper.User)]
-[Route("api/account/{companyId}/[controller]")]
+[CustomerAuthorize(UserRole = UserRole.User)]
+[Route("api/account/[controller]")]
 [ApiController]
-public class InvoiceSerieController : ControllerBase
+public class InvoiceSerieController(
+    IUserAuthenticationService userAuthenticationService,
+    IInvoiceSerieService invoiceSerieService) : ControllerBase
 {
-    private readonly IInvoiceSerieService _invoiceSerieService;
-
-    public InvoiceSerieController(IInvoiceSerieService invoiceSerieService) =>
-        _invoiceSerieService = invoiceSerieService;
+    private readonly string _companyId = userAuthenticationService.GetDefaultCompanyId();
 
     [HttpGet]
-    public async Task<IActionResult> Index(string companyId, [FromQuery] string query = "")
+    public async Task<IActionResult> Index([FromQuery] string query = "")
     {
         string[] fieldNames = new string[] { "Name" };
-        var invoiceSeries = await _invoiceSerieService.GetFilteredAsync(companyId, fieldNames, query);
+        var invoiceSeries = await invoiceSerieService.GetFilteredAsync(_companyId, fieldNames, query);
         return Ok(invoiceSeries);
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Show(string companyId, string id)
+    public async Task<IActionResult> Show(string id)
     {
-        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(companyId, id);
+        var invoiceSerie = await invoiceSerieService.GetByIdAsync(_companyId, id);
         return Ok(invoiceSerie);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(string companyId, [FromBody] InvoiceSerie model)
+    public async Task<IActionResult> Create([FromBody] InvoiceSerie model)
     {
-        model.CompanyId = companyId.Trim();
+        model.CompanyId = _companyId.Trim();
         model.Name = model.Name.ToUpper();
-        await _invoiceSerieService.CreateAsync(model);
+        await invoiceSerieService.InsertOneAsync(model);
         return Ok(model);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(string companyId, string id, [FromBody] InvoiceSerie model)
+    public async Task<IActionResult> Update(string id, [FromBody] InvoiceSerie model)
     {
-        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(companyId, id);
+        var invoiceSerie = await invoiceSerieService.GetByIdAsync(_companyId, id);
         model.Id = invoiceSerie.Id;
-        model.CompanyId = companyId.Trim();
+        model.CompanyId = _companyId.Trim();
         model.Name = model.Name.ToUpper();
-        model = await _invoiceSerieService.UpdateAsync(id, model);
+        model = await invoiceSerieService.ReplaceOneAsync(id, model);
         return Ok(model);
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(string companyId, string id)
+    public async Task<IActionResult> Delete(string id)
     {
-        var invoiceSerie = await _invoiceSerieService.GetByIdAsync(companyId, id);
-        await _invoiceSerieService.RemoveAsync(companyId, invoiceSerie.Id);
+        var invoiceSerie = await invoiceSerieService.GetByIdAsync(_companyId, id);
+        await invoiceSerieService.DeleteOneAsync(_companyId, invoiceSerie.Id);
         return Ok(invoiceSerie);
     }
 }

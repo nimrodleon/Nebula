@@ -6,40 +6,31 @@ using Nebula.Modules.Contacts.Dto;
 using Nebula.Modules.Sales.Invoices;
 using Microsoft.AspNetCore.Authorization;
 using Nebula.Modules.Auth;
-using Nebula.Modules.Auth.Helpers;
 using MongoDB.Driver;
 using Nebula.Common.Helpers;
 
 namespace Nebula.Controllers.Contacts;
 
 [Authorize]
-[CustomerAuthorize(UserRole = UserRoleHelper.User)]
-[Route("api/contacts/{companyId}/[controller]")]
+[CustomerAuthorize(UserRole = UserRole.User)]
+[Route("api/contacts/[controller]")]
 [ApiController]
-public class ContactController : ControllerBase
+public class ContactController(
+    IUserAuthenticationService userAuthenticationService,
+    IContactService contactService,
+    ICashierDetailService cashierDetailService,
+    IInvoiceSaleService invoiceSaleService,
+    IContribuyenteService contribuyenteService)
+    : ControllerBase
 {
-    private readonly IContactService _contactService;
-    private readonly ICashierDetailService _cashierDetailService;
-    private readonly IInvoiceSaleService _invoiceSaleService;
-    private readonly IContribuyenteService _contribuyenteService;
-
-    public ContactController(IContactService contactService,
-        ICashierDetailService cashierDetailService,
-        IInvoiceSaleService invoiceSaleService,
-        IContribuyenteService contribuyenteService)
-    {
-        _contactService = contactService;
-        _cashierDetailService = cashierDetailService;
-        _invoiceSaleService = invoiceSaleService;
-        _contribuyenteService = contribuyenteService;
-    }
+    private readonly string _companyId = userAuthenticationService.GetDefaultCompanyId();
 
     [HttpGet]
-    public async Task<IActionResult> Index(string companyId, [FromQuery] string query = "", [FromQuery] int page = 1)
+    public async Task<IActionResult> Index([FromQuery] string query = "", [FromQuery] int page = 1)
     {
         int pageSize = 12;
-        var contacts = await _contactService.GetContactosAsync(companyId, query, page, pageSize);
-        var totalContacts = await _contactService.GetTotalContactosAsync(companyId, query);
+        var contacts = await contactService.GetContactosAsync(_companyId, query, page, pageSize);
+        var totalContacts = await contactService.GetTotalContactosAsync(_companyId, query);
         var totalPages = (int)Math.Ceiling((double)totalContacts / pageSize);
 
         var paginationInfo = new PaginationInfo
@@ -60,17 +51,17 @@ public class ContactController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Show(string companyId, string id)
+    public async Task<IActionResult> Show(string id)
     {
-        var contact = await _contactService.GetByIdAsync(companyId, id);
+        var contact = await contactService.GetByIdAsync(_companyId, id);
         return Ok(contact);
     }
 
     [Obsolete]
     [HttpGet("Document/{document}")]
-    public async Task<IActionResult> Document(string companyId, string document)
+    public async Task<IActionResult> Document(string document)
     {
-        var contact = await _contactService.GetContactByDocumentAsync(companyId, document);
+        var contact = await contactService.GetContactByDocumentAsync(_companyId, document);
         return Ok(contact);
     }
 
@@ -79,19 +70,19 @@ public class ContactController : ControllerBase
     {
         ContribuyenteDto? result = null;
         if (doc.Trim().Length == 11)
-            result = _contribuyenteService.GetByRuc(doc.Trim());
+            result = contribuyenteService.GetByRuc(doc.Trim());
         if (doc.Trim().Length == 8)
-            result = _contribuyenteService.GetByDni(doc.Trim());
+            result = contribuyenteService.GetByDni(doc.Trim());
         if (result == null) return BadRequest();
         return Ok(result);
     }
 
     [HttpGet("Select2")]
-    public async Task<IActionResult> Select2(string companyId, [FromQuery] string? term)
+    public async Task<IActionResult> Select2([FromQuery] string? term)
     {
         if (term == null) term = string.Empty;
         var fieldNames = new string[] { "Document", "Name" };
-        var responseData = await _contactService.GetFilteredAsync(companyId, fieldNames, term, 6);
+        var responseData = await contactService.GetFilteredAsync(_companyId, fieldNames, term, 6);
         var data = new List<ContactSelect>();
         responseData.ForEach(item =>
         {
@@ -112,66 +103,66 @@ public class ContactController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(string companyId, [FromBody] Contact model)
+    public async Task<IActionResult> Create([FromBody] Contact model)
     {
         try
         {
-            model.CompanyId = companyId.Trim();
+            model.CompanyId = _companyId.Trim();
             model.Document = model.Document.Trim();
             model.Name = model.Name.Trim().ToUpper();
             model.Address = model.Address.Trim().ToUpper();
             model.CodUbigeo = model.CodUbigeo.Trim();
-            await _contactService.CreateAsync(model);
+            await contactService.InsertOneAsync(model);
             return Ok(model);
         }
         catch (MongoWriteException ex)
-        when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
+            when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
         {
             return BadRequest("Ya existe un contacto con el mismo número de documento para esta empresa.");
         }
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(string companyId, string id, [FromBody] Contact model)
+    public async Task<IActionResult> Update(string id, [FromBody] Contact model)
     {
         try
         {
-            var contact = await _contactService.GetByIdAsync(companyId, id);
+            var contact = await contactService.GetByIdAsync(_companyId, id);
             model.Id = contact.Id;
-            model.CompanyId = companyId.Trim();
+            model.CompanyId = _companyId.Trim();
             model.Document = model.Document.Trim();
             model.Name = model.Name.Trim().ToUpper();
             model.Address = model.Address.Trim().ToUpper();
             model.CodUbigeo = model.CodUbigeo.Trim();
-            contact = await _contactService.UpdateAsync(contact.Id, model);
+            contact = await contactService.ReplaceOneAsync(contact.Id, model);
             return Ok(contact);
         }
         catch (MongoWriteException ex)
-        when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
+            when (ex.WriteError.Category == ServerErrorCategory.DuplicateKey)
         {
             return BadRequest("Ya existe un contacto con el mismo número de documento para esta empresa.");
         }
     }
 
-    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRoleHelper.Admin)]
-    public async Task<IActionResult> Delete(string companyId, string id)
+    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRole.Admin)]
+    public async Task<IActionResult> Delete(string id)
     {
-        var contact = await _contactService.GetByIdAsync(companyId, id);
-        await _contactService.RemoveAsync(companyId, id);
+        var contact = await contactService.GetByIdAsync(_companyId, id);
+        await contactService.DeleteOneAsync(_companyId, id);
         return Ok(contact);
     }
 
     [HttpGet("EntradaSalida/{id}")]
-    public async Task<IActionResult> EntradaSalida(string companyId, string id, [FromQuery] string month, [FromQuery] string year)
+    public async Task<IActionResult> EntradaSalida(string id, [FromQuery] string month, [FromQuery] string year)
     {
-        var responseData = await _cashierDetailService.GetEntradaSalidaAsync(companyId, id, month, year);
+        var responseData = await cashierDetailService.GetEntradaSalidaAsync(_companyId, id, month, year);
         return Ok(responseData);
     }
 
     [HttpGet("InvoiceSale/{id}")]
-    public async Task<IActionResult> InvoiceSale(string companyId, string id, [FromQuery] string month, [FromQuery] string year)
+    public async Task<IActionResult> InvoiceSale(string id, [FromQuery] string month, [FromQuery] string year)
     {
-        var responseData = await _invoiceSaleService.GetByContactIdAsync(companyId, id, month, year);
+        var responseData = await invoiceSaleService.GetByContactIdAsync(_companyId, id, month, year);
         return Ok(responseData);
     }
 }

@@ -10,10 +10,9 @@ public interface IInventoryNotasDetailService : ICrudOperationService<InventoryN
     Task<long> CountDocumentsAsync(string companyId, string id);
 }
 
-public class InventoryNotasDetailService : CrudOperationService<InventoryNotasDetail>, IInventoryNotasDetailService
+public class InventoryNotasDetailService(MongoDatabaseService mongoDatabase)
+    : CrudOperationService<InventoryNotasDetail>(mongoDatabase), IInventoryNotasDetailService
 {
-    public InventoryNotasDetailService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
-
     public async Task<List<InventoryNotasDetail>> GetListAsync(string companyId, string inventoryNotasId)
     {
         var filter = Builders<InventoryNotasDetail>.Filter;

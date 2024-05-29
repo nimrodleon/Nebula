@@ -11,10 +11,9 @@ public interface ILocationDetailService : ICrudOperationService<LocationDetail>
     Task<List<AjusteInventarioDetail>> GetAjusteInventarioDetailsAsync(string companyId, string locationId, string ajusteInventarioId);
 }
 
-public class LocationDetailService : CrudOperationService<LocationDetail>, ILocationDetailService
+public class LocationDetailService(MongoDatabaseService mongoDatabase)
+    : CrudOperationService<LocationDetail>(mongoDatabase), ILocationDetailService
 {
-    public LocationDetailService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
-
     public async Task<List<LocationDetail>> GetListAsync(string companyId, string id)
     {
         var builder = Builders<LocationDetail>.Filter;

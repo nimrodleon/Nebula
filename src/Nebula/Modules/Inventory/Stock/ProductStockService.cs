@@ -18,10 +18,9 @@ public interface IProductStockService : ICrudOperationService<ProductStock>
     Task<List<ProductStock>> GetProductStockByProductIdsAsync(string companyId, string warehouseId, List<string> productArrId);
 }
 
-public class ProductStockService : CrudOperationService<ProductStock>, IProductStockService
+public class ProductStockService(MongoDatabaseService mongoDatabase)
+    : CrudOperationService<ProductStock>(mongoDatabase), IProductStockService
 {
-    public ProductStockService(MongoDatabaseService mongoDatabase) : base(mongoDatabase) { }
-
     public async Task<List<ProductStock>> CreateManyAsync(List<ProductStock> obj)
     {
         await _collection.InsertManyAsync(obj);
@@ -48,7 +47,7 @@ public class ProductStockService : CrudOperationService<ProductStock>, IProductS
             TransactionType = TransactionType.ENTRADA,
             Quantity = requestParams.Quantity,
         };
-        productStock = await CreateAsync(productStock);
+        productStock = await InsertOneAsync(productStock);
         return productStock;
     }
 

@@ -13,16 +13,11 @@ public interface IAjusteInventarioDetailService : ICrudOperationService<AjusteIn
     Task<DeleteResult> DeleteManyAsync(string companyId, string ajusteInventarioId);
 }
 
-public class AjusteInventarioDetailService : CrudOperationService<AjusteInventarioDetail>, IAjusteInventarioDetailService
+public class AjusteInventarioDetailService(
+    MongoDatabaseService mongoDatabase,
+    ILocationDetailService locationDetailService)
+    : CrudOperationService<AjusteInventarioDetail>(mongoDatabase), IAjusteInventarioDetailService
 {
-    private readonly ILocationDetailService _locationDetailService;
-
-    public AjusteInventarioDetailService(MongoDatabaseService mongoDatabase,
-        ILocationDetailService locationDetailService) : base(mongoDatabase)
-    {
-        _locationDetailService = locationDetailService;
-    }
-
     public async Task<List<AjusteInventarioDetail>> GetListAsync(string companyId, string ajusteInventarioId)
     {
         var builder = Builders<AjusteInventarioDetail>.Filter;
@@ -35,7 +30,7 @@ public class AjusteInventarioDetailService : CrudOperationService<AjusteInventar
 
     public async Task GenerateDetailAsync(string companyId, string locationId, string ajusteInventarioId)
     {
-        var ajusteInventarioDetails = await _locationDetailService.GetAjusteInventarioDetailsAsync(companyId, locationId, ajusteInventarioId);
+        var ajusteInventarioDetails = await locationDetailService.GetAjusteInventarioDetailsAsync(companyId, locationId, ajusteInventarioId);
         await _collection.InsertManyAsync(ajusteInventarioDetails);
     }
 

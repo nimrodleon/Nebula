@@ -13,26 +13,16 @@ namespace Nebula.Controllers.Account;
 [Authorize]
 [Route("api/account/[controller]")]
 [ApiController]
-public class CompanyController : ControllerBase
+public class CompanyController(
+    ICompanyService companyService,
+    ICertificadoUploaderService certificadoUploaderService,
+    IEmpresaHubService empresaHubService)
+    : ControllerBase
 {
-    private readonly ICompanyService _companyService;
-    private readonly ICertificadoUploaderService _certificadoUploaderService;
-    private readonly IEmpresaHubService _empresaHubService;
-
-    public CompanyController(
-        ICompanyService companyService,
-        ICertificadoUploaderService certificadoUploaderService,
-        IEmpresaHubService empresaHubService)
-    {
-        _companyService = companyService;
-        _certificadoUploaderService = certificadoUploaderService;
-        _empresaHubService = empresaHubService;
-    }
-
     [HttpGet]
     public async Task<IActionResult> Index([FromQuery] string? query)
     {
-        var companies = await _companyService.GetAsync("RznSocial", query);
+        var companies = await companyService.GetAsync("RznSocial", query);
         return Ok(companies);
     }
 
@@ -40,8 +30,8 @@ public class CompanyController : ControllerBase
     public async Task<IActionResult> Index([FromQuery] string query = "", [FromQuery] int page = 1)
     {
         int pageSize = 12;
-        var companies = await _companyService.GetCompaniesAsync(query, page, pageSize);
-        var totalCompanies = await _companyService.GetTotalCompaniesAsync(query);
+        var companies = await companyService.GetCompaniesAsync(query, page, pageSize);
+        var totalCompanies = await companyService.GetTotalCompaniesAsync(query);
         var totalPages = (int)Math.Ceiling((double)totalCompanies / pageSize);
 
         var paginationInfo = new PaginationInfo
@@ -64,14 +54,14 @@ public class CompanyController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> Show(string id)
     {
-        var company = await _companyService.GetByIdAsync(id);
+        var company = await companyService.GetByIdAsync(id);
         return Ok(company);
     }
 
     [HttpGet("Info/{id}")]
     public async Task<IActionResult> GetCompanyInfo(string id)
     {
-        var company = await _companyService.GetByIdAsync(id);
+        var company = await companyService.GetByIdAsync(id);
         if (company == null) return NotFound();
         return Ok(new
         {
@@ -91,7 +81,7 @@ public class CompanyController : ControllerBase
         model.Provincia = model.Provincia.Trim().ToUpper();
         model.Distrito = model.Distrito.Trim().ToUpper();
         model.Urbanizacion = model.Urbanizacion.Trim().ToUpper();
-        model = await _companyService.CreateAsync(model);
+        model = await companyService.InsertOneAsync(model);
 
         // agregar empresa en cache.
         // var companies = await _cacheAuthService.GetUserAuthCompaniesAsync(model.UserId);
@@ -139,7 +129,7 @@ public class CompanyController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] Company model)
     {
-        var company = await _companyService.GetByIdAsync(id);
+        var company = await companyService.GetByIdAsync(id);
         model.Id = company.Id;
         model.Ruc = model.Ruc.Trim();
         model.RznSocial = model.RznSocial.Trim().ToUpper();
@@ -148,7 +138,7 @@ public class CompanyController : ControllerBase
         model.Provincia = model.Provincia.Trim().ToUpper();
         model.Distrito = model.Distrito.Trim().ToUpper();
         model.Urbanizacion = model.Urbanizacion.Trim().ToUpper();
-        company = await _companyService.UpdateAsync(company.Id, model);
+        company = await companyService.ReplaceOneAsync(company.Id, model);
         // actualizar empresa en cache.
         // var companies = await _cacheAuthService.GetUserAuthCompaniesAsync(model.UserId);
         // if (companies != null)
@@ -168,8 +158,8 @@ public class CompanyController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
-        var company = await _companyService.GetByIdAsync(id);
-        await _companyService.RemoveAsync(id);
+        var company = await companyService.GetByIdAsync(id);
+        await companyService.DeleteOneAsync(id);
         return Ok(company);
     }
 
@@ -179,7 +169,7 @@ public class CompanyController : ControllerBase
     {
         try
         {
-            var company = await _companyService.GetByIdAsync(companyId.Trim());
+            var company = await companyService.GetByIdAsync(companyId.Trim());
             if (company == null) return BadRequest(new { ok = false, msg = "No existe la Empresa." });
 
             // Leer el archivo de certificado como un array de bytes
@@ -188,12 +178,12 @@ public class CompanyController : ControllerBase
                 await certificate.CopyToAsync(ms);
                 byte[] certificado = ms.ToArray();
                 var result =
-                    await _certificadoUploaderService.SubirCertificado(certificado, password, company.Id, extension);
+                    await certificadoUploaderService.SubirCertificado(certificado, password, company.Id, extension);
                 // actualizar fecha de vencimiento.
                 company.FechaVencimientoCert =
                     new X509Certificate2(certificado, password.Trim()).NotAfter.ToString("yyyy-MM-dd");
                 company.SunatEndpoint = SunatEndpoints.FeBeta;
-                await _companyService.UpdateAsync(company.Id, company);
+                await companyService.ReplaceOneAsync(company.Id, company);
                 // sincronizar datos de la empresa.
                 var empresaHub = new EmpresaHub()
                 {
@@ -218,7 +208,7 @@ public class CompanyController : ControllerBase
                         CodLocal = company.CodLocalEmisor.Trim(),
                     }
                 };
-                await _empresaHubService.RegistrarEmpresa(empresaHub);
+                await empresaHubService.RegistrarEmpresa(empresaHub);
 
                 return Ok(company);
             }
@@ -233,7 +223,7 @@ public class CompanyController : ControllerBase
     [HttpPatch("SincronizarDatos/{companyId}")]
     public async Task<IActionResult> SincronizarDatos(string companyId)
     {
-        var company = await _companyService.GetByIdAsync(companyId.Trim());
+        var company = await companyService.GetByIdAsync(companyId.Trim());
         if (company == null) return BadRequest(new { ok = false, msg = "No existe la Empresa." });
         // sincronizar datos de la empresa.
         var empresaHub = new EmpresaHub()
@@ -259,31 +249,31 @@ public class CompanyController : ControllerBase
                 CodLocal = company.CodLocalEmisor.Trim(),
             }
         };
-        await _empresaHubService.RegistrarEmpresa(empresaHub);
+        await empresaHubService.RegistrarEmpresa(empresaHub);
         return Ok(company);
     }
 
     [HttpPatch("QuitarCertificado/{companyId}")]
     public async Task<IActionResult> QuitarCertificado(string companyId)
     {
-        var company = await _companyService.GetByIdAsync(companyId.Trim());
+        var company = await companyService.GetByIdAsync(companyId.Trim());
         if (company == null) return BadRequest(new { ok = false, msg = "No existe la Empresa." });
         company.FechaVencimientoCert = "-";
         company.SunatEndpoint = SunatEndpoints.FeBeta;
-        await _companyService.UpdateAsync(company.Id, company);
+        await companyService.ReplaceOneAsync(company.Id, company);
         return Ok(company);
     }
 
     [HttpPatch("CambiarSunatEndpoint/{companyId}")]
     public async Task<IActionResult> CambiarSunatEndpoint(string companyId)
     {
-        var company = await _companyService.GetByIdAsync(companyId.Trim());
+        var company = await companyService.GetByIdAsync(companyId.Trim());
         if (company == null) return BadRequest(new { ok = false, msg = "No existe la Empresa." });
         if (company.SunatEndpoint == SunatEndpoints.FeBeta)
             company.SunatEndpoint = SunatEndpoints.FeProduccion;
         else if (company.SunatEndpoint == SunatEndpoints.FeProduccion)
             company.SunatEndpoint = SunatEndpoints.FeBeta;
-        await _companyService.UpdateAsync(company.Id, company);
+        await companyService.ReplaceOneAsync(company.Id, company);
         // sincronizar datos de la empresa.
         var empresaHub = new EmpresaHub()
         {
@@ -308,7 +298,7 @@ public class CompanyController : ControllerBase
                 CodLocal = company.CodLocalEmisor.Trim(),
             }
         };
-        await _empresaHubService.RegistrarEmpresa(empresaHub);
+        await empresaHubService.RegistrarEmpresa(empresaHub);
         return Ok(company);
     }
 }
