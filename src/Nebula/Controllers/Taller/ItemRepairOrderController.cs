@@ -9,40 +9,44 @@ namespace Nebula.Controllers.Taller;
 
 [Authorize]
 [CustomerAuthorize(UserRole = UserRoleHelper.User)]
-[Route("api/taller/{companyId}/[controller]")]
+[Route("api/taller/[controller]")]
 [ApiController]
-public class ItemRepairOrderController(ITallerItemRepairOrderService itemRepairOrderService) : ControllerBase
+public class ItemRepairOrderController(
+    IUserAuthenticationService userAuthenticationService,
+    ITallerItemRepairOrderService itemRepairOrderService) : ControllerBase
 {
+    private readonly string _companyId = userAuthenticationService.GetDefaultCompanyId();
+
     [HttpGet("{id}")]
-    public async Task<IActionResult> Index(string companyId, string id)
+    public async Task<IActionResult> Index(string id)
     {
-        var itemsRepairOrder = await itemRepairOrderService.GetItemsRepairOrder(companyId, id);
+        var itemsRepairOrder = await itemRepairOrderService.GetItemsRepairOrder(_companyId, id);
         return Ok(itemsRepairOrder);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(string companyId, [FromBody] TallerItemRepairOrder model)
+    public async Task<IActionResult> Create([FromBody] TallerItemRepairOrder model)
     {
-        model.CompanyId = companyId.Trim();
+        model.CompanyId = _companyId.Trim();
         model = await itemRepairOrderService.InsertOneAsync(model);
         return Ok(model);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(string companyId, string id, [FromBody] TallerItemRepairOrder model)
+    public async Task<IActionResult> Update(string id, [FromBody] TallerItemRepairOrder model)
     {
-        var itemRepairOrder = await itemRepairOrderService.GetByIdAsync(companyId, id);
+        var itemRepairOrder = await itemRepairOrderService.GetByIdAsync(_companyId, id);
         model.Id = itemRepairOrder.Id;
-        model.CompanyId = companyId.Trim();
+        model.CompanyId = _companyId.Trim();
         itemRepairOrder = await itemRepairOrderService.ReplaceOneAsync(itemRepairOrder.Id, model);
         return Ok(itemRepairOrder);
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(string companyId, string id)
+    public async Task<IActionResult> Delete(string id)
     {
-        var itemRepairOrder = await itemRepairOrderService.GetByIdAsync(companyId, id);
-        await itemRepairOrderService.DeleteOneAsync(companyId, itemRepairOrder.Id);
+        var itemRepairOrder = await itemRepairOrderService.GetByIdAsync(_companyId, id);
+        await itemRepairOrderService.DeleteOneAsync(_companyId, itemRepairOrder.Id);
         return Ok(itemRepairOrder);
     }
 }

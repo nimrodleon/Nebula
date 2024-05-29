@@ -22,9 +22,10 @@ namespace Nebula.Controllers.Sales;
 
 [Authorize]
 [CustomerAuthorize(UserRole = UserRoleHelper.User)]
-[Route("api/sales/{companyId}/[controller]")]
+[Route("api/sales/[controller]")]
 [ApiController]
 public class InvoiceSaleController(
+    IUserAuthenticationService userAuthenticationService,
     ICompanyService companyService,
     IInvoiceSaleService invoiceSaleService,
     IInvoiceSaleDetailService invoiceSaleDetailService,
@@ -37,12 +38,14 @@ public class InvoiceSaleController(
     IInvoiceSaleFileService invoiceSaleFileService)
     : ControllerBase
 {
+    private readonly string _companyId = userAuthenticationService.GetDefaultCompanyId();
+
     [HttpGet]
-    public async Task<IActionResult> Index(string companyId, [FromQuery] DateQuery model, [FromQuery] int page = 1)
+    public async Task<IActionResult> Index([FromQuery] DateQuery model, [FromQuery] int page = 1)
     {
         int pageSize = 12;
-        var comprobantes = await invoiceSaleService.GetComprobantesAsync(companyId, model, page, pageSize);
-        var totalProductos = await invoiceSaleService.GetTotalComprobantesAsync(companyId, model);
+        var comprobantes = await invoiceSaleService.GetComprobantesAsync(_companyId, model, page, pageSize);
+        var totalProductos = await invoiceSaleService.GetTotalComprobantesAsync(_companyId, model);
         var totalPages = (int)Math.Ceiling((double)totalProductos / pageSize);
 
         var paginationInfo = new PaginationInfo
@@ -63,53 +66,54 @@ public class InvoiceSaleController(
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Show(string companyId, string id)
+    public async Task<IActionResult> Show(string id)
     {
-        var responseInvoiceSale = await invoiceSaleService.GetInvoiceSaleAsync(companyId, id);
+        var responseInvoiceSale = await invoiceSaleService.GetInvoiceSaleAsync(_companyId, id);
         return Ok(responseInvoiceSale);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(string companyId, [FromBody] ComprobanteDto dto)
+    public async Task<IActionResult> Create([FromBody] ComprobanteDto dto)
     {
-        var company = await companyService.GetByIdAsync(companyId);
+        var company = await companyService.GetByIdAsync(_companyId);
         var comprobante = await comprobanteService.SaveChangesAsync(company, dto);
         await validateStockService.ValidarInvoiceSale(comprobante);
         var invoiceRequest = InvoiceMapper.MapToInvoiceRequestHub(company.Ruc, comprobante);
-        var billingResponse = await invoiceHubService.SendInvoiceAsync(companyId, invoiceRequest);
+        var billingResponse = await invoiceHubService.SendInvoiceAsync(_companyId, invoiceRequest);
         comprobante.InvoiceSale.BillingResponse = billingResponse;
         await invoiceSaleService.ReplaceOneAsync(comprobante.InvoiceSale.Id, comprobante.InvoiceSale);
         return Ok(new { Data = billingResponse, InvoiceId = comprobante.InvoiceSale.Id });
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(string companyId, string id)
+    public async Task<IActionResult> Delete(string id)
     {
-        var invoiceSale = await invoiceSaleService.GetByIdAsync(companyId, id);
-        await invoiceSaleService.DeleteOneAsync(companyId, invoiceSale.Id);
-        await invoiceSaleDetailService.DeleteOneAsync(companyId, invoiceSale.Id);
+        var invoiceSale = await invoiceSaleService.GetByIdAsync(_companyId, id);
+        await invoiceSaleService.DeleteOneAsync(_companyId, invoiceSale.Id);
+        await invoiceSaleDetailService.DeleteOneAsync(_companyId, invoiceSale.Id);
         return Ok(invoiceSale);
     }
 
     [HttpPatch("Reenviar/{id}")]
-    public async Task<IActionResult> Reenviar(string companyId, string id)
+    public async Task<IActionResult> Reenviar(string id)
     {
-        var company = await companyService.GetByIdAsync(companyId.Trim());
+        var company = await companyService.GetByIdAsync(_companyId.Trim());
         var comprobante = new InvoiceSaleAndDetails();
-        comprobante.InvoiceSale = await invoiceSaleService.GetByIdAsync(companyId, id);
-        comprobante.InvoiceSaleDetails = await invoiceSaleDetailService.GetListAsync(companyId, comprobante.InvoiceSale.Id);
+        comprobante.InvoiceSale = await invoiceSaleService.GetByIdAsync(_companyId, id);
+        comprobante.InvoiceSaleDetails =
+            await invoiceSaleDetailService.GetListAsync(_companyId, comprobante.InvoiceSale.Id);
         var invoiceRequest = InvoiceMapper.MapToInvoiceRequestHub(company.Ruc, comprobante);
-        var billingResponse = await invoiceHubService.SendInvoiceAsync(companyId, invoiceRequest);
+        var billingResponse = await invoiceHubService.SendInvoiceAsync(_companyId, invoiceRequest);
         comprobante.InvoiceSale.BillingResponse = billingResponse;
         await invoiceSaleService.ReplaceOneAsync(comprobante.InvoiceSale.Id, comprobante.InvoiceSale);
         return Ok(new { Data = billingResponse, InvoiceId = comprobante.InvoiceSale.Id });
     }
 
     [HttpGet("DescargarRegistroVentas")]
-    public async Task<IActionResult> DescargarRegistroVentas(string companyId, [FromQuery] DateQuery dto)
+    public async Task<IActionResult> DescargarRegistroVentas([FromQuery] DateQuery dto)
     {
-        var invoices = await invoiceSaleService.GetMonthlyListAsync(companyId, dto);
-        var notes = await creditNoteService.GetListAsync(companyId, dto);
+        var invoices = await invoiceSaleService.GetMonthlyListAsync(_companyId, dto);
+        var notes = await creditNoteService.GetListAsync(_companyId, dto);
         var datosExcel = new ExcelRegistroVentas(invoices, notes).GenerarArchivo();
         // Configuramos la respuesta HTTP.
         var stream = new MemoryStream();
@@ -147,10 +151,10 @@ public class InvoiceSaleController(
     //}
 
     [HttpGet("Pendientes")]
-    public async Task<IActionResult> Pendientes(string companyId)
+    public async Task<IActionResult> Pendientes()
     {
         var pendientes = new List<ComprobantesPendientes>();
-        var invoiceSales = await invoiceSaleService.GetInvoiceSalesPendingAsync(companyId);
+        var invoiceSales = await invoiceSaleService.GetInvoiceSalesPendingAsync(_companyId);
         invoiceSales.ForEach(item =>
         {
             pendientes.Add(new ComprobantesPendientes()
@@ -164,7 +168,7 @@ public class InvoiceSaleController(
                 CdrDescription = item.BillingResponse.CdrDescription,
             });
         });
-        var creditNotes = await creditNoteService.GetCreditNotesPendingAsync(companyId);
+        var creditNotes = await creditNoteService.GetCreditNotesPendingAsync(_companyId);
         creditNotes.ForEach(item =>
         {
             pendientes.Add(new ComprobantesPendientes()
@@ -183,12 +187,12 @@ public class InvoiceSaleController(
     }
 
     [HttpPatch("AnularComprobante/{id}")]
-    public async Task<IActionResult> AnularComprobante(string companyId, string id)
+    public async Task<IActionResult> AnularComprobante(string id)
     {
-        var company = await companyService.GetByIdAsync(companyId.Trim());
-        var invoiceCancellationResponse = await creditNoteService.InvoiceCancellation(companyId, id);
+        var company = await companyService.GetByIdAsync(_companyId.Trim());
+        var invoiceCancellationResponse = await creditNoteService.InvoiceCancellation(_companyId, id);
         var creditNoteRequest = CreditNoteMapper.MapToCreditNoteRequestHub(company.Ruc, invoiceCancellationResponse);
-        var billingResponse = await creditNoteHubService.SendCreditNoteAsync(companyId, creditNoteRequest);
+        var billingResponse = await creditNoteHubService.SendCreditNoteAsync(_companyId, creditNoteRequest);
         var creditNote = invoiceCancellationResponse.CreditNote;
         creditNote.BillingResponse = billingResponse;
         await creditNoteService.ReplaceOneAsync(creditNote.Id, creditNote);
@@ -199,12 +203,12 @@ public class InvoiceSaleController(
     }
 
     [HttpGet("Ticket/{id}")]
-    public async Task<IActionResult> Ticket(string companyId, string id)
+    public async Task<IActionResult> Ticket(string id)
     {
-        var responseInvoice = await invoiceSaleService.GetInvoiceSaleAsync(companyId, id);
+        var responseInvoice = await invoiceSaleService.GetInvoiceSaleAsync(_companyId, id);
         var ticket = new TicketDto()
         {
-            Company = await companyService.GetByIdAsync(companyId.Trim()),
+            Company = await companyService.GetByIdAsync(_companyId.Trim()),
             InvoiceSale = responseInvoice.InvoiceSale,
             InvoiceSaleDetails = responseInvoice.InvoiceSaleDetails,
         };
@@ -213,19 +217,19 @@ public class InvoiceSaleController(
 
     [AllowAnonymous]
     [HttpGet("ConsultarValidez")]
-    public async Task<IActionResult> ConsultarValidez(string companyId,
-        [FromQuery] QueryConsultarValidezComprobante query)
+    public async Task<IActionResult> ConsultarValidez([FromQuery] QueryConsultarValidezComprobante query)
     {
-        string pathArchivoZip = await consultarValidezComprobanteService.CrearArchivosDeValidación(new Company(), query);
+        string pathArchivoZip =
+            await consultarValidezComprobanteService.CrearArchivosDeValidación(new Company(), query);
         FileStream stream = new FileStream(pathArchivoZip, FileMode.Open);
         return new FileStreamResult(stream, "application/zip");
     }
 
     [HttpGet("GetXml/{invoiceId}")]
-    public async Task<IActionResult> GetXml(string companyId, string invoiceId)
+    public async Task<IActionResult> GetXml(string invoiceId)
     {
-        var company = await companyService.GetByIdAsync(companyId);
-        var invoice = await invoiceSaleService.GetByIdAsync(companyId, invoiceId);
+        var company = await companyService.GetByIdAsync(_companyId);
+        var invoice = await invoiceSaleService.GetByIdAsync(_companyId, invoiceId);
         var xml = invoiceSaleFileService.GetXml(company, invoice);
         return new FileStreamResult(xml, "application/xml");
     }

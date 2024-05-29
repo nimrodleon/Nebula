@@ -14,9 +14,10 @@ namespace Nebula.Controllers.Sales;
 
 [Authorize]
 [CustomerAuthorize(UserRole = UserRoleHelper.User)]
-[Route("api/sales/{companyId}/[controller]")]
+[Route("api/sales/[controller]")]
 [ApiController]
 public class CreditNoteController(
+    IUserAuthenticationService userAuthenticationService,
     ICompanyService companyService,
     IInvoiceSaleService invoiceSaleService,
     ICreditNoteService creditNoteService,
@@ -24,10 +25,12 @@ public class CreditNoteController(
     ICreditNoteHubService creditNoteHubService)
     : ControllerBase
 {
+    private readonly string _companyId = userAuthenticationService.GetDefaultCompanyId();
+
     [HttpGet("{id}")]
-    public async Task<IActionResult> Show(string companyId, string id)
+    public async Task<IActionResult> Show(string id)
     {
-        var creditNote = await creditNoteService.GetCreditNoteByInvoiceSaleIdAsync(companyId, id);
+        var creditNote = await creditNoteService.GetCreditNoteByInvoiceSaleIdAsync(_companyId, id);
         return Ok(creditNote);
     }
 
@@ -37,10 +40,10 @@ public class CreditNoteController(
     /// <param name="creditNoteId">Identificador de la Nota de crédito</param>
     /// <returns>JSON[PrintCreditNoteDto]</returns>
     [HttpGet("Print/{creditNoteId}")]
-    public async Task<IActionResult> Print(string companyId, string creditNoteId)
+    public async Task<IActionResult> Print(string creditNoteId)
     {
-        var company = await companyService.GetByIdAsync(companyId.Trim());
-        var creditNoteDto = await creditNoteService.GetCreditNoteDtoAsync(companyId, creditNoteId);
+        var company = await companyService.GetByIdAsync(_companyId.Trim());
+        var creditNoteDto = await creditNoteService.GetCreditNoteDtoAsync(_companyId, creditNoteId);
         var printCreditNote = new PrintCreditNoteDto()
         {
             Company = company,
@@ -51,15 +54,16 @@ public class CreditNoteController(
     }
 
     [HttpPatch("Reenviar/{creditNoteId}")]
-    public async Task<IActionResult> Reenviar(string companyId, string creditNoteId)
+    public async Task<IActionResult> Reenviar(string creditNoteId)
     {
-        var company = await companyService.GetByIdAsync(companyId.Trim());
+        var company = await companyService.GetByIdAsync(_companyId.Trim());
         var cancellationResponse = new InvoiceCancellationResponse();
-        cancellationResponse.CreditNote = await creditNoteService.GetByIdAsync(companyId, creditNoteId);
-        cancellationResponse.CreditNoteDetail = await creditNoteDetailService.GetListAsync(companyId, creditNoteId);
-        cancellationResponse.InvoiceSale = await invoiceSaleService.GetByIdAsync(companyId, cancellationResponse.CreditNote.InvoiceSaleId);
+        cancellationResponse.CreditNote = await creditNoteService.GetByIdAsync(_companyId, creditNoteId);
+        cancellationResponse.CreditNoteDetail = await creditNoteDetailService.GetListAsync(_companyId, creditNoteId);
+        cancellationResponse.InvoiceSale =
+            await invoiceSaleService.GetByIdAsync(_companyId, cancellationResponse.CreditNote.InvoiceSaleId);
         var creditNoteRequest = CreditNoteMapper.MapToCreditNoteRequestHub(company.Ruc, cancellationResponse);
-        var billingResponse = await creditNoteHubService.SendCreditNoteAsync(companyId, creditNoteRequest);
+        var billingResponse = await creditNoteHubService.SendCreditNoteAsync(_companyId, creditNoteRequest);
         var creditNote = cancellationResponse.CreditNote;
         creditNote.BillingResponse = billingResponse;
         await creditNoteService.ReplaceOneAsync(creditNote.Id, creditNote);
@@ -68,5 +72,4 @@ public class CreditNoteController(
         await invoiceSaleService.ReplaceOneAsync(invoice.Id, invoice);
         return Ok(new { billingResponse, creditNote });
     }
-
 }

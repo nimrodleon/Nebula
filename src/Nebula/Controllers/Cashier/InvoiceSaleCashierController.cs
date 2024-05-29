@@ -19,9 +19,10 @@ namespace Nebula.Controllers.Cashier;
 
 [Authorize]
 [CustomerAuthorize(UserRole = UserRoleHelper.User)]
-[Route("api/cashier/{companyId}/[controller]")]
+[Route("api/cashier/[controller]")]
 [ApiController]
 public class InvoiceSaleCashierController(
+    IUserAuthenticationService userAuthenticationService,
     ICompanyService companyService,
     IInvoiceSaleDetailService invoiceSaleDetailService,
     IValidateStockService validateStockService,
@@ -31,6 +32,8 @@ public class InvoiceSaleCashierController(
     ICashierDetailService cashierDetailService)
     : ControllerBase
 {
+    private readonly string _companyId = userAuthenticationService.GetDefaultCompanyId();
+
     /// <summary>
     /// registrar venta rápida.
     /// </summary>
@@ -38,11 +41,11 @@ public class InvoiceSaleCashierController(
     /// <param name="model">Modelo Comprobante</param>
     /// <returns>BillingResponse</returns>
     [HttpPost("GenerarVenta")]
-    public async Task<IActionResult> GenerarVenta(string companyId, [FromBody] ComprobanteDto model)
+    public async Task<IActionResult> GenerarVenta([FromBody] ComprobanteDto model)
     {
         try
         {
-            var company = await companyService.GetByIdAsync(companyId.Trim());
+            var company = await companyService.GetByIdAsync(_companyId.Trim());
             var comprobante = await comprobanteService.SaveChangesAsync(company, model);
             await validateStockService.ValidarInvoiceSale(comprobante);
 
@@ -51,7 +54,7 @@ public class InvoiceSaleCashierController(
             {
                 var cashierDetail = new CashierDetail()
                 {
-                    CompanyId = companyId,
+                    CompanyId = _companyId.Trim(),
                     CajaDiariaId = model.Cabecera.CajaDiariaId,
                     InvoiceSaleId = comprobante.InvoiceSale.Id,
                     DocType = comprobante.InvoiceSale.TipoDoc,
@@ -69,11 +72,12 @@ public class InvoiceSaleCashierController(
             if (comprobante.InvoiceSale.TipoDoc != "NOTA")
             {
                 var invoiceRequest = InvoiceMapper.MapToInvoiceRequestHub(company.Ruc, comprobante);
-                var billingResponse = await invoiceHubService.SendInvoiceAsync(companyId, invoiceRequest);
+                var billingResponse = await invoiceHubService.SendInvoiceAsync(_companyId, invoiceRequest);
                 comprobante.InvoiceSale.BillingResponse = billingResponse;
                 await invoiceSaleService.ReplaceOneAsync(comprobante.InvoiceSale.Id, comprobante.InvoiceSale);
                 return Ok(new { invoiceSaleId = comprobante.InvoiceSale.Id, billingResponse });
             }
+
             return Ok(new { invoiceSaleId = comprobante.InvoiceSale.Id });
         }
         catch (Exception e)
@@ -88,9 +92,10 @@ public class InvoiceSaleCashierController(
     /// <param name="id">ID CajaDiaria</param>
     /// <returns>Lista de Productos</returns>
     [HttpGet("ProductReport/{id}")]
-    public async Task<IActionResult> ProductReport(string companyId, string id)
+    public async Task<IActionResult> ProductReport(string id)
     {
-        List<InvoiceSaleDetail> invoiceSaleDetails = await invoiceSaleDetailService.GetItemsByCajaDiaria(companyId, id);
+        List<InvoiceSaleDetail> invoiceSaleDetails =
+            await invoiceSaleDetailService.GetItemsByCajaDiaria(_companyId, id);
         return Ok(invoiceSaleDetails);
     }
 }

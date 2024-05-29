@@ -9,32 +9,34 @@ namespace Nebula.Controllers.Inventory;
 
 [Authorize]
 [CustomerAuthorize(UserRole = UserRoleHelper.User)]
-[Route("api/inventory/{companyId}/[controller]")]
+[Route("api/inventory/[controller]")]
 [ApiController]
 public class ProductStockController(
+    IUserAuthenticationService userAuthenticationService,
     IProductStockService productStockService,
     IHelperCalculateProductStockService helperCalculateProductStockService)
     : ControllerBase
 {
+    private readonly string _companyId = userAuthenticationService.GetDefaultCompanyId();
+
     [HttpGet("GetStockInfos/{productId}")]
-    public async Task<IActionResult> GetStockInfos(string companyId, string productId)
+    public async Task<IActionResult> GetStockInfos(string productId)
     {
-        var responseData = await helperCalculateProductStockService.GetProductStockInfos(companyId, productId);
+        var responseData = await helperCalculateProductStockService.GetProductStockInfos(_companyId, productId);
         return Ok(responseData);
     }
 
     [HttpPost("ChangeQuantity")]
-    public async Task<IActionResult> ChangeQuantity(string companyId, [FromBody] ChangeQuantityStockRequestParams requestParams)
+    public async Task<IActionResult> ChangeQuantity([FromBody] ChangeQuantityStockRequestParams requestParams)
     {
-        var productStock = await productStockService.ChangeQuantity(companyId, requestParams);
+        var productStock = await productStockService.ChangeQuantity(_companyId, requestParams);
         return Ok(productStock);
     }
 
     [HttpGet("StockQuantity/{warehouseId}/{productId}")]
-    public async Task<IActionResult> StockQuantity(string companyId, string warehouseId, string productId)
+    public async Task<IActionResult> StockQuantity(string warehouseId, string productId)
     {
-        var result = await productStockService.GetStockQuantityAsync(companyId, warehouseId, productId);
+        var result = await productStockService.GetStockQuantityAsync(_companyId, warehouseId, productId);
         return Ok(result);
     }
-
 }

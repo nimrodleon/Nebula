@@ -11,16 +11,20 @@ namespace Nebula.Controllers.Taller;
 
 [Authorize]
 [CustomerAuthorize(UserRole = UserRoleHelper.User)]
-[Route("api/taller/{companyId}/[controller]")]
+[Route("api/taller/[controller]")]
 [ApiController]
-public class RepairOrderController(ITallerRepairOrderService repairOrderService) : ControllerBase
+public class RepairOrderController(
+    IUserAuthenticationService userAuthenticationService,
+    ITallerRepairOrderService repairOrderService) : ControllerBase
 {
+    private readonly string _companyId = userAuthenticationService.GetDefaultCompanyId();
+
     [HttpGet]
-    public async Task<IActionResult> Index(string companyId, [FromQuery] string query = "", [FromQuery] int page = 1)
+    public async Task<IActionResult> Index([FromQuery] string query = "", [FromQuery] int page = 1)
     {
         int pageSize = 12;
-        var reparaciones = await repairOrderService.GetRepairOrders(companyId, query, page, pageSize);
-        var totalReparaciones = await repairOrderService.GetTotalRepairOrders(companyId, query);
+        var reparaciones = await repairOrderService.GetRepairOrders(_companyId, query, page, pageSize);
+        var totalReparaciones = await repairOrderService.GetTotalRepairOrders(_companyId, query);
         var totalPages = (int)Math.Ceiling((double)totalReparaciones / pageSize);
 
         var paginationInfo = new PaginationInfo
@@ -41,11 +45,11 @@ public class RepairOrderController(ITallerRepairOrderService repairOrderService)
     }
 
     [HttpGet("GetMonthlyReport")]
-    public async Task<IActionResult> GetMonthlyReport(string companyId, [FromQuery] DateQuery dto, [FromQuery] int page = 1)
+    public async Task<IActionResult> GetMonthlyReport([FromQuery] DateQuery dto, [FromQuery] int page = 1)
     {
         int pageSize = 12;
-        var reparaciones = await repairOrderService.GetRepairOrdersMonthly(companyId, dto, page, pageSize);
-        var totalReparaciones = await repairOrderService.GetTotalRepairOrdersMonthly(companyId, dto);
+        var reparaciones = await repairOrderService.GetRepairOrdersMonthly(_companyId, dto, page, pageSize);
+        var totalReparaciones = await repairOrderService.GetTotalRepairOrdersMonthly(_companyId, dto);
         var totalPages = (int)Math.Ceiling((double)totalReparaciones / pageSize);
 
         var paginationInfo = new PaginationInfo
@@ -66,32 +70,32 @@ public class RepairOrderController(ITallerRepairOrderService repairOrderService)
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> Show(string companyId, string id)
+    public async Task<IActionResult> Show(string id)
     {
-        var repairOrder = await repairOrderService.GetByIdAsync(companyId, id);
+        var repairOrder = await repairOrderService.GetByIdAsync(_companyId, id);
         return Ok(repairOrder);
     }
 
     [HttpGet("GetTicket/{id}")]
-    public async Task<IActionResult> GetTicket(string companyId, string id)
+    public async Task<IActionResult> GetTicket(string id)
     {
-        var ticket = await repairOrderService.GetTicket(companyId, id);
+        var ticket = await repairOrderService.GetTicket(_companyId, id);
         return Ok(ticket);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(string companyId, [FromBody] TallerRepairOrder model)
+    public async Task<IActionResult> Create([FromBody] TallerRepairOrder model)
     {
-        await repairOrderService.CreateRepairOrderAsync(companyId, model);
+        await repairOrderService.CreateRepairOrderAsync(_companyId, model);
         return Ok(model);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(string companyId, string id, [FromBody] TallerRepairOrder model)
+    public async Task<IActionResult> Update(string id, [FromBody] TallerRepairOrder model)
     {
-        var repairOrder = await repairOrderService.GetByIdAsync(companyId, id);
+        var repairOrder = await repairOrderService.GetByIdAsync(_companyId, id);
         model.Id = repairOrder.Id;
-        model.CompanyId = companyId.Trim();
+        model.CompanyId = _companyId.Trim();
         model.Serie = repairOrder.Serie;
         model.Number = repairOrder.Number;
         model.CreatedAt = repairOrder.CreatedAt;
@@ -105,10 +109,10 @@ public class RepairOrderController(ITallerRepairOrderService repairOrderService)
     }
 
     [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRoleHelper.Admin)]
-    public async Task<IActionResult> Delete(string companyId, string id)
+    public async Task<IActionResult> Delete(string id)
     {
-        var repairOrder = await repairOrderService.GetByIdAsync(companyId, id);
-        await repairOrderService.DeleteOneAsync(companyId, repairOrder.Id);
+        var repairOrder = await repairOrderService.GetByIdAsync(_companyId, id);
+        await repairOrderService.DeleteOneAsync(_companyId, repairOrder.Id);
         return Ok(repairOrder);
     }
 }
