@@ -99,7 +99,6 @@ public class ProductController(
     public async Task<IActionResult> Update(string id, [FromBody] Product model)
     {
         var product = await productService.GetByIdAsync(_companyId, id);
-        if (product == null) return BadRequest();
         model.Description = model.Description.ToUpper();
         product = await productService.ReplaceOneAsync(product.Id, model);
         return Ok(product);
