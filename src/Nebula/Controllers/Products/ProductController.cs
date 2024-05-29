@@ -11,7 +11,7 @@ using Nebula.Common.Helpers;
 namespace Nebula.Controllers.Products;
 
 [Authorize]
-[CustomerAuthorize(UserRole = CompanyRoles.User)]
+[CustomerAuthorize(UserRole = UserRoleHelper.User)]
 [Route("api/products/{companyId}/[controller]")]
 [ApiController]
 public class ProductController : ControllerBase
@@ -109,7 +109,7 @@ public class ProductController : ControllerBase
         return Ok(product);
     }
 
-    [HttpDelete("{id}"), CustomerAuthorize(UserRole = CompanyRoles.Admin)]
+    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRoleHelper.Admin)]
     public async Task<IActionResult> Delete(string companyId, string id)
     {
         var product = await _productService.GetByIdAsync(companyId, id);
@@ -128,8 +128,8 @@ public class ProductController : ControllerBase
         return File(stream, ContentTypeFormat.Excel, "plantilla.xlsx");
     }
 
-    [HttpPost("CargarProductos"), CustomerAuthorize(UserRole = CompanyRoles.Admin)]
-    public async Task<IActionResult> CargarProductosAsync(string companyId, [FromForm] IFormFile datos)
+    [HttpPost("CargarProductos"), CustomerAuthorize(UserRole = UserRoleHelper.Admin)]
+    public async Task<IActionResult> CargarProductosAsync(string companyId, IFormFile datos)
     {
         try
         {
@@ -137,6 +137,7 @@ public class ProductController : ControllerBase
             {
                 return BadRequest("Archivo no proporcionado o vacío.");
             }
+
             var category = new Category() { CompanyId = companyId.Trim(), Name = "SIN CATEGORÍA" };
             category = await _categoryService.CreateAsync(category);
 
@@ -147,12 +148,13 @@ public class ProductController : ControllerBase
                 var batch = productos.GetRange(i, Math.Min(batchSize, productos.Count - i));
                 await _productService.InsertManyAsync(batch);
             }
+
             return StatusCode(StatusCodes.Status201Created);
         }
         catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, $"Error durante la carga de productos: {ex.Message}");
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                $"Error durante la carga de productos: {ex.Message}");
         }
     }
-
 }

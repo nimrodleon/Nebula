@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
-using Nebula.Common;
+using Nebula.Modules.Account;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Helpers;
 using Nebula.Modules.Cashier;
@@ -18,12 +18,12 @@ using Nebula.Modules.Sales.Models;
 namespace Nebula.Controllers.Cashier;
 
 [Authorize]
-[CustomerAuthorize(UserRole = CompanyRoles.User)]
+[CustomerAuthorize(UserRole = UserRoleHelper.User)]
 [Route("api/cashier/{companyId}/[controller]")]
 [ApiController]
 public class InvoiceSaleCashierController : ControllerBase
 {
-    private readonly ICacheAuthService _cacheAuthService;
+    private readonly ICompanyService _companyService;
     private readonly IInvoiceSaleDetailService _invoiceSaleDetailService;
     private readonly IValidateStockService _validateStockService;
     private readonly IComprobanteService _comprobanteService;
@@ -32,7 +32,7 @@ public class InvoiceSaleCashierController : ControllerBase
     private readonly ICashierDetailService _cashierDetailService;
 
     public InvoiceSaleCashierController(
-        ICacheAuthService cacheAuthService,
+        ICompanyService companyService,
         IInvoiceSaleDetailService invoiceSaleDetailService,
         IValidateStockService validateStockService,
         IComprobanteService comprobanteService,
@@ -40,7 +40,7 @@ public class InvoiceSaleCashierController : ControllerBase
         IInvoiceSaleService invoiceSaleService,
         ICashierDetailService cashierDetailService)
     {
-        _cacheAuthService = cacheAuthService;
+        _companyService = companyService;
         _invoiceSaleDetailService = invoiceSaleDetailService;
         _validateStockService = validateStockService;
         _comprobanteService = comprobanteService;
@@ -60,7 +60,7 @@ public class InvoiceSaleCashierController : ControllerBase
     {
         try
         {
-            var company = await _cacheAuthService.GetCompanyByIdAsync(companyId);
+            var company = await _companyService.GetByIdAsync(companyId.Trim());
             var comprobante = await _comprobanteService.SaveChangesAsync(company, model);
             await _validateStockService.ValidarInvoiceSale(comprobante);
 

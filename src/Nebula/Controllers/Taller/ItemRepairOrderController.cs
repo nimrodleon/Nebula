@@ -8,7 +8,7 @@ using Nebula.Modules.Taller.Services;
 namespace Nebula.Controllers.Taller;
 
 [Authorize]
-[CustomerAuthorize(UserRole = CompanyRoles.User)]
+[CustomerAuthorize(UserRole = UserRoleHelper.User)]
 [Route("api/taller/{companyId}/[controller]")]
 [ApiController]
 public class ItemRepairOrderController : ControllerBase

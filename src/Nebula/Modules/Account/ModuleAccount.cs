@@ -7,7 +7,6 @@ public static class ModuleAccount
         services.AddScoped<ICompanyService, CompanyService>();
         services.AddScoped<IWarehouseService, WarehouseService>();
         services.AddScoped<IInvoiceSerieService, InvoiceSerieService>();
-        services.AddScoped<IPagoSuscripcionService, PagoSuscripcionService>();
         return services;
     }
 }

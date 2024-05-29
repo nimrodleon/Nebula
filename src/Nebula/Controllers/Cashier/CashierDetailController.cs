@@ -10,7 +10,7 @@ using Nebula.Common.Helpers;
 namespace Nebula.Controllers.Cashier;
 
 [Authorize]
-[CustomerAuthorize(UserRole = CompanyRoles.User)]
+[CustomerAuthorize(UserRole = UserRoleHelper.User)]
 [Route("api/cashier/{companyId}/[controller]")]
 [ApiController]
 public class CashierDetailController : ControllerBase
@@ -74,7 +74,7 @@ public class CashierDetailController : ControllerBase
         return Ok(resumenCaja);
     }
 
-    [HttpDelete("{id}"), CustomerAuthorize(UserRole = CompanyRoles.Admin)]
+    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRoleHelper.Admin)]
     public async Task<IActionResult> Delete(string companyId, string id)
     {
         var cashierDetail = await _cashierDetailService.GetByIdAsync(companyId, id);

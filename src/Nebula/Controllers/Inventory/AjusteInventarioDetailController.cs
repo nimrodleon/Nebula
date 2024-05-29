@@ -8,7 +8,7 @@ using Nebula.Modules.Inventory.Models;
 namespace Nebula.Controllers.Inventory;
 
 [Authorize]
-[CustomerAuthorize(UserRole = CompanyRoles.User)]
+[CustomerAuthorize(UserRole = UserRoleHelper.User)]
 [Route("api/inventory/{companyId}/[controller]")]
 [ApiController]
 public class AjusteInventarioDetailController : ControllerBase

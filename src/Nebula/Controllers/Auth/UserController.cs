@@ -80,8 +80,8 @@ public class UserController : ControllerBase
                 UserName = model.UserName,
                 Email = model.Email,
                 PasswordHash = PasswordHasher.HashPassword(model.Password),
-                UserType = UserTypeSystem.Customer,
-                IsEmailVerified = false,
+                // UserType = UserTypeSystem.Customer,
+                // IsEmailVerified = false,
             };
             user = await _userService.CreateAsync(user);
 
@@ -91,7 +91,7 @@ public class UserController : ControllerBase
                 new Claim(ClaimTypes.Name, user.UserName),
             };
             string token = _jwtService.GenerateToken(claims);
-            user.EmailValidationToken = token;
+            // user.EmailValidationToken = token;
             await _userService.UpdateAsync(user.Id, user);
 
             // enviar correo electrónico.
@@ -132,9 +132,9 @@ public class UserController : ControllerBase
                 UserName = model.UserName,
                 Email = model.Email,
                 PasswordHash = PasswordHasher.HashPassword(password),
-                UserType = model.UserType,
-                IsEmailVerified = false,
-                Disabled = model.Disabled,
+                // UserType = model.UserType,
+                // IsEmailVerified = false,
+                // Disabled = model.Disabled,
             };
             user = await _userService.CreateAsync(user);
 
@@ -144,7 +144,7 @@ public class UserController : ControllerBase
                 new Claim(ClaimTypes.Name, user.UserName),
             };
             string token = _jwtService.GenerateToken(claims);
-            user.EmailValidationToken = token;
+            // user.EmailValidationToken = token;
             await _userService.UpdateAsync(user.Id, user);
 
             // enviar correo electrónico.
@@ -188,8 +188,8 @@ public class UserController : ControllerBase
 
             user.UserName = model.UserName;
             if (user.Email != model.Email) user.Email = model.Email;
-            user.UserType = model.UserType;
-            user.Disabled = model.Disabled;
+            // user.UserType = model.UserType;
+            // user.Disabled = model.Disabled;
 
             await _userService.UpdateAsync(user.Id, user);
             return Ok(user);
@@ -226,16 +226,16 @@ public class UserController : ControllerBase
                     ok = false,
                     msg = "Usuario no encontrado."
                 });
-            if (user.EmailValidationToken != token)
-                return BadRequest(new
-                {
-                    ok = false,
-                    msg = "Token no coincide con el usuario."
-                });
+            // if (user.EmailValidationToken != token)
+            //     return BadRequest(new
+            //     {
+            //         ok = false,
+            //         msg = "Token no coincide con el usuario."
+            //     });
 
             // Marcar el correo electrónico como verificado y limpiar el token
-            user.IsEmailVerified = true;
-            user.EmailValidationToken = string.Empty;
+            // user.IsEmailVerified = true;
+            // user.EmailValidationToken = string.Empty;
 
             // Actualizar el usuario en la base de datos
             await _userService.UpdateAsync(userId, user);
@@ -285,7 +285,7 @@ public class UserController : ControllerBase
                 new Claim(ClaimTypes.Name, user.UserName),
             };
             string resetToken = _jwtService.GenerateToken(claims);
-            user.ResetPasswordToken = resetToken;
+            // user.ResetPasswordToken = resetToken;
             await _userService.UpdateAsync(user.Id, user);
 
             // Enviar correo electrónico con el enlace para restablecer la contraseña
@@ -316,13 +316,13 @@ public class UserController : ControllerBase
             string userId = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "";
             var user = await _userService.GetByIdAsync(userId);
             if (user == null) return BadRequest(new { ok = false, msg = "Usuario no encontrado." });
-            if (user.ResetPasswordToken != model.Token.Trim()) return BadRequest(new { ok = false, msg = "Token no coincide con el usuario." });
+            // if (user.ResetPasswordToken != model.Token.Trim()) return BadRequest(new { ok = false, msg = "Token no coincide con el usuario." });
 
             // Actualizar la contraseña del usuario
             user.PasswordHash = PasswordHasher.HashPassword(model.NewPassword);
 
             // Limpiar el token de restablecimiento de contraseña
-            user.ResetPasswordToken = string.Empty;
+            // user.ResetPasswordToken = string.Empty;
 
             // Guardar la contraseña actualizada y limpiar el token en la base de datos
             await _userService.UpdateAsync(user.Id, user);

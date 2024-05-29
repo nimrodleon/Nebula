@@ -10,7 +10,7 @@ using Nebula.Modules.Auth;
 namespace Nebula.Controllers.Inventory;
 
 [Authorize]
-[CustomerAuthorize(UserRole = CompanyRoles.User)]
+[CustomerAuthorize(UserRole = UserRoleHelper.User)]
 [Route("api/inventory/{companyId}/[controller]")]
 [ApiController]
 public class InventoryNotasController : ControllerBase
@@ -58,7 +58,7 @@ public class InventoryNotasController : ControllerBase
         return Ok(responseData);
     }
 
-    [HttpDelete("{id}"), CustomerAuthorize(UserRole = CompanyRoles.Admin)]
+    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRoleHelper.Admin)]
     public async Task<IActionResult> Delete(string companyId, string id)
     {
         var inventoryNotas = await _inventoryNotasService.GetByIdAsync(companyId, id);
