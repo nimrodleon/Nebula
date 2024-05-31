@@ -1,4 +1,4 @@
-namespace Nebula.Modules.Inventory.Helpers;
+﻿namespace Nebula.Modules.Inventory.Helpers;
 
 public class TransactionType
 {

@@ -1,4 +1,4 @@
-namespace Nebula.Modules.Inventory.Stock.Dto;
+﻿namespace Nebula.Modules.Inventory.Dto;
 
 public class ChangeQuantityStockRequestParams
 {

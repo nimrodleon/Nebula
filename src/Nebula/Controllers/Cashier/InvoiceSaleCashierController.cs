@@ -6,7 +6,6 @@ using Nebula.Modules.Auth;
 using Nebula.Modules.Cashier;
 using Nebula.Modules.Cashier.Helpers;
 using Nebula.Modules.Cashier.Models;
-using Nebula.Modules.Inventory.Stock;
 using Nebula.Modules.InvoiceHub;
 using Nebula.Modules.InvoiceHub.Helpers;
 using Nebula.Modules.Sales.Comprobantes;
@@ -24,7 +23,7 @@ public class InvoiceSaleCashierController(
     IUserAuthenticationService userAuthenticationService,
     ICompanyService companyService,
     IInvoiceSaleDetailService invoiceSaleDetailService,
-    IValidateStockService validateStockService,
+    // IValidateStockService validateStockService,
     IComprobanteService comprobanteService,
     IInvoiceHubService invoiceHubService,
     IInvoiceSaleService invoiceSaleService,
@@ -46,7 +45,7 @@ public class InvoiceSaleCashierController(
         {
             var company = await companyService.GetByIdAsync(_companyId.Trim());
             var comprobante = await comprobanteService.SaveChangesAsync(company, model);
-            await validateStockService.ValidarInvoiceSale(comprobante);
+            // await validateStockService.ValidarInvoiceSale(comprobante);
 
             // registrar operacion en caja.
             if (ObjectId.TryParse(model.Cabecera.CajaDiariaId, out ObjectId _))
