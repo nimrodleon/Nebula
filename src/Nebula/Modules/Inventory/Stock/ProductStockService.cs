@@ -1,8 +1,8 @@
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using Nebula.Modules.Inventory.Helpers;
 using Nebula.Modules.Inventory.Models;
-using Nebula.Modules.Inventory.Stock.Dto;
 using Nebula.Common;
+using Nebula.Modules.Inventory.Dto;
 
 namespace Nebula.Modules.Inventory.Stock;
 

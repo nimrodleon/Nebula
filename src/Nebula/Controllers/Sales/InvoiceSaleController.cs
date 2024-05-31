@@ -33,7 +33,7 @@ public class InvoiceSaleController(
     IConsultarValidezComprobanteService consultarValidezComprobanteService,
     IInvoiceHubService invoiceHubService,
     ICreditNoteHubService creditNoteHubService,
-    IValidateStockService validateStockService,
+    // IValidateStockService validateStockService,
     IInvoiceSaleFileService invoiceSaleFileService)
     : ControllerBase
 {
@@ -76,7 +76,7 @@ public class InvoiceSaleController(
     {
         var company = await companyService.GetByIdAsync(_companyId);
         var comprobante = await comprobanteService.SaveChangesAsync(company, dto);
-        await validateStockService.ValidarInvoiceSale(comprobante);
+        // await validateStockService.ValidarInvoiceSale(comprobante);
         var invoiceRequest = InvoiceMapper.MapToInvoiceRequestHub(company.Ruc, comprobante);
         var billingResponse = await invoiceHubService.SendInvoiceAsync(_companyId, invoiceRequest);
         comprobante.InvoiceSale.BillingResponse = billingResponse;

@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Nebula.Modules.Account;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Dto;
 using Nebula.Modules.Auth.Helpers;
@@ -13,20 +14,30 @@ namespace Nebula.Controllers.Auth;
 public class AuthController(
     IJwtService jwtService,
     IUserService userService,
+    ICompanyService companyService,
     IUserAuthenticationService userAuthenticationService)
     : ControllerBase
 {
     [HttpGet("UserData")]
-    public Task<IActionResult> GetUserData()
+    public async Task<IActionResult> GetUserData()
     {
         try
         {
             var userAuth = userAuthenticationService.GetUserAuth();
-            return Task.FromResult<IActionResult>(Ok(userAuth));
+            var userAuthConfig = new UserAuthConfig();
+            var company = await companyService.GetByIdAsync(userAuth.DefaultCompanyId);
+            userAuthConfig.UserAuth = userAuth;
+            userAuthConfig.CompanyName = company.RznSocial;
+            userAuthConfig.IsEnableModInventario = company.ModInventarios;
+            userAuthConfig.IsEnableModComprobante = company.ModComprobantes;
+            userAuthConfig.IsEnableModCuentaPorCobrar = company.ModCuentaPorCobrar;
+            userAuthConfig.IsEnableModReparaciones = company.ModReparaciones;
+            userAuthConfig.IsEnableModCaja = company.ModCajasDiaria;
+            return Ok(userAuthConfig);
         }
         catch (Exception)
         {
-            return Task.FromResult<IActionResult>(Unauthorized(new
+            return await Task.FromResult<IActionResult>(Unauthorized(new
                 { ok = false, msg = "Error al recuperar los datos del usuario autenticado." }));
         }
     }
