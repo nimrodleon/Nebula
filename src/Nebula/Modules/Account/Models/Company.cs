@@ -100,7 +100,7 @@ public class Company : IGenericModel
     public string Urbanizacion { get; set; } = "";
 
     /// <summary>
-    /// Fecha vencimiento del certificado.
+    /// Fecha de vencimiento del certificado.
     /// </summary>
     public string FechaVencimientoCert { get; set; } = "-";
 
@@ -138,12 +138,6 @@ public class Company : IGenericModel
     /// Módulo cajas diaria.
     /// </summary>
     public bool ModCajasDiaria { get; set; } = false;
-
-    /// <summary>
-    /// Configura la emisión de comprobantes para,
-    /// Las empresas del regimen único simplificado.
-    /// </summary>
-    public bool EmitirModoRus { get; set; } = false;
 
     /// <summary>
     /// Registrar aqui el último pago realizado.
