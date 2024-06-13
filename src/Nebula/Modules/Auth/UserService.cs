@@ -7,8 +7,8 @@ namespace Nebula.Modules.Auth;
 
 public interface IUserService : ICrudOperationService<User>
 {
-    Task<List<User>> GetListAsync(string query = "", int page = 1, int pageSize = 12);
-    Task<long> GetTotalListAsync(string query = "");
+    Task<List<User>> GetListAsync(string companyId, string query = "", int page = 1, int pageSize = 12);
+    Task<long> GetTotalListAsync(string companyId, string query = "");
     Task<List<User>> GetUsersByUserIds(List<string> userIds);
     Task<User> GetByEmailAsync(string email);
 }
@@ -23,23 +23,28 @@ public class UserService : CrudOperationService<User>, IUserService
         _collection.Indexes.CreateOne(model);
     }
 
-    public async Task<List<User>> GetListAsync(string query = "", int page = 1, int pageSize = 12)
+    public async Task<List<User>> GetListAsync(string companyId, string query = "", int page = 1, int pageSize = 12)
     {
         var skip = (page - 1) * pageSize;
-        var filter = Builders<User>.Filter.Empty;
+        var builder = Builders<User>.Filter;
+        var filter = builder.Eq(x => x.DefaultCompanyId, companyId);
+
         if (!string.IsNullOrEmpty(query))
             filter = Builders<User>.Filter.Or(
-                Builders<User>.Filter.Regex("UserName", new BsonRegularExpression(query.ToUpper(), "i")),
-                Builders<User>.Filter.Regex("Email", new BsonRegularExpression(query.ToUpper(), "i")));
+                builder.Regex("FullName", new BsonRegularExpression(query.ToUpper(), "i")),
+                builder.Regex("UserName", new BsonRegularExpression(query.ToUpper(), "i")),
+                builder.Regex("Email", new BsonRegularExpression(query.ToUpper(), "i")));
         return await _collection.Find(filter).Sort(new SortDefinitionBuilder<User>()
             .Descending("$natural")).Skip(skip).Limit(pageSize).ToListAsync();
     }
 
-    public async Task<long> GetTotalListAsync(string query = "")
+    public async Task<long> GetTotalListAsync(string companyId, string query = "")
     {
-        var filter = Builders<User>.Filter.Empty;
+        var builder = Builders<User>.Filter;
+        var filter = builder.Eq(x => x.DefaultCompanyId, companyId);
+
         if (!string.IsNullOrEmpty(query))
-            filter = Builders<User>.Filter.Regex("UserName", new BsonRegularExpression(query.ToUpper(), "i"));
+            filter = builder.Regex("UserName", new BsonRegularExpression(query.ToUpper(), "i"));
         return await _collection.Find(filter).CountDocumentsAsync();
     }
 

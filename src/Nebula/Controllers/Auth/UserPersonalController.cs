@@ -21,8 +21,8 @@ public class UserPersonalController(
     public async Task<IActionResult> Index([FromQuery] string query = "", [FromQuery] int page = 1)
     {
         int pageSize = 12;
-        var usuarios = await userService.GetListAsync(query, page, pageSize);
-        var totalUsuarios = await userService.GetTotalListAsync(query);
+        var usuarios = await userService.GetListAsync(_companyId, query, page, pageSize);
+        var totalUsuarios = await userService.GetTotalListAsync(_companyId, query);
         var totalPages = (int)Math.Ceiling((double)totalUsuarios / pageSize);
 
         var paginationInfo = new PaginationInfo()
@@ -74,7 +74,7 @@ public class UserPersonalController(
     {
         try
         {
-            var user = await userService.GetByIdAsync(_companyId, id);
+            var user = await userService.GetByIdAsync(id);
             user.UserName = model.UserName;
             user.Email = model.Email;
             user.AccountType = AccountTypeHelper.Personal;
@@ -95,7 +95,7 @@ public class UserPersonalController(
     [HttpPatch("{id}/change-password")]
     public async Task<IActionResult> ChangePassword(string id, [FromBody] ChangePasswordUser model)
     {
-        var user = await userService.GetByIdAsync(_companyId, id);
+        var user = await userService.GetByIdAsync(id);
         user.PasswordHash = PasswordHasher.HashPassword(model.Password);
         user = await userService.ReplaceOneAsync(user.Id, user);
         return Ok(user);
@@ -104,8 +104,8 @@ public class UserPersonalController(
     [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRole.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
-        var user = await userService.GetByIdAsync(_companyId, id);
-        await userService.DeleteOneAsync(_companyId, user.Id);
+        var user = await userService.GetByIdAsync(id);
+        await userService.DeleteOneAsync(user.Id);
         return NoContent();
     }
 }
