@@ -17,7 +17,7 @@ public class UserService : CrudOperationService<User>, IUserService
 {
     public UserService(MongoDatabaseService mongoDatabase) : base(mongoDatabase)
     {
-        var indexKeys = Builders<User>.IndexKeys.Ascending(x => x.Email);
+        var indexKeys = Builders<User>.IndexKeys.Ascending(x => x.UserName);
         var indexOptions = new CreateIndexOptions { Unique = true };
         var model = new CreateIndexModel<User>(indexKeys, indexOptions);
         _collection.Indexes.CreateOne(model);
