@@ -3,6 +3,7 @@ using MongoDB.Driver;
 using Nebula.Common;
 using Nebula.Modules.Account.Models;
 using Nebula.Modules.Auth;
+using Task = DocumentFormat.OpenXml.Office2021.DocumentTasks.Task;
 
 namespace Nebula.Modules.Account;
 
@@ -13,6 +14,7 @@ public interface ICompanyService : ICrudOperationService<Company>
     Task<List<Company>> GetCompaniesByUserIdAsync(string userId);
     Task<long> GetTotalCompaniesAsync(string query = "");
     Task<List<Company>> GetCompaniesAsync(string query = "", int page = 1, int pageSize = 12);
+    Task<Company> SingleInsertOneAsync(Company obj);
 }
 
 public class CompanyService(
@@ -90,6 +92,13 @@ public class CompanyService(
     {
         obj.UserId = userAuthenticationService.GetUserId();
         return await base.InsertOneAsync(obj);
+    }
+
+    public async Task<Company> SingleInsertOneAsync(Company obj)
+    {
+        obj.Id = string.Empty;
+        await _collection.InsertOneAsync(obj);
+        return obj;
     }
 
     public override async Task<Company> ReplaceOneAsync(string id, Company obj)
