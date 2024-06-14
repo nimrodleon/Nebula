@@ -10,7 +10,7 @@ using Nebula.Common.Helpers;
 namespace Nebula.Controllers.Products;
 
 [Authorize]
-[CustomerAuthorize(UserRole = UserRole.User)]
+[PersonalAuthorize(UserRole = UserRole.User)]
 [Route("api/products/[controller]")]
 [ApiController]
 public class ProductController(
@@ -105,7 +105,7 @@ public class ProductController(
         return Ok(product);
     }
 
-    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRole.Admin)]
+    [HttpDelete("{id}"), PersonalAuthorize(UserRole = UserRole.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
         var product = await productService.GetByIdAsync(_companyId, id);
@@ -124,7 +124,7 @@ public class ProductController(
         return File(stream, ContentTypeFormat.Excel, "plantilla.xlsx");
     }
 
-    [HttpPost("CargarProductos"), CustomerAuthorize(UserRole = UserRole.Admin)]
+    [HttpPost("CargarProductos"), PersonalAuthorize(UserRole = UserRole.Admin)]
     public async Task<IActionResult> CargarProductosAsync(IFormFile datos)
     {
         try

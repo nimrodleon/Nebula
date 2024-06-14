@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Modules.Account;
+using Nebula.Modules.Account.Dto;
 using Nebula.Modules.Auth;
 using Nebula.Modules.Auth.Dto;
 using Nebula.Modules.Auth.Helpers;
@@ -28,11 +29,21 @@ public class AuthController(
             var company = await companyService.GetByIdAsync(userAuth.DefaultCompanyId);
             userAuthConfig.UserAuth = userAuth;
             userAuthConfig.CompanyName = company.RznSocial;
-            userAuthConfig.IsEnableModInventario = company.ModInventarios;
             userAuthConfig.IsEnableModComprobante = company.ModComprobantes;
             userAuthConfig.IsEnableModCuentaPorCobrar = company.ModCuentaPorCobrar;
             userAuthConfig.IsEnableModReparaciones = company.ModReparaciones;
             userAuthConfig.IsEnableModCaja = company.ModCajasDiaria;
+            if (userAuth.AccountType == AccountTypeHelper.Business)
+            {
+                var companies = await companyService.GetCompaniesByUserIdAsync(userAuth.UserId);
+                userAuthConfig.Companies = companies.Select(c => new CompanySummaryDto()
+                {
+                    Id = c.Id,
+                    Ruc = c.Ruc,
+                    RznSocial = c.RznSocial
+                }).ToList();
+            }
+
             return Ok(userAuthConfig);
         }
         catch (Exception)
@@ -42,12 +53,37 @@ public class AuthController(
         }
     }
 
+    [BusinessAuthorize]
+    [HttpPost("CompanyChange")]
+    public async Task<IActionResult> CompanyChange([FromQuery] string companyId)
+    {
+        try
+        {
+            var userAuth = userAuthenticationService.GetUserAuth();
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, userAuth.UserId),
+                new Claim(ClaimTypes.Name, userAuth.UserName),
+                new Claim("AccountType", userAuth.AccountType),
+                new Claim("UserRole", userAuth.UserRole),
+                new Claim("DefaultCompanyId", companyId),
+            };
+            var token = jwtService.GenerateToken(claims, 1000);
+            return Ok(new { token });
+        }
+        catch (Exception)
+        {
+            return await Task.FromResult<IActionResult>(Unauthorized(new
+                { ok = false, msg = "Error al cambiar de empresa." }));
+        }
+    }
+
     [HttpPost("Login"), AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] AuthLogin model)
     {
         try
         {
-            var user = await userService.GetByEmailAsync(model.Email);
+            var user = await userService.GetByUserNameAsync(model.UserName.Trim());
             if (user is null) throw new Exception();
 
             if (PasswordHasher.VerifyHashedPassword(user.PasswordHash, model.Password)

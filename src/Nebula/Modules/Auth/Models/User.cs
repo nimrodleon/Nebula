@@ -18,8 +18,7 @@ public class User : IGenericModel
     public string Email { get; set; } = string.Empty;
     public string AccountType { get; set; } = AccountTypeHelper.Personal;
     public string UserRole { get; set; } = UserRoleDbHelper.User;
-    public string FirstName { get; set; } = string.Empty;
-    public string LastName { get; set; } = string.Empty;
+    public string FullName { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
     public string DefaultCompanyId { get; set; } = string.Empty;
 }

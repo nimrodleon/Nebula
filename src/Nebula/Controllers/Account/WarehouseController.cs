@@ -7,7 +7,6 @@ using Nebula.Modules.Auth;
 namespace Nebula.Controllers.Account;
 
 [Authorize]
-[CustomerAuthorize(UserRole = UserRole.User)]
 [Route("api/account/[controller]")]
 [ApiController]
 public class WarehouseController(
@@ -31,6 +30,7 @@ public class WarehouseController(
         return Ok(warehouse);
     }
 
+    [BusinessAuthorize]
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] Warehouse model)
     {
@@ -40,6 +40,7 @@ public class WarehouseController(
         return Ok(model);
     }
 
+    [BusinessAuthorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(string id, [FromBody] Warehouse model)
     {
@@ -52,6 +53,7 @@ public class WarehouseController(
         return Ok(model);
     }
 
+    [BusinessAuthorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {

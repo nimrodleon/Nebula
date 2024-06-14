@@ -12,7 +12,7 @@ using Nebula.Modules.InvoiceHub;
 namespace Nebula.Controllers.Sales;
 
 [Authorize]
-[CustomerAuthorize(UserRole = UserRole.User)]
+[PersonalAuthorize(UserRole = UserRole.User)]
 [Route("api/sales/[controller]")]
 [ApiController]
 public class CreditNoteController(
