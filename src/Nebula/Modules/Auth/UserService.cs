@@ -11,6 +11,7 @@ public interface IUserService : ICrudOperationService<User>
     Task<long> GetTotalListAsync(string companyId, string query = "");
     Task<List<User>> GetUsersByUserIds(List<string> userIds);
     Task<User> GetByEmailAsync(string email);
+    Task<User> GetByUserNameAsync(string userName);
 }
 
 public class UserService : CrudOperationService<User>, IUserService
@@ -57,6 +58,12 @@ public class UserService : CrudOperationService<User>, IUserService
     public async Task<User> GetByEmailAsync(string email)
     {
         var filter = Builders<User>.Filter.Eq(x => x.Email, email);
+        return await _collection.Find(filter).FirstOrDefaultAsync();
+    }
+
+    public async Task<User> GetByUserNameAsync(string userName)
+    {
+        var filter = Builders<User>.Filter.Eq(x => x.UserName, userName);
         return await _collection.Find(filter).FirstOrDefaultAsync();
     }
 }

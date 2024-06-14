@@ -28,7 +28,6 @@ public class AuthController(
             var company = await companyService.GetByIdAsync(userAuth.DefaultCompanyId);
             userAuthConfig.UserAuth = userAuth;
             userAuthConfig.CompanyName = company.RznSocial;
-            userAuthConfig.IsEnableModInventario = company.ModInventarios;
             userAuthConfig.IsEnableModComprobante = company.ModComprobantes;
             userAuthConfig.IsEnableModCuentaPorCobrar = company.ModCuentaPorCobrar;
             userAuthConfig.IsEnableModReparaciones = company.ModReparaciones;
@@ -47,7 +46,7 @@ public class AuthController(
     {
         try
         {
-            var user = await userService.GetByEmailAsync(model.Email);
+            var user = await userService.GetByUserNameAsync(model.UserName.Trim());
             if (user is null) throw new Exception();
 
             if (PasswordHasher.VerifyHashedPassword(user.PasswordHash, model.Password)
