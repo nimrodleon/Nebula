@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Nebula.Common.Helpers;
 using Nebula.Modules.Account;
@@ -7,10 +6,11 @@ using Nebula.Modules.InvoiceHub;
 using Nebula.Modules.InvoiceHub.Dto;
 using Nebula.Modules.InvoiceHub.Helpers;
 using System.Security.Cryptography.X509Certificates;
+using Nebula.Modules.Auth;
 
 namespace Nebula.Controllers.Account;
 
-[Authorize]
+[BusinessAuthorize]
 [Route("api/account/[controller]")]
 [ApiController]
 public class CompanyController(

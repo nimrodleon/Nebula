@@ -8,6 +8,7 @@ using Nebula.Modules.Auth.Models;
 
 namespace Nebula.Controllers.Auth;
 
+[BusinessAuthorize]
 [Route("api/auth/[controller]")]
 [ApiController]
 public class UserPersonalController(
@@ -101,7 +102,7 @@ public class UserPersonalController(
         return Ok(user);
     }
 
-    [HttpDelete("{id}"), PersonalAuthorize(UserRole = UserRole.Admin)]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
         var user = await userService.GetByIdAsync(id);
