@@ -13,7 +13,7 @@ using Nebula.Common.Helpers;
 namespace Nebula.Controllers.Cashier;
 
 [Authorize]
-[CustomerAuthorize(UserRole = UserRole.User)]
+[PersonalAuthorize(UserRole = UserRole.User)]
 [Route("api/cashier/[controller]")]
 [ApiController]
 public class CajaDiariaController(
@@ -103,7 +103,7 @@ public class CajaDiariaController(
         return Ok(cajaDiaria);
     }
 
-    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRole.Admin)]
+    [HttpDelete("{id}"), PersonalAuthorize(UserRole = UserRole.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
         var cajaDiaria = await cajaDiariaService.GetByIdAsync(_companyId, id);

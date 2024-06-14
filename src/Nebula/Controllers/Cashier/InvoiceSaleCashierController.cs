@@ -16,7 +16,7 @@ using Nebula.Modules.Sales.Models;
 namespace Nebula.Controllers.Cashier;
 
 [Authorize]
-[CustomerAuthorize(UserRole = UserRole.User)]
+[PersonalAuthorize(UserRole = UserRole.User)]
 [Route("api/cashier/[controller]")]
 [ApiController]
 public class InvoiceSaleCashierController(

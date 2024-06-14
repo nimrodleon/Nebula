@@ -5,7 +5,7 @@ using System.Security.Claims;
 
 namespace Nebula.Modules.Auth;
 
-public class CustomerAuthorizeAttribute : AuthorizeAttribute, IAuthorizationFilter
+public class PersonalAuthorizeAttribute : AuthorizeAttribute, IAuthorizationFilter
 {
     public string UserRole { get; set; } = string.Empty;
 

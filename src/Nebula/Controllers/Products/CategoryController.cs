@@ -8,7 +8,7 @@ using Nebula.Modules.Auth;
 namespace Nebula.Controllers.Products;
 
 [Authorize]
-[CustomerAuthorize(UserRole = UserRole.User)]
+[PersonalAuthorize(UserRole = UserRole.User)]
 [Route("api/products/[controller]")]
 [ApiController]
 public class CategoryController(
@@ -74,7 +74,7 @@ public class CategoryController(
         return Ok(model);
     }
 
-    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRole.Admin)]
+    [HttpDelete("{id}"), PersonalAuthorize(UserRole = UserRole.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
         var category = await categoryService.GetByIdAsync(_companyId, id);

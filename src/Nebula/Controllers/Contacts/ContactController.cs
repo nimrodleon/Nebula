@@ -12,7 +12,7 @@ using Nebula.Common.Helpers;
 namespace Nebula.Controllers.Contacts;
 
 [Authorize]
-[CustomerAuthorize(UserRole = UserRole.User)]
+[PersonalAuthorize(UserRole = UserRole.User)]
 [Route("api/contacts/[controller]")]
 [ApiController]
 public class ContactController(
@@ -144,7 +144,7 @@ public class ContactController(
         }
     }
 
-    [HttpDelete("{id}"), CustomerAuthorize(UserRole = UserRole.Admin)]
+    [HttpDelete("{id}"), PersonalAuthorize(UserRole = UserRole.Admin)]
     public async Task<IActionResult> Delete(string id)
     {
         var contact = await contactService.GetByIdAsync(_companyId, id);
