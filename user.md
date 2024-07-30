@@ -1,8 +1,3 @@
-- **Estructura de los Libros y Registros Electrónicos (PLE)**
-  - [Estructuras del PLE](https://emprender.sunat.gob.pe/estructurasple)
-  - Registro de Compras I
-  - Registro de Compras II
-
 ## Gestión de Usuarios
 
 Existen tres tipos de campos en el modelo de usuarios para configurar el sistema:

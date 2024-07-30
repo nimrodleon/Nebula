@@ -21,7 +21,7 @@ Nebula es un software de facturación electrónica diseñado para generar compro
 1. **Clona el repositorio:**
 
 ```sh
-git clone https://github.com/tu_usuario/nebula.git
+git clone git@github.com:nimrodleon/Nebula.git
 ```
 
 2. **Configura las dependencias del proyecto:**
@@ -49,9 +49,3 @@ Las contribuciones son bienvenidas. Por favor, sigue las pautas de contribución
 ## Licencia
 
 Este proyecto está licenciado bajo la licencia GPL-3.0. Para más detalles, consulta el archivo [LICENSE](LICENSE).
-
----
-
-## Contacto
-
-Para más información, visita nuestra [página de contacto](https://tu-sitio-web.com/contacto) o envía un correo a contacto@tu-sitio-web.com.
