@@ -1,0 +1,24 @@
+<div class="modal fade" id="cuota-modal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form [formGroup]="cuotaForm">
+          <div class="mb-3">
+            <label class="form-label fw-bold">Fecha de Vencimiento</label>
+            <input type="date" formControlName="fecCuotaPago" class="form-control"
+                   [ngClass]="{'is-invalid': inputIsInvalid('fecCuotaPago')}">
+          </div>
+          <label class="form-label fw-bold">Monto de la Cuota</label>
+          <input type="number" formControlName="mtoCuotaPago" step="0.1" class="form-control"
+                 [ngClass]="{'is-invalid': inputIsInvalid('mtoCuotaPago')}">
+        </form>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" (click)="saveChanges()" class="btn btn-dark btn-lg w-100">
+          <fa-icon [icon]="faCircleChevronRight" class="me-1"></fa-icon>
+          <span class="text-uppercase">Aceptar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

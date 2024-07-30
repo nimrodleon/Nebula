@@ -1,0 +1,47 @@
+import {Routes} from "@angular/router";
+import {LoginComponent} from "./login/login.component";
+import {authGuard} from "./auth.guard";
+
+export const routes: Routes = [
+  {path: "login", component: LoginComponent},
+  {
+    path: "public",
+    loadChildren: () => import("./public/public.routes").then((m) => m.routes)
+  },
+  {
+    path: "account",
+    loadChildren: () => import("./account/account.routes").then((m) => m.routes),
+    canActivate: [authGuard]
+  },
+  {
+    path: "contacts",
+    loadChildren: () => import("./contact/contact.routes").then((m) => m.routes),
+    canActivate: [authGuard]
+  },
+  {
+    path: "products",
+    loadChildren: () => import("./products/products.routes").then((m) => m.routes),
+    canActivate: [authGuard]
+  },
+  {
+    path: "sales",
+    loadChildren: () => import("./sales/sales.routes").then((m) => m.routes),
+    canActivate: [authGuard]
+  },
+  {
+    path: "receivables",
+    loadChildren: () => import("./receivable/receivable.routes").then((m) => m.routes),
+    canActivate: [authGuard]
+  },
+  {
+    path: "taller-reparaciones",
+    loadChildren: () => import("./taller/taller.routes").then((m) => m.routes),
+    canActivate: [authGuard]
+  },
+  {
+    path: "cashier",
+    loadChildren: () => import("./cashier/cashier.routes").then((m) => m.routes),
+    canActivate: [authGuard]
+  },
+  {path: "", redirectTo: "/account", pathMatch: "full"}
+];

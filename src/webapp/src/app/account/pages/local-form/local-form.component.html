@@ -1,0 +1,76 @@
+<app-account-container>
+  <h4>Nuevo Local</h4>
+  <form>
+    <div class="row mb-3">
+      <label class="col-12 col-md-2 col-form-label text-start text-md-end fw-bold">Nombre</label>
+      <div class="col-12 col-md-4">
+        <input type="text" class="form-control">
+      </div>
+    </div>
+    <div class="row mb-3">
+      <label class="col-12 col-md-2 col-form-label text-start text-md-end fw-bold">Dirección</label>
+      <div class="col-12 col-md-8">
+        <input type="text" class="form-control">
+      </div>
+    </div>
+    <div class="row mb-3">
+      <label class="col-12 col-md-2 col-form-label text-start text-md-end fw-bold">Ubigeo</label>
+      <div class="col-12 col-md-4">
+        <select class="form-select"></select>
+      </div>
+      <label class="col-12 col-md-2 col-form-label text-start text-md-end fw-bold">Cod. SUNAT</label>
+      <div class="col-12 col-md-2">
+        <input type="text" class="form-control">
+      </div>
+    </div>
+    <div class="mb-3">
+      <h5 class="title-section mb-0">
+        <fa-icon [icon]="faTags" class="me-1"></fa-icon>
+        <span>Documentos y series</span>
+      </h5>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-striped mb-2">
+        <thead class="text-uppercase">
+        <tr class="table-secondary">
+          <th>Documento</th>
+          <th>Serie</th>
+          <th>Contador</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody class="table-group-divider">
+        <tr>
+          <td>FACTURA ELECTRÓNICA</td>
+          <td>F001</td>
+          <td>0</td>
+          <td>
+            <div class="tblBtn ms-auto">
+              <button type="button" class="btn btn-secondary btn-sm me-2">
+                <fa-icon [icon]="faEdit"></fa-icon>
+              </button>
+              <button type="button" class="btn btn-danger btn-sm">
+                <fa-icon [icon]="faTrashAlt"></fa-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <a routerLink="/account/locales/add" class="btn btn-success">
+        <fa-icon [icon]="faCirclePlus" class="me-1"></fa-icon>
+        <span class="text-uppercase">Agregar Serie</span>
+      </a>
+    </div>
+    <div class="d-flex justify-content-center">
+      <a routerLink="/account/locales" class="btn btn-secondary btn-lg me-2">
+        <fa-icon [icon]="faCircleLeft" class="me-1"></fa-icon>
+        <span class="text-uppercase">Cancelar</span>
+      </a>
+      <button type="submit" class="btn btn-primary btn-lg">
+        <fa-icon [icon]="faSave" class="me-1"></fa-icon>
+        <span class="text-uppercase">Guardar</span>
+      </button>
+    </div>
+  </form>
+</app-account-container>

@@ -1,0 +1,46 @@
+<app-company-detail-container>
+  <h5 class="text-center">Certificado Digital</h5>
+  <form *ngIf="company.fechaVencimientoCert === '-'" [formGroup]="certificadoForm" (ngSubmit)="subirCertificado()">
+    <div class="mb-3">
+      <label for="certificate" class="form-label">Sube tu Certificado Digital para Firmar Facturas</label>
+      <input class="form-control" type="file"
+             formControlName="certificate" (change)="selectedCertificate($event)" accept=".p12, .pfx"
+             [ngClass]="{'is-invalid': inputIsInvalid('certificate')}" id="certificate">
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">Contraseña de este Certificado</label>
+      <div class="input-group">
+        <span class="input-group-text">
+          <fa-icon [icon]="faLock" class="mx-1"></fa-icon>
+        </span>
+        <input class="form-control" type="text" formControlName="password"
+               [ngClass]="{'is-invalid': inputIsInvalid('password')}" id="password">
+      </div>
+    </div>
+    <div class="d-flex justify-content-center">
+      <button type="submit" class="btn btn-success btn-lg">
+        <fa-icon [icon]="faFileUpload" class="me-1"></fa-icon>
+        <span class="text-uppercase">Subir Certificado</span>
+      </button>
+    </div>
+  </form>
+  <div *ngIf="company.fechaVencimientoCert !== '-'" class="card">
+    <div class="card-body">
+      <h5 class="text-center"
+          [ngClass]="{'text-danger': company.sunatEndpoint === 'FE_BETA', 'text-success': company.sunatEndpoint === 'FE_PRODUCCION'}">
+        {{ company.ruc }} - {{ company.rznSocial }}
+        <span class="mx-1">|</span>
+        {{ company.fechaVencimientoCert|date }}
+        <span class="mx-1">|</span>
+        {{ company.sunatEndpoint }}
+      </h5>
+      <div class="d-flex justify-content-center">
+        <button (click)="sincronizarDatos()" class="btn btn-secondary me-1">Sincronizar datos</button>
+        <button (click)="quitarCertificado()" class="btn btn-danger me-1">Quitar certificado</button>
+        <button (click)="cambiarSunatEndpoint()" class="btn btn-primary">Cambiar estado de emisión</button>
+      </div>
+    </div>
+  </div>
+</app-company-detail-container>
+
+<app-loader [loading]="loading"></app-loader>

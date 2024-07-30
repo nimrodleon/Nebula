@@ -1,0 +1,118 @@
+<div class="modal fade" id="invoice-serie-modal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-uppercase">{{ invoiceSerieDataModal.title }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pt-2">
+        <form [formGroup]="invoiceSerieForm">
+          <nav>
+            <div class="nav nav-tabs" role="tablist">
+              <button class="nav-link active"
+                      data-bs-toggle="tab"
+                      data-bs-target="#nav-comprobante"
+                      type="button" role="tab">
+                <span class="text-uppercase">Series Comprobantes</span>
+              </button>
+              <button class="nav-link"
+                      data-bs-toggle="tab"
+                      data-bs-target="#nav-notas"
+                      type="button" role="tab">
+                <span class="text-uppercase">Notas de Venta y Crédito</span>
+              </button>
+            </div>
+          </nav>
+          <div class="tab-content">
+            <div class="tab-pane fade show active" id="nav-comprobante" role="tabpanel" tabindex="0">
+              <div class="row mt-1 mb-3">
+                <div class="col-6">
+                  <label class="form-label text-uppercase">Nombre</label>
+                  <input type="text" formControlName="name" class="form-control"
+                         [ngClass]="{'is-invalid': inputIsInvalid('name')}">
+                </div>
+                <div class="col-6">
+                  <label class="form-label text-uppercase">Almacén</label>
+                  <select formControlName="warehouseId" class="form-select"
+                          [ngClass]="{'is-invalid': inputIsInvalid('warehouseId')}">
+                    <option *ngFor="let item of warehouses" [value]="item.id">{{ item.name }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-6">
+                  <label class="form-label text-uppercase">Boleta</label>
+                  <input type="text" formControlName="boleta" class="form-control"
+                         [ngClass]="{'is-invalid': inputIsInvalid('boleta')}">
+                </div>
+                <div class="col-6">
+                  <label class="form-label text-uppercase">Contador</label>
+                  <input type="number" formControlName="counterBoleta" class="form-control"
+                         [ngClass]="{'is-invalid': inputIsInvalid('counterBoleta')}">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <label class="form-label text-uppercase">Factura</label>
+                  <input type="text" formControlName="factura" class="form-control"
+                         [ngClass]="{'is-invalid': inputIsInvalid('factura')}">
+                </div>
+                <div class="col-6">
+                  <label class="form-label text-uppercase">Contador</label>
+                  <input type="number" formControlName="counterFactura" class="form-control"
+                         [ngClass]="{'is-invalid': inputIsInvalid('counterFactura')}">
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="nav-notas" role="tabpanel" tabindex="0">
+              <div class="row mt-1 mb-3">
+                <div class="col-6">
+                  <label class="form-label text-uppercase">Nota de Crédito Boleta</label>
+                  <input type="text" formControlName="creditNoteBoleta" class="form-control"
+                         [ngClass]="{'is-invalid': inputIsInvalid('creditNoteBoleta')}">
+                </div>
+                <div class="col-6">
+                  <label class="form-label text-uppercase">Contador</label>
+                  <input type="number" formControlName="counterCreditNoteBoleta" class="form-control"
+                         [ngClass]="{'is-invalid': inputIsInvalid('counterCreditNoteBoleta')}">
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-6">
+                  <label class="form-label text-uppercase">Nota de Crédito Factura</label>
+                  <input type="text" formControlName="creditNoteFactura" class="form-control"
+                         [ngClass]="{'is-invalid': inputIsInvalid('creditNoteFactura')}">
+                </div>
+                <div class="col-6">
+                  <label class="form-label text-uppercase">Contador</label>
+                  <input type="number" formControlName="counterCreditNoteFactura" class="form-control"
+                         [ngClass]="{'is-invalid': inputIsInvalid('counterCreditNoteFactura')}">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <label class="form-label text-uppercase">Nota de Venta</label>
+                  <input type="text" formControlName="notaDeVenta" class="form-control"
+                         [ngClass]="{'is-invalid': inputIsInvalid('notaDeVenta')}">
+                </div>
+                <div class="col-6">
+                  <label class="form-label text-uppercase">Contador</label>
+                  <input type="number" formControlName="counterNotaDeVenta" class="form-control"
+                         [ngClass]="{'is-invalid': inputIsInvalid('counterNotaDeVenta')}">
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">
+          <span class="text-uppercase">Cerrar</span>
+        </button>
+        <button type="button" (click)="saveChanges()" class="btn btn-primary btn-lg">
+          <span class="text-uppercase">Guardar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

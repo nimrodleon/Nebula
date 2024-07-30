@@ -1,0 +1,190 @@
+<app-sales-container>
+  <div class="row px-2">
+    <!-- #region CABECERA! -->
+    <div class="d-md-flex align-items-center justify-content-between bg-white my-2 py-3">
+      <h5 class="text-uppercase mb-0">
+        <span>{{ responseInvoiceSale.invoiceSale.tipoDoc|invoiceType }}</span>
+        <span class="mx-1">:</span>
+        <span>{{ responseInvoiceSale.invoiceSale.serie }}-{{ responseInvoiceSale.invoiceSale.correlativo }}</span>
+        <span *ngIf="responseInvoiceSale.invoiceSale.anulada" class="mx-1">|</span>
+        <span *ngIf="responseInvoiceSale.invoiceSale.anulada" class="text-danger">Anulado</span>
+      </h5>
+      <div class="d-flex d-print-none">
+        <div class="row row-cols-auto g-2">
+          <div class="col-auto">
+            <button type="button" (click)="descargarXML($event)" class="btn btn-primary">
+              <fa-icon [icon]="faDownload" class="me-1"></fa-icon>
+              <span class="text-uppercase">Xml</span>
+            </button>
+          </div>
+          <div class="col-auto">
+            <div class="btn-group" role="group">
+              <button type="button"
+                      [routerLink]="['/', 'sales', 'invoice-ticket', responseInvoiceSale.invoiceSale.id]"
+                      class="btn btn-success">
+                <fa-icon [icon]="faPrint" class="me-1"></fa-icon>
+                <span class="text-uppercase">Ticket</span>
+              </button>
+              <button type="button"
+                      [routerLink]="['/', 'sales', 'invoice-formato-a4', responseInvoiceSale.invoiceSale.id]"
+                      class="btn btn-secondary">
+                <fa-icon [icon]="faPrint" class="me-1"></fa-icon>
+                <span class="text-uppercase">Doc. A4</span>
+              </button>
+            </div>
+          </div>
+          <div class="col-auto">
+            <button type="button" (click)="anularComprobante($event)" class="btn btn-danger">
+              <fa-icon [icon]="faCircleXmark" class="me-1"></fa-icon>
+              <span class="text-uppercase">Anular</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- #endregion -->
+    <!-- #region TABLA_COMPROBANTE! -->
+    <div class="col-12 bg-white mb-2 py-3">
+      <div class="table-responsive">
+        <table class="table">
+          <tbody>
+          <tr>
+            <th class="text-uppercase thWidth">Cliente</th>
+            <td>
+              {{ responseInvoiceSale.invoiceSale.cliente.numDoc }}
+              - {{ responseInvoiceSale.invoiceSale.cliente.rznSocial }}
+            </td>
+          </tr>
+          <tr>
+            <th class="text-uppercase thWidth">Fecha de emisión</th>
+            <td>{{ responseInvoiceSale.invoiceSale.fechaEmision|date }}</td>
+          </tr>
+          <tr>
+            <th class="text-uppercase thWidth">Forma de Pago</th>
+            <td class="text-uppercase">{{ responseInvoiceSale.invoiceSale.formaPago.tipo }}</td>
+          </tr>
+          <tr>
+            <th class="text-uppercase thWidth">Estado SUNAT</th>
+            <td class="text-uppercase">
+              {{ responseInvoiceSale.invoiceSale.billingResponse.cdrDescription }}
+            </td>
+          </tr>
+          <tr *ngIf="responseInvoiceSale.invoiceSale.remark.length">
+            <th class="text-uppercase thWidth">Observación</th>
+            <td class="text-uppercase">{{ responseInvoiceSale.invoiceSale.remark }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+          <tr class="text-uppercase">
+            <th>Cantidad</th>
+            <th>Und. Med</th>
+            <th>Descripción</th>
+            <th>Precio Unitario</th>
+            <th>V. Item</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let item of responseInvoiceSale.invoiceSaleDetails">
+            <td>{{ item.cantidad }}</td>
+            <td>{{ item.unidad.split(':')[1] }}</td>
+            <td>{{ item.description }}</td>
+            <td>{{ item.mtoPrecioUnitario.toFixed(4)|currency }}</td>
+            <td>{{ item.mtoValorVenta.toFixed(4)|currency }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="d-flex justify-content-end">
+        <div class="table-responsive">
+          <table class="table mb-0">
+            <tbody>
+            <tr>
+              <th class="bg-white text-uppercase text-end">Valor de Venta</th>
+              <td class="bg-white">{{ responseInvoiceSale.invoiceSale.valorVenta.toFixed(4)|currency }}</td>
+            </tr>
+            <tr>
+              <th class="bg-white text-end">IGV (18%)</th>
+              <td class="bg-white">{{ getMtoIgvTotal().toFixed(4)|currency }}</td>
+            </tr>
+            <tr>
+              <th class="bg-white text-uppercase text-end">Importe Total</th>
+              <td class="bg-white">{{ responseInvoiceSale.invoiceSale.mtoImpVenta.toFixed(4)|currency }}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- #endregion -->
+    <!-- #region TABLA_NOTAS_DE_CRÉDITO! -->
+    <div *ngIf="responseInvoiceSale.invoiceSale.anulada" class="col-12 bg-white mb-2 py-3">
+      <div class="table-responsive">
+        <table class="table table-striped table-sm mb-0">
+          <thead>
+          <tr class="text-uppercase">
+            <th>Fecha</th>
+            <th>Nro. CPE</th>
+            <th>Doc. Afectado</th>
+            <th>Motivo</th>
+            <th>Total</th>
+            <th>Sunat</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>{{ creditNote.fechaEmision|date }}</td>
+            <td>
+              <a [routerLink]="['/', 'sales', 'credit-note-formato-a4', creditNote.id]">
+                {{ creditNote.serie }}-{{ creditNote.correlativo }}
+              </a>
+            </td>
+            <td>{{ creditNote.numDocfectado }}</td>
+            <td>{{ creditNote.desMotivo }}</td>
+            <td>{{ creditNote.mtoImpVenta.toFixed(4)|currency }}</td>
+            <td>
+              {{ creditNote.billingResponse.cdrDescription }}
+              <button *ngIf="!creditNote.billingResponse.success" (click)="reenviarCreditNote()"
+                      class="btn btn-primary btn-sm">
+                <fa-icon [icon]="faRotate" class="me-1"></fa-icon>
+                <span class="text-uppercase">Reenviar</span>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- #endregion -->
+    <!-- #region PROGRESS_MODAL! -->
+    <div class="modal fade" id="progressModal" data-bs-backdrop="static" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+          <div class="modal-body">
+            <div class="d-flex justify-content-center">
+              <span class="fw-bold ms-2 mt-1">{{ titleProgressModal }}</span>
+            </div>
+            <div class="progress">
+              <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar"
+                   [ngStyle]="{width: valueProgressBar+'%'}">
+                {{ valueProgressBar }}%
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-primary w-100" [disabled]="valueProgressBar !== 100"
+                    data-bs-dismiss="modal">
+              <fa-icon [icon]="faChevronCircleRight" class="me-1"></fa-icon>
+              <span class="text-uppercase">Finalizar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- #endregion -->
+  </div>
+</app-sales-container>
+<app-loader [loading]="loading"></app-loader>

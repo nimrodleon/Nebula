@@ -1,0 +1,12 @@
+.WrapRegister {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  height: 100vh;
+  // Formulario de Login.
+  .FormRegister {
+    max-width: 450px;
+    margin: 15px;
+  }
+}

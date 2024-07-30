@@ -1,0 +1,56 @@
+<div class="WrapRegister">
+  <form [formGroup]="userForm" (ngSubmit)="registerUser()" class="FormRegister">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="text-uppercase text-center">Registro de Usuario</h5>
+        <div class="mb-3">
+          <div class="input-group input-group-lg">
+            <span class="input-group-text"><fa-icon [icon]="faUser"></fa-icon></span>
+            <input type="text" formControlName="userName" class="form-control"
+                   [ngClass]="{'is-invalid': inputIsInvalid('userName')}"
+                   placeholder="Nombre de usuario">
+          </div>
+        </div>
+        <div class="mb-3">
+          <div class="input-group input-group-lg">
+            <span class="input-group-text"><fa-icon [icon]="faEnvelope"></fa-icon></span>
+            <input type="email" formControlName="email" class="form-control"
+                   [ngClass]="{'is-invalid': inputIsInvalid('email')}"
+                   placeholder="E-Mail">
+          </div>
+        </div>
+        <div class="mb-3">
+          <div class="input-group input-group-lg">
+            <span class="input-group-text"><fa-icon [icon]="faLock"></fa-icon></span>
+            <input type="password" formControlName="password" class="form-control"
+                   [ngClass]="{'is-invalid': inputIsInvalid('password')}"
+                   placeholder="Contraseña">
+          </div>
+        </div>
+        <div class="mb-3">
+          <div class="input-group input-group-lg">
+            <span class="input-group-text"><fa-icon [icon]="faIdCard"></fa-icon></span>
+            <input type="text" formControlName="fullName" class="form-control"
+                   [ngClass]="{'is-invalid': inputIsInvalid('fullName')}"
+                   placeholder="Nombres">
+          </div>
+        </div>
+        <div class="input-group input-group-lg">
+          <span class="input-group-text"><fa-icon [icon]="faSquarePhone"></fa-icon></span>
+          <input type="text" formControlName="phoneNumber" class="form-control"
+                 [ngClass]="{'is-invalid': inputIsInvalid('phoneNumber')}"
+                 placeholder="Teléfono">
+        </div>
+      </div>
+      <div class="card-footer">
+        <button type="submit" class="btn btn-success btn-lg my-2 w-100">
+          <fa-icon [icon]="faUserPlus"></fa-icon>
+          <span class="text-uppercase ms-1">Registrarse</span>
+        </button>
+        <div class="text-center">
+          <a routerLink="/login" class="text-uppercase">Iniciar Sesión</a>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

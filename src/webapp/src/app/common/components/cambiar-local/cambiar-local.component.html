@@ -1,0 +1,27 @@
+<div class="modal fade" id="cambiarLocalModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title text-uppercase fs-5">Cambiar Local</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="companyForm">
+          <h6 class="text-center">Desde aquí puedes cambiar locales o puntos de emisión.</h6>
+          <select formControlName="idLocal" class="form-select"
+                  [ngClass]="{'is-invalid': inputIsInvalid('idLocal')}">
+            <option *ngFor="let item of locales" [value]="item.id">{{ item.name }}</option>
+          </select>
+        </form>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">
+          <span class="text-uppercase">Cerrar</span>
+        </button>
+        <button type="button" (click)="saveChanges()" class="btn btn-primary btn-lg">
+          <span class="text-uppercase">Cambiar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

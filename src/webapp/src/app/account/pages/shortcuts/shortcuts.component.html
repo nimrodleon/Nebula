@@ -1,0 +1,41 @@
+<app-account-container>
+  <h4>Accesos directos</h4>
+  <div class="flex flex-wrap justify-content-center">
+    <a routerLink="/cashier" class="btn btn-outline-dark m-1">
+      <div class="d-flex flex-column">
+        <fa-icon [icon]="faWallet" class="fs-3"></fa-icon>
+        <span class="text-uppercase fw-bold">Punto de Venta</span>
+      </div>
+    </a>
+    <a routerLink="/sales" class="btn btn-outline-dark m-1">
+      <div class="d-flex flex-column">
+        <fa-icon [icon]="faFolderOpen" class="fs-3"></fa-icon>
+        <span class="text-uppercase fw-bold">Comprobantes</span>
+      </div>
+    </a>
+    <a routerLink="/products" class="btn btn-outline-dark m-1">
+      <div class="d-flex flex-column">
+        <fa-icon [icon]="faBox" class="fs-3"></fa-icon>
+        <span class="text-uppercase fw-bold">Lista de Productos</span>
+      </div>
+    </a>
+    <a routerLink="/contacts" class="btn btn-outline-dark m-1">
+      <div class="d-flex flex-column">
+        <fa-icon [icon]="faAddressBook" class="fs-3"></fa-icon>
+        <span class="text-uppercase fw-bold">Lista de Contactos</span>
+      </div>
+    </a>
+    <a routerLink="/receivables" class="btn btn-outline-dark m-1">
+      <div class="d-flex flex-column">
+        <fa-icon [icon]="faCoins" class="fs-3"></fa-icon>
+        <span class="text-uppercase fw-bold">Cuentas por Cobrar</span>
+      </div>
+    </a>
+    <a routerLink="/taller-reparaciones" class="btn btn-outline-dark m-1">
+      <div class="d-flex flex-column">
+        <fa-icon [icon]="faScrewdriverWrench" class="fs-3"></fa-icon>
+        <span class="text-uppercase fw-bold">Ordenes de Reparaciones</span>
+      </div>
+    </a>
+  </div>
+</app-account-container>

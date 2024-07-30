@@ -1,0 +1,84 @@
+<app-sales-container>
+  <div class="bg-white" [style]="{'width': 410+'px'}">
+    <div class="d-flex justify-content-center my-2 pt-2 d-print-none">
+      <button type="button" (click)="print()" class="text-uppercase">Imprimir</button>
+    </div>
+    <p class="text-center m-0">{{ ticketDto.company.rznSocial }}</p>
+    <p class="text-center m-0">{{ ticketDto.company.address }}</p>
+    <p class="text-center m-0">Whatsapp: {{ ticketDto.company.phoneNumber }}</p>
+    <p class="text-center m-0">R.U.C: {{ ticketDto.company.ruc }}</p>
+    <p class="text-center fw-bold m-0">
+      {{ ticketDto.invoiceSale.tipoDoc|invoiceType }}
+    </p>
+    <p class="text-center fw-bold m-0">{{ ticketDto.invoiceSale.serie }}-{{ ticketDto.invoiceSale.correlativo }}</p>
+    <p class="text-center mb-0">
+      <span>{{ ticketDto.invoiceSale.cliente.tipoDoc|catalogo6 }}:&nbsp;</span>
+      <span>{{ ticketDto.invoiceSale.cliente.numDoc }}</span>
+    </p>
+    <p class="text-center mb-0">
+      <span>CLIENTE:&nbsp;</span>
+      <span>{{ ticketDto.invoiceSale.cliente.rznSocial }}</span>
+    </p>
+    <p class="text-center mb-0">
+      <span>F.Pago: {{ ticketDto.invoiceSale.formaPago.tipo }}</span>
+      <span class="mx-1">|</span>
+      <span>F.Emisión: {{ ticketDto.invoiceSale.fechaEmision|date }}</span>
+    </p>
+    <!--<p class="text-center mb-0">Hora: {{ticketDto.invoiceSale.horEmision}}</p>-->
+    <p *ngIf="ticketDto.invoiceSale.remark.length" class="text-center mb-0">
+      <span class="fw-bold d-block">Observación</span>
+      <span>{{ ticketDto.invoiceSale.remark }}</span>
+    </p>
+    <table style="font-size: 14px;" class="table mb-0">
+      <thead class="table-dark">
+      <tr class="text-uppercase">
+        <th>Cant</th>
+        <th>Producto</th>
+        <th>Precio</th>
+        <th style="min-width: 70px;">V. Item</th>
+      </tr>
+      </thead>
+      <tbody class="table-group-divider">
+      <tr *ngFor="let item of ticketDto.invoiceSaleDetails">
+        <td>{{ item.cantidad }}</td>
+        <td>{{ item.description }}</td>
+        <td>{{ item.mtoPrecioUnitario.toFixed(4)|currency }}</td>
+        <td>{{ item.mtoValorVenta.toFixed(4)|currency }}</td>
+      </tr>
+      </tbody>
+      <tfoot class="table-group-divider">
+      <tr>
+        <th colspan="3" class="text-uppercase text-end">Total valor de venta</th>
+        <td class="fw-bold">{{ ticketDto.invoiceSale.valorVenta.toFixed(4)|currency }}</td>
+      </tr>
+      <tr>
+        <th colspan="3" class="text-uppercase text-end">IGV ({{ ticketDto.company.porcentajeIgv|number }}%)</th>
+        <td class="fw-bold">{{ getMtoIgvTotal().toFixed(4)|currency }}</td>
+      </tr>
+      <tr>
+        <th colspan="3" class="text-uppercase text-end">Importe Total</th>
+        <td class="fw-bold">{{ ticketDto.invoiceSale.mtoImpVenta.toFixed(4)|currency }}</td>
+      </tr>
+      </tfoot>
+    </table>
+    <p class="text-center mb-0">SON: {{ ticketDto.invoiceSale.totalEnLetras }}</p>
+    <div *ngIf="ticketDto.invoiceSale.tipoDoc !== 'NOTA'">
+      <qrcode [qrdata]="qrCodeText" [width]="256" [errorCorrectionLevel]="'Q'" [allowEmptyString]="true"
+              class="text-center"></qrcode>
+      <p class="text-center mb-0">{{ ticketDto.invoiceSale.billingResponse.hash }}</p>
+      <p class="text-uppercase text-center mb-0">{{ ticketDto.invoiceSale.billingResponse.cdrDescription }}</p>
+      <p class="text-center m-2" style="border: 2px solid #000;">
+        Representación impresa de la <span class="fw-bold">{{ ticketDto.invoiceSale.tipoDoc|invoiceType }}</span>
+        generada
+        desde el sistema del Contribuyente. Puede verificarla utilizando su clave SOL
+      </p>
+    </div>
+    <div *ngIf="ticketDto.invoiceSale.tipoDoc === 'NOTA'" class="m-2" style="border: 2px solid #000;">
+      <p class="text-center fw-bold m-0">COMPROBANTE DE CONTROL INTERNO</p>
+      <p class="text-center fw-bold m-0">CAMBIAR POR BOLETA O FACTURA</p>
+    </div>
+    <p class="text-center m-0">NO SE ACEPTAN DEVOLUCIONES</p>
+    <p class="text-center m-0">GRACIAS POR SU COMPRA</p>
+  </div>
+</app-sales-container>
+

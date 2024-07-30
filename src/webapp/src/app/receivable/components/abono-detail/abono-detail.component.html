@@ -1,0 +1,68 @@
+<div class="modal fade" id="abono-detail" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">ABONOS | {{ cargoDetail.cargo.contactName }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table table-striped mb-0">
+            <thead>
+            <tr class="text-uppercase">
+              <th>Fecha</th>
+              <th>Concepto</th>
+              <th>Doc</th>
+              <th>Abono</th>
+              <th>Terminal</th>
+              <td></td>
+            </tr>
+            </thead>
+            <tbody class="table-group-divider">
+            <tr *ngFor="let item of cargoDetail.abonos">
+              <td>{{ item.createdAt|date }}</td>
+              <td>{{ item.remark }}</td>
+              <td>
+                <ng-template
+                  [ngIf]="item.invoiceSale === '-'"
+                  [ngIfElse]="existeDoc">
+                  {{ item.document }}
+                </ng-template>
+                <ng-template #existeDoc>
+                  <a class="text-decoration-none" *ngIf="item.docType === 'NOTA'" target="_blank"
+                     [routerLink]="['/', 'cashier', 'ticket', item.invoiceSale]">
+                    {{ item.document }}
+                  </a>
+                  <a class="text-decoration-none" *ngIf="item.docType !== 'NOTA'" target="_blank"
+                     [routerLink]="['/', 'sales', 'invoice-sale-detail', item.invoiceSale]">
+                    {{ item.document }}
+                  </a>
+                </ng-template>
+              </td>
+              <td>{{ item.abono.toFixed(4)|currency }}</td>
+              <td>
+                <ng-template
+                  [ngIf]="item.cajaDiaria === '-'"
+                  [ngIfElse]="existeTerminal">
+                  {{ item.cajaDiaria }}
+                </ng-template>
+                <ng-template #existeTerminal>
+                  <a class="text-decoration-none" [routerLink]="['/', 'cashier', 'detail', item.cajaDiaria]"
+                     target="_blank">
+                    {{ item.terminal }}
+                  </a>
+                </ng-template>
+              </td>
+              <td style="width: 40px;">
+                <button (click)="deleteAbono(item.id)" class="btn btn-danger btn-sm">
+                  <fa-icon [icon]="faTrashAlt"></fa-icon>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

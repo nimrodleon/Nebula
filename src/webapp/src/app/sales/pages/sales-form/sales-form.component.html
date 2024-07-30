@@ -1,0 +1,224 @@
+<app-sales-container>
+  <div class="row">
+    <div class="col-12 my-2">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="fw-bold mb-0">EMISIÓN DE COMPROBANTE ELECTRÓNICA</h5>
+        </div>
+        <div class="card-body">
+          <form (ngSubmit)="saveChanges()" [formGroup]="cabeceraForm">
+            <div class="row mb-3">
+              <div class="col-12 col-md-2">
+                <label class="form-label">
+                  <fa-icon [icon]="faFolderTree" class="me-1"></fa-icon>
+                  <span class="fw-bold">Tipo doc.:<span class="text-danger">*</span></span>
+                </label>
+                <select class="form-select" formControlName="tipoDoc"
+                        [ngClass]="{'is-invalid': inputIsInvalid('tipoDoc')}">
+                  <option value="03">BOLETA</option>
+                  <option value="01">FACTURA</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-2">
+                <label class="form-label">
+                  <fa-icon [icon]="faFolderTree" class="me-1"></fa-icon>
+                  <span class="fw-bold">Serie Fact.:<span class="text-danger">*</span></span>
+                </label>
+                <select class="form-select" formControlName="invoiceSerieId"
+                        [ngClass]="{'is-invalid': inputIsInvalid('invoiceSerieId')}">
+                  <option *ngFor="let item of invoiceSeries" [value]="item.id">{{ item.name }}</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-3">
+                <label class="form-label">
+                  <fa-icon [icon]="faUserAlt" class="me-1"></fa-icon>
+                  <span class="fw-bold">Crear/Buscar Cliente:<span class="text-danger">*</span></span>
+                </label>
+                <div class="btn-group w-100" role="group">
+                  <button type="button" (click)="showRegisterContactModal()" class="btn btn-primary">
+                    <fa-icon [icon]="faPlus" class="me-1"></fa-icon>
+                    <span class="text-uppercase">Nuevo</span>
+                  </button>
+                  <button type="button" (click)="showSearchContactModal()" class="btn btn-success">
+                    <fa-icon [icon]="faSearch" class="me-1"></fa-icon>
+                    <span class="text-uppercase">Buscar</span>
+                  </button>
+                </div>
+              </div>
+              <div class="col-12 col-md-5">
+                <label class="form-label">
+                  <fa-icon [icon]="faIdCardAlt" class="me-1"></fa-icon>
+                  <span class="fw-bold">Razón Social:<span class="text-danger">*</span></span>
+                </label>
+                <input type="text" formControlName="rznSocialUsuario" class="form-control bg-light"
+                       [ngClass]="{'is-invalid': inputIsInvalid('rznSocialUsuario')}"
+                       placeholder="Nombre o Razón Social Aquí!" readonly>
+              </div>
+            </div>
+            <div class="row">
+              <div class="table-responsive">
+                <table class="table table-striped mb-0">
+                  <thead class="table-secondary">
+                  <tr class="text-uppercase">
+                    <th>Cantidad</th>
+                    <th>Und. Medida</th>
+                    <th>Descripción</th>
+                    <th>Valor Item</th>
+                    <th>IGV</th>
+                    <th>Importe Item</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let item of comprobanteDto.detalle">
+                    <td>{{ item.ctdUnidadItem }}</td>
+                    <td>{{ item.codUnidadMedida|split }}</td>
+                    <td>{{ item.description }}</td>
+                    <td>{{ item.getValorVentaItem(company).toFixed(4)|currency }}</td>
+                    <td>{{ item.getMtoIgvItem(company).toFixed(4)|currency }}</td>
+                    <td>{{ item.getImporteTotal().toFixed(4)|currency }}</td>
+                    <td>
+                      <div class="tblBtn ms-auto">
+                        <button type="button" (click)="editItemModal(item)" class="btn btn-secondary btn-sm me-2">
+                          <fa-icon [icon]="faEdit"></fa-icon>
+                        </button>
+                        <button type="button" (click)="deleteItemComprobante(item)"
+                                class="btn btn-danger btn-sm">
+                          <fa-icon [icon]="faTrashAlt"></fa-icon>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12 col-md-8">
+                <h6 class="pb-1 my-2">ESCRIBE UN COMENTARIO O OBSERVACIÓN:</h6>
+                <div class="input-group">
+                  <span class="input-group-text">
+                    <fa-icon [icon]="faMessage" class="mx-1"></fa-icon>
+                  </span>
+                  <textarea type="text" formControlName="remark" class="form-control"
+                            placeholder="Escribe aqui tu comentario!">
+                  </textarea>
+                </div>
+                <div class="row">
+                  <div class="col-12 mt-2">
+                    <div class="btn-group" role="group">
+                      <button type="button" (click)="showAddProductModal()" class="btn btn-primary">
+                        <fa-icon [icon]="faPlus" class="me-1"></fa-icon>
+                        <span class="text-uppercase">Producto</span>
+                      </button>
+                      <button type="button" (click)="showAddEntradaModal()" class="btn btn-secondary">
+                        <fa-icon [icon]="faNoteSticky" class="me-1"></fa-icon>
+                        <span class="text-uppercase">Entrada</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 col-md-4">
+                <table class="table mb-0">
+                  <tbody>
+                  <tr>
+                    <th class="text-uppercase">Valor de Venta:</th>
+                    <td>{{ sumTotValVenta|currency }}</td>
+                  </tr>
+                  <tr>
+                    <th>IGV: ({{ company.porcentajeIgv }}%):</th>
+                    <td>{{ sumTotIgvItem|currency }}</td>
+                  </tr>
+                  <tr>
+                    <th class="text-uppercase">Importe Total:</th>
+                    <td>{{ sumImpVenta|currency }}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </form>
+          <!-- ##> DEBUG ## -->
+          <!--<pre>{{cabeceraForm.value|json}}</pre>
+          <pre>{{comprobanteDto|json}}</pre>
+          <pre>{{company|json}}</pre>-->
+          <!-- ##< END ## -->
+        </div>
+        <div class="card-footer">
+          <div class="d-flex justify-content-center py-2">
+            <button type="button" (click)="irAListaComprobantes()" class="btn btn-secondary btn-lg me-2">
+              <fa-icon [icon]="faCircleLeft" class="me-1"></fa-icon>
+              <span class="text-uppercase ms-1">Cancelar</span>
+            </button>
+            <button type="button" (click)="saveChanges()" class="btn btn-primary btn-lg">
+              <fa-icon [icon]="faSave"></fa-icon>
+              <span class="text-uppercase ms-1">Guardar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-sales-container>
+<app-credit-information-modal
+  [pagoPendiente]="sumImpVenta"
+  (responseData)="saveChangesCreditInformation($event)">
+</app-credit-information-modal>
+<!-- #region PROGRESS_MODAL! -->
+<div class="modal fade" id="sales-form-progress-modal" data-bs-backdrop="static" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content">
+      <div class="modal-body pb-1">
+        <div class="d-flex justify-content-center">
+          <span class="fw-bold ms-2 mt-1 text-center">{{ titleProgressModal }}</span>
+        </div>
+        <div class="progress">
+          <div class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+               role="progressbar" [ngStyle]="{width: valueProgressBar+'%'}">
+            {{ valueProgressBar }}%
+          </div>
+        </div>
+        <div class="d-flex justify-content-center fw-bold pt-2">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="printFormat" id="flexRadioDefault1" value="Ticket"
+                   [disabled]="valueProgressBar !== 100" checked>
+            <label class="form-check-label" for="flexRadioDefault1">Ticket</label>
+          </div>
+          <span class="mx-2">|</span>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="printFormat" id="flexRadioDefault2" value="A4"
+                   [disabled]="valueProgressBar !== 100">
+            <label class="form-check-label" for="flexRadioDefault2">Doc. A4</label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer bg-light">
+        <button type="button" (click)="finalizar()" class="btn btn-warning btn-lg fw-bold w-100"
+                [disabled]="valueProgressBar !== 100">
+          <fa-icon [icon]="faChevronCircleRight" class="me-1"></fa-icon>
+          <span class="text-uppercase">Finalizar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- #endregion -->
+<app-search-contact-modal
+  (responseData)="selectContactModal($event)">
+</app-search-contact-modal>
+<app-contact-modal
+  [contactDataModal]="contactDataModal"
+  (responseData)="saveContactRecordModal($event)">
+</app-contact-modal>
+<!-- agregar items comprobante -->
+<app-add-entrada-modal
+  [company]="company"
+  [itemComprobanteModal]="itemComprobanteModal"
+  (responseData)="agregarItemComprobante($event)">
+</app-add-entrada-modal>
+<app-add-product-modal
+  [company]="company"
+  [itemComprobanteModal]="itemComprobanteModal"
+  (responseData)="agregarItemComprobante($event)">
+</app-add-product-modal>

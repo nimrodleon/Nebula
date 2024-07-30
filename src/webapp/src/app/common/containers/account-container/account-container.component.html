@@ -1,0 +1,31 @@
+<app-account-navbar></app-account-navbar>
+<div class="container">
+  <div class="row px-2">
+    <div class="col-12 bg-white my-2 py-3">
+      <div class="row">
+        <div class="col-12 col-md-3 mb-2">
+          <div class="list-group fs-5">
+            <a routerLink="/account" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
+               class="list-group-item list-group-item-action">
+              <fa-icon [icon]="faShareFromSquare" class="me-1"></fa-icon>
+              <span>Accesos</span>
+            </a>
+            @if (isBusinessType) {
+              <a routerLink="/account/users" routerLinkActive="active" class="list-group-item list-group-item-action">
+                <fa-icon [icon]="fafaUsersCog" class="me-1"></fa-icon>
+                <span>Usuarios</span>
+              </a>
+              <a routerLink="/account/locales" routerLinkActive="active" class="list-group-item list-group-item-action">
+                <fa-icon [icon]="faBriefcase" class="me-1"></fa-icon>
+                <span>Locales y series</span>
+              </a>
+            }
+          </div>
+        </div>
+        <div class="col-12 col-md-9">
+          <ng-content></ng-content>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
