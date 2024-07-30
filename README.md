@@ -1,10 +1,10 @@
 # Nebula
 
 ![License](https://img.shields.io/badge/license-GPL--3.0-blue)
-![.NET](https://img.shields.io/badge/.NET-5.0-blue)
-![Angular](https://img.shields.io/badge/Angular-12-red)
-![PHP](https://img.shields.io/badge/PHP-7.4-blue)
-![MongoDB](https://img.shields.io/badge/MongoDB-4.4-green)
+![.NET](https://img.shields.io/badge/.NET-8.0-blue)
+![Angular](https://img.shields.io/badge/Angular-18-red)
+![PHP](https://img.shields.io/badge/PHP-8.2-blue)
+![MongoDB](https://img.shields.io/badge/MongoDB-7.0-green)
 
 Nebula es un software de facturación electrónica diseñado para generar comprobantes electrónicos para la SUNAT. Este proyecto es de código abierto y está licenciado bajo GPL-3.0. Nebula soporta la generación de facturas, boletas, notas de venta y tiene los módulos de gestión de comprobantes, punto de venta, catálogo de productos, contactos y cuentas por cobrar. El proyecto está desarrollado con .NET, Angular, PHP y utiliza MongoDB como base de datos.
 
