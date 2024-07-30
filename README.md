@@ -1,34 +1,57 @@
 # Nebula
 
-Software de Facturación Electrónica.
+![License](https://img.shields.io/badge/license-GPL--3.0-blue)
+![.NET](https://img.shields.io/badge/.NET-5.0-blue)
+![Angular](https://img.shields.io/badge/Angular-12-red)
+![PHP](https://img.shields.io/badge/PHP-7.4-blue)
+![MongoDB](https://img.shields.io/badge/MongoDB-4.4-green)
 
-## Estructura de los Libros y Registros Electrónicos
+Nebula es un software de facturación electrónica diseñado para generar comprobantes electrónicos para la SUNAT. Este proyecto es de código abierto y está licenciado bajo GPL-3.0. Nebula soporta la generación de facturas, boletas, notas de venta y tiene los módulos de gestión de comprobantes, punto de venta, catálogo de productos, contactos y cuentas por cobrar. El proyecto está desarrollado con .NET, Angular, PHP y utiliza MongoDB como base de datos.
 
-- Estructuras del PLE
+## Tecnologías Utilizadas
 
-```bash
-https://emprender.sunat.gob.pe/estructurasple
+- **Backend**: .NET
+- **Frontend**: Angular
+- **Servicios Adicionales**: PHP
+- **Base de Datos**: MongoDB
+- **Generación de XML**: [Greenter](https://github.com/thegreenter/greenter)
+
+## Instalación y Configuración
+
+1. **Clona el repositorio:**
+
+```sh
+git clone https://github.com/tu_usuario/nebula.git
 ```
 
-- [Registro de Compras I](https://youtu.be/jxucTvSz4Hs)
-- [Registro de Compras II](https://youtu.be/W5usHJmaNbQ)
+2. **Configura las dependencias del proyecto:**
 
-## Estructura gestión de usuarios
+   - .NET: [Instalación de .NET](https://dotnet.microsoft.com/download)
+   - Angular: [Instalación de Angular](https://angular.io/guide/setup-local)
+   - PHP: [Instalación de PHP](https://www.php.net/manual/es/install.php)
+   - MongoDB: [Instalación de MongoDB](https://docs.mongodb.com/manual/installation/)
 
-existen 3 tipos de campos en el modelo de usuarios para configurar el sistema
+3. **Configura la base de datos:**
 
-```C#
-  public string AccountType { get; set; } = AccountTypeHelper.Personal; // configura el tipo de cuenta
-  public string UserRole { get; set; } = UserRoleDbHelper.User;         // configura el rol del usuario
-  public string DefaultCompanyId { get; set; } = string.Empty;          // Id por defecto de la empresa
-```
+   - Asegúrate de tener MongoDB ejecutándose.
+   - Configura las conexiones a la base de datos en los archivos de configuración del proyecto.
 
-### Restricciones de uso
+4. **Ejecuta la aplicación:**
 
-- el AccountType **bussiness** se crea solo desde la vista pública.
-- el tipo de cuenta **personal** solo puede crear un usuario con rol **admin** de tipo **business**.
-- solo puede existir una cuenta de tipo **personal** por empresa.
-- solo una cuenta de tipo **business** puede crear empresas.
-- solo un usuario con rol **admin** puede borrar los registros.
-- el usuario de tipo **business** siempre tendra un rol **admin**.
-- solo existen dos roles en el sistema **admin|user**.
+   - Backend: `dotnet run`
+   - Frontend: `ng serve`
+   - Servicios adicionales: Ejecuta los scripts PHP según sea necesario.
+
+## Contribuciones
+
+Las contribuciones son bienvenidas. Por favor, sigue las pautas de contribución y asegúrate de que tus cambios estén bien documentados.
+
+## Licencia
+
+Este proyecto está licenciado bajo la licencia GPL-3.0. Para más detalles, consulta el archivo [LICENSE](LICENSE).
+
+---
+
+## Contacto
+
+Para más información, visita nuestra [página de contacto](https://tu-sitio-web.com/contacto) o envía un correo a contacto@tu-sitio-web.com.
