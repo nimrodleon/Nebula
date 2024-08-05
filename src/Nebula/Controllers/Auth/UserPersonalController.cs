@@ -58,7 +58,7 @@ public class UserPersonalController(
                 UserRole = model.UserRole,
                 FullName = model.FullName.ToUpper(),
                 PhoneNumber = model.PhoneNumber,
-                DefaultCompanyId = _companyId.Trim()
+                LocalDefault = _companyId.Trim()
             };
             user = await userService.InsertOneAsync(user);
             return Ok(user);
@@ -82,7 +82,7 @@ public class UserPersonalController(
             user.UserRole = model.UserRole;
             user.FullName = model.FullName.ToUpper();
             user.PhoneNumber = model.PhoneNumber;
-            user.DefaultCompanyId = _companyId.Trim();
+            user.LocalDefault = _companyId.Trim();
             user = await userService.ReplaceOneAsync(user.Id, user);
             return Ok(user);
         }

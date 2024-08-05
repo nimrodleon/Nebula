@@ -95,7 +95,7 @@ public class AuthController(
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim("AccountType", user.AccountType),
                 new Claim("UserRole", user.UserRole),
-                new Claim("DefaultCompanyId", user.DefaultCompanyId),
+                new Claim("DefaultCompanyId", user.LocalDefault),
             };
 
             var token = jwtService.GenerateToken(claims, 1000);

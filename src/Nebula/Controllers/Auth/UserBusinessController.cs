@@ -31,7 +31,7 @@ public class UserBusinessController(
                 UserRole = UserRoleDbHelper.Admin,
                 FullName = model.FullName.ToUpper(),
                 PhoneNumber = model.PhoneNumber,
-                DefaultCompanyId = "-.-"
+                LocalDefault = "-.-"
             };
             user = await userService.InsertOneAsync(user);
             // crear empresa
@@ -44,7 +44,7 @@ public class UserBusinessController(
             };
             await companyService.SingleInsertOneAsync(company);
             // actualizar usuario
-            user.DefaultCompanyId = company.Id;
+            user.LocalDefault = company.Id;
             await userService.ReplaceOneAsync(user.Id, user);
             return Ok(user);
         }

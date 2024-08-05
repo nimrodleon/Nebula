@@ -5,7 +5,7 @@ using Nebula.Modules.Auth.Models;
 
 namespace Nebula.Modules.Auth;
 
-public interface IUserService : ICrudOperationService<User>
+public interface IUserService
 {
     Task<List<User>> GetListAsync(string companyId, string query = "", int page = 1, int pageSize = 12);
     Task<long> GetTotalListAsync(string companyId, string query = "");
@@ -14,21 +14,14 @@ public interface IUserService : ICrudOperationService<User>
     Task<User> GetByUserNameAsync(string userName);
 }
 
-public class UserService : CrudOperationService<User>, IUserService
+public class UserService : IUserService
 {
-    public UserService(MongoDatabaseService mongoDatabase) : base(mongoDatabase)
-    {
-        var indexKeys = Builders<User>.IndexKeys.Ascending(x => x.UserName);
-        var indexOptions = new CreateIndexOptions { Unique = true };
-        var model = new CreateIndexModel<User>(indexKeys, indexOptions);
-        _collection.Indexes.CreateOne(model);
-    }
 
     public async Task<List<User>> GetListAsync(string companyId, string query = "", int page = 1, int pageSize = 12)
     {
         var skip = (page - 1) * pageSize;
         var builder = Builders<User>.Filter;
-        var filter = builder.Eq(x => x.DefaultCompanyId, companyId);
+        var filter = builder.Eq(x => x.LocalDefault, companyId);
 
         if (!string.IsNullOrEmpty(query))
             filter = Builders<User>.Filter.Or(
@@ -42,7 +35,7 @@ public class UserService : CrudOperationService<User>, IUserService
     public async Task<long> GetTotalListAsync(string companyId, string query = "")
     {
         var builder = Builders<User>.Filter;
-        var filter = builder.Eq(x => x.DefaultCompanyId, companyId);
+        var filter = builder.Eq(x => x.LocalDefault, companyId);
 
         if (!string.IsNullOrEmpty(query))
             filter = builder.Regex("UserName", new BsonRegularExpression(query.ToUpper(), "i"));
