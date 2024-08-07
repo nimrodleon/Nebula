@@ -1,0 +1,37 @@
+<div class="modal" id="collaborator-add-modal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-uppercase">Invitar Usuario</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="usuarioForm">
+          <div class="row">
+            <div class="col-8">
+              <label class="form-label text-uppercase">Correo Electrónico</label>
+              <input type="email" class="form-control" formControlName="email"
+                     [ngClass]="{'is-invalid': inputIsInvalid('email')}">
+            </div>
+            <div class="col-4">
+              <label class="form-label text-uppercase">Rol</label>
+              <select class="form-select" formControlName="userRole"
+                      [ngClass]="{'is-invalid': inputIsInvalid('userRole')}">
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">
+          <span class="text-uppercase">Cerrar</span>
+        </button>
+        <button type="button" class="btn btn-primary btn-lg" (click)="guardarUsuario()">
+          <span class="text-uppercase">Invitar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

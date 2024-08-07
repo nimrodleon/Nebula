@@ -1,0 +1,76 @@
+<div class="row px-2">
+  <div class="col-12 bg-white my-2 py-3">
+    <h5 class="text-danger mb-1">
+      <fa-icon [icon]="faTruckRampBox" class="me-1"></fa-icon>
+      <span class="text-uppercase">Productos de Ubicación</span>
+    </h5>
+    <form id="locationForm" [formGroup]="locationForm" (ngSubmit)="saveChange()" class="table-group-divider">
+      <div class="row my-3">
+        <label class="col-12 col-md-2 col-form-label text-start text-md-end">ALMACÉN</label>
+        <div class="col-12 col-md-3">
+          <select formControlName="warehouseId" class="form-select"
+                  [ngClass]="{'is-invalid': inputIsInvalid('warehouseId')}">
+            <option *ngFor="let item of warehouses" [value]="item.id">{{ item.name }}</option>
+          </select>
+        </div>
+        <label class="col-12 col-md-1 col-form-label text-start text-md-end">UBICACIÓN</label>
+        <div class="col-12 col-md-3">
+          <input type="text" formControlName="description" class="form-control"
+                 [ngClass]="{'is-invalid': inputIsInvalid('description')}">
+        </div>
+      </div>
+    </form>
+    <div class="table-responsive">
+      <table class="table table-striped mb-2">
+        <thead class="table-primary">
+        <tr class="text-uppercase">
+          <th>Código de Barra</th>
+          <th>Producto</th>
+          <th>Cant. mínima</th>
+          <th>Cant. máxima</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let item of locationDetails">
+          <td>{{ item.barcode }}</td>
+          <td>{{ item.productName }}</td>
+          <td>{{ item.quantityMin }}</td>
+          <td>{{ item.quantityMax }}</td>
+          <td>
+            <div class="tblBtn ms-auto">
+              <button type="button" (click)="editProductLocationModal(item)" class="btn btn-secondary btn-sm me-2">
+                <fa-icon [icon]="faEdit"></fa-icon>
+              </button>
+              <button type="button" (click)="deleteDetail(item.id)" class="btn btn-danger btn-sm">
+                <fa-icon [icon]="faTrashAlt"></fa-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <button class="btn bg-success border-0" (click)="showProductLocationModal()" [disabled]="type === 'ADD'">
+        <fa-icon [icon]="faPlus" class="text-white me-1"></fa-icon>
+        <span class="text-uppercase text-white">Agregar Producto</span>
+      </button>
+    </div>
+  </div>
+  <div class="col-12 bg-white mb-2 py-3">
+    <div class="d-flex justify-content-center">
+      <button (click)="back()" class="btn btn-secondary btn-lg me-2">
+        <fa-icon [icon]="faCircleLeft" class="me-1"></fa-icon>
+        <span class="text-uppercase">Cancelar</span>
+      </button>
+      <button type="submit" form="locationForm" class="btn btn-primary btn-lg">
+        <fa-icon [icon]="faSave" class="me-1"></fa-icon>
+        <span class="text-uppercase">Guardar</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<app-product-location
+  [dataModal]="dataModal"
+  (responseData)="saveChangeDetail($event)">
+</app-product-location>

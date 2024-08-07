@@ -1,0 +1,144 @@
+<app-cashier-container>
+  <div class="row py-2">
+    <div class="col-12 col-md-7">
+      <div class="card">
+        <div class="card-body">
+          <div class="row mb-2">
+            <div class="col-12 col-md-9">
+              <form (submit)="cargarProductos()">
+                <div class="input-group input-group-lg">
+                  <input type="text" name="query" [(ngModel)]="query" class="form-control"
+                         placeholder="BUSCAR PRODUCTOS...">
+                  <button type="submit" class="btn btn-success">
+                    <fa-icon [icon]="faMagnifyingGlass" class="me-1"></fa-icon>
+                    <span class="text-uppercase">Buscar</span>
+                  </button>
+                </div>
+              </form>
+            </div>
+            <div class="col-12 col-md-3">
+              <button (click)="salir()" class="btn btn-warning btn-lg w-100">
+                <fa-icon [icon]="faCircleXmark" class="me-1"></fa-icon>
+                <span class="text-uppercase">Salir</span>
+              </button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-striped fs-5 mb-0">
+                      <thead class="table-primary">
+                      <tr class="text-uppercase">
+                        <th>Descripción Productos</th>
+                        <th>Precio</th>
+                        <th></th>
+                      </tr>
+                      </thead>
+                      <tbody class="table-group-divider">
+                      <tr *ngFor="let item of productos">
+                        <td>{{ item.description }}</td>
+                        <td>{{ item.precioVentaUnitario.toFixed(4)|currency }}</td>
+                        <td class="text-end">
+                          <button (click)="agregarProducto(item)" class="btn btn-primary">
+                            <span class="text-uppercase">Seleccionar</span>
+                          </button>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-5">
+      <div class="card">
+        <div class="card-body">
+          <div class="card mb-2">
+            <div class="card-body bg-secondary-subtle">
+              <fa-icon [icon]="faCircleUser" class="me-1"></fa-icon>
+              <a href="#" (click)="buscarCliente($event)"
+                 class="text-uppercase text-decoration-none fw-bold">
+                {{ comprobanteDto.cabecera.rznSocialUsuario }}
+              </a>
+            </div>
+          </div>
+          <!-- ## Items ## -->
+          <ol class="list-group fs-5 mb-2">
+            <li class="list-group-item" style="min-height: 240px;">
+              <table class="table mb-0">
+                <tbody>
+                <tr *ngFor="let item of comprobanteDto.detalle">
+                  <td>
+                    <span class="text-uppercase">{{ item.description }}</span>
+                    <div class="fw-semibold text-uppercase">
+                      <span>Cant: {{ item.ctdUnidadItem }}</span>
+                      <span class="mx-1">|</span>
+                      <span>Precio: {{ item.mtoPrecioVentaUnitario.toFixed(4)|currency }}</span>
+                    </div>
+                  </td>
+                  <td>{{ item.getImporteTotal().toFixed(4)|currency }}</td>
+                  <td class="text-end">
+                    <a (click)="borrarItemDetalle($event, item.productId)" href="#">
+                      <fa-icon [icon]="faTrashCan"></fa-icon>
+                    </a>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </li>
+            <li class="list-group-item list-group-item-primary fw-bold">
+              <div class="d-flex justify-content-between">
+                <span>SubTotal:</span>
+                <span>{{ subTotal.toFixed(4)|currency }}</span>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span>IGV({{ quickSaleConfig.company.porcentajeIgv|number }}%):</span>
+                <span>{{ mtoIgv.toFixed(4)|currency }}</span>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span class="text-uppercase">Importe Total:</span>
+                <span>{{ totalCobrar.toFixed(4)|currency }}</span>
+              </div>
+            </li>
+          </ol>
+          <!-- ## fin Items ## -->
+          <div class="d-flex justify-content-between">
+            <button (click)="cancelarVenta()" class="btn btn-danger btn-lg w-100 me-2">
+              <fa-icon [icon]="faCircleXmark" class="me-1"></fa-icon>
+              <span class="text-uppercase">Cancelar</span>
+            </button>
+            <button (click)="cobrarPago()" class="btn btn-success btn-lg w-100">
+              <fa-icon [icon]="faCoins" class="me-1"></fa-icon>
+              <span class="text-uppercase">Cobrar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-cashier-container>
+
+<app-search-contact-modal
+  (responseData)="seleccionarContacto($event)">
+</app-search-contact-modal>
+
+<app-cobrar-modal
+  [company]="quickSaleConfig.company"
+  [comprobanteDto]="comprobanteDto"
+  (responseData)="imprimirTicket($event)">
+</app-cobrar-modal>
+
+<!--
+<pre>
+  {{comprobanteDto|json}}
+</pre>
+<pre>
+  {{quickSaleConfig|json}}
+</pre>
+-->

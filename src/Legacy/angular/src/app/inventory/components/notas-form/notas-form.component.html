@@ -1,0 +1,97 @@
+<div class="row px-2">
+  <div class="col-12 bg-white my-2 py-3">
+    <h5 class="text-danger mb-1">
+      <fa-icon [icon]="faNoteSticky" class="me-1"></fa-icon>
+      <span *ngIf="type==='ADD'" class="text-uppercase">Nota de Entrada/Salida</span>
+      <span *ngIf="type==='EDIT'" class="text-uppercase">Nota de {{ inventoryNotas.transactionType }}</span>
+    </h5>
+    <form [formGroup]="notaForm" (ngSubmit)="saveChange()" id="notaForm" class="table-group-divider">
+      <div class="row my-3">
+        <label class="col-12 col-md-2 col-form-label text-start text-md-end">ALMACÉN</label>
+        <div class="col-12 col-md-3">
+          <select formControlName="warehouseId" class="form-select"
+                  [attr.disabled]="inventoryNotas.status === 'VALIDADO'"
+                  [ngClass]="{'is-invalid': inputIsInvalid('warehouseId')}">
+            <option *ngFor="let item of warehouses" [value]="item.id">{{ item.name }}</option>
+          </select>
+        </div>
+        <label class="col-12 col-md-1 col-form-label text-start text-md-end">CONTACTO</label>
+        <div class="col-12 col-md-3">
+          <select id="contactId" class="form-select" [ngClass]="{'is-invalid': inputIsInvalid('contactId')}">
+          </select>
+        </div>
+      </div>
+      <div class="row mb-3">
+        <label class="col-12 col-md-2 col-form-label text-start text-md-end">OBSERVACIÓN</label>
+        <div class="col-12 col-md-7">
+          <div class="input-group">
+            <span class="input-group-text">
+              <fa-icon [icon]="faMessage" class="mx-1"></fa-icon>
+            </span>
+            <input type="text" formControlName="remark" class="form-control"
+                   [ngClass]="{'is-invalid': inputIsInvalid('remark')}">
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="table-responsive">
+      <table class="table table-striped mb-2">
+        <thead class="table-primary">
+        <tr class="text-uppercase">
+          <th>Descripción</th>
+          <th>Demanda</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let item of inventoryNotasDetails">
+          <td>{{ item.productName }}</td>
+          <td>{{ item.demanda }}</td>
+          <td>
+            <div class="tblBtn ms-auto">
+              <button type="button"
+                      [disabled]="invalidEditItem()"
+                      (click)="editInventoryProductModal(item)"
+                      class="btn btn-secondary btn-sm me-2">
+                <fa-icon [icon]="faEdit"></fa-icon>
+              </button>
+              <button type="button" (click)="deleteDetail(item.id)" class="btn btn-danger btn-sm">
+                <fa-icon [icon]="faTrashAlt"></fa-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <button class="btn bg-success border-0"
+              [disabled]="invalidEditItem()"
+              (click)="showInventoryProductModal()">
+        <fa-icon [icon]="faPlus" class="text-white me-1"></fa-icon>
+        <span class="text-uppercase text-white">Agregar Producto</span>
+      </button>
+    </div>
+  </div>
+  <div class="col-12 bg-white mb-2 py-3">
+    <div class="d-flex justify-content-center">
+      <button type="button" (click)="back()" class="btn btn-secondary btn-lg me-2">
+        <fa-icon [icon]="faCircleLeft" class="me-1"></fa-icon>
+        <span class="text-uppercase">Cancelar</span>
+      </button>
+      <button type="submit" form="notaForm" class="btn btn-primary btn-lg">
+        <fa-icon [icon]="faSave" class="me-1"></fa-icon>
+        <span class="text-uppercase">Guardar</span>
+      </button>
+      <button type="button" (click)="validar()" *ngIf="validButton()"
+              [disabled]="inventoryNotasDetails.length <= 0"
+              class="btn btn-warning btn-lg ms-2">
+        <fa-icon [icon]="faCircleCheck" class="me-1"></fa-icon>
+        <span class="text-uppercase">Validar</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<app-inventory-product-modal
+  [dataModal]="dataModal"
+  (responseData)="saveChangeDetail($event)">
+</app-inventory-product-modal>

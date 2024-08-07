@@ -1,0 +1,37 @@
+<app-account-navbar></app-account-navbar>
+<div class="container">
+  <div class="row px-2">
+    <div class="col-12 bg-white my-2 py-3">
+      <nav class="fs-5 text-uppercase">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a class="text-dark" routerLink="/account/users">
+              <fa-icon [icon]="faUser" class="me-1"></fa-icon>
+              <span>Usuarios</span>
+            </a>
+          </li>
+          <li class="breadcrumb-item active">{{user.userName|uppercase}}</li>
+        </ol>
+      </nav>
+      <div class="row">
+        <div class="col-12 col-md-3 mb-2">
+          <div class="list-group fs-5">
+            <a [routerLink]="['/account/users', user.id, 'suscripciones']" routerLinkActive="active"
+              class="list-group-item list-group-item-action">
+              <fa-icon [icon]="faCoins" class="me-1"></fa-icon>
+              <span>Suscripciones</span>
+            </a>
+            <a [routerLink]="['/account/users', user.id, 'empresas']" routerLinkActive="active"
+              class="list-group-item list-group-item-action">
+              <fa-icon [icon]="faFolderOpen" class="me-1"></fa-icon>
+              <span>Empresas</span>
+            </a>
+          </div>
+        </div>
+        <div class="col-12 col-md-9">
+          <ng-content></ng-content>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

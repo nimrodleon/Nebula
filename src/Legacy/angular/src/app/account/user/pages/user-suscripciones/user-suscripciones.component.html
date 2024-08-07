@@ -1,0 +1,44 @@
+<app-user-detail-container>
+  <form class="row row-cols-auto g-2 mb-2">
+    <div class="col-auto">
+      <label class="col-form-label fw-bold">Filtrar por:</label>
+    </div>
+    <div class="col-12 col-md-4 col-lg-auto">
+      <div class="input-group">
+        <span class="input-group-text">
+          <fa-icon [icon]="faFilter"></fa-icon>
+        </span>
+        <input type="search" class="form-control" placeholder="Empresa">
+      </div>
+    </div>
+    <div class="col-6 col-md-3 col-lg-auto">
+      <button type="submit" class="btn btn-success w-100">
+        <fa-icon [icon]="faSearch"></fa-icon>
+        <span class="text-uppercase ms-1">Buscar</span>
+      </button>
+    </div>
+    <div class="col-6 col-md-3 col-lg-auto">
+      <button type="button" (click)="agregarPagoModal()" class="btn btn-primary w-100">
+        <fa-icon [icon]="faPlus"></fa-icon>
+        <span class="text-uppercase ms-1">Agregar</span>
+      </button>
+    </div>
+  </form>
+  <div class="table-responsive">
+    <table class="table table-striped mb-2">
+      <thead>
+        <tr class="table-primary text-uppercase">
+          <th>Fecha</th>
+          <th>Empresa</th>
+          <th>Monto</th>
+          <th>Suscripción</th>
+          <th>Origen</th>
+        </tr>
+      </thead>
+      <tbody class="table-group-divider">
+      </tbody>
+    </table>
+  </div>
+</app-user-detail-container>
+
+<app-payment-modal></app-payment-modal>

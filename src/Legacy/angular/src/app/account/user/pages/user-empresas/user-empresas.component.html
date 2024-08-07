@@ -1,0 +1,43 @@
+<app-user-detail-container>
+  <!--<form class="row row-cols-auto g-2 mb-2">
+    <div class="col-auto">
+      <label class="col-form-label fw-bold">Filtrar por:</label>
+    </div>
+    <div class="col-12 col-md-4 col-lg-auto">
+      <div class="input-group">
+        <span class="input-group-text">
+          <fa-icon [icon]="faFilter"></fa-icon>
+        </span>
+        <input type="search" class="form-control" placeholder="Empresa">
+      </div>
+    </div>
+    <div class="col-6 col-md-3 col-lg-auto">
+      <button type="submit" class="btn btn-success w-100">
+        <fa-icon [icon]="faSearch"></fa-icon>
+        <span class="text-uppercase ms-1">Buscar</span>
+      </button>
+    </div>
+  </form>-->
+  <div class="table-responsive">
+    <table class="table table-striped mb-2">
+      <thead>
+        <tr class="table-primary text-uppercase">
+          <th>R.U.C.</th>
+          <th>Razón Social</th>
+          <th>Teléfono</th>
+          <th>Sunat</th>
+          <th>Suscripción</th>
+        </tr>
+      </thead>
+      <tbody class="table-group-divider">
+        <tr *ngFor="let item of companies">
+          <td>{{item.ruc}}</td>
+          <td>{{item.rznSocial}}</td>
+          <td>{{item.phoneNumber}}</td>
+          <td>{{item.sunatEndpoint}}</td>
+          <td>-</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</app-user-detail-container>
